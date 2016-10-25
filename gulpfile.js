@@ -36,7 +36,7 @@ gulp.task('compileSass', function() {
 gulp.task('tscompile', function() {
     return gulp.src('./src/ts/**/*.ts')
         .pipe(ts(tsoptions.compilerOptions))
-        .pipe(gulp.dest('./'));
+        .pipe(gulp.dest('./public/js/'));
 });
 
 gulp.task('watch', function () {

@@ -1,0 +1,77 @@
+@import "compass/css3";
+
+// colors!
+$color-primary: #CE872D; // tags, links, smiley face
+$color-secondary: #8A211D; // background, active tag text
+$color-active: #F0CF4E; // active menu background, page indicator background, selected table row background
+$color-active-text: #666; // active menu text
+$color-hover: rgb(252,247,209); // table row hover background
+$color-text: #666;
+
+$color-content-bg: rgba(252,247,209, 0.9);
+$color-content-bg-mobile: rgba(252,247,209, 0.9);
+
+$color-mobile-topnav-text: rgb(252,247,209);
+
+// timings!
+$anim-duration: 300ms;
+
+// media query names
+$media-mobile: "only screen and (max-width: 700px)";
+
+@mixin keyframes($name) {
+  @-webkit-keyframes #{$name} {
+    @content;
+  }
+  @-moz-keyframes #{$name} {
+    @content;
+  }
+  @-ms-keyframes #{$name} {
+    @content;
+  }
+  @keyframes #{$name} {
+    @content;
+  }
+}
+
+@mixin background-linear-gradient-down($from, $to, $default:$from) {
+    background-color: $default;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from($from), to($to));
+    background-image: -webkit-linear-gradient(top, $from, $to);
+    background-image: -o-linear-gradient(top, $from, $to);
+    background-image: linear-gradient(to bottom, $from, $to);
+    background-image: -moz-linear-gradient(top, $from, $to);
+    background-repeat: repeat-x;
+    @include filter-gradient($from, $to, vertical);
+}
+
+@mixin background-linear-gradient-right($from, $to, $default:$from) {
+    background-color: $default;
+    background-color: transparent;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from($from), to($to));
+    background-image: -webkit-linear-gradient(right, $from, $to);
+    background-image: -o-linear-gradient(right, $from, $to);
+    background-image: linear-gradient(to left, $from, $to);
+    background-image: -moz-linear-gradient(right, $from, $to);
+    background-position: center top;
+    background-repeat: repeat-y;
+    filter: progid:dximagetransform.microsoft.gradient(startColorstr='$from', endColorstr='$to', GradientType=0);
+}
+
+@mixin border-box {
+    @include box-sizing(border-box);
+}
+
+@mixin iconsprite($name, $w, $spriteX) {
+    &[class*='#{$name}'] {
+        background-position: (-$w * $spriteX) 0;
+
+        &:hover {
+            background-position: (-$w * $spriteX) (-$w);
+        }
+        &.active {
+            background-position: (-$w * $spriteX) (-($w * 2));
+        }
+        @content;
+    }
+}

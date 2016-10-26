@@ -10,7 +10,7 @@ html(lang="en")
     link(rel='stylesheet', href='/css/style.css')
 
     link(rel="stylesheet", href="/css/lte_ie9.css")
-    link(href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css", rel="stylesheet")
+    link(href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css", rel="stylesheet")
 
     link(href='http://fonts.googleapis.com/css?family=Alex+Brush', rel='stylesheet', type='text/css')
 
@@ -46,9 +46,16 @@ html(lang="en")
     div#cornerLogo
         img(src="/images/cornerlogo.png")
 
-    
+    script(src="/node_modules/core-js/client/shim.min.js")
+    script(src="/node_modules/zone.js/dist/zone.js")
+    script(src="/node_modules/reflect-metadata/Reflect.js")
+    script(src="/node_modules/systemjs/dist/system.src.js")
 
-    script(type="text/javascript" src="/js/main.js")
+    script(src="/systemjs.config.js")
+    script.
+      System.import('app').catch(function(err){ console.error(err); });
+
+    my-app
 
     if prod
         script.

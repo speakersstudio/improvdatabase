@@ -1,7 +1,7 @@
 var connection = require("../connection"),
     tagApi  = require("./tag"),
     auth        = require('../../auth'),
-    
+
     formProperties = ["Description", "DurationID", "PlayerCountID", "ParentGameID"];
 
 exports.create = function(req,res) {
@@ -10,8 +10,8 @@ exports.create = function(req,res) {
         UserID = req.user.UserID;
 
         data.AddedUserID = UserID; //
-        data.ModifiedUserID = UserID; 
-        
+        data.ModifiedUserID = UserID;
+
         data.DateModified = 'NOW';
         data.DateAdded = 'NOW';
 
@@ -53,6 +53,7 @@ exports.create = function(req,res) {
         auth.unauthorized(req,res);
     }
 };
+
 exports.getAll = function(req, res) {
     connection.query(connection.getSelectQuery('game'), function(err, response) {
         if (err) {
@@ -63,7 +64,7 @@ exports.getAll = function(req, res) {
             }
         } else {
             //var delay = process.env.NODE_ENV === 'production' ? 0 : 1500;
-            
+
             //setTimeout(function () {
                 if (!res) {
                     return response.rows;
@@ -74,6 +75,80 @@ exports.getAll = function(req, res) {
         }
     });
 };
+
+exports.getAllExpanded = function(req, res) {
+    var resultObject = {},
+        resultCount = 0,
+        resultMax = 5;
+
+    var handleQuery = function(err, response, resultType) {
+        if (err) {
+            res.json('500', err);
+        } else {
+            resultCount++;
+            resultObject[resultType] = response;
+            if (resultCount >= resultMax) {
+                var games = [];
+
+                for(var i = 0; i < resultObject.game.rows.length; i++) {
+                    var game = resultObject.game.rows[i];
+                    var names = [];
+
+                    // find the first name with the given GameID, and then start loading them
+                    // they're sorted by gameID, so we can save some time that way
+                    var loading = false;
+                    for (var ni = 0; ni < resultObject.name.rows.length; ni++) {
+                        var name = resultObject.name.rows[ni];
+                        if (name.GameID === game.GameID) {
+                            names.push(name);
+                            loading = true;
+                        } else if (loading) {
+                            break;
+                        }
+                    }
+
+                    game.Names = names;
+
+                    for (var pci = 0; pci < resultObject.playerCount.rows.length; pci++) {
+                        var playerCount = resultObject.playerCount.rows[pci];
+                        if (playerCount.PlayerCountID === game.PlayerCountID) {
+                            game.PlayerCount = playerCount;
+                            break;
+                        }
+                    }
+
+                    for (var pci = 0; pci < resultObject.duration.rows.length; pci++) {
+                        var duration = resultObject.duration.rows[pci];
+                        if (parseInt(duration.DurationID) === parseInt(game.DurationID)) {
+                            game.Duration = duration;
+                            break;
+                        }
+                    }
+
+                    for (var pci = 0; pci < resultObject.users.rows.length; pci++) {
+                        var user = resultObject.users.rows[pci];
+                        if (parseInt(user.UserID) === parseInt(game.AddedUserID)) {
+                            game.AddedUser = user;
+                        }
+                        if (parseInt(user.UserID) === parseInt(game.ModifiedUserID)) {
+                            game.ModifiedUser = user;
+                        }
+                    }
+
+                    games.push(game);
+                }
+                res.json("200", games);
+            }
+        }
+    }
+
+    connection.query('SELECT * FROM game;', (err, response) => handleQuery(err, response, 'game'));
+    connection.query('SELECT * FROM name ORDER BY "GameID";', (err, response) => handleQuery(err, response, 'name'));
+    connection.query('SELECT * FROM playerCount ORDER BY "PlayerCountID";', (err, response) => handleQuery(err, response, 'playerCount'));
+    connection.query('SELECT * FROM duration;', (err, response) => handleQuery(err, response, 'duration'));
+    connection.query('SELECT * FROM users;', (err, response) => handleQuery(err, response, 'users'));
+};
+
 exports.get = function(req,res) {
     connection.query('SELECT * FROM game WHERE "GameID"=$1', [req.params.id], function(err, response) {
         if (err) {
@@ -88,7 +163,7 @@ exports.update = function(req,res) {
         var data = connection.getPostData(req.body, formProperties),
             UserID = 1;
         data.ModifiedUserID = UserID;
-        
+
         var gameid;
         if (req.params.id) {
             gameid = req.params.id;

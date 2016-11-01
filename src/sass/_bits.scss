@@ -1,0 +1,44 @@
+@import 'vars';
+@import 'elevation';
+
+.taglist {
+    
+    li {
+       display: inline-block;
+       margin: $tag-spacing;
+       padding: $tag-padding;
+       background: $color-primary;
+       color: $color-primary-text;
+       border-radius: $tag-border-radius;
+
+       @include md-elevation(1);
+    }
+}
+
+.metadata {
+    span {
+        display: inline-block;
+        vertical-align: middle;
+        margin: $metadata-spacing 0;
+        height: 14px;
+        line-height: 14px;
+
+        &:last-child {
+            border-right: 0px;
+            margin-right: 0px;
+            padding-right: 0px;
+        }
+
+        &:not(:last-child):after {
+            content: "\2022";
+            margin: 0 $metadata-spacing 0 ($metadata-spacing * 2)
+        }
+    }
+
+    i {
+        width: 16px;
+        height: 14px;
+        text-align: center;
+        display: inline-block;
+    }
+}

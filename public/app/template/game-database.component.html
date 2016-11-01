@@ -1,0 +1,13 @@
+<div class="content">
+    <div class="card-list">
+        <div class="card ng-game-card" *ngFor="let game of games; trackBy:trackByGames"
+            [game]="game"
+            [class.selected] = "game === selectedGame"
+            (click)="onSelect(game)">
+        </div>
+    </div>
+</div>
+<div *ngIf="selectedGame"
+    class="page ng-game-details"
+    [game]="selectedGame"
+    (onClose)="closeDetails()" ></div>

@@ -30,8 +30,9 @@ app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
 // TODO: include front-end node modules?
 
+/*
 // set up API stuff
-app.all( '/*', function( req, res, next ) {
+app.all( '/api/*', function( req, res, next ) {
     res.header( 'Access-Control-Allow-Origin', '*' );
     res.header( 'Access-Control-Allow-Method', 'POST, GET, PUT, DELETE, OPTIONS' );
     res.header( 'Access-Control-Allow-Headers', 'origin, x-requested-with, x-file-name, content-type, cache-control' );
@@ -42,9 +43,9 @@ app.all( '/*', function( req, res, next ) {
         next();
     }
 });
+*/
 
 // ROUTES
-app.get('/', indexRoute);
 
 // AUTH
 var auth = require('./auth');
@@ -59,12 +60,16 @@ app.post('/contact', contact.send);
 //CRUD
 app.post('/api/:op', api.create);
 app.get('/api/:op', api.getAll);
+app.get('/api/:op/expand', api.getAllExpanded);
 app.get('/api/:op/:id', api.get);
+app.get('/api/:op/:id/expand', api.getExpanded);
 app.put('/api/:op', api.update);
 app.put('/api/:op/:id', api.update);
 app.delete('/api/:op/:id', api.delete);
 app.all('/api/:op/:id/:method', api.method);
 app.all('/api/:op/:id/:method/:toId', api.method);
+
+app.get('/*', indexRoute);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

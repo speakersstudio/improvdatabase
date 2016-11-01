@@ -1,0 +1,41 @@
+<nav [class.show] = "showMenu">
+    <div class="nav-top">
+        <h1>The Improv Comedy Database</h1>
+        <button (click)="toggleNav()">
+            <i class="fa fa-bars" [class.active]="showMenu"></i>
+        </button>
+        <button (click)="fullscreen()">
+            <i class="fa"
+                [class.fa-expand]="!showFullscreen"
+                [class.fa-compress]="showFullscreen"></i>
+        </button>
+    </div>
+    <a routerLink="/games" (click)="toggleNav()" routerLinkActive="active"><i class="fa fa-soccer-ball-o"></i> Game Database</a>
+    <a routerLink="/about" (click)="toggleNav()" routerLinkActive="active"><i class="fa fa-info-circle"></i> About</a>
+</nav>
+
+<div (click)="toggleNav()" class="backdrop nav-backdrop" [class.show] = "showMenu"></div>
+
+<div class="toolbar">
+    <div class="toolbar-row">
+        <button (click)="toggleNav()">
+            <i class="fa fa-bars" [class.active]="showMenu"></i>
+        </button>
+
+        <h2>{{toolbarTitle}}</h2>
+
+        <span class="spacer"></span>
+
+        <span class="tools">
+            <button *ngFor="let tool of tools"
+                class="btn"
+                [class.active]="tool.active"
+                title="{{tool.text}}"
+                (click)="toolClick(tool)">
+                <i class="fa {{tool.icon}}"></i>
+            </button>
+        </span>
+    </div>
+</div>
+
+<router-outlet></router-outlet>

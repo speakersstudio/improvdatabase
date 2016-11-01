@@ -5,7 +5,7 @@ module.exports = function () {
             postgres: {
                 host: 'localhost:5432',
                 user: 'sdbuatyadcczhj',
-                pass: 'password',
+                pass: 'password123',
                 db: 'd1ihmfmjooehcl'
             },
             redis: {

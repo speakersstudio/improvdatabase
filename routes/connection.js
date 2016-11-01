@@ -2,21 +2,31 @@ var config  = require("../config")(),
     _       = require("underscore"),
     pg      = require("pg"),
 
-    conString = 'postgres://' + config.postgres.user + ':' + encodeURIComponent(config.postgres.pass) + '@' + config.postgres.host + '/' + config.postgres.db;
+    conString = 'postgres://' + config.postgres.user + ':' + encodeURIComponent(config.postgres.pass) + '@' + config.postgres.host + '/' + config.postgres.db,
+
+    client = new pg.Client(conString);
+
+    client.connect();
 
 console.log(conString);
 exports.query = function(query, values, callback) {
-    /*
-    var connection = mysql.createConnection(conObj);
-
-    connection.connect();
-
-    var q = connection.query(query, callback);
-
-    connection.end();
-
-    return q;
-    */
+    var queryobj;
+    if (typeof(values) === 'function') {
+        callback = values;
+        queryobj = query;
+    } else {
+        queryobj = {
+            text: query,
+            values: values
+        };
+    }
+    client.query(queryobj, function (err, result) {
+        if (err) {
+            return console.error('error running query', queryobj, err);
+        }
+        callback(err, result);
+    });
+/*
     pg.connect(conString, function (err, client, done) {
         if (err) {
             // TODO: handle errors
@@ -41,6 +51,7 @@ exports.query = function(query, values, callback) {
             callback(err, result);
         });
     });
+    */
 };
 
 /*
@@ -97,7 +108,7 @@ exports.getInsertQuery = function (table, data, id) {
         }
 
         var qval = item[1] === 'NOW' ? 'CURRENT_TIMESTAMP' : '$' + (i + 1);
-        
+
         if (i > 0) {
             query += ', ';
         }
@@ -120,7 +131,7 @@ exports.getUpdateQuery = function (table, data, where) {
     _.each(_.pairs(data), function (item) {
         if (item[1]) {
             var qval = item[1] === 'NOW' ? 'CURRENT_TIMESTAMP' : '$' + cnt;
-            
+
             if (cnt > 1) {
                 query += ', ';
             }
@@ -132,7 +143,7 @@ exports.getUpdateQuery = function (table, data, where) {
             }
         }
     });
-    
+
     query += ' WHERE ';
 
     _.each(_.pairs(where), function (item, i) {

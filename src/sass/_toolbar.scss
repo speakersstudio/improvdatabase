@@ -1,0 +1,157 @@
+@import "vars";
+@import "elevation";
+
+.toolbar {
+    display: flex;
+    box-sizing: border-box;
+
+    width: 100%;
+    min-height: $toolbar-height;
+
+    font-size: $toolbar-font-size;
+    font-weight: $toolbar-font-weight;
+    font-family: $font-family;
+
+    padding: 0;
+
+    flex-direction: column;
+
+    background-color: $color-primary;
+    color: $color-primary-text;
+
+    position: fixed;
+    z-index: 8;
+
+    @include md-elevation($toolbar-elevation);
+    @include md-elevation-transition(null, null, background-color 300ms);
+
+    &.transparent {
+        background-color: $color-transparent;
+        @include md-elevation(0);
+    }
+    &.no-shadow {
+        @include md-elevation(0);
+    }
+
+    .toolbar-row {
+        display: flex;
+        box-sizing: border-box;
+
+        width: 100%;
+        height: $toolbar-height;
+
+        flex-direction: row;
+        align-items: center;
+
+        .spacer {
+            flex: 1 1 auto;
+        }
+    }
+}
+
+.toolbar button,
+nav button {
+    height: $toolbar-height;
+    width: $toolbar-height;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: none;
+    border: 0px;
+    font-size: 1.15em;
+    color: $color-primary-text;
+    margin: 0;
+    float: left;
+
+    &.active {
+        color: $color-active;
+    }
+}
+
+.fa-bars {
+    transition: transform $swift-ease-out-duration $swift-ease-out-timing-function;
+    &.active {
+        transform: rotateZ(90deg);
+    }
+}
+
+nav {
+    @include fixed(0, null, 0, 0);
+    z-index: 10;
+
+    min-width: 200px;
+    max-width: 400px;
+    width: 20%;
+
+    box-sizing: border-box;
+    display: block;
+
+    overflow: hidden;
+    padding: 0;
+
+    @include md-elevation(0);
+    @include md-elevation-transition;
+
+    background-color: $color-content-bg;
+    font-size: $toolbar-font-size;
+
+    transform: translate3d(-100%, 0, 0);
+    transition: transform $swift-ease-out-duration $swift-ease-out-timing-function;
+
+    &.show {
+        @include md-elevation($nav-elevation);
+        transform: translate3d(0, 0, 0);
+    }
+
+    .nav-top {
+        width: 100%;
+        position: relative;
+        margin-bottom: $nav-item-spacing;
+        background-color: $color-menu-active-bg;
+        color: $color-active;
+        box-shadow: 0px 1px 15px rgba(0,0,0,0.3) inset;
+
+        &:before {
+            /* makes it square! */
+            content: "";
+            display: block;
+            padding-top: 100%;
+        }
+
+        h1 {
+            @include abs(null, $nav-item-spacing, $nav-item-spacing, $nav-item-spacing);
+            text-align: right;
+            font-size: 1.5em;
+        }
+
+        button {
+            &:first-of-type {
+                @include abs(0, null, null, 0);
+            }
+
+            &:last-of-type {
+                @include abs(0, 0, null, null);
+            }
+        }
+    }
+
+    a {
+        display: block;
+        color: $color-text;
+        text-decoration: none;
+        padding: $nav-item-spacing $nav-padding;
+        cursor: pointer;
+        white-space: nowrap;
+
+        &:visited {
+            color: $color-text;
+        }
+
+        &.active {
+            background-color: $color-menu-active-bg;
+            color: $color-active;
+            box-shadow: 0px 1px 10px rgba(0,0,0,0.1) inset;
+        }
+    }
+}

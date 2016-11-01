@@ -1,5 +1,5 @@
 var connection = require("../connection"),
-    
+
     ops     = {
         "user": require('./user'),
         "game": require('./game'),
@@ -37,6 +37,14 @@ exports.getAll = function(req,res) {
         res.send('404', 'Not Found');
     }
 };
+exports.getAllExpanded = function(req, res) {
+    if (ops[req.params.op] && ops[req.params.op].getAllExpanded) {
+        console.log("GET ALL EXPANDED" + req.params.op);
+        ops[req.params.op].getAllExpanded(req,res);
+    } else {
+        exports.getAll(req, res);
+    }
+}
 exports.get = function(req,res) {
     if (ops[req.params.op]) {
         console.log("GET " + req.params.op, req.params.id);
@@ -45,6 +53,14 @@ exports.get = function(req,res) {
         res.send('404', 'Not Found');
     }
 };
+exports.getExpanded = function(req, res) {
+    if (ops[req.params.op] && ops[req.params.op].getExpanded) {
+        console.log("GET EXPANDED" + req.params.op);
+        ops[req.params.op].getExpanded(req,res);
+    } else {
+        exports.get(req, res);
+    }
+}
 exports.update = function(req,res) {
     if (ops[req.params.op]) {
         console.log("UPDATE " + req.params.op, req.params.id);

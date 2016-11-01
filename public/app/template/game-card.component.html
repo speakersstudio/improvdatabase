@@ -1,0 +1,17 @@
+<span class="badge"><i class="fa fa-soccer-ball-o"></i></span>
+
+<h5 *ngIf="game.Names.length > 0">{{game.Names[0].Name}}</h5>
+<h5 *ngIf="game.Names.length === 0">Error</h5>
+
+<div class="metadata">
+    <span *ngIf="playerCount" title="{{playerCount.Description}}"><i class="fa fa-group"></i> {{playerCount.Name}}</span>
+    <span *ngIf="duration" title="{{duration.Description}}"><i class="fa fa-clock-o"></i> {{duration.Name}}</span>
+
+    <span *ngIf="!showTags && game.TagGames.length > 0" title="This game has {{game.TagGames.length}} tags associated with it."><i class="fa fa-hashtag"></i> {{game.TagGames.length}}</span>
+
+    <ul *ngIf="showTags || opened" class="taglist">
+        <li *ngFor="let tag of tags">{{tag.Name}}</li>
+    </ul>
+</div>
+
+<div class="clearfix"></div>

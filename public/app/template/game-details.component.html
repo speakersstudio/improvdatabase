@@ -1,0 +1,50 @@
+<div class="toolbar" [class.transparent]="scrollpos < 180">
+    <div class="toolbar-row">
+        <button (click)="closePage()">
+            <i class="fa fa-arrow-left"></i>
+        </button>
+
+        <span class="spacer"></span>
+
+        <span class="tools">
+            <!--
+            <button *ngFor="let tool of tools"
+                class="btn"
+                [class.active]="tool.active"
+                title="{{tool.text}}"
+                (click)="toolClick(tool)">
+                <i class="fa {{tool.icon}}"></i>
+            </button>
+            -->
+        </span>
+    </div>
+</div>
+
+<div class="curtain" [style.top]="(-(scrollpos * 0.5)) + 'px'"></div>
+
+<div class="content" (scroll)="onScroll($event)">
+    <div *ngIf="game" class="material">
+
+        <h4>{{game.Names[0].Name}}</h4>
+
+        <div class="metadata">
+            <h5 (click)="toggleNames()"><i class="fa"
+                [class.fa-sort-down]="!namesOpen" [class.fa-sort-up]="namesOpen"></i> 2 alternate names</h5>
+
+            <ol *ngIf="namesOpen" [@flyInOut]="'in'">
+                <li>Name 1</li>
+                <li>Name 2</li>
+            </ol>
+
+            <span class="bullet" *ngIf="playerCount" title="{{playerCount.Description}}"><i class="fa fa-group"></i> {{playerCount.Name}}</span>
+            <span class="bullet" *ngIf="duration" title="{{duration.Description}}"><i class="fa fa-clock-o"></i> {{duration.Name}}</span>
+
+            <ul class="taglist">
+                <li *ngFor="let tag of tags">{{tag.Name}}</li>
+            </ul>
+        </div>
+
+        <div class="description" [innerHTML]="game.Description"></div>
+
+    </div>
+</div>

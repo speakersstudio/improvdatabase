@@ -9,6 +9,7 @@ import { PlayerCount } from '../model/player-count';
 import { Duration } from '../model/duration';
 import { Tag } from '../model/tag';
 import { TagGame } from '../model/tag-game';
+import { Note } from '../model/note';
 
 @Injectable()
 export class GameDatabaseService {
@@ -20,6 +21,8 @@ export class GameDatabaseService {
     private tagUrl = '/api/tag';
     private tagGameUrl = '/api/tagGame';
 
+    private noteUrl = '/api/note';
+
     // cache all the things
     private games: Game[] = [];
     private names: Name[] = [];
@@ -27,6 +30,7 @@ export class GameDatabaseService {
     private durations: Duration[] = [];
     private tags: Tag[] = [];
     private tagGames: TagGame[] = [];
+    private notes: Note[] = [];
 
     constructor(private http: Http) { }
 
@@ -233,6 +237,50 @@ export class GameDatabaseService {
                         resolve(tag);
                     }
                 });
+            });
+        });
+    }
+    
+    gameHasTag(game: Game, tagID: number): boolean {
+        game.TagGames.forEach((taggame) => {
+            console.log(taggame.TagID, tagID);
+            if (taggame.TagID == tagID) {
+                return true;
+            }
+        })
+        return false;
+    }
+
+    private _notePromise: Promise<Note[]>;
+    getNotes(): Promise<Note[]> {
+        if (!this._notePromise) {
+            this._notePromise = this.http.get(this.noteUrl)
+                .toPromise()
+                .then(response => {
+                    this.notes = response.json() as Note[];
+                    return this.notes;
+                })
+                .catch(this.handleError);
+        }
+        return this._notePromise;
+    }
+
+    getNotesForGame(game: Game): Promise<Note[]> {
+        return new Promise<Note[]>((resolve, reject) => {
+            this.getNotes().then((notes) => {
+                let notesForGame: Note[] = [];
+                notes.forEach((note) => {
+                    if (
+                        note.GameID == game.GameID
+                        || note.PlayerCountID == game.PlayerCountID
+                        || note.DurationID == game.DurationID
+                        || (note.TagID && this.gameHasTag(game, note.TagID))
+                    ) {
+                        notesForGame.push(note);
+                    }
+                });
+                console.log(notesForGame);
+                resolve(notesForGame);
             });
         });
     }

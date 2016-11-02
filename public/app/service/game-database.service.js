@@ -20,6 +20,7 @@ var GameDatabaseService = (function () {
         this.durationUrl = '/api/duration';
         this.tagUrl = '/api/tag';
         this.tagGameUrl = '/api/tagGame';
+        this.noteUrl = '/api/note';
         // cache all the things
         this.games = [];
         this.names = [];
@@ -27,6 +28,7 @@ var GameDatabaseService = (function () {
         this.durations = [];
         this.tags = [];
         this.tagGames = [];
+        this.notes = [];
     }
     // TODO: update the API to expand names and tagGames on game queries
     GameDatabaseService.prototype.getGames = function (sortProperty) {
@@ -221,6 +223,46 @@ var GameDatabaseService = (function () {
                         resolve(tag);
                     }
                 });
+            });
+        });
+    };
+    GameDatabaseService.prototype.gameHasTag = function (game, tagID) {
+        game.TagGames.forEach(function (taggame) {
+            console.log(taggame.TagID, tagID);
+            if (taggame.TagID == tagID) {
+                return true;
+            }
+        });
+        return false;
+    };
+    GameDatabaseService.prototype.getNotes = function () {
+        var _this = this;
+        if (!this._notePromise) {
+            this._notePromise = this.http.get(this.noteUrl)
+                .toPromise()
+                .then(function (response) {
+                _this.notes = response.json();
+                return _this.notes;
+            })
+                .catch(this.handleError);
+        }
+        return this._notePromise;
+    };
+    GameDatabaseService.prototype.getNotesForGame = function (game) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.getNotes().then(function (notes) {
+                var notesForGame = [];
+                notes.forEach(function (note) {
+                    if (note.GameID == game.GameID
+                        || note.PlayerCountID == game.PlayerCountID
+                        || note.DurationID == game.DurationID
+                        || (note.TagID && _this.gameHasTag(game, note.TagID))) {
+                        notesForGame.push(note);
+                    }
+                });
+                console.log(notesForGame);
+                resolve(notesForGame);
             });
         });
     };

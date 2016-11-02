@@ -16,6 +16,10 @@
 }
 
 .metadata {
+    &.right {
+        text-align: right;
+    }
+
     span {
         display: inline-block;
         vertical-align: middle;

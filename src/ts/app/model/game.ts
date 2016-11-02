@@ -18,4 +18,5 @@ export class Game {
 
     Names: Name[];
     TagGames: TagGame[];
+
 }

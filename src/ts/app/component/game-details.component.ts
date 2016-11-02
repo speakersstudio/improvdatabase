@@ -21,6 +21,7 @@ import { Name } from '../model/name';
 import { PlayerCount } from '../model/player-count';
 import { Duration } from '../model/duration';
 import { Tag } from '../model/tag';
+import { Note } from '../model/note';
 
 @Component({
     moduleId: module.id,
@@ -50,6 +51,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     playerCount: PlayerCount;
     duration: Duration;
     tags: Tag[] = [];
+    notes: Note[] = [];
 
     scrollpos: number = 0;
 
@@ -96,6 +98,9 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
             this.gameDatabaseService.getTagById(tagGame.TagID)
                 .then((tag) => this.tags.push(tag));
         });
+
+        this.gameDatabaseService.getNotesForGame(this.game)
+            .then((notes) => this.notes = notes);
     }
 
     closePage(): void {

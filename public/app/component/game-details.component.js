@@ -22,6 +22,7 @@ var GameDetailsComponent = (function () {
         this.onClose = new core_1.EventEmitter();
         this.dialog = false;
         this.tags = [];
+        this.notes = [];
         this.scrollpos = 0;
         this.namesOpen = false;
         this.showToolbarScrollPosition = window.innerHeight * 0.15;
@@ -53,6 +54,8 @@ var GameDetailsComponent = (function () {
             _this.gameDatabaseService.getTagById(tagGame.TagID)
                 .then(function (tag) { return _this.tags.push(tag); });
         });
+        this.gameDatabaseService.getNotesForGame(this.game)
+            .then(function (notes) { return _this.notes = notes; });
     };
     GameDetailsComponent.prototype.closePage = function () {
         if (!this.dialog) {

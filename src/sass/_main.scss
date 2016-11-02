@@ -29,6 +29,10 @@ h2, h3, h4, h5, p, button {
     margin: $content-item-vertical-margin $content-item-horizontal-margin;
 }
 
+em {
+    font-style: italic;
+}
+
 .loading-icon {
     position: absolute;
     display: block;

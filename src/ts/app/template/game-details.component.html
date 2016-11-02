@@ -52,4 +52,22 @@
         <div class="description" [innerHTML]="game.Description"></div>
 
     </div>
+
+    <div *ngIf="game && notes.length > 0" class="material">
+
+        <h4>Discussion</h4>
+
+        <div class="metadata">
+            <span><i class="fa fa-group"></i></span>
+        </div>
+
+        <div *ngFor="let note of notes">
+            <div class="description" [innerHTML]="note.Description"></div>
+            <div class="metadata right">
+                <h5>{{note.AddedFirstName}} {{note.AddedLastName}}</h5>
+                <span *ngIf="note.GameID"><i class="fa fa-soccer-ball-o"></i> <em>{{game.Names[0].Name}}</em></span>
+            </div>
+        </div>
+
+    </div>
 </div>

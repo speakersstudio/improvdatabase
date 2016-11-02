@@ -26,12 +26,18 @@
 
     .material {
         margin: $page-material-margin;
-        margin-top: $page-material-margin-top;
         border-radius: 2px;
         @include md-elevation($card-elevation-default);
         background: $color-material-bg;
         padding: $page-material-padding;
-        padding-bottom: calc($page-material-padding + $content-item-vertical-margin);
+        padding-bottom: calc(#{$page-material-padding} + #{$page-left-margin-no-icon});
+
+        &:first-child {
+            margin-top: $page-material-margin-top;
+        }
+        &:last-child {
+            margin-bottom: $page-material-margin-top;
+        }
 
         h4 {
             margin: $content-item-vertical-margin $page-left-margin-no-icon $page-header-spacing;
@@ -62,6 +68,10 @@
             .taglist {
                 display: inline-block;
                 vertical-align: middle;
+            }
+
+            &:last-child {
+                border-bottom: 0px;
             }
         }
 

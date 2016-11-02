@@ -82,7 +82,7 @@ var GameDetailsComponent = (function () {
             selector: '.page.ng-game-details',
             templateUrl: '../template/game-details.component.html',
             animations: [
-                core_1.trigger('flyInOut', [
+                core_1.trigger('expand', [
                     core_1.state('in', core_1.style({ height: '*' })),
                     core_1.transition('void => *', [
                         core_1.style({ height: 0 }),

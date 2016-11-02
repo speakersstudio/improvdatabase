@@ -28,13 +28,18 @@
         <h4>{{game.Names[0].Name}}</h4>
 
         <div class="metadata">
-            <h5 (click)="toggleNames()"><i class="fa"
-                [class.fa-sort-down]="!namesOpen" [class.fa-sort-up]="namesOpen"></i> 2 alternate names</h5>
 
-            <ol *ngIf="namesOpen" [@flyInOut]="'in'">
-                <li>Name 1</li>
-                <li>Name 2</li>
-            </ol>
+            <div *ngIf="game.Names.length === 2">
+                <h5>AKA {{game.Names[1].Name}}</h5>
+            </div>
+            <div *ngIf="game.Names.length > 2">
+                <h5 (click)="toggleNames()"><i class="fa fa-sort-down"
+                    [class.open]="namesOpen"></i> {{game.Names.length - 1}} known aliases</h5>
+
+                <ol *ngIf="namesOpen" [@expand]>
+                    <li *ngFor="let name of game.Names" [class.hide]="name.Name === game.Names[0].Name">{{name.Name}}</li>
+                </ol>
+            </div>
 
             <span class="bullet" *ngIf="playerCount" title="{{playerCount.Description}}"><i class="fa fa-group"></i> {{playerCount.Name}}</span>
             <span class="bullet" *ngIf="duration" title="{{duration.Description}}"><i class="fa fa-clock-o"></i> {{duration.Name}}</span>

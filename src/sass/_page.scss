@@ -41,7 +41,7 @@
 
         h5 {
             font-size: $subtitle-font-size;
-            margin: 0 0 $page-item-spacing 0;
+            margin: 0 0 $page-header-spacing 0;
             cursor: pointer;
         }
 
@@ -51,11 +51,9 @@
             border-bottom: 1px solid $color-hr;
 
             ol {
-                margin: 0 0 $page-item-spacing 0;
-                transition: $swift-ease-out;
+                margin: -($page-header-spacing - $page-item-spacing) 0 $page-header-spacing 0;
 
                 li {
-                    margin-left: $page-left-margin-no-icon / 2;
                     line-height: 1.5em;
                     font-style: italic;
                 }

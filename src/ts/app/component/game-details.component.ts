@@ -27,7 +27,7 @@ import { Tag } from '../model/tag';
     selector: '.page.ng-game-details',
     templateUrl: '../template/game-details.component.html',
     animations: [
-        trigger('flyInOut', [
+        trigger('expand', [
             state('in', style({height: '*'})),
             transition('void => *', [
                 style({height: 0}),

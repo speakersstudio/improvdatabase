@@ -42,10 +42,14 @@
         display: inline-block;
 
         &.fa-sort-down {
-            vertical-align: text-top;
-        }
-        &.fa-sort-up {
-            vertical-align: text-bottom;
+            transform-origin: 50% 75%;
+            transition: transform 100ms $swift-ease-in-out-timing-function;
+            position: relative;
+            top: -2px;
+
+            &.open {
+                transform: rotateZ(180deg);
+            }
         }
     }
 }

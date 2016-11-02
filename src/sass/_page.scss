@@ -18,6 +18,10 @@
         right: 0;
         height: $page-material-margin-top * 2;
         background: $color-secondary;
+
+        @media #{$media-mobile} {
+            height: $page-material-margin-top * 4;
+        }
     }
 
     .material {
@@ -27,11 +31,10 @@
         @include md-elevation($card-elevation-default);
         background: $color-material-bg;
         padding: $page-material-padding;
-        padding-bottom: $page-material-padding * 2;
+        padding-bottom: calc($page-material-padding + $content-item-vertical-margin);
 
         h4 {
-            margin-left: $page-left-margin-no-icon;
-            margin-bottom: 12px;
+            margin: $content-item-vertical-margin $page-left-margin-no-icon $page-header-spacing;
             font-size: $title-font-size;
             line-height: $title-line-height;
         }

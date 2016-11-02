@@ -40,5 +40,12 @@
         height: 14px;
         text-align: center;
         display: inline-block;
+
+        &.fa-sort-down {
+            vertical-align: text-top;
+        }
+        &.fa-sort-up {
+            vertical-align: text-bottom;
+        }
     }
 }

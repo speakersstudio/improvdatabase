@@ -24,6 +24,7 @@ var GameDetailsComponent = (function () {
         this.tags = [];
         this.scrollpos = 0;
         this.namesOpen = false;
+        this.showToolbarScrollPosition = window.innerHeight * 0.15;
     }
     GameDetailsComponent.prototype.ngOnInit = function () {
         var _this = this;

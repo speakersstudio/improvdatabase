@@ -1,4 +1,4 @@
-<div class="toolbar" [class.transparent]="scrollpos < 180">
+<div class="toolbar" [class.transparent]="scrollpos < showToolbarScrollPosition">
     <div class="toolbar-row">
         <button (click)="closePage()">
             <i class="fa fa-arrow-left"></i>

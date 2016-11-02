@@ -55,6 +55,8 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
 
     namesOpen: boolean = false;
 
+    showToolbarScrollPosition: number = window.innerHeight * 0.15;
+
     constructor(
         private gameDatabaseService: GameDatabaseService,
         private router: Router,

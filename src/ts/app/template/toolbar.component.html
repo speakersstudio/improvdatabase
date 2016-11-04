@@ -37,7 +37,7 @@
 
     <span class="tools">
         <button *ngFor="let tool of tools"
-            class="btn"
+            class="btn dropdown-container"
             [class.active]="tool.active"
             title="{{tool.text}}"
             (click)="toolClick(tool)">

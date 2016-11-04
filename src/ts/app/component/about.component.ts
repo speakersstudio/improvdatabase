@@ -2,21 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import {AppComponent    } from './app.component';
-import {
-    Tool,
-    ToolbarComponent    } from './toolbar.component';
-
-//TODO: import models
+import { Tool, ToolbarComponent } from './toolbar.component'
 
 @Component({
     moduleId: module.id,
     selector: ".page.about",
     templateUrl: "../template/about.component.html"
 })
-
 export class AboutComponent implements OnInit {
     scrollpos: number = 0;
     showToolbarScrollPosition: number = window.innerHeight * 0.14;
+
+    title: string = "About";
 
     constructor(
         private _app: AppComponent,
@@ -24,7 +21,6 @@ export class AboutComponent implements OnInit {
     ) { }
 
     private _tools: Tool[] = [
-
     ]
 
     ngOnInit(): void {

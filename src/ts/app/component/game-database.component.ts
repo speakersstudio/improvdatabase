@@ -15,11 +15,7 @@ import 'rxjs/Subscription';
 import { Subscription } from 'rxjs/Subscription';
 
 import { AppComponent } from './app.component';
-import {
-        Tool,
-        SearchResult,
-        ToolbarComponent
-        } from './toolbar.component';
+import { Tool, SearchResult, ToolbarComponent } from './toolbar.component';
 import { GameDatabaseService } from '../service/game-database.service';
 
 import { Game } from '../model/game';

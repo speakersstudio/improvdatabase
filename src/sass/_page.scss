@@ -51,6 +51,10 @@
         background: $color-material-bg;
         padding: $page-material-padding;
 
+        &.dim {
+            opacity: 0.5;
+        }
+
         &:first-child {
             margin-top: $page-material-margin-top;
         }
@@ -106,6 +110,40 @@
             p:first-child {
                 margin-top: 0;
             }
+
+            .image {
+                max-width: 90%;
+                text-align: center;
+                margin: auto;
+
+                img {
+                    max-width: 100%;
+                }
+
+                p {
+                    margin-top: 0;
+                    text-align: left;
+                }
+            }
         }
+
+        button, .button {
+            display: inline-block;
+            text-decoration: none;
+            padding: $content-padding $margin;
+            font-size: 1.2em;
+            background: $color-primary;
+            color: $color-primary-text;
+            border: 0px;
+            cursor: pointer;
+            border-radius: $border-radius;
+            @include md-elevation(2);
+            @include md-elevation-transition();
+
+            &:hover {
+                @include md-elevation(8);
+            }
+        }
+
     }
 }

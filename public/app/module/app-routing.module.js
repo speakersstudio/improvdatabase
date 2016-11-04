@@ -12,6 +12,7 @@ var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var game_database_component_1 = require("../component/game-database.component");
 var about_component_1 = require("../component/about.component");
+var contact_component_1 = require("../component/contact.component");
 var game_details_component_1 = require('../component/game-details.component');
 var routes = [
     {
@@ -30,6 +31,10 @@ var routes = [
     {
         path: 'about',
         component: about_component_1.AboutComponent
+    },
+    {
+        path: 'contact',
+        component: contact_component_1.ContactComponent
     }
 ];
 var AppRoutingModule = (function () {

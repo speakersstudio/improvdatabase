@@ -70,6 +70,11 @@ $content-spacing: 1%;
 $content-item-vertical-margin: 2%;
 $content-item-horizontal-margin: 0;
 
+$margin: 14px;
+$border-radius: 2px;
+
+$dropdown-max-height: 337px;
+
 // toolbar
 $toolbar-height: 48px;
 $toolbar-font-size: 20px;
@@ -80,29 +85,30 @@ $toolbar-icon-spacing: 1%;
 // search
 $search-margins: 6px;
 $search-padding: 47px;
-$search-border-radius: 2px;
-$search-icon-margins: 14px;
+$search-border-radius: $border-radius;
+$search-icon-margins: $margin;
 $search-height: $toolbar-height - ($search-margins * 2);
 $search-results-max-height: ($search-height * 9) + ($search-margins * 2);
 
 // nav
 $nav-item-spacing: 0.5em;
 $nav-padding: 0.5em;
+$nav-item-icon-margin: $margin;
 
 // bits
 $tag-spacing: 2px;
 $tag-padding: 2px 5px;
-$tag-border-radius: 4px;
+$tag-border-radius: $border-radius * 2;
 $metadata-spacing: 4px;
 
 // dialogs
 
 // cards
-$card-padding: 15px;
-$card-padding-mobile: 15px;
-$card-margin: 15px;
-$card-margin-mobile: 15px;
-$card-border-radius: 3px;
+$card-padding: $margin;
+$card-padding-mobile: $margin;
+$card-margin: $margin;
+$card-margin-mobile: $margin;
+$card-border-radius: $border-radius * 2;
 $card-title-margin-bottom: 8px;
 
 // pages

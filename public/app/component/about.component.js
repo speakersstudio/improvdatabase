@@ -11,13 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var app_component_1 = require('./app.component');
-//TODO: import models
 var AboutComponent = (function () {
     function AboutComponent(_app, router) {
         this._app = _app;
         this.router = router;
         this.scrollpos = 0;
         this.showToolbarScrollPosition = window.innerHeight * 0.14;
+        this.title = "About";
         this._tools = [];
     }
     AboutComponent.prototype.ngOnInit = function () {

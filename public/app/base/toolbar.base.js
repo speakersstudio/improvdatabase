@@ -10,8 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 require('rxjs/Subject');
-var router_1 = require('@angular/router');
-var app_component_1 = require('../component/app.component');
 var Tool = (function () {
     function Tool() {
         this.active = false;
@@ -25,8 +23,8 @@ var SearchResult = (function () {
     return SearchResult;
 }());
 exports.SearchResult = SearchResult;
-var ToolbarComponent = (function () {
-    function ToolbarComponent(_app, router) {
+var BaseToolbar = (function () {
+    function BaseToolbar(_app, router) {
         /* I won't use this, but here is how to subscribe to router events!
         // when changing route, reset the toolbar
         router.events.subscribe(val => {
@@ -51,35 +49,34 @@ var ToolbarComponent = (function () {
         this.searchOpen = false;
         // TODO: pre-populate results with history and favorites
     }
-    ToolbarComponent.prototype.ngOnInit = function () {
+    BaseToolbar.prototype.ngOnInit = function () {
     };
-    ToolbarComponent.prototype.setTitle = function (title) {
+    BaseToolbar.prototype.setTitle = function (title) {
         this.title = title;
     };
-    ToolbarComponent.prototype.setTools = function (tools) {
+    BaseToolbar.prototype.setTools = function (tools) {
         this.tools = tools;
     };
-    ToolbarComponent.prototype.toolClick = function (tool) {
-        tool.active = !tool.active;
-        //this.toolClicked.emit(tool);
+    BaseToolbar.prototype.toolClick = function (tool) {
+        this.toolClicked.emit(tool);
     };
-    ToolbarComponent.prototype.toggleNav = function () {
+    BaseToolbar.prototype.toggleNav = function () {
         this._app.toggleNav();
     };
-    ToolbarComponent.prototype.back = function () {
+    BaseToolbar.prototype.back = function () {
         this.goBack.emit();
     };
-    ToolbarComponent.prototype.openSearch = function () {
+    BaseToolbar.prototype.openSearch = function () {
         this.searchOpen = true;
     };
-    ToolbarComponent.prototype.closeSearch = function () {
+    BaseToolbar.prototype.closeSearch = function () {
         this.searchOpen = false;
     };
-    ToolbarComponent.prototype.clearSearch = function () {
+    BaseToolbar.prototype.clearSearch = function () {
         this.searchTerm = "";
         this.closeSearch();
     };
-    ToolbarComponent.prototype.typeSearch = function (event) {
+    BaseToolbar.prototype.typeSearch = function (event) {
         var _this = this;
         if (event.keyCode == 13) {
             this.searchResultClick.emit({
@@ -96,60 +93,52 @@ var ToolbarComponent = (function () {
             }, 300);
         }
     };
-    ToolbarComponent.prototype.clickResult = function (result) {
+    BaseToolbar.prototype.clickResult = function (result) {
         this.searchResultClick.emit(result);
         this.clearSearch();
     };
     __decorate([
         core_1.Input(), 
         __metadata('design:type', String)
-    ], ToolbarComponent.prototype, "title", void 0);
+    ], BaseToolbar.prototype, "title", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Array)
-    ], ToolbarComponent.prototype, "tools", void 0);
+    ], BaseToolbar.prototype, "tools", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Boolean)
-    ], ToolbarComponent.prototype, "showBack", void 0);
+    ], BaseToolbar.prototype, "showBack", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Boolean)
-    ], ToolbarComponent.prototype, "showFilterClear", void 0);
+    ], BaseToolbar.prototype, "showFilterClear", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Boolean)
-    ], ToolbarComponent.prototype, "showSearch", void 0);
+    ], BaseToolbar.prototype, "showSearch", void 0);
     __decorate([
         core_1.Input(), 
         __metadata('design:type', Array)
-    ], ToolbarComponent.prototype, "searchResults", void 0);
+    ], BaseToolbar.prototype, "searchResults", void 0);
     __decorate([
         core_1.Output(), 
         __metadata('design:type', core_1.EventEmitter)
-    ], ToolbarComponent.prototype, "toolClicked", void 0);
+    ], BaseToolbar.prototype, "toolClicked", void 0);
     __decorate([
         core_1.Output(), 
         __metadata('design:type', Object)
-    ], ToolbarComponent.prototype, "goBack", void 0);
+    ], BaseToolbar.prototype, "goBack", void 0);
     __decorate([
         core_1.Output(), 
         __metadata('design:type', core_1.EventEmitter)
-    ], ToolbarComponent.prototype, "search", void 0);
+    ], BaseToolbar.prototype, "search", void 0);
     __decorate([
         core_1.Output(), 
         __metadata('design:type', core_1.EventEmitter)
-    ], ToolbarComponent.prototype, "searchResultClick", void 0);
-    ToolbarComponent = __decorate([
-        core_1.Component({
-            moduleId: module.id,
-            selector: '.toolbar',
-            templateUrl: '../template/toolbar.component.html'
-        }), 
-        __metadata('design:paramtypes', [app_component_1.AppComponent, router_1.Router])
-    ], ToolbarComponent);
-    return ToolbarComponent;
+    ], BaseToolbar.prototype, "searchResultClick", void 0);
+    return BaseToolbar;
 }());
-exports.ToolbarComponent = ToolbarComponent;
+exports.BaseToolbar = BaseToolbar;
 
-//# sourceMappingURL=toolbar.component.js.map
+//# sourceMappingURL=toolbar.base.js.map

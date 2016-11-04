@@ -1,14 +1,78 @@
 <div class="toolbar"
-    [title]="About"
     [class.transparent]="scrollpos < showToolbarScrollPosition"
+    [tools]="_tools"
     ></div>
 
 <div class="curtain" [style.top]="(-(scrollpos * 0.5)) + 'px'">
-    <h2>About</h2>
+    <h2>{{title}}</h2>
 </div>
 
 <div class="content" (scroll)="onScroll($event)">
 
-    <div class="material"></div>
+    <div class="material">
+
+        <h4>The Improv Comedy Database</h4>
+
+        <div class="metadata">
+            <h5>By Shauvon McGill</h5>
+
+            <span>Current version: <a href="https://github.com/ShauvonM/improvdatabase/releases" target="_blank">1.0.0: <em>Parton</em></a></span>
+            <span>Created in 2016</span>
+            <span>Licensed under <a href="https://creativecommons.org/licenses/by-nd/4.0/" target="_blank">Creative Commons</a></span>
+            <span>Special thanks to the <a href="http://improvencyclopedia.org/" target="_blank">Improv Encyclopedia</a>, The Crazy Monkeys (RIP), The Second City, and Viewers Like You</span>
+        </div>
+
+        <div class="description">
+            <p>This application was designed and built to serve as the most comprehensive, most powerful, and most awesome tool for people who do, watch, or otherwise care about the study and performance of Improv.</p>
+
+            <p>Be excellent to each other and party on, dudes.</p>
+        </div>
+
+    </div>
+
+    <div class="material">
+        <template #placeholder></template>
+
+        <h4>History</h4>
+
+        <div class="metadata">
+            <h5>in case anybody is interested</h5>
+        </div>
+
+        <div class="description">
+            <p>This is the third iteration of the Improv Database created by Shauvon McGill.</p>
+
+            <p>Shauvon buit the first version of the database over a weekend in 2008, probably instead of an important school project of some sort. It was originally an experiment in dumb UI and Asynchronous data manipulation with Javascript, which was still pretty new at the time. It looked, and worked, really dumb.</p>
+
+            <div class="image">
+                <img src="/images/history/version1.png" />
+                <p>Look at how dumb this was. It actually <a href="http://improv.denyconformity.com" target="_blank">still exists</a> if you want to give it a shot. The database currently doesn't exist, but I think the easter eggs and the crazy user interface should still work. Good luck!</p>
+            </div>
+
+            <p>Around 2010 Shauvon purchased the ImprovDatabase.com domain to host the project, but it mostly sat untouched for another five years.</p>
+
+            <p>In early 2015, Shauvon began development of an entirely new app, built using modern technologies (and a usable interface). Around March of 2015, it was published online to the most minimal of fanfare.</p>
+
+            <div class="image">
+                <img src="/images/history/version2.png" />
+                <p>Look at how usable it was!</p>
+            </div>
+
+            <p>Shauvon was not content, though. The interface was still a bit wonky and slow, and several features were just not as great as they could be. So, in late 2016, he sat down and completely rebuilt the thing <em>again</em>.</p>
+
+            <div class="image">
+                <img src="/images/history/version3.png" />
+                <p>Here is Mark 3 as it first appeared. Not pictured: just how quickly and smoothly it loads.</p>
+            </div>
+
+            <p>The Improv Comedy Database Mark III is built with a pure Angular 2 front-end, connecting to a REST API written on NodeJS that interfaces with a PostgreSQL database. It is hosted on Heroku, with domain hosting provided by Hover.com. The project is hosted on <a href="https://github.com/ShauvonM/improvdatabase" target="_blank">Github</a>.</p>
+
+            <p>What do you think? How does The Improv Comedy Database Mark III treat you? Should we go back to a command line interface?</p>
+
+            <a routerLink="/contact" class="button" >Send us your thoughts</a>
+
+        </div>
+
+    </div>
 
 </div>

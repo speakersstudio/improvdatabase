@@ -1,6 +1,7 @@
 @import "vars";
 @import "mixins";
 @import "anim";
+@import "elevation";
 
 html {
     background: $color-secondary;
@@ -35,6 +36,14 @@ em {
 
 strong {
     font-weight: bold;
+}
+
+.error {
+    color: darkred;
+
+    &select {
+        border-color: darkred;
+    }
 }
 
 .loading-icon {

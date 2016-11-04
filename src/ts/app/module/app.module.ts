@@ -8,11 +8,14 @@ import { PathLocationStrategy } from '@angular/common';
 import { AppComponent } from '../component/app.component';
 import { GameDatabaseComponent } from '../component/game-database.component';
 import { AboutComponent } from '../component/about.component';
+import { ContactComponent } from '../component/contact.component';
 
 // sub-views
+// TODO: rename these files to .view and put them in a view folder
 import { ToolbarComponent } from '../component/toolbar.component';
 import { GameCardComponent } from '../component/game-card.component';
 import { GameDetailsComponent } from '../component/game-details.component';
+import { AlphaSignUpComponent } from '../component/alpha-sign-up.component';
 
 import { GameDatabaseService } from "../service/game-database.service";
 
@@ -31,15 +34,22 @@ import { GameFilterPipe } from '../pipe/game-filter.pipe';
         AppComponent,
         GameDatabaseComponent,
         AboutComponent,
+        ContactComponent,
+        
         ToolbarComponent,
         GameCardComponent,
         GameDetailsComponent,
+        AlphaSignUpComponent,
+
         GameFilterPipe
     ],
     bootstrap: [ AppComponent ],
     providers: [ 
         GameDatabaseService,
         PathLocationStrategy
+    ],
+    entryComponents: [
+        AlphaSignUpComponent
     ]
 })
 

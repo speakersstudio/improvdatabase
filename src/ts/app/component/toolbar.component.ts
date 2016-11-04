@@ -11,13 +11,13 @@ import 'rxjs/Subject';
 import { Subject } from 'rxjs/Subject';
 import { Router, RoutesRecognized } from '@angular/router';
 
-import { AppComponent } from './app.component';
+import { AppComponent } from '../component/app.component';
 
 export class Tool {
     icon: string;
     name: string;
     text: string;
-    active: boolean = false;
+    active?: boolean = false;
 }
 
 export class SearchResult {
@@ -51,8 +51,8 @@ export class ToolbarComponent implements OnInit {
     searchTerm: string;
 
     constructor(
-        private _app: AppComponent,
-        private router: Router
+        protected _app: AppComponent,
+        protected router: Router
     ) {
         /* I won't use this, but here is how to subscribe to router events!
         // when changing route, reset the toolbar
@@ -79,7 +79,8 @@ export class ToolbarComponent implements OnInit {
     }
 
     toolClick(tool: Tool): void {
-        this.toolClicked.emit(tool);
+        tool.active = !tool.active;
+        //this.toolClicked.emit(tool);
     }
 
     toggleNav(): void {

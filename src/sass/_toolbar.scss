@@ -63,6 +63,23 @@
     $search-active-color: $color-text;
     $search-transition: all 0.2s ease;
 
+    .dropdown-container {
+        overflow: hidden;
+        transition: $search-transition;
+
+        .dropdown {
+            height: 0;
+            max-height: 0px;
+            transition: $search-transition;
+        }
+
+        &.open {
+            .dropdown {
+                max-height: $dropdown-max-height;
+            }
+        }
+    }
+
     .search {
         position: relative;
         display: block;
@@ -170,7 +187,7 @@
             }
 
             .results {
-                max-height: 337px;
+                max-height: $dropdown-max-height;
                 overflow: auto;
             }
         }
@@ -194,6 +211,12 @@ nav button {
 
     &.active {
         color: $color-active;
+    }
+}
+
+.toolbar button {
+    &:last-child {
+        margin-right: $margin;
     }
 }
 
@@ -271,6 +294,12 @@ nav {
         padding: $nav-item-spacing $nav-padding;
         cursor: pointer;
         white-space: nowrap;
+
+        i {
+            margin: 0 $nav-item-icon-margin;
+            width: 20px;
+            text-align: center;
+        }
 
         &:visited {
             color: $color-text;

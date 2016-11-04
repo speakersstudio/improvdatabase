@@ -10,18 +10,22 @@ import {
 } from '@angular/core';
 import { PathLocationStrategy } from '@angular/common';
 
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import 'rxjs/Subscription';
 import { Subscription } from 'rxjs/Subscription';
 
+import { AppComponent } from './app.component';
 import {
-    AppComponent,
-    Tool,
-    ToolService } from './app.component';
+        Tool,
+        SearchResult,
+        ToolbarComponent
+        } from './toolbar.component';
 import { GameDatabaseService } from '../service/game-database.service';
 
 import { Game } from '../model/game';
 import { Name } from '../model/name';
+
+import { GameFilter } from '../pipe/game-filter.pipe';
 
 @Component({
     moduleId: module.id,
@@ -47,23 +51,23 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
     names: Name[] = [];
     selectedGame: Game;
 
+    scrollpos: number = 0;
+
     private _titleBase: string = "Games ";
+    title: string;
+
+    searchResults: SearchResult[] = [];
+    filter: GameFilter;
 
     constructor(
         private _app: AppComponent,
+        private route: ActivatedRoute,
         private router: Router,
-        private toolService: ToolService,
         private gameDatabaseService: GameDatabaseService,
         private pathLocationStrategy: PathLocationStrategy
     ) { }
 
-    private _tools: Tool[] = [
-        {
-            icon: "fa-random",
-            name: "randomGame",
-            text: "Select Random Game",
-            active: false
-        },
+    private tools: Tool[] = [
         {
             icon: "fa-hashtag",
             name: "showTags",
@@ -71,25 +75,17 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
             active: false
         },
         {
-            icon: "fa-filter",
-            name: "filter",
-            text: "Filter Games",
-            active: false
-        },
-        {
-            icon: 'fa-sort-amount-asc',
-            name: 'sortGames',
-            text: 'Sort Games',
+            icon: "fa-random",
+            name: "randomGame",
+            text: "Select Random Game",
             active: false
         }
-    ]
-    toolSubscription: Subscription;
+    ];
 
     ngOnInit(): void {
-        this._app.setTitle(this._titleBase);
-        this._app.setTools(this._tools);
+        this.setTitle();
 
-        this.toolSubscription = this.toolService.tool$.subscribe(this.onToolClicked);
+        //this.toolSubscription = this.toolService.tool$.subscribe(this.onToolClicked);
 
         this._app.showLoader();
         this.getGames();
@@ -97,36 +93,100 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
         this.pathLocationStrategy.onPopState(() => {
             this.selectedGame = null;
         });
+    }
 
-        // TODO: make the toolbar elevate as the user scrolls
+    setTitle(): void {
+        this.title = this._titleBase;
+
+        if (this.filter && this.filter.property == 'search') {
+            this.title = "Search Results";
+        } else if (this.filter) {
+            this.title += '<span>Filtered</span>';
+        }
     }
 
     getGames(): void {
         this.gameDatabaseService.getGames('name').then(games => {
-            setTimeout(() => {
-                this._app.hideLoader();
-                this.games = games
-            }, 1);
+            games = this._filterGames(games);
+            this._loadGames(games);
         });
+    }
+
+    getGamesSearch(term: string): void {
+        this.gameDatabaseService.searchForGames(term).then(games => this._loadGames(games))
+    }
+
+    private _loadGames(games: Game[]): void {
+        setTimeout(() => {
+            this._app.hideLoader();
+            this.games = games;
+            this.onGamesLoaded();
+        }, 1);
+    }
+
+    private _filterGames(games: Game[]): Game[] {
+        if (this.filter) {
+            return games.filter((game) => {
+                if (this.filter.property == 'TagID') {
+                    for (var tagIDIndex = 0; tagIDIndex < game.TagGames.length; tagIDIndex++) {
+                        if (game.TagGames[tagIDIndex].TagID == this.filter.value) {
+                            return true;
+                        }
+                    }
+                    return false;
+                } else {
+                    return game[this.filter.property] == this.filter.value;
+                }
+            });
+        } else {
+            return games;
+        }
+    }
+
+    onGamesLoaded(): void {
+        // navigate to games;random=random to load a random game
+        this.route.params.forEach((params: Params) => {
+            if (params['random']) {
+                this.pathLocationStrategy.replaceState({}, "", "/games", "");
+                this.selectRandomGame();
+            }
+        })
     }
 
     trackByGames(index: number, game: Game) {
         return game.GameID;
     }
 
+    onScroll($event): void {
+        this.scrollpos = $event.target.scrollTop;
+    }
+
     onSelect(game: Game): void {
-        if (!game || this.selectedGame == game) {
+        if (!game) {
             this.selectedGame = null;
         } else {
             this.selectedGame = game;
         }
     
-        this.pathLocationStrategy.pushState({}, "", "/game/" + this.selectedGame.GameID, "");
+        let newPath = "/game/" + this.selectedGame.GameID;
+        if (this.pathLocationStrategy.path().indexOf("/game/") > -1) {
+            this.pathLocationStrategy.replaceState({}, "", newPath, "");
+        } else {
+            this.pathLocationStrategy.pushState({}, "", newPath, "");
+        }
     }
 
-    closeDetails(): void {
-        this.selectedGame = null;
-        this.pathLocationStrategy.back();
+    selectRandomGame(): void {
+        let i = Math.floor((Math.random() * this.games.length));
+        this.onSelect(this.games[i]);
+    }
+
+    closeDetails(tool: Tool): void {
+        if (tool && tool.name) {
+            this.onToolClicked(tool);
+        } else {
+            this.pathLocationStrategy.back();
+        }
     }
 
     onToolClicked(tool: Tool): void {
@@ -134,19 +194,62 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
             case "showTags":
                 tool.active = !tool.active;
                 break;
-            case "filter":
-                console.log('FILTER');
-                break;
             case "randomGame":
-                console.log('random game');
-                break;
-            case "searchGames":
-                console.log('search game');
+                this.selectRandomGame();
                 break;
         }
     }
 
     ngOnDestroy(): void {
-        this.toolSubscription.unsubscribe();
     }
+
+    onSearchResultClick(result: SearchResult): void {
+        switch(result.type) {
+            case 'search':
+                this.filter = {
+                    "property": "search",
+                    "value" : 0
+                }
+                this.getGamesSearch(result.text);
+                this.setTitle();
+                return;
+            case 'name':
+                this.gameDatabaseService.getGame(result.id)
+                    .then((game) => this.onSelect(game));
+                return;
+            case 'tag':
+                this.filter = {
+                    "property": 'TagID',
+                    "value": result.id
+                }
+                break;
+            case 'duration':
+                this.filter = {
+                    "property": 'DurationID',
+                    "value": result.id
+                }
+                break;
+            case 'playercount':
+                this.filter = {
+                    "property": 'PlayerCountID',
+                    "value": result.id
+                }
+                break;
+        }
+        this.getGames();
+        this.setTitle();
+    }
+
+    onSearch(term: string): void {
+        this.gameDatabaseService.searchForResults(term)
+            .then((results) => this.searchResults = results);
+    }
+
+    clearFilter(): void {
+        // TODO: back button should clear filters
+        this.filter = null;
+        this.getGames();
+        this.setTitle();
+    }
+
 }

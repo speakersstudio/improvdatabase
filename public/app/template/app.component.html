@@ -16,26 +16,4 @@
 
 <div (click)="toggleNav()" class="backdrop nav-backdrop" [class.show] = "showMenu"></div>
 
-<div class="toolbar">
-    <div class="toolbar-row">
-        <button (click)="toggleNav()">
-            <i class="fa fa-bars" [class.active]="showMenu"></i>
-        </button>
-
-        <h2>{{toolbarTitle}}</h2>
-
-        <span class="spacer"></span>
-
-        <span class="tools">
-            <button *ngFor="let tool of tools"
-                class="btn"
-                [class.active]="tool.active"
-                title="{{tool.text}}"
-                (click)="toolClick(tool)">
-                <i class="fa {{tool.icon}}"></i>
-            </button>
-        </span>
-    </div>
-</div>
-
 <router-outlet></router-outlet>

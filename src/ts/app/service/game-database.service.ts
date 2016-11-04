@@ -11,6 +11,8 @@ import { Tag } from '../model/tag';
 import { TagGame } from '../model/tag-game';
 import { Note } from '../model/note';
 
+import { SearchResult } from '../component/toolbar.component';
+
 @Injectable()
 export class GameDatabaseService {
     private gamesUrl = '/api/game';
@@ -242,13 +244,14 @@ export class GameDatabaseService {
     }
     
     gameHasTag(game: Game, tagID: number): boolean {
+        let foundTagGame: boolean = false;
         game.TagGames.forEach((taggame) => {
-            console.log(taggame.TagID, tagID);
             if (taggame.TagID == tagID) {
-                return true;
+                foundTagGame = true;
+                return false;
             }
         })
-        return false;
+        return foundTagGame;
     }
 
     private _notePromise: Promise<Note[]>;
@@ -279,7 +282,6 @@ export class GameDatabaseService {
                         notesForGame.push(note);
                     }
                 });
-                console.log(notesForGame);
                 resolve(notesForGame);
             });
         });
@@ -288,5 +290,92 @@ export class GameDatabaseService {
     private handleError(error: any): Promise<any> {
         console.error('An error has occurred', error);
         return Promise.reject(error.message || error);
+    }
+
+    private _searchArray(arr: any[], type: string, idProperty: string, term: string): SearchResult[] {
+        let results: SearchResult[] = [];
+        arr.forEach((item) => {
+            let str = item.Name;
+
+            if (str.toLowerCase().indexOf(term) > -1) {
+                var regex = new RegExp('(' + term + ')', 'gi');
+                str = str.replace(regex, '<strong>$1</strong>');
+
+                let result: SearchResult = {
+                    text: str,
+                    id: item[idProperty],
+                    type: type
+                }
+                results.push(result);
+            }
+        });
+        return results;
+    }
+
+    private _sortSearchResults(results: SearchResult[]): SearchResult[] {
+        results.sort((r1, r2) => {
+            let val1 = r1.text;
+            let val2 = r2.text;
+            if (val1 > val2) {
+                return 1;
+            }
+            if (val1 < val2) {
+                return -1;
+            }
+            return 0;
+        });
+        return results;
+    }
+
+    searchForResults(term: string): Promise<SearchResult[]> {
+        return new Promise<SearchResult[]>((resolve, reject) => {
+            term = term.toLowerCase();
+            let searchResults: SearchResult[] = [];
+            if (term) {
+                Promise.all([
+                    this.getNames(),
+                    this.getTags(),
+                    this.getDurations(),
+                    this.getPlayerCounts()
+                ])
+                    .then((items) => {
+                        searchResults = []
+                            .concat(this._searchArray(items[0], 'name', 'GameID', term))
+                            .concat(this._searchArray(items[1], 'tag', 'TagID', term))
+                            .concat(this._searchArray(items[2], 'duration', 'DurationID', term))
+                            .concat(this._searchArray(items[3], 'playercount', 'PlayerCountID', term));
+
+                        // TODO: include player count and durations by actual values if the term is a number?
+
+                        searchResults = this._sortSearchResults(searchResults);
+
+                        resolve(searchResults);
+                    });
+            }
+        });
+    }
+
+    searchForGames(term: string): Promise<Game[]> {
+        return new Promise<Game[]>((resolve, reject) => {
+            term = term.toLowerCase();
+            let games: Game[] = [];
+            if (term) {
+                Promise.all([
+                    // TODO: include other items in search
+                    this.getGames()
+                ])
+                    .then((items) => {
+                        items[0].forEach((game) => {
+                            game.Names.forEach((name) => {
+                                if (name.Name.toLowerCase().indexOf(term.toLowerCase()) > -1) {
+                                    games.push(game);
+                                }
+                            })
+                        })
+
+                        resolve(games);
+                    });
+            }
+        });
     }
 }

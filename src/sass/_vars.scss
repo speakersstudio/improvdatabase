@@ -77,6 +77,14 @@ $toolbar-font-weight: 400;
 $toolbar-padding: 16px;
 $toolbar-icon-spacing: 1%;
 
+// search
+$search-margins: 6px;
+$search-padding: 47px;
+$search-border-radius: 2px;
+$search-icon-margins: 14px;
+$search-height: $toolbar-height - ($search-margins * 2);
+$search-results-max-height: ($search-height * 9) + ($search-margins * 2);
+
 // nav
 $nav-item-spacing: 0.5em;
 $nav-padding: 0.5em;

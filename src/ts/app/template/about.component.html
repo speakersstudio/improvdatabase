@@ -1,0 +1,14 @@
+<div class="toolbar"
+    [title]="About"
+    [class.transparent]="scrollpos < showToolbarScrollPosition"
+    ></div>
+
+<div class="curtain" [style.top]="(-(scrollpos * 0.5)) + 'px'">
+    <h2>About</h2>
+</div>
+
+<div class="content" (scroll)="onScroll($event)">
+
+    <div class="material"></div>
+
+</div>

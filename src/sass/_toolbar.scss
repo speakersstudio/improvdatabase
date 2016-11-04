@@ -23,13 +23,15 @@
     z-index: 8;
 
     @include md-elevation($toolbar-elevation);
-    @include md-elevation-transition(null, null, background-color 300ms);
+    
+    transition: #{$md-elevation-property} #{$md-elevation-transition-duration} #{$md-elevation-transition-timing-function},
+        background-color 300ms;
 
-    &.transparent {
-        background-color: $color-transparent;
+    &.no-shadow {
         @include md-elevation(0);
     }
-    &.no-shadow {
+    &.transparent {
+        background-color: $color-transparent;
         @include md-elevation(0);
     }
 
@@ -43,8 +45,134 @@
         flex-direction: row;
         align-items: center;
 
+        h2 {
+            margin: 0;
+
+            span {
+                font-size: 0.7em;
+                font-style: italic;
+            }
+        }
+
         .spacer {
             flex: 1 1 auto;
+        }
+    }
+
+    $search-inactive-color: rgba(255,255,255,0.7);
+    $search-active-color: $color-text;
+    $search-transition: all 0.2s ease;
+
+    .search {
+        position: relative;
+        display: block;
+        overflow: hidden;
+        z-index: 1;
+        transition: $search-transition;
+        background-color: rgba(255, 255, 255, 0.16);
+        border-radius: $search-border-radius;
+        flex: 2;
+        color: $search-inactive-color;
+        align-self: flex-start;
+        margin-top: $search-margins;
+
+        .fa-search {
+            position: absolute;
+            z-index: 2;
+            top: 7px;
+            left: $search-icon-margins;
+        }
+
+        .fa-close {
+            position: absolute;
+            z-index: 2;
+            top: 7px;
+            right: $search-icon-margins;
+            cursor: pointer;
+        }
+
+        input {
+            border: 1px solid transparent;
+            transition: border 0.1s ease-out;
+            background: transparent;
+            box-sizing: border-box;
+            width: 100%;
+            padding: 0 $search-padding;
+            height: $search-height;
+            border-radius: $search-border-radius;
+
+            &::-webkit-input-placeholder {
+                color: $search-inactive-color;
+            }
+            &:-moz-placeholder {
+                color: $search-inactive-color;
+            }
+            &::-moz-placeholder {
+                color: $search-inactive-color;
+            }
+            &::-ms-input-placeholder {
+                color: $search-inactive-color;
+            }
+        }
+
+        .results {
+            padding: 0;
+            border-radius: 0 0 $search-border-radius $search-border-radius;
+            transition: $search-transition;
+            color: $search-active-color;
+            max-height: 0px;
+            overflow: hidden;
+
+            ul {
+                li {
+                    line-height: $search-height;
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: $color-active; 
+                    }
+
+                    i {
+                        margin: 0 $search-icon-margins;
+                    }
+
+                    &:first-child {
+                        margin-top: $search-margins;
+                    }
+                    &:last-child {
+                        margin-bottom: $search-margins;
+                    }
+                }
+            }
+        }
+
+        &.active {
+            background-color: $color-material-bg;
+            @include md-elevation(8);
+            color: $search-active-color;
+            
+            input {
+                border-bottom: 1px solid #e5e5e5;
+                transition: border 0.1s ease-in;
+
+                &::-webkit-input-placeholder {
+                    color: $search-active-color;
+                }
+                &:-moz-placeholder {
+                    color: $search-active-color;
+                }
+                &::-moz-placeholder {
+                    color: $search-active-color;
+                }
+                &::-ms-input-placeholder {
+                    color: $search-active-color;
+                }
+            }
+
+            .results {
+                max-height: 337px;
+                overflow: auto;
+            }
         }
     }
 }
@@ -78,7 +206,7 @@ nav button {
 
 nav {
     @include fixed(0, null, 0, 0);
-    z-index: 10;
+    z-index: 5000;
 
     min-width: 200px;
     max-width: 400px;
@@ -146,6 +274,10 @@ nav {
 
         &:visited {
             color: $color-text;
+        }
+
+        &:hover {
+            background-color: $color-active;
         }
 
         &.active {

@@ -13,24 +13,25 @@ var router_1 = require('@angular/router');
 var app_component_1 = require('./app.component');
 //TODO: import models
 var AboutComponent = (function () {
-    function AboutComponent(_app, router, toolService) {
+    function AboutComponent(_app, router) {
         this._app = _app;
         this.router = router;
-        this.toolService = toolService;
+        this.scrollpos = 0;
+        this.showToolbarScrollPosition = window.innerHeight * 0.14;
         this._tools = [];
     }
     AboutComponent.prototype.ngOnInit = function () {
-        this._app.setTitle("About");
-        //this._app.setTools(this._tools);
-        this.toolService.tool$.subscribe(function (tool) {
-        });
+    };
+    AboutComponent.prototype.onScroll = function ($event) {
+        this.scrollpos = $event.target.scrollTop;
     };
     AboutComponent = __decorate([
         core_1.Component({
-            selector: "about",
-            template: "<h2>About</h2>"
+            moduleId: module.id,
+            selector: ".page.about",
+            templateUrl: "../template/about.component.html"
         }), 
-        __metadata('design:paramtypes', [app_component_1.AppComponent, router_1.Router, app_component_1.ToolService])
+        __metadata('design:paramtypes', [app_component_1.AppComponent, router_1.Router])
     ], AboutComponent);
     return AboutComponent;
 }());

@@ -10,64 +10,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 require('rxjs/Subject');
-var Subject_1 = require('rxjs/Subject');
 var router_1 = require('@angular/router');
-var Tool = (function () {
-    function Tool() {
-        this.active = false;
-    }
-    return Tool;
-}());
-exports.Tool = Tool;
-var ToolService = (function () {
-    function ToolService() {
-        this.toolSource = new Subject_1.Subject();
-        this.tool$ = this.toolSource.asObservable();
-        this.scrollSource = new Subject_1.Subject();
-        this.scroll$ = this.scrollSource.asObservable();
-    }
-    ToolService.prototype.toolSelected = function (tool) {
-        this.toolSource.next(tool);
-    };
-    ToolService.prototype.onScroll = function (pos) {
-        this.scrollSource.next(pos);
-    };
-    return ToolService;
-}());
-exports.ToolService = ToolService;
 var AppComponent = (function () {
-    function AppComponent(_renderer, router, toolService) {
-        var _this = this;
+    function AppComponent(_renderer, router) {
         this._renderer = _renderer;
         this.router = router;
-        this.toolService = toolService;
         this.loader = document.getElementById("siteLoader");
         this.showMenu = false;
         this.showFullscreen = false;
-        this.toolbarTitle = "";
-        this.tools = [];
+        /* I won't use this, but here is how to subscribe to router events!
         // when changing route, reset the toolbar
-        router.events.subscribe(function (val) {
-            if (val instanceof router_1.RoutesRecognized) {
-                _this.setTitle("");
-                _this.setTools([]);
+        router.events.subscribe(val => {
+            if (val instanceof RoutesRecognized) {
+                this.setTitle("");
+                this.setTools([]);
             }
-        });
+        })
+        */
     }
     AppComponent.prototype.ngOnInit = function () {
         this.hideLoader();
-        this.toolService.scroll$.subscribe(function (pos) {
-            console.log('pos', pos);
-        });
-    };
-    AppComponent.prototype.setTitle = function (title) {
-        this.toolbarTitle = title;
-    };
-    AppComponent.prototype.setTools = function (tools) {
-        this.tools = tools;
-    };
-    AppComponent.prototype.toolClick = function (tool) {
-        this.toolService.toolSelected(tool);
     };
     AppComponent.prototype.showLoader = function () {
         this.loader.style.display = "block";
@@ -110,10 +72,9 @@ var AppComponent = (function () {
         core_1.Component({
             moduleId: module.id,
             selector: 'my-app',
-            templateUrl: '../template/app.component.html',
-            providers: [ToolService]
+            templateUrl: '../template/app.component.html'
         }), 
-        __metadata('design:paramtypes', [core_1.Renderer, router_1.Router, ToolService])
+        __metadata('design:paramtypes', [core_1.Renderer, router_1.Router])
     ], AppComponent);
     return AppComponent;
 }());

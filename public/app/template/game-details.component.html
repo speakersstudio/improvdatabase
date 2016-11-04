@@ -1,26 +1,13 @@
-<div class="toolbar" [class.transparent]="scrollpos < showToolbarScrollPosition">
-    <div class="toolbar-row">
-        <button (click)="closePage()">
-            <i class="fa fa-arrow-left"></i>
-        </button>
+<div class="toolbar" 
+    [showBack]="true"
+    [class.transparent]="scrollpos < showToolbarScrollPosition"
+    [tools]="tools"
+    (toolClicked)="onToolClicked($event)"
+    (goBack)="closePage()"></div>
 
-        <span class="spacer"></span>
-
-        <span class="tools">
-            <!--
-            <button *ngFor="let tool of tools"
-                class="btn"
-                [class.active]="tool.active"
-                title="{{tool.text}}"
-                (click)="toolClick(tool)">
-                <i class="fa {{tool.icon}}"></i>
-            </button>
-            -->
-        </span>
-    </div>
+<div class="curtain" [style.top]="(-(scrollpos * 0.5)) + 'px'">
+    <h2 *ngIf="game">{{game.Names[0].Name}}</h2>
 </div>
-
-<div class="curtain" [style.top]="(-(scrollpos * 0.5)) + 'px'"></div>
 
 <div class="content" (scroll)="onScroll($event)">
     <div *ngIf="game" class="material">
@@ -45,7 +32,7 @@
             <span class="bullet" *ngIf="duration" title="{{duration.Description}}"><i class="fa fa-clock-o"></i> {{duration.Name}}</span>
 
             <ul class="taglist">
-                <li *ngFor="let tag of tags">{{tag.Name}}</li>
+                <li *ngFor="let tag of tags"><i class="fa fa-hashtag"></i> {{tag.Name}}</li>
             </ul>
         </div>
 
@@ -58,14 +45,27 @@
         <h4>Discussion</h4>
 
         <div class="metadata">
-            <span><i class="fa fa-group"></i></span>
+            <span>The following has been said about <em>{{game.Names[0].Name}}</em>, or the tags associated with it.</span>
         </div>
 
         <div *ngFor="let note of notes">
             <div class="description" [innerHTML]="note.Description"></div>
             <div class="metadata right">
                 <h5>{{note.AddedFirstName}} {{note.AddedLastName}}</h5>
-                <span *ngIf="note.GameID"><i class="fa fa-soccer-ball-o"></i> <em>{{game.Names[0].Name}}</em></span>
+                
+                <span>Regarding
+                    <i class="fa"
+                        [class.fa-soccer-ball-o]="note.GameID"
+                        [class.fa-hashtag]="note.TagID"
+                        [class.fa-group]="note.PlayerCountID"
+                        [class.fa-clock-o]="note.DurationID"
+                        ></i>
+                     <em *ngIf="note.GameID">{{game.Names[0].Name}}</em>
+                     <em *ngIf="note.TagID && tagMap">{{tagMap[note.TagID]}}</em>
+                     <em *ngIf="note.PlayerCountID && playerCount">{{playerCount.Name}}</em>
+                     <em *ngIf="note.DurationID && duration">{{duration.Name}}</em>
+                </span>
+                
             </div>
         </div>
 

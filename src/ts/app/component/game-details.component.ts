@@ -23,6 +23,8 @@ import { Duration } from '../model/duration';
 import { Tag } from '../model/tag';
 import { Note } from '../model/note';
 
+import { Tool } from './toolbar.component';
+
 @Component({
     moduleId: module.id,
     selector: '.page.ng-game-details',
@@ -44,29 +46,37 @@ import { Note } from '../model/note';
 export class GameDetailsComponent implements OnInit, OnDestroy {
 
     @Input() game: Game;
-    @Output() onClose = new EventEmitter();
+    @Output() onClose: EventEmitter<Tool> = new EventEmitter();
 
     dialog: boolean = false;
 
     playerCount: PlayerCount;
     duration: Duration;
     tags: Tag[] = [];
+    tagMap: Object = {};
     notes: Note[] = [];
 
     scrollpos: number = 0;
 
     namesOpen: boolean = false;
 
-    showToolbarScrollPosition: number = window.innerHeight * 0.15;
+    showToolbarScrollPosition: number = window.innerWidth * 0.15;
+
+    private tools: Tool[] = [
+        {
+            icon: "fa-random",
+            name: "randomGame",
+            text: "Select Random Game",
+            active: false
+        }
+    ];
 
     constructor(
         private gameDatabaseService: GameDatabaseService,
         private router: Router,
         private route: ActivatedRoute,
         private location: Location
-    ) {
-
-    }
+    ) { }
 
     ngOnInit(): void {
         if (!this.game) {
@@ -96,7 +106,10 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
 
         this.game.TagGames.forEach((tagGame) => {
             this.gameDatabaseService.getTagById(tagGame.TagID)
-                .then((tag) => this.tags.push(tag));
+                .then((tag) => {
+                    this.tagMap[tag.TagID] = tag.Name;
+                    this.tags.push(tag)
+                });
         });
 
         this.gameDatabaseService.getNotesForGame(this.game)
@@ -104,10 +117,10 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     }
 
     closePage(): void {
-        if (!this.dialog) {
-            this.router.navigate(['/games']);
+        if (this.dialog) {
+            this.onClose.emit();
         } else {
-            this.onClose.emit(true);
+            this.router.navigate(['/games']);
         }
     }
 
@@ -117,6 +130,18 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
 
     toggleNames(): void {
         this.namesOpen = !this.namesOpen;
+    }
+
+    onToolClicked(tool: Tool): void {
+        switch (tool.name) {
+            case "randomGame":
+                if (this.dialog) {
+                    this.onClose.emit(tool);
+                } else {
+                    this.router.navigate(['/games', {random: 'random'}]);
+                }
+                break;
+        }
     }
 
 }

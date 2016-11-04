@@ -22,10 +22,19 @@ var GameDetailsComponent = (function () {
         this.onClose = new core_1.EventEmitter();
         this.dialog = false;
         this.tags = [];
+        this.tagMap = {};
         this.notes = [];
         this.scrollpos = 0;
         this.namesOpen = false;
-        this.showToolbarScrollPosition = window.innerHeight * 0.15;
+        this.showToolbarScrollPosition = window.innerWidth * 0.15;
+        this.tools = [
+            {
+                icon: "fa-random",
+                name: "randomGame",
+                text: "Select Random Game",
+                active: false
+            }
+        ];
     }
     GameDetailsComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -52,17 +61,20 @@ var GameDetailsComponent = (function () {
             .then(function (duration) { return _this.duration = duration; });
         this.game.TagGames.forEach(function (tagGame) {
             _this.gameDatabaseService.getTagById(tagGame.TagID)
-                .then(function (tag) { return _this.tags.push(tag); });
+                .then(function (tag) {
+                _this.tagMap[tag.TagID] = tag.Name;
+                _this.tags.push(tag);
+            });
         });
         this.gameDatabaseService.getNotesForGame(this.game)
             .then(function (notes) { return _this.notes = notes; });
     };
     GameDetailsComponent.prototype.closePage = function () {
-        if (!this.dialog) {
-            this.router.navigate(['/games']);
+        if (this.dialog) {
+            this.onClose.emit();
         }
         else {
-            this.onClose.emit(true);
+            this.router.navigate(['/games']);
         }
     };
     GameDetailsComponent.prototype.onScroll = function ($event) {
@@ -71,13 +83,25 @@ var GameDetailsComponent = (function () {
     GameDetailsComponent.prototype.toggleNames = function () {
         this.namesOpen = !this.namesOpen;
     };
+    GameDetailsComponent.prototype.onToolClicked = function (tool) {
+        switch (tool.name) {
+            case "randomGame":
+                if (this.dialog) {
+                    this.onClose.emit(tool);
+                }
+                else {
+                    this.router.navigate(['/games', { random: 'random' }]);
+                }
+                break;
+        }
+    };
     __decorate([
         core_1.Input(), 
         __metadata('design:type', game_1.Game)
     ], GameDetailsComponent.prototype, "game", void 0);
     __decorate([
         core_1.Output(), 
-        __metadata('design:type', Object)
+        __metadata('design:type', core_1.EventEmitter)
     ], GameDetailsComponent.prototype, "onClose", void 0);
     GameDetailsComponent = __decorate([
         core_1.Component({

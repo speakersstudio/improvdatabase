@@ -10,13 +10,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 require('rxjs/Subscription');
-var app_component_1 = require('./app.component');
 var game_database_service_1 = require('../service/game-database.service');
 var game_1 = require('../model/game');
 var GameCardComponent = (function () {
-    function GameCardComponent(gameDatabaseService, toolService) {
+    function GameCardComponent(gameDatabaseService) {
         this.gameDatabaseService = gameDatabaseService;
-        this.toolService = toolService;
         this.showTags = false;
         this.tags = [];
     }
@@ -26,7 +24,7 @@ var GameCardComponent = (function () {
             .then(function (playercount) { return _this.playerCount = playercount; });
         this.gameDatabaseService.getDurationById(this.game.DurationID)
             .then(function (duration) { return _this.duration = duration; });
-        this.toolSubscription = this.toolService.tool$.subscribe(function (tool) { return _this.onToolClicked(tool); });
+        this.loadTags();
     };
     GameCardComponent.prototype.loadTags = function () {
         var _this = this;
@@ -35,7 +33,8 @@ var GameCardComponent = (function () {
                 .then(function (tag) { return _this.tags.push(tag); });
         });
     };
-    GameCardComponent.prototype.onToolClicked = function (tool) {
+    /*
+    onToolClicked(tool: Tool): void {
         switch (tool.name) {
             case "showTags":
                 this.showTags = tool.active;
@@ -44,9 +43,9 @@ var GameCardComponent = (function () {
                 }
                 break;
         }
-    };
+    }
+    */
     GameCardComponent.prototype.ngOnDestroy = function () {
-        this.toolSubscription.unsubscribe();
     };
     __decorate([
         core_1.Input(), 
@@ -62,7 +61,7 @@ var GameCardComponent = (function () {
             selector: '.ng-game-card',
             templateUrl: '../template/game-card.component.html'
         }), 
-        __metadata('design:paramtypes', [game_database_service_1.GameDatabaseService, app_component_1.ToolService])
+        __metadata('design:paramtypes', [game_database_service_1.GameDatabaseService])
     ], GameCardComponent);
     return GameCardComponent;
 }());

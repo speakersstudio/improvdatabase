@@ -8,9 +8,6 @@ import {
 import 'rxjs/Subscription';
 import { Subscription } from 'rxjs/Subscription';
 
-import {
-    Tool,
-    ToolService } from './app.component';
 import { GameDatabaseService } from '../service/game-database.service';
 
 import { Game } from '../model/game';
@@ -32,11 +29,8 @@ export class GameCardComponent implements OnInit, OnDestroy {
     @Input() showTags: boolean = false;
     tags: Tag[] = [];
 
-    toolSubscription: Subscription;
-
     constructor(
-        private gameDatabaseService: GameDatabaseService,
-        private toolService: ToolService
+        private gameDatabaseService: GameDatabaseService
     ) { }
 
     ngOnInit(): void {
@@ -46,7 +40,7 @@ export class GameCardComponent implements OnInit, OnDestroy {
         this.gameDatabaseService.getDurationById(this.game.DurationID)
             .then((duration) => this.duration = duration);
 
-        this.toolSubscription = this.toolService.tool$.subscribe((tool) => this.onToolClicked(tool));
+        this.loadTags();
     }
 
     loadTags(): void {
@@ -56,6 +50,7 @@ export class GameCardComponent implements OnInit, OnDestroy {
         });
     }
 
+    /*
     onToolClicked(tool: Tool): void {
         switch (tool.name) {
             case "showTags":
@@ -66,8 +61,9 @@ export class GameCardComponent implements OnInit, OnDestroy {
                 break;
         }
     }
+    */
 
     ngOnDestroy(): void {
-        this.toolSubscription.unsubscribe();
+        
     }
 }

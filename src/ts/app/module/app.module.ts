@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpModule } from '@angular/http'
+import { HttpModule } from '@angular/http';
+import { FormsModule } from '@angular/forms';
 import { PathLocationStrategy } from '@angular/common';
 
 // main components
@@ -9,6 +10,7 @@ import { GameDatabaseComponent } from '../component/game-database.component';
 import { AboutComponent } from '../component/about.component';
 
 // sub-views
+import { ToolbarComponent } from '../component/toolbar.component';
 import { GameCardComponent } from '../component/game-card.component';
 import { GameDetailsComponent } from '../component/game-details.component';
 
@@ -16,9 +18,12 @@ import { GameDatabaseService } from "../service/game-database.service";
 
 import { AppRoutingModule } from './app-routing.module';
 
+import { GameFilterPipe } from '../pipe/game-filter.pipe';
+
 @NgModule({
     imports: [
         BrowserModule,
+        FormsModule,
         HttpModule,
         AppRoutingModule
      ],
@@ -26,8 +31,10 @@ import { AppRoutingModule } from './app-routing.module';
         AppComponent,
         GameDatabaseComponent,
         AboutComponent,
+        ToolbarComponent,
         GameCardComponent,
-        GameDetailsComponent
+        GameDetailsComponent,
+        GameFilterPipe
     ],
     bootstrap: [ AppComponent ],
     providers: [ 

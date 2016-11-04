@@ -33,6 +33,10 @@ em {
     font-style: italic;
 }
 
+strong {
+    font-weight: bold;
+}
+
 .loading-icon {
     position: absolute;
     display: block;
@@ -90,7 +94,7 @@ em {
 
 .backdrop {
     @include fixed(0,100%,0,0);
-    z-index: 9;
+    z-index: 4000;
     background: $color-shade;
     opacity: 0;
     transition: opacity $swift-ease-out-duration $swift-ease-out-timing-function, right 0ms $swift-ease-out-duration;

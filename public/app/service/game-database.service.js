@@ -227,13 +227,14 @@ var GameDatabaseService = (function () {
         });
     };
     GameDatabaseService.prototype.gameHasTag = function (game, tagID) {
+        var foundTagGame = false;
         game.TagGames.forEach(function (taggame) {
-            console.log(taggame.TagID, tagID);
             if (taggame.TagID == tagID) {
-                return true;
+                foundTagGame = true;
+                return false;
             }
         });
-        return false;
+        return foundTagGame;
     };
     GameDatabaseService.prototype.getNotes = function () {
         var _this = this;
@@ -261,7 +262,6 @@ var GameDatabaseService = (function () {
                         notesForGame.push(note);
                     }
                 });
-                console.log(notesForGame);
                 resolve(notesForGame);
             });
         });
@@ -269,6 +269,85 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype.handleError = function (error) {
         console.error('An error has occurred', error);
         return Promise.reject(error.message || error);
+    };
+    GameDatabaseService.prototype._searchArray = function (arr, type, idProperty, term) {
+        var results = [];
+        arr.forEach(function (item) {
+            var str = item.Name;
+            if (str.toLowerCase().indexOf(term) > -1) {
+                var regex = new RegExp('(' + term + ')', 'gi');
+                str = str.replace(regex, '<strong>$1</strong>');
+                var result = {
+                    text: str,
+                    id: item[idProperty],
+                    type: type
+                };
+                results.push(result);
+            }
+        });
+        return results;
+    };
+    GameDatabaseService.prototype._sortSearchResults = function (results) {
+        results.sort(function (r1, r2) {
+            var val1 = r1.text;
+            var val2 = r2.text;
+            if (val1 > val2) {
+                return 1;
+            }
+            if (val1 < val2) {
+                return -1;
+            }
+            return 0;
+        });
+        return results;
+    };
+    GameDatabaseService.prototype.searchForResults = function (term) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            term = term.toLowerCase();
+            var searchResults = [];
+            if (term) {
+                Promise.all([
+                    _this.getNames(),
+                    _this.getTags(),
+                    _this.getDurations(),
+                    _this.getPlayerCounts()
+                ])
+                    .then(function (items) {
+                    searchResults = []
+                        .concat(_this._searchArray(items[0], 'name', 'GameID', term))
+                        .concat(_this._searchArray(items[1], 'tag', 'TagID', term))
+                        .concat(_this._searchArray(items[2], 'duration', 'DurationID', term))
+                        .concat(_this._searchArray(items[3], 'playercount', 'PlayerCountID', term));
+                    // TODO: include player count and durations by actual values if the term is a number?
+                    searchResults = _this._sortSearchResults(searchResults);
+                    resolve(searchResults);
+                });
+            }
+        });
+    };
+    GameDatabaseService.prototype.searchForGames = function (term) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            term = term.toLowerCase();
+            var games = [];
+            if (term) {
+                Promise.all([
+                    // TODO: include other items in search
+                    _this.getGames()
+                ])
+                    .then(function (items) {
+                    items[0].forEach(function (game) {
+                        game.Names.forEach(function (name) {
+                            if (name.Name.toLowerCase().indexOf(term.toLowerCase()) > -1) {
+                                games.push(game);
+                            }
+                        });
+                    });
+                    resolve(games);
+                });
+            }
+        });
     };
     GameDatabaseService = __decorate([
         core_1.Injectable(), 

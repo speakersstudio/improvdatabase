@@ -168,8 +168,7 @@ $md-elevation-transition-timing-function: $md-fast-out-slow-in-timing-function;
 // be used in the same way by clients.
 @mixin md-elevation-transition(
     $duration: $md-elevation-transition-duration,
-    $easing: $md-elevation-transition-timing-function,
-    $others: "") {
-  transition: md-elevation-transition-property-value($duration, $easing), $others;
+    $easing: $md-elevation-transition-timing-function) {
+  transition: md-elevation-transition-property-value($duration, $easing);
   will-change: $md-elevation-property;
 }

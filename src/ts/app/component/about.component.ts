@@ -1,23 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+import {AppComponent    } from './app.component';
 import {
-    AppComponent,
     Tool,
-    ToolService } from './app.component';
+    ToolbarComponent    } from './toolbar.component';
 
 //TODO: import models
 
 @Component({
-    selector: "about",
-    template: "<h2>About</h2>"
+    moduleId: module.id,
+    selector: ".page.about",
+    templateUrl: "../template/about.component.html"
 })
 
 export class AboutComponent implements OnInit {
+    scrollpos: number = 0;
+    showToolbarScrollPosition: number = window.innerHeight * 0.14;
+
     constructor(
         private _app: AppComponent,
-        private router: Router,
-        private toolService: ToolService
+        private router: Router
     ) { }
 
     private _tools: Tool[] = [
@@ -25,11 +28,10 @@ export class AboutComponent implements OnInit {
     ]
 
     ngOnInit(): void {
-        this._app.setTitle("About");
-        //this._app.setTools(this._tools);
 
-        this.toolService.tool$.subscribe(tool => {
+    }
 
-        })
+    onScroll($event): void {
+        this.scrollpos = $event.target.scrollTop;
     }
 }

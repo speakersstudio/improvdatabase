@@ -242,15 +242,15 @@ export class GameDatabaseService {
             });
         });
     }
-    
-    gameHasTag(game: Game, tagID: number): boolean {
+
+    gameHasTag(game: Game, tagIDs: number[]): boolean {
         let foundTagGame: boolean = false;
         game.TagGames.forEach((taggame) => {
-            if (taggame.TagID == tagID) {
+            if (tagIDs.indexOf(taggame.TagID) > -1) {
                 foundTagGame = true;
                 return false;
             }
-        })
+        });
         return foundTagGame;
     }
 
@@ -277,7 +277,7 @@ export class GameDatabaseService {
                         note.GameID == game.GameID
                         || note.PlayerCountID == game.PlayerCountID
                         || note.DurationID == game.DurationID
-                        || (note.TagID && this.gameHasTag(game, note.TagID))
+                        || (note.TagID && this.gameHasTag(game, [note.TagID]))
                     ) {
                         notesForGame.push(note);
                     }
@@ -358,22 +358,59 @@ export class GameDatabaseService {
     searchForGames(term: string): Promise<Game[]> {
         return new Promise<Game[]>((resolve, reject) => {
             term = term.toLowerCase();
-            let games: Game[] = [];
+            let gameResults: Game[] = [];
             if (term) {
                 Promise.all([
-                    // TODO: include other items in search
-                    this.getGames()
+                    this.getGames(),
+                    this.getTags(),
+                    this.getDurations(),
+                    this.getPlayerCounts()
                 ])
                     .then((items) => {
-                        items[0].forEach((game) => {
-                            game.Names.forEach((name) => {
-                                if (name.Name.toLowerCase().indexOf(term.toLowerCase()) > -1) {
-                                    games.push(game);
-                                }
-                            })
-                        })
+                        
+                        // search the tags
+                        let tagResults: number[] = [];
+                        items[1].forEach((tag) => {
+                            if (tag.Name.toLowerCase().indexOf(term) > -1) {
+                                tagResults.push(tag.TagID);
+                            }
+                        });
 
-                        resolve(games);
+                        // search the durations
+                        let durationResults: number[] = [];
+                        items[2].forEach((duration) => {
+                            if (duration.Name.toLowerCase().indexOf(term) > -1) {
+                                durationResults.push(duration.DurationID);
+                            }
+                        });
+
+                        // search the player counts
+                        let playerCountResults: number[] = [];
+                        items[3].forEach((playercount) => {
+                            if (playercount.Name.toLowerCase().indexOf(term) > -1) {
+                                playerCountResults.push(playercount.PlayerCountID);
+                            }
+                        });
+
+                        // loop through the games
+                        items[0].forEach((game) => {
+                            // add it if a tag matches or if the playercount or duration matches
+                            if (this.gameHasTag(game, tagResults) ||
+                                    durationResults.indexOf(game.DurationID) > -1 ||
+                                    playerCountResults.indexOf(game.PlayerCountID) > -1) {
+                                gameResults.push(game);
+                            } else {
+                                // add it if a name matches
+                                game.Names.forEach((name) => {
+                                    if (name.Name.toLowerCase().indexOf(term) > -1 &&
+                                            gameResults.indexOf(game) == -1) {
+                                        gameResults.push(game);
+                                    }
+                                });
+                            }
+                        });
+
+                        resolve(gameResults);
                     });
             }
         });

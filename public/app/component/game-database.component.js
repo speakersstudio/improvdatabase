@@ -52,12 +52,11 @@ var GameDatabaseComponent = (function () {
         });
     };
     GameDatabaseComponent.prototype.setTitle = function () {
-        this.title = this._titleBase;
-        if (this.filter && this.filter.property == 'search') {
-            this.title = "Search Results";
+        if (this.filter) {
+            this.title = "Back";
         }
-        else if (this.filter) {
-            this.title += '<span>Filtered</span>';
+        else {
+            this.title = this._titleBase;
         }
     };
     GameDatabaseComponent.prototype.getGames = function () {
@@ -77,7 +76,7 @@ var GameDatabaseComponent = (function () {
             _this._app.hideLoader();
             _this.games = games;
             _this.onGamesLoaded();
-        }, 1);
+        }, 150);
     };
     GameDatabaseComponent.prototype._filterGames = function (games) {
         var _this = this;
@@ -159,12 +158,17 @@ var GameDatabaseComponent = (function () {
         var _this = this;
         switch (result.type) {
             case 'search':
-                this.filter = {
-                    "property": "search",
-                    "value": 0
-                };
-                this.getGamesSearch(result.text);
-                this.setTitle();
+                if (result.text) {
+                    this.filter = {
+                        "property": "search",
+                        "value": 0
+                    };
+                    this.getGamesSearch(result.text);
+                    this.setTitle();
+                }
+                else {
+                    this.clearFilter();
+                }
                 return;
             case 'name':
                 this.gameDatabaseService.getGame(result.id)

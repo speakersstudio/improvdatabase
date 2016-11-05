@@ -23,7 +23,7 @@ export class Tool {
 export class SearchResult {
     text: string;
     type: string;
-    id: number;
+    id?: number;
 }
 
 @Component({
@@ -48,6 +48,7 @@ export class ToolbarComponent implements OnInit {
     @Output() searchResultClick: EventEmitter<SearchResult> = new EventEmitter();
 
     searchOpen: boolean = false;
+    searchActive: boolean = false;
     searchTerm: string;
 
     constructor(
@@ -88,7 +89,11 @@ export class ToolbarComponent implements OnInit {
     }
 
     back(): void {
-        this.goBack.emit();
+        if (this.searchActive) {
+            this.clearSearch();
+        } else {
+            this.goBack.emit();
+        }
     }
 
     openSearch(): void {
@@ -100,7 +105,14 @@ export class ToolbarComponent implements OnInit {
     }
 
     clearSearch(): void {
+        if (this.searchActive) {
+            this.searchResultClick.emit({
+                "type": "search",
+                "text": ""
+            });
+        }
         this.searchTerm = "";
+        this.searchActive = false;
         this.closeSearch();
     }
 
@@ -109,10 +121,9 @@ export class ToolbarComponent implements OnInit {
         if (event.keyCode == 13) {
             this.searchResultClick.emit({
                 "type": "search",
-                "text": this.searchTerm,
-                "id": 0
+                "text": this.searchTerm
             });
-            this.clearSearch();
+            this.searchActive = true;
         } else {
             clearTimeout(this._typeDebounce);
             this._typeDebounce = setTimeout(() => {

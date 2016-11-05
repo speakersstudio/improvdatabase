@@ -226,10 +226,10 @@ var GameDatabaseService = (function () {
             });
         });
     };
-    GameDatabaseService.prototype.gameHasTag = function (game, tagID) {
+    GameDatabaseService.prototype.gameHasTag = function (game, tagIDs) {
         var foundTagGame = false;
         game.TagGames.forEach(function (taggame) {
-            if (taggame.TagID == tagID) {
+            if (tagIDs.indexOf(taggame.TagID) > -1) {
                 foundTagGame = true;
                 return false;
             }
@@ -258,7 +258,7 @@ var GameDatabaseService = (function () {
                     if (note.GameID == game.GameID
                         || note.PlayerCountID == game.PlayerCountID
                         || note.DurationID == game.DurationID
-                        || (note.TagID && _this.gameHasTag(game, note.TagID))) {
+                        || (note.TagID && _this.gameHasTag(game, [note.TagID]))) {
                         notesForGame.push(note);
                     }
                 });
@@ -330,21 +330,55 @@ var GameDatabaseService = (function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
             term = term.toLowerCase();
-            var games = [];
+            var gameResults = [];
             if (term) {
                 Promise.all([
-                    // TODO: include other items in search
-                    _this.getGames()
+                    _this.getGames(),
+                    _this.getTags(),
+                    _this.getDurations(),
+                    _this.getPlayerCounts()
                 ])
                     .then(function (items) {
-                    items[0].forEach(function (game) {
-                        game.Names.forEach(function (name) {
-                            if (name.Name.toLowerCase().indexOf(term.toLowerCase()) > -1) {
-                                games.push(game);
-                            }
-                        });
+                    // search the tags
+                    var tagResults = [];
+                    items[1].forEach(function (tag) {
+                        if (tag.Name.toLowerCase().indexOf(term) > -1) {
+                            tagResults.push(tag.TagID);
+                        }
                     });
-                    resolve(games);
+                    // search the durations
+                    var durationResults = [];
+                    items[2].forEach(function (duration) {
+                        if (duration.Name.toLowerCase().indexOf(term) > -1) {
+                            durationResults.push(duration.DurationID);
+                        }
+                    });
+                    // search the player counts
+                    var playerCountResults = [];
+                    items[3].forEach(function (playercount) {
+                        if (playercount.Name.toLowerCase().indexOf(term) > -1) {
+                            playerCountResults.push(playercount.PlayerCountID);
+                        }
+                    });
+                    // loop through the games
+                    items[0].forEach(function (game) {
+                        // add it if a tag matches or if the playercount or duration matches
+                        if (_this.gameHasTag(game, tagResults) ||
+                            durationResults.indexOf(game.DurationID) > -1 ||
+                            playerCountResults.indexOf(game.PlayerCountID) > -1) {
+                            gameResults.push(game);
+                        }
+                        else {
+                            // add it if a name matches
+                            game.Names.forEach(function (name) {
+                                if (name.Name.toLowerCase().indexOf(term) > -1 &&
+                                    gameResults.indexOf(game) == -1) {
+                                    gameResults.push(game);
+                                }
+                            });
+                        }
+                    });
+                    resolve(gameResults);
                 });
             }
         });

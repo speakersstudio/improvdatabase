@@ -1,4 +1,4 @@
-<div class="toolbar-row">
+<div class="toolbar-row" [class.active]="searchActive">
     <button *ngIf="!showBack" (click)="toggleNav()">
         <i class="fa fa-bars" [class.active]="showMenu"></i>
     </button>
@@ -6,11 +6,11 @@
         <i class="fa fa-arrow-left"></i>
     </button>
 
-    <h2 [innerHTML]="title"></h2>
+    <h2 [innerHTML]="title" (click)="showBack ? back() : toggleNav()"></h2>
 
     <span class="spacer"></span>
 
-    <span *ngIf="showSearch" class="search" [class.active]="searchOpen || searchTerm">
+    <span *ngIf="showSearch" class="search" [class.active]="(searchOpen || searchTerm) && !searchActive">
         <i class="fa fa-search"></i>
         <input placeholder="Search"
             (focus)="openSearch()"

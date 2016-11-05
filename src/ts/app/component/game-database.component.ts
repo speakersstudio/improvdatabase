@@ -92,12 +92,10 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
     }
 
     setTitle(): void {
-        this.title = this._titleBase;
-
-        if (this.filter && this.filter.property == 'search') {
-            this.title = "Search Results";
-        } else if (this.filter) {
-            this.title += '<span>Filtered</span>';
+        if (this.filter) {
+            this.title = "Back";
+        } else {
+            this.title = this._titleBase;
         }
     }
 
@@ -117,7 +115,7 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
             this._app.hideLoader();
             this.games = games;
             this.onGamesLoaded();
-        }, 1);
+        }, 150);
     }
 
     private _filterGames(games: Game[]): Game[] {
@@ -202,12 +200,16 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
     onSearchResultClick(result: SearchResult): void {
         switch(result.type) {
             case 'search':
-                this.filter = {
-                    "property": "search",
-                    "value" : 0
+                if (result.text) {
+                    this.filter = {
+                        "property": "search",
+                        "value" : 0
+                    }
+                    this.getGamesSearch(result.text);
+                    this.setTitle();
+                } else {
+                    this.clearFilter();
                 }
-                this.getGamesSearch(result.text);
-                this.setTitle();
                 return;
             case 'name':
                 this.gameDatabaseService.getGame(result.id)

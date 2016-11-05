@@ -49,6 +49,7 @@ var ToolbarComponent = (function () {
         this.search = new core_1.EventEmitter();
         this.searchResultClick = new core_1.EventEmitter();
         this.searchOpen = false;
+        this.searchActive = false;
         // TODO: pre-populate results with history and favorites
     }
     ToolbarComponent.prototype.ngOnInit = function () {
@@ -67,7 +68,12 @@ var ToolbarComponent = (function () {
         this._app.toggleNav();
     };
     ToolbarComponent.prototype.back = function () {
-        this.goBack.emit();
+        if (this.searchActive) {
+            this.clearSearch();
+        }
+        else {
+            this.goBack.emit();
+        }
     };
     ToolbarComponent.prototype.openSearch = function () {
         this.searchOpen = true;
@@ -76,7 +82,14 @@ var ToolbarComponent = (function () {
         this.searchOpen = false;
     };
     ToolbarComponent.prototype.clearSearch = function () {
+        if (this.searchActive) {
+            this.searchResultClick.emit({
+                "type": "search",
+                "text": ""
+            });
+        }
         this.searchTerm = "";
+        this.searchActive = false;
         this.closeSearch();
     };
     ToolbarComponent.prototype.typeSearch = function (event) {
@@ -84,10 +97,9 @@ var ToolbarComponent = (function () {
         if (event.keyCode == 13) {
             this.searchResultClick.emit({
                 "type": "search",
-                "text": this.searchTerm,
-                "id": 0
+                "text": this.searchTerm
             });
-            this.clearSearch();
+            this.searchActive = true;
         }
         else {
             clearTimeout(this._typeDebounce);

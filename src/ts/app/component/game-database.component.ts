@@ -54,6 +54,7 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
 
     searchResults: SearchResult[] = [];
     filter: GameFilter;
+    searchTerm: string;
 
     constructor(
         private _app: AppComponent,
@@ -88,6 +89,7 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
 
         this.pathLocationStrategy.onPopState(() => {
             this.selectedGame = null;
+            //this.clearFilter();
         });
     }
 
@@ -107,6 +109,7 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
     }
 
     getGamesSearch(term: string): void {
+        //this._setPath("/games;search=" + term);
         this.gameDatabaseService.searchForGames(term).then(games => this._loadGames(games))
     }
 
@@ -120,6 +123,7 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
 
     private _filterGames(games: Game[]): Game[] {
         if (this.filter) {
+            //this._setPath("/games;filter=" + this.filter.property + ",value=" + this.filter.value);
             return games.filter((game) => {
                 if (this.filter.property == 'TagID') {
                     for (var tagIDIndex = 0; tagIDIndex < game.TagGames.length; tagIDIndex++) {
@@ -163,10 +167,14 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
         }
     
         let newPath = "/game/" + this.selectedGame.GameID;
+        this._setPath(newPath);
+    }
+
+    private _setPath(path: string): void {
         if (this.pathLocationStrategy.path().indexOf("/game/") > -1) {
-            this.pathLocationStrategy.replaceState({}, "", newPath, "");
+            this.pathLocationStrategy.replaceState({}, "", path, "");
         } else {
-            this.pathLocationStrategy.pushState({}, "", newPath, "");
+            this.pathLocationStrategy.pushState({}, "", path, "");
         }
     }
 
@@ -179,7 +187,7 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
         if (tool && tool.name) {
             this.onToolClicked(tool);
         } else {
-            this.pathLocationStrategy.back();
+            this._goBack();
         }
     }
 
@@ -205,9 +213,11 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
                         "property": "search",
                         "value" : 0
                     }
+                    this.searchTerm = result.text;
                     this.getGamesSearch(result.text);
                     this.setTitle();
                 } else {
+                    //this._goBack();
                     this.clearFilter();
                 }
                 return;
@@ -241,6 +251,10 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
     onSearch(term: string): void {
         this.gameDatabaseService.searchForResults(term)
             .then((results) => this.searchResults = results);
+    }
+
+    private _goBack(): void {
+        this.pathLocationStrategy.back();
     }
 
     clearFilter(): void {

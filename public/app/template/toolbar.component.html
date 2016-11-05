@@ -1,4 +1,4 @@
-<div class="toolbar-row" [class.active]="searchActive">
+<div class="toolbar-row" [class.search-open]="searchOpen">
     <button *ngIf="!showBack" (click)="toggleNav()">
         <i class="fa fa-bars" [class.active]="showMenu"></i>
     </button>

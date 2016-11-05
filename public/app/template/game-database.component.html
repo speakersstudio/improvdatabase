@@ -2,6 +2,7 @@
     [tools]="tools"
     [title]="title"
     [class.no-shadow]="scrollpos < 80"
+    [class.active]="filter"
     [showSearch]="true"
     [searchResults]="searchResults"
     [showBack]="filter"
@@ -12,6 +13,10 @@
     ></div>
 
 <div class="content" (scroll)="onScroll($event)">
+    <div class="list-metadata" *ngIf="filter">
+        <p *ngIf="filter.property == 'search'">Showing results for "{{searchTerm}}"</p>
+        <p *ngIf="filter.property != 'search'">Filtered results</p>
+    </div>
     <div class="card-list">
         <div class="card ng-game-card" *ngFor="let game of games; trackBy:trackByGames"
             [game]="game"

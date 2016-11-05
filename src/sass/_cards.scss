@@ -1,6 +1,14 @@
 @import "vars";
 @import "elevation";
 
+.list-metadata {
+    text-align: center;
+    color: $color-content-bg;
+    p {
+        margin-bottom: 0px;
+    }
+}
+
 .card-list {
     /*
     margin: $content-padding;

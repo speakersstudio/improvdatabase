@@ -80,8 +80,7 @@ export class ToolbarComponent implements OnInit {
     }
 
     toolClick(tool: Tool): void {
-        tool.active = !tool.active;
-        //this.toolClicked.emit(tool);
+        this.toolClicked.emit(tool);
     }
 
     toggleNav(): void {

@@ -26,6 +26,23 @@
     
     transition: #{$md-elevation-property} #{$md-elevation-transition-duration} #{$md-elevation-transition-timing-function},
         background-color 300ms;
+        
+    // a highlighted state if a search or filter is active
+    &.active {
+        background-color: $color-active;
+        color: $color-text;
+
+        .toolbar-row {
+            button {
+                color: $color-text;
+            }
+
+            .search {
+                background-color: $color-material-bg;
+                color: $color-text;
+            }
+        }
+    }
 
     &.no-shadow {
         @include md-elevation(0);
@@ -59,19 +76,16 @@
             flex: 1 1 auto;
         }
 
-        transition: background 300ms, color 300ms;
-
-        &.active {
-            background-color: $color-active;
-            color: $color-text;
-
-            button {
-                color: $color-text;
+        @media #{$media-mobile} {
+            h2, .spacer {
+                transition: max-width 300ms;
+                max-width: 500px;
+                overflow: hidden;
             }
-
-            .search {
-                background-color: $color-material-bg;
-                color: $color-text;
+            &.search-open {
+                h2, .spacer {
+                    max-width: 0;
+                }
             }
         }
     }
@@ -161,6 +175,8 @@
                 li {
                     line-height: $search-height;
                     cursor: pointer;
+                    display: flex;
+                    align-items: center;
 
                     &:hover {
                         background-color: $color-active; 
@@ -248,7 +264,7 @@ nav {
     @include fixed(0, null, 0, 0);
     z-index: 5000;
 
-    min-width: 200px;
+    min-width: 230px;
     max-width: 400px;
     width: 20%;
 

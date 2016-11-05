@@ -49,6 +49,7 @@ var GameDatabaseComponent = (function () {
         this.getGames();
         this.pathLocationStrategy.onPopState(function () {
             _this.selectedGame = null;
+            //this.clearFilter();
         });
     };
     GameDatabaseComponent.prototype.setTitle = function () {
@@ -68,6 +69,7 @@ var GameDatabaseComponent = (function () {
     };
     GameDatabaseComponent.prototype.getGamesSearch = function (term) {
         var _this = this;
+        //this._setPath("/games;search=" + term);
         this.gameDatabaseService.searchForGames(term).then(function (games) { return _this._loadGames(games); });
     };
     GameDatabaseComponent.prototype._loadGames = function (games) {
@@ -81,6 +83,7 @@ var GameDatabaseComponent = (function () {
     GameDatabaseComponent.prototype._filterGames = function (games) {
         var _this = this;
         if (this.filter) {
+            //this._setPath("/games;filter=" + this.filter.property + ",value=" + this.filter.value);
             return games.filter(function (game) {
                 if (_this.filter.property == 'TagID') {
                     for (var tagIDIndex = 0; tagIDIndex < game.TagGames.length; tagIDIndex++) {
@@ -123,11 +126,14 @@ var GameDatabaseComponent = (function () {
             this.selectedGame = game;
         }
         var newPath = "/game/" + this.selectedGame.GameID;
+        this._setPath(newPath);
+    };
+    GameDatabaseComponent.prototype._setPath = function (path) {
         if (this.pathLocationStrategy.path().indexOf("/game/") > -1) {
-            this.pathLocationStrategy.replaceState({}, "", newPath, "");
+            this.pathLocationStrategy.replaceState({}, "", path, "");
         }
         else {
-            this.pathLocationStrategy.pushState({}, "", newPath, "");
+            this.pathLocationStrategy.pushState({}, "", path, "");
         }
     };
     GameDatabaseComponent.prototype.selectRandomGame = function () {
@@ -139,7 +145,7 @@ var GameDatabaseComponent = (function () {
             this.onToolClicked(tool);
         }
         else {
-            this.pathLocationStrategy.back();
+            this._goBack();
         }
     };
     GameDatabaseComponent.prototype.onToolClicked = function (tool) {
@@ -163,10 +169,12 @@ var GameDatabaseComponent = (function () {
                         "property": "search",
                         "value": 0
                     };
+                    this.searchTerm = result.text;
                     this.getGamesSearch(result.text);
                     this.setTitle();
                 }
                 else {
+                    //this._goBack();
                     this.clearFilter();
                 }
                 return;
@@ -200,6 +208,9 @@ var GameDatabaseComponent = (function () {
         var _this = this;
         this.gameDatabaseService.searchForResults(term)
             .then(function (results) { return _this.searchResults = results; });
+    };
+    GameDatabaseComponent.prototype._goBack = function () {
+        this.pathLocationStrategy.back();
     };
     GameDatabaseComponent.prototype.clearFilter = function () {
         // TODO: back button should clear filters

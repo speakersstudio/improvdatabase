@@ -61,8 +61,7 @@ var ToolbarComponent = (function () {
         this.tools = tools;
     };
     ToolbarComponent.prototype.toolClick = function (tool) {
-        tool.active = !tool.active;
-        //this.toolClicked.emit(tool);
+        this.toolClicked.emit(tool);
     };
     ToolbarComponent.prototype.toggleNav = function () {
         this._app.toggleNav();

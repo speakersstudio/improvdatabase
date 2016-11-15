@@ -27,6 +27,8 @@ $color-hover: rgb(252,247,209); // table row hover background
 // FONT
 $font-family: 'Roboto', 'Helvetica Neue', sans-serif !default;
 
+$font-size-input: 16px;
+
 // timings!
 $anim-duration: 300ms;
 
@@ -57,6 +59,8 @@ $swift-linear-timing-function: linear !default;
 $swift-linear: all $swift-linear-duration $swift-linear-timing-function !default;
 
 // elevations
+$raised-button-elevation: 2;
+$raised-button-pressed-elevation: 8;
 $card-elevation-default: 2;
 $card-elevation-active: 8;
 $toolbar-elevation: 4;
@@ -64,8 +68,9 @@ $nav-elevation: 16;
 $dialog-elevation: 24;
 
 // dimens
-$content-padding: 1%;
-$content-spacing: 1%;
+$content-padding: 16px;
+$content-spacing: 8px;
+$content-spacing-long: 24px;
 
 $content-item-vertical-margin: 2%;
 $content-item-horizontal-margin: 0;
@@ -74,6 +79,9 @@ $margin: 14px;
 $border-radius: 2px;
 
 $dropdown-max-height: 337px;
+
+$button-height: 36px;
+$button-min-width: 88px;
 
 // toolbar
 $toolbar-height: 48px;

@@ -9,6 +9,7 @@ import { AppComponent } from '../component/app.component';
 import { GameDatabaseComponent } from '../component/game-database.component';
 import { AboutComponent } from '../component/about.component';
 import { ContactComponent } from '../component/contact.component';
+import { LoginComponent } from '../component/login.component';
 
 // sub-views
 // TODO: rename these files to .view and put them in a view folder
@@ -35,6 +36,7 @@ import { GameFilterPipe } from '../pipe/game-filter.pipe';
         GameDatabaseComponent,
         AboutComponent,
         ContactComponent,
+        LoginComponent,
         
         ToolbarComponent,
         GameCardComponent,

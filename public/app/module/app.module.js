@@ -18,6 +18,7 @@ var app_component_1 = require('../component/app.component');
 var game_database_component_1 = require('../component/game-database.component');
 var about_component_1 = require('../component/about.component');
 var contact_component_1 = require('../component/contact.component');
+var login_component_1 = require('../component/login.component');
 // sub-views
 // TODO: rename these files to .view and put them in a view folder
 var toolbar_component_1 = require('../component/toolbar.component');
@@ -43,6 +44,7 @@ var AppModule = (function () {
                 game_database_component_1.GameDatabaseComponent,
                 about_component_1.AboutComponent,
                 contact_component_1.ContactComponent,
+                login_component_1.LoginComponent,
                 toolbar_component_1.ToolbarComponent,
                 game_card_component_1.GameCardComponent,
                 game_details_component_1.GameDetailsComponent,

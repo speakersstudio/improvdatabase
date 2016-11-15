@@ -1,0 +1,21 @@
+<div class="toolbar transparent"></div>
+
+<div class="content grid">
+
+    <div class="card">
+
+        <form name="login" (ngSubmit)="submitForm()" #loginForm="ngForm">
+            <h3>Login</h3>
+
+            <input name="email" [(ngModel)]="email" required type="text" placeholder="Email" />
+
+            <input name="password" [(ngModel)]="password" required type="password" placeholder="Password" />
+
+            <div class="button-group">
+                <input type="submit" class="button raised" value="LOGIN" [disabled]="!loginForm.form.valid" />
+            </div>
+        </form>
+
+    </div>
+
+</div>

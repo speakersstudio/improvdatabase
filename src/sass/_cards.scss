@@ -30,7 +30,6 @@
     background: $color-content-bg;
     margin: $card-margin;
     border-radius: $card-border-radius;
-    cursor: pointer;
     position: relative;
     max-width: 500px;
     @include md-elevation($card-elevation-default);
@@ -70,7 +69,7 @@
         }
     }
 
-    &:hover {
+    &.clickable:hover {
         @include md-elevation($card-elevation-active);
 
         .badge {

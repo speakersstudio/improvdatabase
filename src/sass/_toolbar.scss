@@ -295,6 +295,7 @@ nav {
         background-color: $color-menu-active-bg;
         color: $color-active;
         box-shadow: 0px 1px 15px rgba(0,0,0,0.3) inset;
+        cursor: default;
 
         &:before {
             /* makes it square! */
@@ -316,6 +317,20 @@ nav {
 
             &:last-of-type {
                 @include abs(0, 0, null, null);
+            }
+        }
+
+        .login {
+            @include abs(null, 0, 0, 0);
+            background-color: $color-content-bg;
+            transition: height $anim-duration;
+            height: 0px;
+            overflow: hidden;
+        }
+
+        &:hover {
+            .login {
+                height: 40px;
             }
         }
     }
@@ -347,5 +362,11 @@ nav {
             color: $color-active;
             box-shadow: 0px 1px 10px rgba(0,0,0,0.1) inset;
         }
+    }
+
+    hr {
+        margin: 8px 0;
+        border-width: 1px 0 0 0;
+        border-color: $color-hr;
     }
 }

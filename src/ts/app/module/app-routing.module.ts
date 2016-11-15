@@ -5,6 +5,7 @@ import { GameDatabaseComponent } from "../component/game-database.component"
 import { AboutComponent }  from "../component/about.component";
 import { ContactComponent } from "../component/contact.component";
 import { GameDetailsComponent } from '../component/game-details.component';
+import { LoginComponent } from '../component/login.component';
 
 const routes: Routes = [
     {
@@ -27,6 +28,10 @@ const routes: Routes = [
     {
         path: 'contact',
         component: ContactComponent
+    },
+    {
+        path: 'login',
+        component: LoginComponent
     }
 ];
 

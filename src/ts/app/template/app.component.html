@@ -9,9 +9,17 @@
                 [class.fa-expand]="!showFullscreen"
                 [class.fa-compress]="showFullscreen"></i>
         </button>
+
+        <div class="login">
+            <a routerLink="/login" (click)="toggleNav()" routerLinkActive="active"><i class="fa fa-user"></i> Log In</a>
+        </div>
     </div>
+
     <a routerLink="/games" (click)="toggleNav()" routerLinkActive="active"><i class="fa fa-soccer-ball-o"></i> Game Database</a>
     <a routerLink="/about" (click)="toggleNav()" routerLinkActive="active"><i class="fa fa-info-circle"></i> About</a>
+
+    <hr />
+
     <a routerLink="/contact" (click)="toggleNav()" routerLinkActive="active"><i class="fa fa-envelope"></i> Contact</a>
 </nav>
 

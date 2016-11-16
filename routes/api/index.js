@@ -62,7 +62,7 @@ exports.getExpanded = function(req, res) {
     }
 }
 exports.update = function(req,res) {
-    if (ops[req.params.op]) {
+    if (ops[req.params.op] && req.params.id) {
         console.log("UPDATE " + req.params.op, req.params.id);
         ops[req.params.op].update(req,res);
     } else {
@@ -70,7 +70,7 @@ exports.update = function(req,res) {
     }
 };
 exports.delete = function(req,res) {
-    if (ops[req.params.op]) {
+    if (ops[req.params.op] && req.params.id) {
         console.log("DELETE " + req.params.op, req.params.id);
         ops[req.params.op].delete(req,res);
     } else {

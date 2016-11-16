@@ -94,6 +94,14 @@
     cursor: pointer;
 }
 
+.error {
+    color: darkred !important;
+}
+
+.dull {
+    opacity: 0.5;
+}
+
 .content {
     overflow: auto;
     @include abs($toolbar-height, 0, 0, 0);
@@ -121,6 +129,7 @@
     border: 0px;
     cursor: pointer;
     width: auto;
+    box-sizing: border-box;
 
     transition: #{$md-elevation-property} #{$md-elevation-transition-duration} #{$md-elevation-transition-timing-function},
         opacity $anim-duration;
@@ -152,6 +161,47 @@
     justify-content: center;
     align-content: center;
     align-items: center;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.columns {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 100%;
+    justify-content: space-between;
+
+    .metadata {
+        flex-basis: 26%;
+        margin-right: 4%;
+    }
+    .content {
+        flex-basis: 70%;
+    }
+
+    @media #{$media-desktop} {
+        input {
+            width: 48%;
+            flex-basis: 48%;
+        }
+    }
+
+    @media #{$media-mobile} {
+        flex-direction: column;
+
+        .metadata {
+            flex-basis: 100%;
+            margin: 0;
+        }
+        .content {
+            flex-basis: 100%;
+        }
+    }
 }
 
 .taglist {
@@ -213,5 +263,22 @@
                 transform: rotateZ(180deg);
             }
         }
+    }
+}
+
+.loading {
+    display: inline-block;
+    overflow: hidden;
+    height: 1.3em;
+    margin-top: -0.3em;
+    line-height: 1.5em;
+    vertical-align: text-bottom;
+
+    &:after {
+        display: inline-table;
+        white-space: pre;
+        text-align: left;
+        content: " ●    \A   ●   \A    ●  \A     ● \A      ●\A     ● \A    ●  \A   ●   \A  ●    \A ●     ";
+        animation: loadingSpin 1s steps(10) infinite;
     }
 }

@@ -14,7 +14,7 @@ var game_database_component_1 = require("../component/game-database.component");
 var about_component_1 = require("../component/about.component");
 var contact_component_1 = require("../component/contact.component");
 var game_details_component_1 = require('../component/game-details.component');
-var login_component_1 = require('../component/login.component');
+var user_component_1 = require('../component/user.component');
 var routes = [
     {
         path: '',
@@ -38,8 +38,8 @@ var routes = [
         component: contact_component_1.ContactComponent
     },
     {
-        path: 'login',
-        component: login_component_1.LoginComponent
+        path: 'user',
+        component: user_component_1.UserComponent
     }
 ];
 var AppRoutingModule = (function () {

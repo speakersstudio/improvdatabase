@@ -11,10 +11,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 require('rxjs/Subject');
 var router_1 = require('@angular/router');
+var user_service_1 = require('../service/user.service');
 var AppComponent = (function () {
-    function AppComponent(_renderer, router) {
+    function AppComponent(_renderer, router, userService) {
         this._renderer = _renderer;
         this.router = router;
+        this.userService = userService;
         this.loader = document.getElementById("siteLoader");
         this.showMenu = false;
         this.showFullscreen = false;
@@ -30,6 +32,7 @@ var AppComponent = (function () {
     }
     AppComponent.prototype.ngOnInit = function () {
         this.hideLoader();
+        this.user = this.userService.getLoggedInUser();
     };
     AppComponent.prototype.showLoader = function () {
         this.loader.style.display = "block";
@@ -74,7 +77,7 @@ var AppComponent = (function () {
             selector: 'my-app',
             templateUrl: '../template/app.component.html'
         }), 
-        __metadata('design:paramtypes', [core_1.Renderer, router_1.Router])
+        __metadata('design:paramtypes', [core_1.Renderer, router_1.Router, user_service_1.UserService])
     ], AppComponent);
     return AppComponent;
 }());

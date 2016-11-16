@@ -10,18 +10,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
+var common_1 = require('@angular/common');
 var user_service_1 = require("../service/user.service");
 var MAX_ATTEMPTS = 5;
-var LoginComponent = (function () {
-    function LoginComponent(userService, router) {
+var UserComponent = (function () {
+    function UserComponent(userService, router, location) {
         this.userService = userService;
         this.router = router;
+        this.location = location;
     }
-    LoginComponent.prototype.ngOnInit = function () {
+    UserComponent.prototype.ngOnInit = function () {
         this.errorCount = 0;
         this.weGood = true;
+        this.user = this.userService.getLoggedInUser();
     };
-    LoginComponent.prototype.submitLogin = function () {
+    UserComponent.prototype.goBack = function () {
+        this.location.back();
+    };
+    UserComponent.prototype.submitLogin = function () {
         var _this = this;
         this.loginError = "";
         this.userService.login(this.email, this.password)
@@ -50,16 +56,36 @@ var LoginComponent = (function () {
             }
         });
     };
-    LoginComponent = __decorate([
+    UserComponent.prototype.logout = function () {
+        var _this = this;
+        this.userService.logout().then(function () {
+            _this.user = null;
+            _this.goBack();
+        });
+    };
+    UserComponent.prototype.submitEditUser = function () {
+        // TODO: updating the password
+        // TODO: validation on the form to make sure the password and confirmation match
+        var _this = this;
+        this.isPosting = true;
+        this.userService.updateUser()
+            .then(function () {
+            _this.isPosting = false;
+        })
+            .catch(function () {
+            _this.isPosting = false;
+        });
+    };
+    UserComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
-            selector: "login",
-            templateUrl: "../template/login.component.html"
+            selector: "user",
+            templateUrl: "../template/user.component.html"
         }), 
-        __metadata('design:paramtypes', [user_service_1.UserService, router_1.Router])
-    ], LoginComponent);
-    return LoginComponent;
+        __metadata('design:paramtypes', [user_service_1.UserService, router_1.Router, common_1.Location])
+    ], UserComponent);
+    return UserComponent;
 }());
-exports.LoginComponent = LoginComponent;
+exports.UserComponent = UserComponent;
 
-//# sourceMappingURL=login.component.js.map
+//# sourceMappingURL=user.component.js.map

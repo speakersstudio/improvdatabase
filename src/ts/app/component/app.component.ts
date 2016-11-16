@@ -3,10 +3,13 @@ import {
     OnInit,
     Renderer,
     Injectable
- } from '@angular/core';
- import 'rxjs/Subject';
- import { Subject } from 'rxjs/Subject';
- import { Router, RoutesRecognized } from '@angular/router';
+} from '@angular/core';
+import 'rxjs/Subject';
+import { Subject } from 'rxjs/Subject';
+import { Router, RoutesRecognized } from '@angular/router';
+
+import { User } from "../model/user";
+import { UserService } from '../service/user.service';
 
 @Component({
     moduleId: module.id,
@@ -19,9 +22,14 @@ export class AppComponent implements OnInit {
     showMenu: boolean = false;
     showFullscreen: boolean = false;
 
+    isLoggedIn: boolean;
+
+    user: User;
+
     constructor(
         private _renderer: Renderer,
-        private router: Router
+        private router: Router,
+        private userService: UserService
     ) {
         /* I won't use this, but here is how to subscribe to router events!
         // when changing route, reset the toolbar
@@ -36,6 +44,8 @@ export class AppComponent implements OnInit {
 
     ngOnInit(): void {
         this.hideLoader();
+
+        this.user = this.userService.getLoggedInUser();
     }
 
     showLoader(): void {

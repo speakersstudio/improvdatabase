@@ -1,6 +1,5 @@
 <nav [class.show] = "showMenu">
     <div class="nav-top">
-        <h1>The Improv Comedy Database</h1>
         <button (click)="toggleNav()">
             <i class="fa fa-bars" [class.active]="showMenu"></i>
         </button>
@@ -10,8 +9,15 @@
                 [class.fa-compress]="showFullscreen"></i>
         </button>
 
-        <div class="login">
-            <a routerLink="/login" (click)="toggleNav()" routerLinkActive="active"><i class="fa fa-user"></i> Log In</a>
+        <div class="content">
+            <h1>The Improv Comedy Database</h1>
+
+            <a routerLink="/user" (click)="toggleNav()" *ngIf="user"><i class="fa fa-user"></i> {{user.Email}}</a>
+            
+            <div class="login" *ngIf="!user">
+                <a routerLink="/user" (click)="toggleNav()"
+                    routerLinkActive="active"><i class="fa fa-user"></i> Log In</a>
+            </div>
         </div>
     </div>
 

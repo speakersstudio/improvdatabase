@@ -33,7 +33,9 @@ $font-size-input: 16px;
 $anim-duration: 300ms;
 
 // media query names
-$media-mobile: "only screen and (max-width: 700px)";
+$media-desktop: "only screen and (min-width: 500px)";
+$media-tablet: "only screen and (max-width: 768px)";
+$media-mobile: "only screen and (max-width: 500px)";
 
 // The default animation curves used by material design.
 $md-linear-out-slow-in-timing-function: cubic-bezier(0, 0, 0.2, 0.1) !default;

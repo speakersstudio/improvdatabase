@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Tool, ToolbarComponent } from './toolbar.component';
+import { UserService } from "../service/user.service";
 
 @Component({
     moduleId: module.id,
@@ -15,15 +16,16 @@ export class LoginComponent implements OnInit {
     password: string;
 
     constructor(
+        private userService: UserService
     ) { }
 
     ngOnInit(): void {
         
     }
 
-    submitForm(): boolean {
+    submitForm(): void {
         console.log(this.email, this.password);
 
-        return false;
+        this.userService.login(this.email, this.password);
     }
 }

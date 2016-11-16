@@ -26,6 +26,7 @@ var game_card_component_1 = require('../component/game-card.component');
 var game_details_component_1 = require('../component/game-details.component');
 var alpha_sign_up_component_1 = require('../component/alpha-sign-up.component');
 var game_database_service_1 = require("../service/game-database.service");
+var user_service_1 = require("../service/user.service");
 var app_routing_module_1 = require('./app-routing.module');
 var game_filter_pipe_1 = require('../pipe/game-filter.pipe');
 var AppModule = (function () {
@@ -54,6 +55,7 @@ var AppModule = (function () {
             bootstrap: [app_component_1.AppComponent],
             providers: [
                 game_database_service_1.GameDatabaseService,
+                user_service_1.UserService,
                 common_1.PathLocationStrategy
             ],
             entryComponents: [

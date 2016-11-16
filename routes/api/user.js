@@ -135,11 +135,13 @@ function findUser (UserID, Email, callback) {
 exports.findUser = findUser;
 
 function validateUser (email, password, callback) {
+    console.log("finding user ", email, password);
     findUser(null, email, function (err, user) {
         if (err) {
             callback(err, null);
         } else {
             if (user) {
+                console.log("AUTH", password, user.password);
                 bcrypt.compare(password, user.Password, function (comperr, valid) {
                     if (comperr) {
                         callback(comperr, null);

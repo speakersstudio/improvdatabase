@@ -19,6 +19,7 @@ import { GameDetailsComponent } from '../component/game-details.component';
 import { AlphaSignUpComponent } from '../component/alpha-sign-up.component';
 
 import { GameDatabaseService } from "../service/game-database.service";
+import { UserService } from "../service/user.service";
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -48,6 +49,7 @@ import { GameFilterPipe } from '../pipe/game-filter.pipe';
     bootstrap: [ AppComponent ],
     providers: [ 
         GameDatabaseService,
+        UserService,
         PathLocationStrategy
     ],
     entryComponents: [

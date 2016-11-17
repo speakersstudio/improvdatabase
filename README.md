@@ -9,7 +9,7 @@ Here's a general outline of how to get the Improv Database app running locally!
 3. Run the command `npm install` on the root project folder. This installs all of the dependencies for the app.
 4. Create and set up a PostgreSQL database (see below)
 5. `npm start` should start the app in a terminal
-6. Visit localhost:1919 to access the webapp.
+6. Visit localhost:1919 to access the webapp, and localhost:1919/api to get the API.
 
 ---
 

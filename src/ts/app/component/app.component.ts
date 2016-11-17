@@ -26,6 +26,11 @@ export class AppComponent implements OnInit {
 
     user: User;
 
+    showDialog: boolean = false;
+    dialogTitle: string = "Delete?";
+    dialogMessage: string = "Are you sure you want to delete this thing?";
+    dialogConfirm: string = "DELETE";
+
     constructor(
         private _renderer: Renderer,
         private router: Router,
@@ -58,6 +63,11 @@ export class AppComponent implements OnInit {
 
     toggleNav(): void {
         this.showMenu = !this.showMenu;
+    }
+
+    closeOverlays(): void {
+        this.showDialog = false;
+        this.showMenu = false;
     }
 
     fullscreen(): void {

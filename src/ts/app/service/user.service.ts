@@ -78,4 +78,22 @@ export class UserService {
             });
     }
 
+    getPermissions (): Object {
+        let permObject = {};
+        let perms = this.loggedInUser && this.loggedInUser.Permissions ? this.loggedInUser.Permissions : [];
+        perms.forEach((perm) => {
+            /*
+            let parts = perm.split('_');
+            let cat = parts[0];
+            let act = parts[1];
+            if (!permObject[cat]) {
+                permObject[cat] = {};
+            }
+            permObject[cat][act] = true;
+            */
+            permObject[perm] = true;
+        });
+        return permObject;
+    }
+
 }

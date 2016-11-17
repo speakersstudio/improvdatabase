@@ -148,6 +148,7 @@
             padding: 0 $search-padding;
             height: $search-height;
             border-radius: $search-border-radius;
+            margin: 0;
 
             &::-webkit-input-placeholder {
                 color: $search-inactive-color;
@@ -241,6 +242,7 @@ nav button {
     color: $color-primary-text;
     margin: 0;
     float: left;
+    min-width: 0;
 
     &.active {
         color: $color-active;

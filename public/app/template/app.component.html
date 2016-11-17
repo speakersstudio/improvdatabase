@@ -29,6 +29,17 @@
     <a routerLink="/contact" (click)="toggleNav()" routerLinkActive="active"><i class="fa fa-envelope"></i> Contact</a>
 </nav>
 
-<div (click)="toggleNav()" class="backdrop nav-backdrop" [class.show] = "showMenu"></div>
+<div (click)="closeOverlays()" class="backdrop nav-backdrop" [class.show]="showMenu || showDialog"></div>
 
 <router-outlet></router-outlet>
+
+<div class="grid dialog-container" *ngIf="showDialog">
+    <div class="dialog">
+        <h2>{{dialogTitle}}</h2>
+        <p>{{dialogMessage}}</p>
+        <div class="button-group">
+            <button>Cancel</button>
+            <button>{{dialogConfirm}}</button>
+        </div>
+    </div>
+</div>

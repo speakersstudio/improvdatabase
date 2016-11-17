@@ -36,7 +36,7 @@
     <span *ngIf="showSearch" class="spacer"></span>
 
     <span class="tools">
-        <button *ngFor="let tool of tools"
+        <button *ngFor="let tool of allowedTools"
             class="btn dropdown-container"
             [class.active]="tool.active"
             title="{{tool.text}}"

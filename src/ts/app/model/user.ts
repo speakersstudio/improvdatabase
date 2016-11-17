@@ -10,4 +10,5 @@ export class User {
     UserLevel: number[];
     Locked: boolean;
     Description: string;
+    Permissions: string[];
 }

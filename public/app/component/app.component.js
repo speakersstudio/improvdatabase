@@ -20,6 +20,10 @@ var AppComponent = (function () {
         this.loader = document.getElementById("siteLoader");
         this.showMenu = false;
         this.showFullscreen = false;
+        this.showDialog = false;
+        this.dialogTitle = "Delete?";
+        this.dialogMessage = "Are you sure you want to delete this thing?";
+        this.dialogConfirm = "DELETE";
         /* I won't use this, but here is how to subscribe to router events!
         // when changing route, reset the toolbar
         router.events.subscribe(val => {
@@ -42,6 +46,10 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.toggleNav = function () {
         this.showMenu = !this.showMenu;
+    };
+    AppComponent.prototype.closeOverlays = function () {
+        this.showDialog = false;
+        this.showMenu = false;
     };
     AppComponent.prototype.fullscreen = function () {
         // are we full-screen?

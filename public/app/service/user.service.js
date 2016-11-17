@@ -68,6 +68,23 @@ var UserService = (function () {
             return _this.loggedInUser;
         });
     };
+    UserService.prototype.getPermissions = function () {
+        var permObject = {};
+        var perms = this.loggedInUser && this.loggedInUser.Permissions ? this.loggedInUser.Permissions : [];
+        perms.forEach(function (perm) {
+            /*
+            let parts = perm.split('_');
+            let cat = parts[0];
+            let act = parts[1];
+            if (!permObject[cat]) {
+                permObject[cat] = {};
+            }
+            permObject[cat][act] = true;
+            */
+            permObject[perm] = true;
+        });
+        return permObject;
+    };
     __decorate([
         webstorage_util_1.LocalStorage(), 
         __metadata('design:type', String)

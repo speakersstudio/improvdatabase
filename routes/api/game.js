@@ -186,12 +186,23 @@ exports.update = function(req,res) {
 };
 exports.delete = function(req, res) {
     if (req.user && auth.hasPermission(req.user, 'game_delete')) {
-        // TODO: delete from other tables, too?
         connection.query('DELETE FROM game WHERE "GameID"=$1;', [req.params.id], function(err) {
             if (err) {
                 res.json("500", err);
             } else {
-                res.json("200", "Game Deleted");
+                connection.query('DELETE FROM name WHERE "GameID"=$1;', [req.params.id], function(err) {
+                    if (err) {
+                        res.json("500", err);
+                    } else {
+                        connection.query('DELETE FROM taggame WHERE "GameID"=$1;', [req.params.id], function(err) {
+                            if (err) {
+                                res.json("500", err);
+                            } else {
+                                res.json("200", "Game Deleted");
+                            }
+                        });
+                    }
+                });
             }
         });
     } else {

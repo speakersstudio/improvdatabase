@@ -11,9 +11,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
 require('rxjs/add/operator/toPromise');
+var user_service_1 = require('./user.service');
 var GameDatabaseService = (function () {
-    function GameDatabaseService(http) {
+    function GameDatabaseService(http, userService) {
         this.http = http;
+        this.userService = userService;
         this.gamesUrl = '/api/game';
         this.namesUrl = '/api/name';
         this.playerCountUrl = '/api/playerCount';
@@ -30,7 +32,7 @@ var GameDatabaseService = (function () {
         this.tagGames = [];
         this.notes = [];
     }
-    // TODO: update the API to expand names and tagGames on game queries
+    // TODO: there's probably way too much in this file now
     GameDatabaseService.prototype.getGames = function (sortProperty) {
         var _this = this;
         if (sortProperty === void 0) { sortProperty = 'name'; }
@@ -266,10 +268,22 @@ var GameDatabaseService = (function () {
             });
         });
     };
+    GameDatabaseService.prototype.deleteGame = function (game) {
+        var _this = this;
+        return this.http.delete(this.gamesUrl + '/' + game.GameID, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then(function (response) {
+            if (_this.games.indexOf(game) > -1) {
+                _this.games.splice(_this.games.indexOf(game), 1);
+            }
+            return true;
+        });
+    };
     GameDatabaseService.prototype.handleError = function (error) {
         console.error('An error has occurred', error);
         return Promise.reject(error.message || error);
     };
+    // TODO: search stuff can be in a separate service
     GameDatabaseService.prototype._searchArray = function (arr, type, idProperty, term) {
         var results = [];
         arr.forEach(function (item) {
@@ -385,7 +399,7 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [http_1.Http])
+        __metadata('design:paramtypes', [http_1.Http, user_service_1.UserService])
     ], GameDatabaseService);
     return GameDatabaseService;
 }());

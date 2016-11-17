@@ -14,6 +14,8 @@ import {
 import { Router, ActivatedRoute, Params }   from '@angular/router';
 import { Location }   from '@angular/common';
 
+import { AppComponent } from "./app.component";
+
 import { GameDatabaseService } from '../service/game-database.service';
 
 import { Game } from '../model/game';
@@ -82,6 +84,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     ];
 
     constructor(
+        private _app: AppComponent,
         private gameDatabaseService: GameDatabaseService,
         private router: Router,
         private route: ActivatedRoute,
@@ -156,7 +159,15 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
                 }
                 break;
             case "deleteGame":
-                
+                this._app.dialog("Delete Game?",
+                    "Are you sure you want to delete this game. There is no turning back from this.",
+                    "Delete",
+                    () => {
+                        this.gameDatabaseService.deleteGame(this.game)
+                            .then(() => {
+                                this.closePage();
+                            })
+                    });
                 break;
         }
     }

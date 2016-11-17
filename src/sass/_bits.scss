@@ -94,10 +94,6 @@
     cursor: pointer;
 }
 
-.error {
-    color: darkred !important;
-}
-
 .dull {
     opacity: 0.5;
 }
@@ -109,6 +105,10 @@
     &.bg {
         background-color: $color-content-bg;
     }
+}
+
+.content-block {
+    margin: $content-spacing-long*2 0;
 }
 
 .button-group {
@@ -133,6 +133,7 @@ button,
     box-sizing: border-box;
     background: none;
     text-transform: uppercase;
+    text-decoration: none;
 
     transition: #{$md-elevation-property} #{$md-elevation-transition-duration} #{$md-elevation-transition-timing-function},
         opacity $anim-duration;
@@ -286,25 +287,23 @@ button,
     }
 }
 
-.dialog-container {
-    @include fixed(0, 0, 0, 0, 5000);
+.dialog {
+    width: 90%;
+    max-width: 280px;
+    background: $color-material-bg;
+    padding: $content-spacing 0;
+    border-radius: $border-radius;
+    @include fixed(30%, null, null, 50%, 5000);
+    transform: translate(-50%, -50%);
 
-    .dialog {
-        width: 90%;
-        max-width: 280px;
-        background: $color-material-bg;
-        padding: $content-spacing 0;
-        border-radius: $border-radius;
+    @include md-elevation(24);
 
-        @include md-elevation(24);
-
-        h2 {
-            margin: $content-padding $content-spacing-long 0;
-            font-size: 1.3em;
-            font-weight: bold;
-        }
-        p {
-            margin: $content-spacing-long;
-        }
+    h2 {
+        margin: $content-padding $content-spacing-long 0;
+        font-size: 1.3em;
+        font-weight: bold;
+    }
+    p {
+        margin: $content-spacing-long;
     }
 }

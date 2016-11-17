@@ -13,6 +13,8 @@ import { Note } from '../model/note';
 
 import { SearchResult } from '../component/toolbar.component';
 
+import { UserService } from './user.service';
+
 @Injectable()
 export class GameDatabaseService {
     private gamesUrl = '/api/game';
@@ -34,9 +36,13 @@ export class GameDatabaseService {
     private tagGames: TagGame[] = [];
     private notes: Note[] = [];
 
-    constructor(private http: Http) { }
+    constructor(
+        private http: Http,
+        private userService: UserService
+        ) { }
 
-// TODO: update the API to expand names and tagGames on game queries
+    // TODO: there's probably way too much in this file now
+
     getGames(sortProperty = 'name'): Promise<Game[]> {
         console.log('getting games, sorting by ', sortProperty);
         return Promise.all([this._getGames(), this.getNames(), this.getTagGames()])
@@ -287,10 +293,24 @@ export class GameDatabaseService {
         });
     }
 
+    deleteGame(game: Game): Promise<boolean> {
+        return this.http.delete(this.gamesUrl + '/' + game.GameID,
+            this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then((response) => {
+                if (this.games.indexOf(game) > -1) {
+                    this.games.splice(this.games.indexOf(game), 1);
+                }
+                return true;
+            })
+    }
+
     private handleError(error: any): Promise<any> {
         console.error('An error has occurred', error);
         return Promise.reject(error.message || error);
     }
+
+    // TODO: search stuff can be in a separate service
 
     private _searchArray(arr: any[], type: string, idProperty: string, term: string): SearchResult[] {
         let results: SearchResult[] = [];
@@ -311,7 +331,6 @@ export class GameDatabaseService {
         });
         return results;
     }
-
     private _sortSearchResults(results: SearchResult[]): SearchResult[] {
         results.sort((r1, r2) => {
             let val1 = r1.text;

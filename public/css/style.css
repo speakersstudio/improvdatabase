@@ -280,6 +280,9 @@ $color-hover: rgb(252,247,209); // table row hover background
   .toolbar.transparent {
     background-color: transparent;
     box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12); }
+    .toolbar.transparent button i {
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+      transition: text-shadow 200ms; }
   .toolbar .toolbar-row {
     display: flex;
     box-sizing: border-box;
@@ -409,6 +412,9 @@ nav button {
   .toolbar button.active,
   nav button.active {
     color: #F0CF4E; }
+  .toolbar button i,
+  nav button i {
+    text-shadow: 0 0 0; }
 
 .toolbar button:last-child {
   margin-right: 14px; }
@@ -698,9 +704,6 @@ $color-hover: rgb(252,247,209); // table row hover background
 .clickable {
   cursor: pointer; }
 
-.error {
-  color: darkred !important; }
-
 .dull {
   opacity: 0.5; }
 
@@ -713,6 +716,9 @@ $color-hover: rgb(252,247,209); // table row hover background
   left: 0; }
   .content.bg {
     background-color: rgba(252, 247, 209, 0.9); }
+
+.content-block {
+  margin: 48px 0; }
 
 .button-group {
   margin-top: 24px;
@@ -735,6 +741,7 @@ button,
   box-sizing: border-box;
   background: none;
   text-transform: uppercase;
+  text-decoration: none;
   transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1), opacity 300ms; }
   button.raised,
   .button.raised {
@@ -845,26 +852,24 @@ button,
     content: " ●    \A   ●   \A    ●  \A     ● \A      ●\A     ● \A    ●  \A   ●   \A  ●    \A ●     ";
     animation: loadingSpin 1s steps(10) infinite; }
 
-.dialog-container {
+.dialog {
+  width: 90%;
+  max-width: 280px;
+  background: #FFFFFF;
+  padding: 8px 0;
+  border-radius: 2px;
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 5000; }
-  .dialog-container .dialog {
-    width: 90%;
-    max-width: 280px;
-    background: #FFFFFF;
-    padding: 8px 0;
-    border-radius: 2px;
-    box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12); }
-    .dialog-container .dialog h2 {
-      margin: 16px 24px 0;
-      font-size: 1.3em;
-      font-weight: bold; }
-    .dialog-container .dialog p {
-      margin: 24px; }
+  top: 30%;
+  left: 50%;
+  z-index: 5000;
+  transform: translate(-50%, -50%);
+  box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12); }
+  .dialog h2 {
+    margin: 16px 24px 0;
+    font-size: 1.3em;
+    font-weight: bold; }
+  .dialog p {
+    margin: 24px; }
 
 /* maybe not used?
 $color-active-text: #666; // active menu text

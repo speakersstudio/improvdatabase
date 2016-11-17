@@ -50,6 +50,11 @@
     &.transparent {
         background-color: $color-transparent;
         @include md-elevation(0);
+
+        button i {
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            transition: text-shadow 200ms;
+        }
     }
 
     .toolbar-row {
@@ -246,6 +251,9 @@ nav button {
 
     &.active {
         color: $color-active;
+    }
+    i {
+        text-shadow: 0 0 0;
     }
 }
 

@@ -11,11 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var common_1 = require('@angular/common');
+var app_component_1 = require("./app.component");
 var game_database_service_1 = require('../service/game-database.service');
 var game_1 = require('../model/game');
 var user_service_1 = require("../service/user.service");
 var GameDetailsComponent = (function () {
-    function GameDetailsComponent(gameDatabaseService, router, route, location, userService) {
+    function GameDetailsComponent(_app, gameDatabaseService, router, route, location, userService) {
+        this._app = _app;
         this.gameDatabaseService = gameDatabaseService;
         this.router = router;
         this.route = route;
@@ -95,6 +97,7 @@ var GameDetailsComponent = (function () {
         this.namesOpen = !this.namesOpen;
     };
     GameDetailsComponent.prototype.onToolClicked = function (tool) {
+        var _this = this;
         switch (tool.name) {
             case "randomGame":
                 if (this.dialog) {
@@ -105,6 +108,12 @@ var GameDetailsComponent = (function () {
                 }
                 break;
             case "deleteGame":
+                this._app.dialog("Delete Game?", "Are you sure you want to delete this game. There is no turning back from this.", "Delete", function () {
+                    _this.gameDatabaseService.deleteGame(_this.game)
+                        .then(function () {
+                        _this.closePage();
+                    });
+                });
                 break;
         }
     };
@@ -135,7 +144,7 @@ var GameDetailsComponent = (function () {
                 ])
             ]
         }), 
-        __metadata('design:paramtypes', [game_database_service_1.GameDatabaseService, router_1.Router, router_1.ActivatedRoute, common_1.Location, user_service_1.UserService])
+        __metadata('design:paramtypes', [app_component_1.AppComponent, game_database_service_1.GameDatabaseService, router_1.Router, router_1.ActivatedRoute, common_1.Location, user_service_1.UserService])
     ], GameDetailsComponent);
     return GameDetailsComponent;
 }());

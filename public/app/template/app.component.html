@@ -33,13 +33,11 @@
 
 <router-outlet></router-outlet>
 
-<div class="grid dialog-container" *ngIf="showDialog">
-    <div class="dialog">
-        <h2>{{dialogTitle}}</h2>
-        <p>{{dialogMessage}}</p>
-        <div class="button-group">
-            <button>Cancel</button>
-            <button>{{dialogConfirm}}</button>
-        </div>
+<div class="dialog" *ngIf="showDialog" [@dialog]>
+    <h2>{{dialogTitle}}</h2>
+    <p>{{dialogMessage}}</p>
+    <div class="button-group">
+        <button (click)="onDialogDismiss()">Cancel</button>
+        <button (click)="onDialogConfirm()">{{dialogConfirm}}</button>
     </div>
 </div>

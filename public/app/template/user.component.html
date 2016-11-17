@@ -1,0 +1,86 @@
+<div class="toolbar transparent" [showBack]="true" (goBack)="goBack()"></div>
+
+<div class="content grid" *ngIf="!user">
+
+    <div class="card login-form" *ngIf="weGood" [class.shake]="loginError" [class.runaway]="runaway">
+
+        <form name="login" (ngSubmit)="submitLogin()" #loginForm="ngForm">
+            <h3>Login</h3>
+
+            <input name="email" [(ngModel)]="email" required type="text" placeholder="Email" />
+
+            <input name="password" [(ngModel)]="password" required type="password" placeholder="Password" />
+
+            <div class="error" *ngIf="loginError" [innerHTML]="loginError"></div>
+
+            <div class="button-group">
+                <input type="submit" class="button raised" value="LOGIN" [disabled]="!loginForm.form.valid" />
+            </div>
+        </form>
+
+    </div>
+
+    <i class="fa fa-star starburst" *ngIf="runaway"></i>
+
+</div>
+
+<div class="content grid" *ngIf="user">
+
+    <div class="card user-form">
+
+        <form name="edit-user" (ngSubmit)="submitEditUser()" #userForm="ngForm">
+            <h3>Edit Yourself</h3>
+
+            <div class="section">
+                <input name="email" [(ngModel)]="user.Email" required type="text" placeholder="Email" />
+
+                <div class="columns">
+                    <input name="first-name" [(ngModel)]="user.FirstName" type="text" placeholder="First Name" />
+                    <input name="last-name" [(ngModel)]="user.LastName" type="text" placeholder="Last Name" />
+                </div>
+
+                <div class="columns">
+                    <label>
+                        <input type="radio" name="gender" value="M" [(ngModel)]="user.Gender" />
+                        Male
+                    </label>
+                    <label>
+                        <input type="radio" name="gender" value="F" [(ngModel)]="user.Gender" />
+                        Female
+                    </label>
+                    <label>
+                        <input type="radio" name="gender" value="O" [(ngModel)]="user.Gender" />
+                        None of your business
+                    </label>
+                </div>
+
+                <input name="URL" [(ngModel)]="user.URL" required type="text" placeholder="URL" />
+            </div>
+
+            <div class="section">
+                <label>Description</label>
+                <textarea name="description" [(ngModel)]="user.Description" rows="4"></textarea>
+            </div>
+
+            <div class="section">
+                <div class="columns">
+                    <input name="change-password" [(ngModel)]="password" type="password" placeholder="Password" />
+                    <input name="change-password-confirm" [(ngModel)]="passwordConfirm" type="password" placeholder="Confirm Password" />
+                </div>
+                <label class="dull">(leave the password blank if you don't want to change it)</label>
+            </div>
+            
+            <div class="button-group" *ngIf="!isPosting">
+                <input type="button" class="button" value="LOG OUT" (click)="logout()" />
+
+                <input type="submit" class="button raised" value="SAVE" [disabled]="!userForm.form.valid" />
+            </div>
+
+            <div class="button-group" *ngIf="isPosting">
+                <div class="button"><i class="loading"></i></div>
+            </div>
+        </form>
+
+    </div>
+
+</div>

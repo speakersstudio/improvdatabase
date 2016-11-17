@@ -127,6 +127,13 @@
             }
         }
 
+        .button-group {
+            margin: $content-spacing-long $page-left-margin-no-icon 0;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /*
         button, .button {
             display: inline-block;
             text-decoration: none;
@@ -144,6 +151,7 @@
                 @include md-elevation(8);
             }
         }
+        */
 
     }
 }

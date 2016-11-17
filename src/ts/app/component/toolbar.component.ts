@@ -13,11 +13,14 @@ import { Router, RoutesRecognized } from '@angular/router';
 
 import { AppComponent } from '../component/app.component';
 
+import { UserService } from "../service/user.service";
+
 export class Tool {
     icon: string;
     name: string;
     text: string;
     active?: boolean = false;
+    permission?: string;
 }
 
 export class SearchResult {
@@ -34,7 +37,10 @@ export class SearchResult {
 export class ToolbarComponent implements OnInit {
 
     @Input() title: string = "";
+
     @Input() tools: Tool[] = [];
+    allowedTools: Tool[] = [];
+
     @Input() showBack: boolean = false;
 
     @Input() showFilterClear: boolean = false;
@@ -52,8 +58,9 @@ export class ToolbarComponent implements OnInit {
     searchTerm: string;
 
     constructor(
-        protected _app: AppComponent,
-        protected router: Router
+        private _app: AppComponent,
+        private router: Router,
+        private userService: UserService
     ) {
         /* I won't use this, but here is how to subscribe to router events!
         // when changing route, reset the toolbar
@@ -69,6 +76,12 @@ export class ToolbarComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        let perms = this.userService.getPermissions();
+        this.tools.forEach(tool => {
+            if (!tool.permission || perms[tool.permission]) {
+                this.allowedTools.push(tool);
+            }
+        });
     }
     
     setTitle(title: string): void {

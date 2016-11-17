@@ -26,7 +26,7 @@ a {
     }
 }
 
-h2, h3, h4, h5, p, button {
+h2, h3, h4, h5, p, button, textarea, .content-item {
     margin: $content-item-vertical-margin $content-item-horizontal-margin;
 }
 
@@ -38,107 +38,82 @@ strong {
     font-weight: bold;
 }
 
-.error {
-    color: darkred;
-
-    &select {
-        border-color: darkred;
-    }
-}
-
-.loading-icon {
-    position: absolute;
-    display: block;
-    width: 55px;
-    height: 55px;
-    top: 35%;
-    left: 50%;
-    margin: -27px 0 0 -27px;
-    z-index: 2;
-    animation: spin 1000ms 1000ms infinite;
-
-    .small-face {
-        fill: $color-primary;
-        stroke: $color-secondary;
-    }
-}
-
-.loading-icon-shadow {
-    @extend .loading-icon;
-    z-index: 1;
-    width: 85px;
-    height: 125px;
-    margin: -27px 0 0 -37px;
-    transform-origin: 37px 40px 0px;
-
-    .small-face {
-        fill: rgba(0,0,0,0.3);
-        stroke: none;
-    }
-}
-
-#siteLoader {
-    position: absolute;
-    top: 40px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 5000;
-}
-
-#cornerLogo {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    z-index: 1;
-    text-indent: -9999em;
-    width: 100%;
-    height: auto;
-    text-align: right;
-
-    img {
-        max-width: 100%;
-    }
-}
-
-.backdrop {
-    @include fixed(0,100%,0,0);
-    z-index: 4000;
-    background: $color-shade;
-    opacity: 0;
-    transition: opacity $swift-ease-out-duration $swift-ease-out-timing-function, right 0ms $swift-ease-out-duration;
-
-    &.show {
-        transition: opacity $swift-ease-out-duration $swift-ease-out-timing-function;
-        right: 0px;
-        opacity: 1;
-    }
-}
-
-.clearfix {
-    clear: both;
-}
-
-.invisible {
-    visibility: hidden !important;
-}
-
-.hide {
-    display: none !important;
-}
-
 my-app {
     @include abs(0px, 0px, 0px, 0px);
     z-index: 2;
     overflow: hidden;
 }
 
-.content {
-    overflow: auto;
-    @include abs($toolbar-height, 0, 0, 0);
+input, textarea {
+    display: block;
+    background: none;
+    border-width: 0 0 1px 0;
+    border-color: $color-text;
+    padding: $content-spacing 0 ($content-spacing - 1);
+    margin: $content-spacing 0;
+    width: 100%;
+    font-size: $font-size-input;
+    position: relative;
+    transition: border-color $anim-duration;
+    color: $color-text;
+    font-family: $font-family;
+
+    &:focus {
+        outline: none;
+        border-color: $color-primary;
+    }
+}
+
+input[type="radio"] {
+    display: inline-block;
+    width: auto;
+    margin-right: $content-spacing;
+}
+
+label {
+    color: $color-text;
+    margin: $content-spacing 0;
+}
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: $color-text;
+    opacity: 0.5;
+}
+::-moz-placeholder { /* Firefox 19+ */
+    color: $color-text;
+    opacity: 0.5;
+}
+:-ms-input-placeholder { /* IE 10+ */
+    color: $color-text;
+    opacity: 0.5;
+}
+:-moz-placeholder { /* Firefox 18- */
+    color: $color-text;
+    opacity: 0.5;
+}
+
+form {
+    h3 {
+        font-size: 1.8em;
+        color: $color-primary;
+    }
+
+    .section {
+        margin: $content-spacing-long 0;
+    }
+
+    & > input:first-child {
+        margin-top: 0px;
+    }
+
+    .error {
+        margin: $content-spacing 0;
+        text-align: center;
+    }
 }
 
 @import "toolbar";
 @import "cards";
 @import "bits";
 @import "page";
+@import "login";

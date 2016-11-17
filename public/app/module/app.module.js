@@ -18,6 +18,7 @@ var app_component_1 = require('../component/app.component');
 var game_database_component_1 = require('../component/game-database.component');
 var about_component_1 = require('../component/about.component');
 var contact_component_1 = require('../component/contact.component');
+var user_component_1 = require('../component/user.component');
 // sub-views
 // TODO: rename these files to .view and put them in a view folder
 var toolbar_component_1 = require('../component/toolbar.component');
@@ -25,8 +26,11 @@ var game_card_component_1 = require('../component/game-card.component');
 var game_details_component_1 = require('../component/game-details.component');
 var alpha_sign_up_component_1 = require('../component/alpha-sign-up.component');
 var game_database_service_1 = require("../service/game-database.service");
+var user_service_1 = require("../service/user.service");
 var app_routing_module_1 = require('./app-routing.module');
 var game_filter_pipe_1 = require('../pipe/game-filter.pipe');
+// utils
+var webstorage_util_1 = require("../util/webstorage.util");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -43,6 +47,7 @@ var AppModule = (function () {
                 game_database_component_1.GameDatabaseComponent,
                 about_component_1.AboutComponent,
                 contact_component_1.ContactComponent,
+                user_component_1.UserComponent,
                 toolbar_component_1.ToolbarComponent,
                 game_card_component_1.GameCardComponent,
                 game_details_component_1.GameDetailsComponent,
@@ -52,7 +57,9 @@ var AppModule = (function () {
             bootstrap: [app_component_1.AppComponent],
             providers: [
                 game_database_service_1.GameDatabaseService,
-                common_1.PathLocationStrategy
+                user_service_1.UserService,
+                common_1.PathLocationStrategy,
+                webstorage_util_1.WebStorageService
             ],
             entryComponents: [
                 alpha_sign_up_component_1.AlphaSignUpComponent

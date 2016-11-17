@@ -11,13 +11,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 require('rxjs/Subject');
 var router_1 = require('@angular/router');
+var user_service_1 = require('../service/user.service');
 var AppComponent = (function () {
-    function AppComponent(_renderer, router) {
+    function AppComponent(_renderer, router, userService) {
         this._renderer = _renderer;
         this.router = router;
+        this.userService = userService;
         this.loader = document.getElementById("siteLoader");
         this.showMenu = false;
         this.showFullscreen = false;
+        this.showDialog = false;
+        this.dialogTitle = "Delete?";
+        this.dialogMessage = "Are you sure you want to delete this thing?";
+        this.dialogConfirm = "DELETE";
         /* I won't use this, but here is how to subscribe to router events!
         // when changing route, reset the toolbar
         router.events.subscribe(val => {
@@ -30,6 +36,7 @@ var AppComponent = (function () {
     }
     AppComponent.prototype.ngOnInit = function () {
         this.hideLoader();
+        this.user = this.userService.getLoggedInUser();
     };
     AppComponent.prototype.showLoader = function () {
         this.loader.style.display = "block";
@@ -39,6 +46,10 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.toggleNav = function () {
         this.showMenu = !this.showMenu;
+    };
+    AppComponent.prototype.closeOverlays = function () {
+        this.showDialog = false;
+        this.showMenu = false;
     };
     AppComponent.prototype.fullscreen = function () {
         // are we full-screen?
@@ -74,7 +85,7 @@ var AppComponent = (function () {
             selector: 'my-app',
             templateUrl: '../template/app.component.html'
         }), 
-        __metadata('design:paramtypes', [core_1.Renderer, router_1.Router])
+        __metadata('design:paramtypes', [core_1.Renderer, router_1.Router, user_service_1.UserService])
     ], AppComponent);
     return AppComponent;
 }());

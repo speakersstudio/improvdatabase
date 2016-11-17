@@ -13,12 +13,14 @@ var router_1 = require('@angular/router');
 var common_1 = require('@angular/common');
 var game_database_service_1 = require('../service/game-database.service');
 var game_1 = require('../model/game');
+var user_service_1 = require("../service/user.service");
 var GameDetailsComponent = (function () {
-    function GameDetailsComponent(gameDatabaseService, router, route, location) {
+    function GameDetailsComponent(gameDatabaseService, router, route, location, userService) {
         this.gameDatabaseService = gameDatabaseService;
         this.router = router;
         this.route = route;
         this.location = location;
+        this.userService = userService;
         this.onClose = new core_1.EventEmitter();
         this.dialog = false;
         this.tags = [];
@@ -27,7 +29,14 @@ var GameDetailsComponent = (function () {
         this.scrollpos = 0;
         this.namesOpen = false;
         this.showToolbarScrollPosition = window.innerWidth * 0.15;
+        this.permissions = {};
         this.tools = [
+            {
+                icon: "fa-trash",
+                name: "deleteGame",
+                text: "Delete Game",
+                permission: "game_delete"
+            },
             {
                 icon: "fa-random",
                 name: "randomGame",
@@ -49,6 +58,8 @@ var GameDetailsComponent = (function () {
             this.dialog = true;
             this.setGame(this.game);
         }
+        this.permissions = this.userService.getPermissions();
+        console.log(this.permissions);
     };
     GameDetailsComponent.prototype.ngOnDestroy = function () {
     };
@@ -93,6 +104,8 @@ var GameDetailsComponent = (function () {
                     this.router.navigate(['/games', { random: 'random' }]);
                 }
                 break;
+            case "deleteGame":
+                break;
         }
     };
     __decorate([
@@ -122,7 +135,7 @@ var GameDetailsComponent = (function () {
                 ])
             ]
         }), 
-        __metadata('design:paramtypes', [game_database_service_1.GameDatabaseService, router_1.Router, router_1.ActivatedRoute, common_1.Location])
+        __metadata('design:paramtypes', [game_database_service_1.GameDatabaseService, router_1.Router, router_1.ActivatedRoute, common_1.Location, user_service_1.UserService])
     ], GameDetailsComponent);
     return GameDetailsComponent;
 }());

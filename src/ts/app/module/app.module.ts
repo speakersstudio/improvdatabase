@@ -9,6 +9,7 @@ import { AppComponent } from '../component/app.component';
 import { GameDatabaseComponent } from '../component/game-database.component';
 import { AboutComponent } from '../component/about.component';
 import { ContactComponent } from '../component/contact.component';
+import { UserComponent } from '../component/user.component';
 
 // sub-views
 // TODO: rename these files to .view and put them in a view folder
@@ -18,10 +19,14 @@ import { GameDetailsComponent } from '../component/game-details.component';
 import { AlphaSignUpComponent } from '../component/alpha-sign-up.component';
 
 import { GameDatabaseService } from "../service/game-database.service";
+import { UserService } from "../service/user.service";
 
 import { AppRoutingModule } from './app-routing.module';
 
 import { GameFilterPipe } from '../pipe/game-filter.pipe';
+
+// utils
+import { WebStorageService, WebStorageSubscriber } from "../util/webstorage.util";
 
 @NgModule({
     imports: [
@@ -35,6 +40,7 @@ import { GameFilterPipe } from '../pipe/game-filter.pipe';
         GameDatabaseComponent,
         AboutComponent,
         ContactComponent,
+        UserComponent,
         
         ToolbarComponent,
         GameCardComponent,
@@ -46,7 +52,9 @@ import { GameFilterPipe } from '../pipe/game-filter.pipe';
     bootstrap: [ AppComponent ],
     providers: [ 
         GameDatabaseService,
-        PathLocationStrategy
+        UserService,
+        PathLocationStrategy,
+        WebStorageService
     ],
     entryComponents: [
         AlphaSignUpComponent

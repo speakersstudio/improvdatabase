@@ -18,7 +18,7 @@
         <p *ngIf="filter.property != 'search'">Filtered results</p>
     </div>
     <div class="card-list">
-        <div class="card ng-game-card" *ngFor="let game of games; trackBy:trackByGames"
+        <div class="card ng-game-card clickable" *ngFor="let game of games; trackBy:trackByGames"
             [game]="game"
             [class.selected] = "game === selectedGame"
             [showTags]="tools[0].active"

@@ -25,6 +25,8 @@ import { Note } from '../model/note';
 
 import { Tool } from './toolbar.component';
 
+import { UserService } from "../service/user.service";
+
 @Component({
     moduleId: module.id,
     selector: '.page.ng-game-details',
@@ -62,7 +64,15 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
 
     showToolbarScrollPosition: number = window.innerWidth * 0.15;
 
+    permissions: Object = {};
+
     private tools: Tool[] = [
+        {
+            icon: "fa-trash",
+            name: "deleteGame",
+            text: "Delete Game",
+            permission: "game_delete"
+        },
         {
             icon: "fa-random",
             name: "randomGame",
@@ -75,7 +85,8 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         private gameDatabaseService: GameDatabaseService,
         private router: Router,
         private route: ActivatedRoute,
-        private location: Location
+        private location: Location,
+        private userService: UserService
     ) { }
 
     ngOnInit(): void {
@@ -89,6 +100,9 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
             this.dialog = true;
             this.setGame(this.game);
         }
+
+        this.permissions = this.userService.getPermissions();
+        console.log(this.permissions);
     }
 
     ngOnDestroy(): void {
@@ -141,7 +155,12 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
                     this.router.navigate(['/games', {random: 'random'}]);
                 }
                 break;
+            case "deleteGame":
+                
+                break;
         }
     }
+
+
 
 }

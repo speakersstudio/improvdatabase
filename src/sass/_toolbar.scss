@@ -148,6 +148,7 @@
             padding: 0 $search-padding;
             height: $search-height;
             border-radius: $search-border-radius;
+            margin: 0;
 
             &::-webkit-input-placeholder {
                 color: $search-inactive-color;
@@ -241,6 +242,7 @@ nav button {
     color: $color-primary-text;
     margin: 0;
     float: left;
+    min-width: 0;
 
     &.active {
         color: $color-active;
@@ -295,6 +297,7 @@ nav {
         background-color: $color-menu-active-bg;
         color: $color-active;
         box-shadow: 0px 1px 15px rgba(0,0,0,0.3) inset;
+        cursor: default;
 
         &:before {
             /* makes it square! */
@@ -303,10 +306,52 @@ nav {
             padding-top: 100%;
         }
 
-        h1 {
-            @include abs(null, $nav-item-spacing, $nav-item-spacing, $nav-item-spacing);
-            text-align: right;
-            font-size: 1.5em;
+        .content {
+            @include abs($toolbar-height, 0, 0, 0);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: flex-end;
+            overflow: hidden;
+            margin: 0;
+            cursor: default;
+
+            h1 {
+                text-align: right;
+                font-size: 1.5em;
+                margin: $nav-item-spacing;
+            }
+
+            & > a {
+                font-size: 0.7em;
+                color: $color-active;
+                display: block;
+                text-align: right;
+                margin: $nav-item-spacing 0;
+
+                &:hover {
+                    background: none;
+                    color: $color-primary;
+                }
+            }
+
+            .login {
+                background-color: $color-content-bg;
+                transition: height $anim-duration;
+                height: 0px;
+                overflow: hidden;
+                width: 100%;
+            }
+
+            div {
+                width: 100%;
+            }
+
+            &:hover {
+                .login {
+                    height: 40px;
+                }
+            }
         }
 
         button {
@@ -347,5 +392,11 @@ nav {
             color: $color-active;
             box-shadow: 0px 1px 10px rgba(0,0,0,0.1) inset;
         }
+    }
+
+    hr {
+        margin: 8px 0;
+        border-width: 1px 0 0 0;
+        border-color: $color-hr;
     }
 }

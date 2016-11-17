@@ -12,6 +12,7 @@ var core_1 = require('@angular/core');
 require('rxjs/Subject');
 var router_1 = require('@angular/router');
 var app_component_1 = require('../component/app.component');
+var user_service_1 = require("../service/user.service");
 var Tool = (function () {
     function Tool() {
         this.active = false;
@@ -26,7 +27,7 @@ var SearchResult = (function () {
 }());
 exports.SearchResult = SearchResult;
 var ToolbarComponent = (function () {
-    function ToolbarComponent(_app, router) {
+    function ToolbarComponent(_app, router, userService) {
         /* I won't use this, but here is how to subscribe to router events!
         // when changing route, reset the toolbar
         router.events.subscribe(val => {
@@ -38,8 +39,10 @@ var ToolbarComponent = (function () {
         */
         this._app = _app;
         this.router = router;
+        this.userService = userService;
         this.title = "";
         this.tools = [];
+        this.allowedTools = [];
         this.showBack = false;
         this.showFilterClear = false;
         this.showSearch = false;
@@ -53,6 +56,13 @@ var ToolbarComponent = (function () {
         // TODO: pre-populate results with history and favorites
     }
     ToolbarComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        var perms = this.userService.getPermissions();
+        this.tools.forEach(function (tool) {
+            if (!tool.permission || perms[tool.permission]) {
+                _this.allowedTools.push(tool);
+            }
+        });
     };
     ToolbarComponent.prototype.setTitle = function (title) {
         this.title = title;
@@ -157,7 +167,7 @@ var ToolbarComponent = (function () {
             selector: '.toolbar',
             templateUrl: '../template/toolbar.component.html'
         }), 
-        __metadata('design:paramtypes', [app_component_1.AppComponent, router_1.Router])
+        __metadata('design:paramtypes', [app_component_1.AppComponent, router_1.Router, user_service_1.UserService])
     ], ToolbarComponent);
     return ToolbarComponent;
 }());

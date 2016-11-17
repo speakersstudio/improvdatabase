@@ -14,20 +14,6 @@ gulp.task('default', function() {
 
 });
 
-/*
-gulp.task('compileCompass', function() {
-    return gulp.src('src/sass/*.scss')
-        .pipe(maps.init())
-        .pipe(compass({
-            project: __dirname,
-            css: './public/css',
-            sass: './src/sass'
-        }))
-        .pipe(maps.write('./'))
-        .pipe(gulp.dest('./public/css'));
-});
-*/
-
 gulp.task('compileSass', function() {
     return gulp.src('src/sass/style.scss')
         .pipe(plumber({ errorHandler: handleError }))

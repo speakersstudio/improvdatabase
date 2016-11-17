@@ -27,11 +27,15 @@ $color-hover: rgb(252,247,209); // table row hover background
 // FONT
 $font-family: 'Roboto', 'Helvetica Neue', sans-serif !default;
 
+$font-size-input: 16px;
+
 // timings!
 $anim-duration: 300ms;
 
 // media query names
-$media-mobile: "only screen and (max-width: 700px)";
+$media-desktop: "only screen and (min-width: 500px)";
+$media-tablet: "only screen and (max-width: 768px)";
+$media-mobile: "only screen and (max-width: 500px)";
 
 // The default animation curves used by material design.
 $md-linear-out-slow-in-timing-function: cubic-bezier(0, 0, 0.2, 0.1) !default;
@@ -57,6 +61,8 @@ $swift-linear-timing-function: linear !default;
 $swift-linear: all $swift-linear-duration $swift-linear-timing-function !default;
 
 // elevations
+$raised-button-elevation: 2;
+$raised-button-pressed-elevation: 8;
 $card-elevation-default: 2;
 $card-elevation-active: 8;
 $toolbar-elevation: 4;
@@ -64,8 +70,9 @@ $nav-elevation: 16;
 $dialog-elevation: 24;
 
 // dimens
-$content-padding: 1%;
-$content-spacing: 1%;
+$content-padding: 16px;
+$content-spacing: 8px;
+$content-spacing-long: 24px;
 
 $content-item-vertical-margin: 2%;
 $content-item-horizontal-margin: 0;
@@ -74,6 +81,9 @@ $margin: 14px;
 $border-radius: 2px;
 
 $dropdown-max-height: 337px;
+
+$button-height: 36px;
+$button-min-width: 88px;
 
 // toolbar
 $toolbar-height: 48px;

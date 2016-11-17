@@ -55,18 +55,19 @@
     }
 }
 
-@mixin abs($top: null, $right: null, $bottom: null, $left: null) {
-    position: absolute;
+@mixin position($position, $top, $right, $bottom, $left, $zindex: 1) {
+    position: $position;
     top: $top;
     right: $right;
     bottom: $bottom;
     left: $left;
+    z-index: $zindex;
 }
 
-@mixin fixed($top: null, $right: null, $bottom: null, $left: null) {
-    position: fixed;
-    top: $top;
-    right: $right;
-    bottom: $bottom;
-    left: $left;
+@mixin abs($top: null, $right: null, $bottom: null, $left: null, $zindex: null) {
+    @include position(absolute, $top, $right, $bottom, $left, $zindex);
+}
+
+@mixin fixed($top: null, $right: null, $bottom: null, $left: null, $zindex: null) {
+    @include position(fixed, $top, $right, $bottom, $left, $zindex);
 }

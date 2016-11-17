@@ -37,7 +37,6 @@ exports.login = function(req, res) {
                     if (err) {
                         console.error('REDIS ERROR', err);
                     }
-                    console.log('USER LOG IN', username);
                     res.status(200).json(token);
                 });
             } else {
@@ -103,10 +102,12 @@ function genToken(user, callback) {
             exp: expires,
             iss: user.UserID
         }, config.token);
+
+        // this is all redis stuff, which isn't really necessary
         //multi = client.multi();
 
-    multi.set(token, user.UserID);
-    multi.expire(token, 60 * 60 * 24 * 7); // one week in seconds
+    //multi.set(token, user.UserID);
+    //multi.expire(token, 60 * 60 * 24 * 7); // one week in seconds
 
     /*
     multi.exec(function (err) {
@@ -117,6 +118,12 @@ function genToken(user, callback) {
         });
     });
     */
+
+    callback(null, {
+        token: token,
+        expires: expires,
+        user: user
+    })
 }
 
 function expiresIn(days) {

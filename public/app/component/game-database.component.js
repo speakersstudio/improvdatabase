@@ -8,12 +8,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require("@angular/core");
-var common_1 = require("@angular/common");
-var router_1 = require("@angular/router");
-require("rxjs/Subscription");
-var app_component_1 = require("./app.component");
-var game_database_service_1 = require("../service/game-database.service");
+var core_1 = require('@angular/core');
+var common_1 = require('@angular/common');
+var router_1 = require('@angular/router');
+require('rxjs/Subscription');
+var app_component_1 = require('./app.component');
+var game_database_service_1 = require('../service/game-database.service');
 var user_service_1 = require("../service/user.service");
 var GameDatabaseComponent = (function () {
     function GameDatabaseComponent(_app, route, router, gameDatabaseService, pathLocationStrategy, userService) {
@@ -87,6 +87,10 @@ var GameDatabaseComponent = (function () {
         if (this.filter) {
             //this._setPath("/games;filter=" + this.filter.property + ",value=" + this.filter.value);
             return games.filter(function (game) {
+                // don't show things without names if we can't edit them
+                if (!game.Names.length && !_this.userService.can('game_edit')) {
+                    return false;
+                }
                 if (_this.filter.property == 'TagID') {
                     for (var tagIDIndex = 0; tagIDIndex < game.TagGames.length; tagIDIndex++) {
                         if (game.TagGames[tagIDIndex].TagID == _this.filter.value) {
@@ -229,35 +233,30 @@ var GameDatabaseComponent = (function () {
             });
         }
     };
+    GameDatabaseComponent = __decorate([
+        core_1.Component({
+            moduleId: module.id,
+            selector: "game-database",
+            templateUrl: '../template/game-database.component.html',
+            animations: [
+                core_1.trigger('flyInOut', [
+                    core_1.state('in', core_1.style({
+                        opacity: 1
+                    })),
+                    core_1.transition('void => *', [
+                        core_1.style({ opacity: 0 }),
+                        core_1.animate(100)
+                    ]),
+                    core_1.transition('* => void', [
+                        core_1.animate(100, core_1.style({ opacity: 0 }))
+                    ])
+                ])
+            ]
+        }), 
+        __metadata('design:paramtypes', [app_component_1.AppComponent, router_1.ActivatedRoute, router_1.Router, game_database_service_1.GameDatabaseService, common_1.PathLocationStrategy, user_service_1.UserService])
+    ], GameDatabaseComponent);
     return GameDatabaseComponent;
 }());
-GameDatabaseComponent = __decorate([
-    core_1.Component({
-        moduleId: module.id,
-        selector: "game-database",
-        templateUrl: '../template/game-database.component.html',
-        animations: [
-            core_1.trigger('flyInOut', [
-                core_1.state('in', core_1.style({
-                    opacity: 1
-                })),
-                core_1.transition('void => *', [
-                    core_1.style({ opacity: 0 }),
-                    core_1.animate(100)
-                ]),
-                core_1.transition('* => void', [
-                    core_1.animate(100, core_1.style({ opacity: 0 }))
-                ])
-            ])
-        ]
-    }),
-    __metadata("design:paramtypes", [app_component_1.AppComponent,
-        router_1.ActivatedRoute,
-        router_1.Router,
-        game_database_service_1.GameDatabaseService,
-        common_1.PathLocationStrategy,
-        user_service_1.UserService])
-], GameDatabaseComponent);
 exports.GameDatabaseComponent = GameDatabaseComponent;
 
 //# sourceMappingURL=game-database.component.js.map

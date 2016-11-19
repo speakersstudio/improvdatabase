@@ -142,10 +142,15 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     }
 
     showEditName(): void {
-        this.editName = this.game.Names[0].Name;
-        this.editNameShown = true;
-        this._focusInput();
+        if (!this.game.Names.length) {
+            this.showAddName();
+        } else {
+            this.editName = this.game.Names[0].Name;
+            this.editNameShown = true;
+            this._focusInput();
+        }
     }
+
     showAddName(): void {
         this.editName = "";
         this.addNameShown = true;
@@ -156,6 +161,10 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         if (this.editName) {
             if (this.editNameShown) {
                 // update the existing name if it is different
+                if (this.editName != this.game.Names[0].Name) {
+                    this.game.Names[0].Name = this.editName;
+                    this.gameDatabaseService.saveName(this.game.Names[0]);
+                }
             } else if (this.addNameShown) {
                 // create a new name
                 this.gameDatabaseService.createName(this.game.GameID, this.editName)

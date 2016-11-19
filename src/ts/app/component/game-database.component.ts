@@ -128,6 +128,10 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
         if (this.filter) {
             //this._setPath("/games;filter=" + this.filter.property + ",value=" + this.filter.value);
             return games.filter((game) => {
+                // don't show things without names if we can't edit them
+                if (!game.Names.length && !this.userService.can('game_edit')) {
+                    return false;
+                }
                 if (this.filter.property == 'TagID') {
                     for (var tagIDIndex = 0; tagIDIndex < game.TagGames.length; tagIDIndex++) {
                         if (game.TagGames[tagIDIndex].TagID == this.filter.value) {

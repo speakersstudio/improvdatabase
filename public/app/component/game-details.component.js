@@ -8,12 +8,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require("@angular/core");
-var router_1 = require("@angular/router");
-var common_1 = require("@angular/common");
+var core_1 = require('@angular/core');
+var router_1 = require('@angular/router');
+var common_1 = require('@angular/common');
 var app_component_1 = require("./app.component");
-var game_database_service_1 = require("../service/game-database.service");
-var game_1 = require("../model/game");
+var game_database_service_1 = require('../service/game-database.service');
+var game_1 = require('../model/game');
 var user_service_1 = require("../service/user.service");
 var GameDetailsComponent = (function () {
     function GameDetailsComponent(_app, gameDatabaseService, router, route, location, userService) {
@@ -77,9 +77,14 @@ var GameDetailsComponent = (function () {
         }
     };
     GameDetailsComponent.prototype.showEditName = function () {
-        this.editName = this.game.Names[0].Name;
-        this.editNameShown = true;
-        this._focusInput();
+        if (!this.game.Names.length) {
+            this.showAddName();
+        }
+        else {
+            this.editName = this.game.Names[0].Name;
+            this.editNameShown = true;
+            this._focusInput();
+        }
     };
     GameDetailsComponent.prototype.showAddName = function () {
         this.editName = "";
@@ -90,6 +95,11 @@ var GameDetailsComponent = (function () {
         var _this = this;
         if (this.editName) {
             if (this.editNameShown) {
+                // update the existing name if it is different
+                if (this.editName != this.game.Names[0].Name) {
+                    this.game.Names[0].Name = this.editName;
+                    this.gameDatabaseService.saveName(this.game.Names[0]);
+                }
             }
             else if (this.addNameShown) {
                 // create a new name
@@ -300,42 +310,37 @@ var GameDetailsComponent = (function () {
                 break;
         }
     };
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', game_1.Game)
+    ], GameDetailsComponent.prototype, "game", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', core_1.EventEmitter)
+    ], GameDetailsComponent.prototype, "onClose", void 0);
+    GameDetailsComponent = __decorate([
+        core_1.Component({
+            moduleId: module.id,
+            selector: '.page.ng-game-details',
+            templateUrl: '../template/game-details.component.html',
+            animations: [
+                core_1.trigger('expand', [
+                    core_1.state('in', core_1.style({ height: '*' })),
+                    core_1.transition('void => *', [
+                        core_1.style({ height: 0 }),
+                        core_1.animate(100)
+                    ]),
+                    core_1.transition('* => void', [
+                        core_1.style({ height: '*' }),
+                        core_1.animate(100, core_1.style({ height: 0 }))
+                    ])
+                ])
+            ]
+        }), 
+        __metadata('design:paramtypes', [app_component_1.AppComponent, game_database_service_1.GameDatabaseService, router_1.Router, router_1.ActivatedRoute, common_1.Location, user_service_1.UserService])
+    ], GameDetailsComponent);
     return GameDetailsComponent;
 }());
-__decorate([
-    core_1.Input(),
-    __metadata("design:type", game_1.Game)
-], GameDetailsComponent.prototype, "game", void 0);
-__decorate([
-    core_1.Output(),
-    __metadata("design:type", core_1.EventEmitter)
-], GameDetailsComponent.prototype, "onClose", void 0);
-GameDetailsComponent = __decorate([
-    core_1.Component({
-        moduleId: module.id,
-        selector: '.page.ng-game-details',
-        templateUrl: '../template/game-details.component.html',
-        animations: [
-            core_1.trigger('expand', [
-                core_1.state('in', core_1.style({ height: '*' })),
-                core_1.transition('void => *', [
-                    core_1.style({ height: 0 }),
-                    core_1.animate(100)
-                ]),
-                core_1.transition('* => void', [
-                    core_1.style({ height: '*' }),
-                    core_1.animate(100, core_1.style({ height: 0 }))
-                ])
-            ])
-        ]
-    }),
-    __metadata("design:paramtypes", [app_component_1.AppComponent,
-        game_database_service_1.GameDatabaseService,
-        router_1.Router,
-        router_1.ActivatedRoute,
-        common_1.Location,
-        user_service_1.UserService])
-], GameDetailsComponent);
 exports.GameDetailsComponent = GameDetailsComponent;
 
 //# sourceMappingURL=game-details.component.js.map

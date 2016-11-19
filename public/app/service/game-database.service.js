@@ -8,10 +8,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require("@angular/core");
-var http_1 = require("@angular/http");
-require("rxjs/add/operator/toPromise");
-var user_service_1 = require("./user.service");
+var core_1 = require('@angular/core');
+var http_1 = require('@angular/http');
+require('rxjs/add/operator/toPromise');
+var user_service_1 = require('./user.service');
 var GameDatabaseService = (function () {
     function GameDatabaseService(http, userService) {
         this.http = http;
@@ -41,7 +41,8 @@ var GameDatabaseService = (function () {
             .then(function () {
             // set it and forget it
             _this.games.forEach(function (game) { return _this._setupGame(game); });
-            _this.games = _this._sortGames(sortProperty);
+            _this.sortProperty = sortProperty;
+            _this.games = _this._sortGames();
             return _this.games;
         });
     };
@@ -72,24 +73,36 @@ var GameDatabaseService = (function () {
         return this._gamePromise;
     };
     GameDatabaseService.prototype._getGame = function (id) {
+        var gameToReturn;
         if (this.games.length > 0) {
             this.games.forEach(function (game) {
                 if (game.GameID === id) {
-                    return Promise.resolve(game);
+                    gameToReturn = game;
                 }
             });
         }
-        // either no games are loaded or we couldn't find the specified one
-        return this.http.get(this.gamesUrl + '/' + id)
-            .toPromise()
-            .then(function (response) {
-            return response.json()[0];
-        })
-            .catch(this.handleError);
+        if (gameToReturn) {
+            return Promise.resolve(gameToReturn);
+        }
+        else {
+            // either no games are loaded or we couldn't find the specified one
+            return this.http.get(this.gamesUrl + '/' + id)
+                .toPromise()
+                .then(function (response) {
+                return response.json()[0];
+            })
+                .catch(this.handleError);
+        }
     };
-    GameDatabaseService.prototype._sortGames = function (property) {
-        if (property === 'name') {
+    GameDatabaseService.prototype._sortGames = function () {
+        if (this.sortProperty === 'name') {
             this.games.sort(function (g1, g2) {
+                if (!g1.Names.length) {
+                    return -1;
+                }
+                if (!g2.Names.length) {
+                    return 1;
+                }
                 if (g1.Names[0].Name > g2.Names[0].Name) {
                     return 1;
                 }
@@ -149,6 +162,25 @@ var GameDatabaseService = (function () {
             return name;
         })
             .catch(this.handleError);
+    };
+    GameDatabaseService.prototype.saveName = function (name) {
+        var _this = this;
+        return this.http.put(this.namesUrl + '/' + name.NameID, name, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then(function (response) {
+            var newName = response.json();
+            var index = _this.names.indexOf(name);
+            if (index > -1) {
+                _this.names.splice(index, 1, newName);
+            }
+            else {
+                _this.names.push(newName);
+            }
+            if (_this.sortProperty == 'name') {
+                _this._sortGames();
+            }
+            return newName;
+        });
     };
     GameDatabaseService.prototype.getTagGames = function () {
         var _this = this;
@@ -272,8 +304,8 @@ var GameDatabaseService = (function () {
                 var notesForGame = [];
                 notes.forEach(function (note) {
                     if (note.GameID == game.GameID
-                        || note.PlayerCountID == game.PlayerCountID
-                        || note.DurationID == game.DurationID
+                        || (game.PlayerCountID && note.PlayerCountID == game.PlayerCountID)
+                        || (game.DurationID && note.DurationID == game.DurationID)
                         || (note.TagID && _this.gameHasTag(game, [note.TagID]))) {
                         notesForGame.push(note);
                     }
@@ -322,6 +354,7 @@ var GameDatabaseService = (function () {
             .then(function (response) {
             var game = response.json();
             _this.games.push(_this._setupGame(game));
+            _this._sortGames();
             return game;
         });
     };
@@ -509,13 +542,12 @@ var GameDatabaseService = (function () {
             }
         });
     };
+    GameDatabaseService = __decorate([
+        core_1.Injectable(), 
+        __metadata('design:paramtypes', [http_1.Http, user_service_1.UserService])
+    ], GameDatabaseService);
     return GameDatabaseService;
 }());
-GameDatabaseService = __decorate([
-    core_1.Injectable(),
-    __metadata("design:paramtypes", [http_1.Http,
-        user_service_1.UserService])
-], GameDatabaseService);
 exports.GameDatabaseService = GameDatabaseService;
 
 //# sourceMappingURL=game-database.service.js.map

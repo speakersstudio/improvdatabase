@@ -1,7 +1,6 @@
 <span class="badge"><i class="fa fa-soccer-ball-o"></i></span>
 
-<h5 *ngIf="game.Names.length > 0">{{game.Names[0].Name}}</h5>
-<h5 *ngIf="game.Names.length === 0">Error</h5>
+<h5>{{game.Names.length ? game.Names[0].Name : 'New Game'}}</h5>
 
 <div class="metadata">
     <span *ngIf="playerCount" title="{{playerCount.Description}}"><i class="fa fa-group"></i> {{playerCount.Name}}</span>

@@ -36,6 +36,8 @@ export class GameDatabaseService {
     private tagGames: TagGame[] = [];
     private notes: Note[] = [];
 
+    private sortProperty: string;
+
     constructor(
         private http: Http,
         private userService: UserService
@@ -49,7 +51,8 @@ export class GameDatabaseService {
             .then(() => {
                 // set it and forget it
                 this.games.forEach(game => this._setupGame(game));
-                this.games = this._sortGames(sortProperty);
+                this.sortProperty = sortProperty;
+                this.games = this._sortGames();
                 return this.games;
             });
     }
@@ -84,25 +87,36 @@ export class GameDatabaseService {
     }
 
     private _getGame(id: number): Promise<Game> {
+        let gameToReturn: Game;
         if (this.games.length > 0) {
             this.games.forEach((game) => {
                 if (game.GameID === id) {
-                    return Promise.resolve(game);
+                    gameToReturn = game;
                 }
             })
         }
-        // either no games are loaded or we couldn't find the specified one
-        return this.http.get(this.gamesUrl + '/' + id)
-            .toPromise()
-            .then(response => {
-                return response.json()[0] as Game;
-            })
-            .catch(this.handleError);
+        if (gameToReturn) {
+            return Promise.resolve(gameToReturn);
+        } else {
+            // either no games are loaded or we couldn't find the specified one
+            return this.http.get(this.gamesUrl + '/' + id)
+                .toPromise()
+                .then(response => {
+                    return response.json()[0] as Game;
+                })
+                .catch(this.handleError);
+        }
     }
 
-    private _sortGames(property: string): Game[] {
-        if (property === 'name') {
+    private _sortGames(): Game[] {
+        if (this.sortProperty === 'name') {
             this.games.sort((g1, g2) => {
+                if (!g1.Names.length) {
+                    return -1;
+                }
+                if (!g2.Names.length) {
+                    return 1;
+                }
                 if (g1.Names[0].Name > g2.Names[0].Name) {
                     return 1;
                 }
@@ -164,6 +178,25 @@ export class GameDatabaseService {
                 return name;
             })
             .catch(this.handleError);
+    }
+
+    saveName(name: Name): Promise<Name> {
+        return this.http.put(this.namesUrl + '/' + name.NameID,
+            name, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then(response => {
+                let newName = response.json() as Name;
+                let index = this.names.indexOf(name);
+                if (index > -1) {
+                    this.names.splice(index, 1, newName);
+                } else {
+                    this.names.push(newName);
+                }
+                if (this.sortProperty == 'name') {
+                    this._sortGames();
+                }
+                return newName; 
+            })
     }
 
     private _tagGamePromise: Promise<TagGame[]>;
@@ -295,8 +328,8 @@ export class GameDatabaseService {
                 notes.forEach((note) => {
                     if (
                         note.GameID == game.GameID
-                        || note.PlayerCountID == game.PlayerCountID
-                        || note.DurationID == game.DurationID
+                        || (game.PlayerCountID && note.PlayerCountID == game.PlayerCountID)
+                        || (game.DurationID && note.DurationID == game.DurationID)
                         || (note.TagID && this.gameHasTag(game, [note.TagID]))
                     ) {
                         notesForGame.push(note);
@@ -350,6 +383,7 @@ export class GameDatabaseService {
             .then((response) => {
                 let game = response.json() as Game;
                 this.games.push(this._setupGame(game));
+                this._sortGames();
                 return game;
             })
     }

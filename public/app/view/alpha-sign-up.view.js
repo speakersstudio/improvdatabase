@@ -8,23 +8,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require("@angular/core");
+var core_1 = require('@angular/core');
 var AlphaSignUpView = (function () {
     function AlphaSignUpView() {
     }
     AlphaSignUpView.prototype.ngOnInit = function () {
         console.log('sign up init!');
     };
+    AlphaSignUpView = __decorate([
+        core_1.Component({
+            moduleId: module.id,
+            selector: ".alpha-sign-up",
+            templateUrl: "../template/view/alpha-sign-up.view.html"
+        }), 
+        __metadata('design:paramtypes', [])
+    ], AlphaSignUpView);
     return AlphaSignUpView;
 }());
-AlphaSignUpView = __decorate([
-    core_1.Component({
-        moduleId: module.id,
-        selector: ".alpha-sign-up",
-        templateUrl: "../template/view/alpha-sign-up.view.html"
-    }),
-    __metadata("design:paramtypes", [])
-], AlphaSignUpView);
 exports.AlphaSignUpView = AlphaSignUpView;
 
 //# sourceMappingURL=alpha-sign-up.view.js.map

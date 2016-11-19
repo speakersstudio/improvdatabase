@@ -8,10 +8,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var router_1 = require('@angular/router');
-var http_1 = require('@angular/http');
-var app_component_1 = require('./app.component');
+var core_1 = require("@angular/core");
+var router_1 = require("@angular/router");
+var http_1 = require("@angular/http");
+var app_component_1 = require("./app.component");
 //TODO: import models
 var ContactComponent = (function () {
     function ContactComponent(_app, router, http) {
@@ -117,17 +117,19 @@ var ContactComponent = (function () {
             });
         }
     };
-    ContactComponent = __decorate([
-        core_1.Component({
-            moduleId: module.id,
-            selector: ".page.contact",
-            templateUrl: "../template/contact.component.html",
-            styles: ["\n        .description {\n            margin: 0 10%;\n        }\n\n        textarea {\n            width: 100%;\n            font-size: 1.2em;\n        }\n\n        #contactSigOutput {\n            font-family: 'Alex Brush';\n            font-size: 52px;\n            transform: rotateZ(-5deg);\n            transform-origin: 0%;\n            color: #333;\n        }\n\n        .pull-right {\n            text-align: right;\n        }\n\n        .center {\n            text-align: center;\n            margin: 0;\n        }\n\n        .center p {\n            margin: 0;\n        }\n\n        button {\n            margin: 0;\n        }\n    "]
-        }), 
-        __metadata('design:paramtypes', [app_component_1.AppComponent, router_1.Router, http_1.Http])
-    ], ContactComponent);
     return ContactComponent;
 }());
+ContactComponent = __decorate([
+    core_1.Component({
+        moduleId: module.id,
+        selector: ".page.contact",
+        templateUrl: "../template/contact.component.html",
+        styles: ["\n        .description {\n            margin: 0 10%;\n        }\n\n        textarea {\n            width: 100%;\n            font-size: 1.2em;\n        }\n\n        #contactSigOutput {\n            font-family: 'Alex Brush';\n            font-size: 52px;\n            transform: rotateZ(-5deg);\n            transform-origin: 0%;\n            color: #333;\n        }\n\n        .pull-right {\n            text-align: right;\n        }\n\n        .center {\n            text-align: center;\n            margin: 0;\n        }\n\n        .center p {\n            margin: 0;\n        }\n\n        button {\n            margin: 0;\n        }\n    "]
+    }),
+    __metadata("design:paramtypes", [app_component_1.AppComponent,
+        router_1.Router,
+        http_1.Http])
+], ContactComponent);
 exports.ContactComponent = ContactComponent;
 
 //# sourceMappingURL=contact.component.js.map

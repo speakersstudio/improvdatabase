@@ -26,7 +26,10 @@
         </div>
     </div>
 </div>
+
 <div *ngIf="selectedGame"
     class="page ng-game-details"
     [game]="selectedGame"
     (onClose)="closeDetails($event)" ></div>
+
+<button class="fab" *ngIf="userService.can('game_create')" (click)="createGame()"><i class="fa fa-plus"></i></button>

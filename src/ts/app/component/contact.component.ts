@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Headers, Http } from '@angular/http';
 
 import {AppComponent    } from './app.component';
-import { Tool, ToolbarComponent } from './toolbar.component';
+import { Tool } from '../view/toolbar.view';
 import { FormsModule } from '@angular/forms';
 
 //TODO: import models

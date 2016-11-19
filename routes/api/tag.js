@@ -24,18 +24,20 @@ exports.create = function(req,res) {
                         GameID: req.body.GameID,
                         AddedUserID: UserID,
                         TagID: response.rows[0].TagID,
-                        DateAdded: 'NOW'
+                        DateAdded: 'NOW',
+                        AddedUserID: UserID,
+                        ModifiedUserID: UserID
                     };
                     var tq = connection.getInsertQuery('taggame', tagGameObj, 'TagGameID');
                     connection.query(tq.query, tq.values, function(err, tr) {
                         if (err) {
                             res.json('500', err);
                         } else {
-                            res.json('200', {TagID: tagGameObj.TagID, TagGameID: tr.rows[0].TagGameID});
+                            res.json('200', { Tag: response.rows[0], TagGame: tr.rows[0] });
                         }
                     });
                 } else {
-                    res.json('200', {TagID: response.rows[0].TagID});
+                    res.json('200', { Tag: response.rows[0] });
                 }
             }
         });

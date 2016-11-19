@@ -62,6 +62,11 @@ input, textarea {
         outline: none;
         border-color: $color-primary;
     }
+
+    &.inline-block {
+        display: inline-block;
+        width: auto;
+    }
 }
 
 input[type="radio"] {

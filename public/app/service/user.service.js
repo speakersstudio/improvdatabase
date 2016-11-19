@@ -8,9 +8,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var http_1 = require('@angular/http');
-require('rxjs/add/operator/toPromise');
+var core_1 = require("@angular/core");
+var http_1 = require("@angular/http");
+require("rxjs/add/operator/toPromise");
+var Subject_1 = require("rxjs/Subject");
 var user_1 = require("../model/user");
 var webstorage_util_1 = require("../util/webstorage.util");
 var UserService = (function () {
@@ -19,8 +20,13 @@ var UserService = (function () {
         this.loginUrl = '/login';
         this.logoutUrl = '/logout';
         this.userUrl = '/api/user/';
+        this.logginStateSource = new Subject_1.Subject();
+        this.loginState$ = this.logginStateSource.asObservable();
     }
     // TODO: onInit, check the token expiration against Date.now() and clear the session if necessary
+    UserService.prototype.announceLoginState = function () {
+        this.logginStateSource.next(this.loggedInUser);
+    };
     UserService.prototype.login = function (email, password) {
         var _this = this;
         return this.http.post(this.loginUrl, {
@@ -30,9 +36,10 @@ var UserService = (function () {
             .then(function (response) {
             var responseData = response.json();
             _this.token = responseData['token'];
+            _this.tokenExpires = responseData['expires'];
             _this.loggedInUser = responseData['user'];
+            _this.announceLoginState();
             return _this.loggedInUser;
-            // TODO: save token to local storage
         });
     };
     UserService.prototype.getAuthorizationHeader = function () {
@@ -47,6 +54,7 @@ var UserService = (function () {
             .then(function () {
             _this.token = null;
             _this.loggedInUser = null;
+            _this.announceLoginState();
             return true;
         });
     };
@@ -85,24 +93,32 @@ var UserService = (function () {
         });
         return permObject;
     };
-    __decorate([
-        webstorage_util_1.LocalStorage(), 
-        __metadata('design:type', String)
-    ], UserService.prototype, "token", void 0);
-    __decorate([
-        webstorage_util_1.LocalStorage(), 
-        __metadata('design:type', Number)
-    ], UserService.prototype, "tokenExpires", void 0);
-    __decorate([
-        webstorage_util_1.LocalStorage(), 
-        __metadata('design:type', user_1.User)
-    ], UserService.prototype, "loggedInUser", void 0);
-    UserService = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [http_1.Http])
-    ], UserService);
+    UserService.prototype.can = function (key) {
+        if (!this.loggedInUser || !this.loggedInUser.Permissions.length) {
+            return false;
+        }
+        else {
+            return this.loggedInUser.Permissions.indexOf(key) > -1;
+        }
+    };
     return UserService;
 }());
+__decorate([
+    webstorage_util_1.LocalStorage(),
+    __metadata("design:type", String)
+], UserService.prototype, "token", void 0);
+__decorate([
+    webstorage_util_1.LocalStorage(),
+    __metadata("design:type", Number)
+], UserService.prototype, "tokenExpires", void 0);
+__decorate([
+    webstorage_util_1.LocalStorage(),
+    __metadata("design:type", user_1.User)
+], UserService.prototype, "loggedInUser", void 0);
+UserService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [http_1.Http])
+], UserService);
 exports.UserService = UserService;
 
 //# sourceMappingURL=user.service.js.map

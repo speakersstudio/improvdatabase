@@ -32,9 +32,9 @@ export class SearchResult {
 @Component({
     moduleId: module.id,
     selector: '.toolbar',
-    templateUrl: '../template/toolbar.component.html'
+    templateUrl: '../template/view/toolbar.view.html'
 })
-export class ToolbarComponent implements OnInit {
+export class ToolbarView implements OnInit {
 
     @Input() title: string = "";
 

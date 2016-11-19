@@ -4,10 +4,10 @@ import { Router } from '@angular/router';
 @Component({
     moduleId: module.id,
     selector: ".alpha-sign-up",
-    templateUrl: "../template/alpha-sign-up.component.html"
+    templateUrl: "../template/view/alpha-sign-up.view.html"
 })
 
-export class AlphaSignUpComponent implements OnInit {
+export class AlphaSignUpView implements OnInit {
     constructor(
     ) { }
 

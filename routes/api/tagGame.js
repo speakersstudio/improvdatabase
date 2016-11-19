@@ -16,7 +16,7 @@ exports.create = function(req,res) {
             if (err) {
                 res.json("500", err);
             } else {
-                res.json("200", {TagGameID: response.rows[0].TagGameID});
+                res.json("200", {TagGameID: response.rows[0]});
             }
         });
     } else {

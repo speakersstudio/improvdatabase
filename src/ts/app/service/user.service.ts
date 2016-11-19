@@ -3,6 +3,8 @@ import { Headers, Http } from '@angular/http';
 
 import 'rxjs/add/operator/toPromise';
 
+import { Subject } from 'rxjs/Subject';
+
 import { User } from "../model/user";
 
 import { LocalStorage } from "../util/webstorage.util";
@@ -18,9 +20,19 @@ export class UserService {
     @LocalStorage() tokenExpires: number;
     @LocalStorage() loggedInUser: User;
 
-    constructor(private http: Http) { }
+    private logginStateSource = new Subject<User>();
+
+    loginState$ = this.logginStateSource.asObservable();
+
+    constructor(
+        private http: Http
+    ) { }
 
     // TODO: onInit, check the token expiration against Date.now() and clear the session if necessary
+
+    announceLoginState() {
+        this.logginStateSource.next(this.loggedInUser);
+    }
 
     login(email: string, password: string): Promise<User> {
         return this.http.post(this.loginUrl, {
@@ -31,11 +43,12 @@ export class UserService {
                 let responseData = response.json();
 
                 this.token = responseData['token'];
+                this.tokenExpires = responseData['expires'];
                 this.loggedInUser = responseData['user'];
 
-                return this.loggedInUser;
+                this.announceLoginState();
 
-                // TODO: save token to local storage
+                return this.loggedInUser;
             });
     }
 
@@ -52,6 +65,8 @@ export class UserService {
             .then(() => {
                 this.token = null;
                 this.loggedInUser = null;
+
+                this.announceLoginState();
                 return true;
             });
     }
@@ -94,6 +109,14 @@ export class UserService {
             permObject[perm] = true;
         });
         return permObject;
+    }
+
+    can (key: string): boolean {
+        if (!this.loggedInUser || !this.loggedInUser.Permissions.length) {
+            return false;
+        } else {
+            return this.loggedInUser.Permissions.indexOf(key) > -1;
+        }
     }
 
 }

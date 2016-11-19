@@ -10,14 +10,14 @@ import { GameDatabaseComponent } from '../component/game-database.component';
 import { AboutComponent } from '../component/about.component';
 import { ContactComponent } from '../component/contact.component';
 import { UserComponent } from '../component/user.component';
+import { GameDetailsComponent } from '../component/game-details.component';
 
 // sub-views
-// TODO: rename these files to .view and put them in a view folder
-import { ToolbarComponent } from '../component/toolbar.component';
-import { GameCardComponent } from '../component/game-card.component';
-import { GameDetailsComponent } from '../component/game-details.component';
-import { AlphaSignUpComponent } from '../component/alpha-sign-up.component';
+import { ToolbarView } from '../view/toolbar.view';
+import { GameCardView } from '../view/game-card.view';
+import { LoginView } from '../view/login.view';
 
+// services
 import { GameDatabaseService } from "../service/game-database.service";
 import { UserService } from "../service/user.service";
 
@@ -41,11 +41,11 @@ import { WebStorageService, WebStorageSubscriber } from "../util/webstorage.util
         AboutComponent,
         ContactComponent,
         UserComponent,
-        
-        ToolbarComponent,
-        GameCardComponent,
         GameDetailsComponent,
-        AlphaSignUpComponent,
+        
+        ToolbarView,
+        GameCardView,
+        LoginView,
 
         GameFilterPipe
     ],
@@ -55,9 +55,6 @@ import { WebStorageService, WebStorageSubscriber } from "../util/webstorage.util
         UserService,
         PathLocationStrategy,
         WebStorageService
-    ],
-    entryComponents: [
-        AlphaSignUpComponent
     ]
 })
 

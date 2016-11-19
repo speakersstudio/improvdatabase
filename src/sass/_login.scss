@@ -1,6 +1,6 @@
 @import "vars";
 
-user {
+login {
     .login-form {
         max-width: 300px;
 
@@ -14,14 +14,10 @@ user {
         }
     }
 
-    .user-form {
-        max-width: 500px;
-    }
-
     .fa-star {
         position: absolute;
         color: $color-primary;
-        top: 50%;
+        top: 35%;
         margin-left: 50%;
         font-size: 72px;
         left: -45px;
@@ -32,6 +28,12 @@ user {
         &.starburst {
             animation: starburst 1500ms 5500ms both linear;
         }
+    }
+}
+
+user {
+    .user-form {
+        max-width: 500px;
     }
 }
 

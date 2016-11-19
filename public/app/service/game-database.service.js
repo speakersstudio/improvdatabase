@@ -8,10 +8,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var http_1 = require('@angular/http');
-require('rxjs/add/operator/toPromise');
-var user_service_1 = require('./user.service');
+var core_1 = require("@angular/core");
+var http_1 = require("@angular/http");
+require("rxjs/add/operator/toPromise");
+var user_service_1 = require("./user.service");
 var GameDatabaseService = (function () {
     function GameDatabaseService(http, userService) {
         this.http = http;
@@ -135,6 +135,20 @@ var GameDatabaseService = (function () {
             }
         });
         return names;
+    };
+    GameDatabaseService.prototype.createName = function (gameID, name) {
+        var _this = this;
+        return this.http.post(this.namesUrl, {
+            GameID: gameID,
+            Name: name
+        }, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then(function (response) {
+            var name = response.json();
+            _this.names.push(name);
+            return name;
+        })
+            .catch(this.handleError);
     };
     GameDatabaseService.prototype.getTagGames = function () {
         var _this = this;
@@ -273,10 +287,91 @@ var GameDatabaseService = (function () {
         return this.http.delete(this.gamesUrl + '/' + game.GameID, this.userService.getAuthorizationHeader())
             .toPromise()
             .then(function (response) {
-            if (_this.games.indexOf(game) > -1) {
-                _this.games.splice(_this.games.indexOf(game), 1);
-            }
+            _this._removeGameFromArray(game);
             return true;
+        });
+    };
+    GameDatabaseService.prototype._removeGameFromArray = function (game) {
+        var index = this.games.indexOf(game);
+        if (index > -1) {
+            this.games.splice(index, 1);
+        }
+        return index;
+    };
+    GameDatabaseService.prototype.saveGame = function (game) {
+        var _this = this;
+        return this.http.put(this.gamesUrl + '/' + game.GameID, game, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then(function (response) {
+            var index = _this._removeGameFromArray(game);
+            var newGame = _this._setupGame(response.json());
+            if (index > -1) {
+                _this.games.splice(index, 0, newGame);
+            }
+            else {
+                _this.games.push(newGame);
+            }
+            return newGame;
+        })
+            .catch(this.handleError);
+    };
+    GameDatabaseService.prototype.createGame = function () {
+        var _this = this;
+        return this.http.post(this.gamesUrl, {}, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then(function (response) {
+            var game = response.json();
+            _this.games.push(_this._setupGame(game));
+            return game;
+        });
+    };
+    GameDatabaseService.prototype._addTagToGame = function (game, taggame) {
+        this.tagGames.push(taggame);
+        game.TagGames.push(taggame);
+    };
+    GameDatabaseService.prototype.saveTagToGame = function (game, tag) {
+        var _this = this;
+        return this.http.post(this.tagGameUrl, {
+            TagID: tag.TagID,
+            GameID: game.GameID
+        }, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then(function (response) {
+            var taggame = response.json();
+            _this._addTagToGame(game, taggame);
+            return taggame;
+        });
+    };
+    GameDatabaseService.prototype.deleteTagGame = function (taggame) {
+        var _this = this;
+        return this.http.delete(this.tagGameUrl + '/' + taggame.TagGameID, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then(function () {
+            var index = _this.tagGames.indexOf(taggame);
+            if (index > -1) {
+                _this.tagGames.splice(index, 1);
+            }
+            _this.getGame(taggame.GameID)
+                .then(function (game) { return _this._setupGame(game); });
+            return true;
+        });
+    };
+    GameDatabaseService.prototype.createTag = function (name, game) {
+        var _this = this;
+        var postObj = {
+            Name: name,
+            GameID: game.GameID
+        };
+        return this.http.post(this.tagUrl, postObj, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then(function (response) {
+            console.log(response.json());
+            var resObj = response.json();
+            var tag = resObj['Tag'];
+            _this.tags.push(tag);
+            var taggame = resObj['TagGame'];
+            _this._addTagToGame(game, taggame);
+            return tag;
         });
     };
     GameDatabaseService.prototype.handleError = function (error) {
@@ -340,6 +435,23 @@ var GameDatabaseService = (function () {
             }
         });
     };
+    GameDatabaseService.prototype.searchForTags = function (term) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            term = term.toLocaleLowerCase();
+            var matchingTags = [];
+            if (term) {
+                _this.getTags().then(function (tags) {
+                    tags.forEach(function (tag) {
+                        if (tag.Name.toLocaleLowerCase().indexOf(term) > -1) {
+                            matchingTags.push(tag);
+                        }
+                    });
+                    resolve(matchingTags);
+                });
+            }
+        });
+    };
     GameDatabaseService.prototype.searchForGames = function (term) {
         var _this = this;
         return new Promise(function (resolve, reject) {
@@ -397,12 +509,13 @@ var GameDatabaseService = (function () {
             }
         });
     };
-    GameDatabaseService = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [http_1.Http, user_service_1.UserService])
-    ], GameDatabaseService);
     return GameDatabaseService;
 }());
+GameDatabaseService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [http_1.Http,
+        user_service_1.UserService])
+], GameDatabaseService);
 exports.GameDatabaseService = GameDatabaseService;
 
 //# sourceMappingURL=game-database.service.js.map

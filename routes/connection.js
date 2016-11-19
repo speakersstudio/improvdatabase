@@ -9,6 +9,7 @@ var config  = require("../config")(),
     client.connect();
 
 console.log(conString);
+
 exports.query = function(query, values, callback) {
     var queryobj;
     if (typeof(values) === 'function') {
@@ -26,6 +27,7 @@ exports.query = function(query, values, callback) {
         }
         callback(err, result);
     });
+
 /*
     pg.connect(conString, function (err, client, done) {
         if (err) {
@@ -116,7 +118,7 @@ exports.getInsertQuery = function (table, data, id) {
         values.push(item);
     });
 
-    query += ') RETURNING "' + id + '";';
+    query += ') RETURNING *;';
 
     return { query: query, values: values};
 };

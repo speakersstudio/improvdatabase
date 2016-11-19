@@ -1,29 +1,5 @@
 <div class="toolbar transparent" [showBack]="true" (goBack)="goBack()"></div>
 
-<div class="content grid" *ngIf="!user">
-
-    <div class="card login-form" *ngIf="weGood" [class.shake]="loginError" [class.runaway]="runaway">
-
-        <form name="login" (ngSubmit)="submitLogin()" #loginForm="ngForm">
-            <h3>Login</h3>
-
-            <input name="email" [(ngModel)]="email" required type="text" placeholder="Email" />
-
-            <input name="password" [(ngModel)]="password" required type="password" placeholder="Password" />
-
-            <div class="error" *ngIf="loginError" [innerHTML]="loginError"></div>
-
-            <div class="button-group">
-                <input type="submit" class="button raised" value="LOGIN" [disabled]="!loginForm.form.valid" />
-            </div>
-        </form>
-
-    </div>
-
-    <i class="fa fa-star starburst" *ngIf="runaway"></i>
-
-</div>
-
 <div class="content grid" *ngIf="user">
 
     <div class="card user-form">

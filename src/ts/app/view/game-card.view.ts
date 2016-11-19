@@ -19,9 +19,9 @@ import { Tag } from '../model/tag';
 @Component({
     moduleId: module.id,
     selector: '.ng-game-card',
-    templateUrl: '../template/game-card.component.html'
+    templateUrl: '../template/view/game-card.view.html'
 })
-export class GameCardComponent implements OnInit, OnDestroy {
+export class GameCardView implements OnInit, OnDestroy {
     @Input() game: Game;
     playerCount: PlayerCount;
     duration: Duration;

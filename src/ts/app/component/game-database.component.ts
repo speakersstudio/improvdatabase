@@ -15,8 +15,10 @@ import 'rxjs/Subscription';
 import { Subscription } from 'rxjs/Subscription';
 
 import { AppComponent } from './app.component';
-import { Tool, SearchResult, ToolbarComponent } from './toolbar.component';
+import { Tool, SearchResult } from '../view/toolbar.view';
+
 import { GameDatabaseService } from '../service/game-database.service';
+import { UserService } from "../service/user.service";
 
 import { Game } from '../model/game';
 import { Name } from '../model/name';
@@ -61,7 +63,8 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private router: Router,
         private gameDatabaseService: GameDatabaseService,
-        private pathLocationStrategy: PathLocationStrategy
+        private pathLocationStrategy: PathLocationStrategy,
+        private userService: UserService
     ) { }
 
     private tools: Tool[] = [
@@ -125,6 +128,10 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
         if (this.filter) {
             //this._setPath("/games;filter=" + this.filter.property + ",value=" + this.filter.value);
             return games.filter((game) => {
+                // don't show things without names if we can't edit them
+                if (!game.Names.length && !this.userService.can('game_edit')) {
+                    return false;
+                }
                 if (this.filter.property == 'TagID') {
                     for (var tagIDIndex = 0; tagIDIndex < game.TagGames.length; tagIDIndex++) {
                         if (game.TagGames[tagIDIndex].TagID == this.filter.value) {
@@ -262,6 +269,15 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
         this.filter = null;
         this.getGames();
         this.setTitle();
+    }
+
+    createGame(): void {
+        if (this.userService.can('game_create')) {
+            this.gameDatabaseService.createGame()
+                .then(game => {
+                    this.onSelect(game);
+                });
+        }
     }
 
 }

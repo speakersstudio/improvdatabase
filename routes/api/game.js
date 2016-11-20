@@ -23,30 +23,33 @@ exports.create = function(req,res) {
             if (err) {
                 res.json("500", err);
             } else {
-                var nameData = {
-                    GameID: result.rows[0].GameID,
-                    DateAdded: 'NOW',
-                    DateModified: 'NOW',
-                    Name: req.body.Name,
-                    Weight: 1,
-                    AddedUserID: UserID,
-                    ModifiedUserID: UserID
-                };
+                if (req.body.Name) {
+                    var nameData = {
+                        GameID: result.rows[0].GameID,
+                        DateAdded: 'NOW',
+                        DateModified: 'NOW',
+                        Name: req.body.Name,
+                        Weight: 1,
+                        AddedUserID: UserID,
+                        ModifiedUserID: UserID
+                    };
 
-                var nameq = connection.getInsertQuery('name', nameData, 'NameID');
+                    var nameq = connection.getInsertQuery('name', nameData, 'NameID');
 
-                connection.query(nameq.query, nameq.values, function(err, nameResponse) {
-                    if (err) {
-                        res.json("500", err);
-                    } else {
-                        for(var t = 0, maxt = tagIDs.length; t < maxt; t++) {
-                            tagApi.tagGame(nameData.GameID, tagIDs[t], UserID);
+                    connection.query(nameq.query, nameq.values, function(err, nameResponse) {
+                        if (err) {
+                            res.json("500", err);
+                        } else {
+                            for(var t = 0, maxt = tagIDs.length; t < maxt; t++) {
+                                tagApi.tagGame(nameData.GameID, tagIDs[t], UserID);
+                            }
+
+                            res.json("200", { Game: result.rows[0], Name: nameResponse.rows[0] });
                         }
-
-                        res.json("200", {GameID: nameData.GameID, NameID: nameResponse.rows[0].NameID});
-                    }
-                });
-
+                    });
+                } else {
+                    res.json("200", result.rows[0]);
+                }
             }
         });
     } else {
@@ -181,6 +184,7 @@ exports.update = function(req,res) {
             }
         });
     } else {
+        console.error('User does not have permission to edit games', req.user);
         auth.unauthorized(req,res);
     }
 };

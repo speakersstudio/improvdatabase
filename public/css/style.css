@@ -199,6 +199,9 @@ input, textarea {
   input:focus, textarea:focus {
     outline: none;
     border-color: #CE872D; }
+  input.inline-block, textarea.inline-block {
+    display: inline-block;
+    width: auto; }
 
 input[type="radio"] {
   display: inline-block;
@@ -552,7 +555,8 @@ $color-hover: rgb(252,247,209); // table row hover background
   flex-wrap: wrap;
   justify-content: space-around;
   align-content: flex-start;
-  align-items: flex-start; }
+  align-items: flex-start;
+  padding-bottom: 72px; }
 
 .card {
   flex-grow: 1;
@@ -760,6 +764,28 @@ button,
     button[disabled]:hover,
     .button[disabled]:hover {
       box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12); }
+  button.fab,
+  .button.fab {
+    position: absolute;
+    right: 32px;
+    bottom: 16px;
+    z-index: 500;
+    font-size: 24px;
+    background: #CE872D;
+    color: #fcf7d1;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    padding: 0;
+    min-width: 0;
+    margin: 0;
+    line-height: 24px;
+    box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
+    transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: box-shadow; }
+    button.fab:hover,
+    .button.fab:hover {
+      box-shadow: 0px 7px 8px -4px rgba(0, 0, 0, 0.2), 0px 12px 17px 2px rgba(0, 0, 0, 0.14), 0px 5px 22px 4px rgba(0, 0, 0, 0.12); }
 
 .grid {
   display: flex;
@@ -803,27 +829,52 @@ button,
   background: #CE872D;
   color: #fcf7d1;
   border-radius: 4px;
+  position: relative;
   box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12); }
   .taglist li .fa {
     font-size: 0.9em;
     line-height: 14px; }
+  .taglist li.flat {
+    background: none;
+    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
+    color: #CE872D;
+    opacity: 0;
+    transition: opacity 200ms; }
+  .taglist li input {
+    padding: 0;
+    border: 0;
+    margin: 0 2px;
+    width: 100px;
+    font-size: 13px;
+    display: inline-block;
+    color: #fcf7d1; }
+  .taglist li .tag-hints {
+    position: absolute;
+    top: 100%; }
+    .taglist li .tag-hints li {
+      display: block;
+      margin: 4px;
+      box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+      margin-left: 14px; }
+
+.taglist:hover .flat {
+  opacity: 1; }
 
 .metadata.right {
   text-align: right; }
 
-.metadata span {
+.metadata > span {
   display: inline-block;
   vertical-align: middle;
   margin: 4px 0;
-  height: 14px;
-  line-height: 14px; }
-  .metadata span:last-child {
+  line-height: 18px; }
+  .metadata > span:last-child {
     border-right: 0px;
     margin-right: 0px;
     padding-right: 0px; }
-  .metadata span:not(:last-child):after {
+  .metadata > span:not(:last-child):after {
     content: "\2022";
-    margin: 0 4px 0 8px; }
+    margin: 0 4px; }
 
 .metadata i {
   width: 16px;
@@ -852,24 +903,26 @@ button,
     content: " ●    \A   ●   \A    ●  \A     ● \A      ●\A     ● \A    ●  \A   ●   \A  ●    \A ●     ";
     animation: loadingSpin 1s steps(10) infinite; }
 
+.dialog-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70%; }
+
 .dialog {
   width: 90%;
-  max-width: 280px;
+  max-width: 350px;
   background: #FFFFFF;
   padding: 8px 0;
   border-radius: 2px;
-  position: fixed;
-  top: 30%;
-  left: 50%;
+  position: relative;
   z-index: 5000;
-  transform: translate(-50%, -50%);
   box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12); }
+  .dialog .dialog-content {
+    padding: 16px 24px; }
   .dialog h2 {
-    margin: 16px 24px 0;
     font-size: 1.3em;
     font-weight: bold; }
-  .dialog p {
-    margin: 24px; }
 
 /* maybe not used?
 $color-active-text: #666; // active menu text
@@ -953,6 +1006,23 @@ $color-hover: rgb(252,247,209); // table row hover background
       margin: 2% 5% 12px;
       font-size: 28px;
       line-height: 32px; }
+      .page .material h4 span {
+        display: inline-block;
+        vertical-align: middle;
+        vertical-align: middle; }
+      .page .material h4 i {
+        font-size: 0.7em;
+        opacity: 0;
+        transition: opacity 200ms;
+        line-height: 32px;
+        margin-left: 8px; }
+      .page .material h4 input {
+        display: inline-block;
+        width: auto;
+        margin: -5px 0 -4px 0;
+        font-size: 0.75em; }
+      .page .material h4:hover i {
+        opacity: 1; }
     .page .material h5 {
       font-size: 18px;
       margin: 0 0 12px 0; }
@@ -972,6 +1042,9 @@ $color-hover: rgb(252,247,209); // table row hover background
         border-bottom: 0px;
         margin-bottom: 0px;
         padding-bottom: 0px; }
+      .page .material .metadata select {
+        height: 20px;
+        vertical-align: middle; }
     .page .material .description {
       line-height: 1.4;
       margin: 0 5%; }
@@ -986,6 +1059,9 @@ $color-hover: rgb(252,247,209); // table row hover background
         .page .material .description .image p {
           margin-top: 0;
           text-align: left; }
+    .page .material textarea.description {
+      width: 90%;
+      height: 180px; }
     .page .material .button-group {
       margin: 24px 5% 0;
       display: flex;
@@ -995,29 +1071,29 @@ $color-hover: rgb(252,247,209); // table row hover background
 $color-active-text: #666; // active menu text
 $color-hover: rgb(252,247,209); // table row hover background
 */
-user .login-form {
+login .login-form {
   max-width: 300px; }
-  user .login-form.shake {
+  login .login-form.shake {
     animation: shake 300ms both; }
-  user .login-form.runaway {
+  login .login-form.runaway {
     position: relative;
     animation: runaway 3000ms 2s both, runaway-motion 3s 2s both linear; }
 
-user .user-form {
-  max-width: 500px; }
-
-user .fa-star {
+login .fa-star {
   position: absolute;
   color: #CE872D;
-  top: 50%;
+  top: 35%;
   margin-left: 50%;
   font-size: 72px;
   left: -45px;
   transform: translateX(12px) translateY(-112px) scale(0);
   margin-top: -45px;
   transform-origin: 50% 50%; }
-  user .fa-star.starburst {
+  login .fa-star.starburst {
     animation: starburst 1500ms 5500ms both linear; }
+
+user .user-form {
+  max-width: 500px; }
 
 @-webkit-keyframes starburst {
   0% {

@@ -11,7 +11,7 @@ import { Tag } from '../model/tag';
 import { TagGame } from '../model/tag-game';
 import { Note } from '../model/note';
 
-import { SearchResult } from '../component/toolbar.component';
+import { SearchResult } from '../view/toolbar.view';
 
 import { UserService } from './user.service';
 
@@ -36,6 +36,8 @@ export class GameDatabaseService {
     private tagGames: TagGame[] = [];
     private notes: Note[] = [];
 
+    private sortProperty: string;
+
     constructor(
         private http: Http,
         private userService: UserService
@@ -49,7 +51,8 @@ export class GameDatabaseService {
             .then(() => {
                 // set it and forget it
                 this.games.forEach(game => this._setupGame(game));
-                this.games = this._sortGames(sortProperty);
+                this.sortProperty = sortProperty;
+                this.games = this._sortGames();
                 return this.games;
             });
     }
@@ -84,25 +87,36 @@ export class GameDatabaseService {
     }
 
     private _getGame(id: number): Promise<Game> {
+        let gameToReturn: Game;
         if (this.games.length > 0) {
             this.games.forEach((game) => {
                 if (game.GameID === id) {
-                    return Promise.resolve(game);
+                    gameToReturn = game;
                 }
             })
         }
-        // either no games are loaded or we couldn't find the specified one
-        return this.http.get(this.gamesUrl + '/' + id)
-            .toPromise()
-            .then(response => {
-                return response.json()[0] as Game;
-            })
-            .catch(this.handleError);
+        if (gameToReturn) {
+            return Promise.resolve(gameToReturn);
+        } else {
+            // either no games are loaded or we couldn't find the specified one
+            return this.http.get(this.gamesUrl + '/' + id)
+                .toPromise()
+                .then(response => {
+                    return response.json()[0] as Game;
+                })
+                .catch(this.handleError);
+        }
     }
 
-    private _sortGames(property: string): Game[] {
-        if (property === 'name') {
+    private _sortGames(): Game[] {
+        if (this.sortProperty === 'name') {
             this.games.sort((g1, g2) => {
+                if (!g1.Names.length) {
+                    return -1;
+                }
+                if (!g2.Names.length) {
+                    return 1;
+                }
                 if (g1.Names[0].Name > g2.Names[0].Name) {
                     return 1;
                 }
@@ -152,6 +166,39 @@ export class GameDatabaseService {
         return names;
     }
 
+    createName(gameID: number, name: string): Promise<Name> {
+        return this.http.post(this.namesUrl, {
+            GameID: gameID,
+            Name: name
+        }, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then(response => {
+                let name = response.json() as Name;
+                this.names.push(name);
+                return name;
+            })
+            .catch(this.handleError);
+    }
+
+    saveName(name: Name): Promise<Name> {
+        return this.http.put(this.namesUrl + '/' + name.NameID,
+            name, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then(response => {
+                let newName = response.json() as Name;
+                let index = this.names.indexOf(name);
+                if (index > -1) {
+                    this.names.splice(index, 1, newName);
+                } else {
+                    this.names.push(newName);
+                }
+                if (this.sortProperty == 'name') {
+                    this._sortGames();
+                }
+                return newName; 
+            })
+    }
+
     private _tagGamePromise: Promise<TagGame[]>;
     private getTagGames(): Promise<TagGame[]> {
         if (!this._tagGamePromise) {
@@ -197,6 +244,22 @@ export class GameDatabaseService {
         });
     }
 
+    createPlayerCount(name: string, min: number, max: number, description: string): Promise<PlayerCount> {
+        return this.http.post(this.playerCountUrl,
+            {
+                Name: name,
+                Min: min,
+                Max: max,
+                Description: description
+            }, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then((response) => {
+                let playercount = response.json() as PlayerCount;
+                this.playercounts.push(playercount);
+                return playercount;
+            });
+    }
+
     private _durationPromise: Promise<Duration[]>;
     getDurations(): Promise<Duration[]> {
         if (!this._durationPromise) {
@@ -221,6 +284,22 @@ export class GameDatabaseService {
                 });
             })
         });
+    }
+
+    createDuration(name: string, min: number, max: number, description: string): Promise<Duration> {
+        return this.http.post(this.durationUrl,
+            {
+                Name: name,
+                Min: min,
+                Max: max,
+                Description: description
+            }, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then((response) => {
+                let duration = response.json() as Duration;
+                this.durations.push(duration);
+                return duration;
+            });
     }
 
     private _tagPromise: Promise<Tag[]>;
@@ -281,8 +360,8 @@ export class GameDatabaseService {
                 notes.forEach((note) => {
                     if (
                         note.GameID == game.GameID
-                        || note.PlayerCountID == game.PlayerCountID
-                        || note.DurationID == game.DurationID
+                        || (game.PlayerCountID && note.PlayerCountID == game.PlayerCountID)
+                        || (game.DurationID && note.DurationID == game.DurationID)
                         || (note.TagID && this.gameHasTag(game, [note.TagID]))
                     ) {
                         notesForGame.push(note);
@@ -298,11 +377,106 @@ export class GameDatabaseService {
             this.userService.getAuthorizationHeader())
             .toPromise()
             .then((response) => {
-                if (this.games.indexOf(game) > -1) {
-                    this.games.splice(this.games.indexOf(game), 1);
-                }
+                this._removeGameFromArray(game);
                 return true;
             })
+    }
+
+    private _removeGameFromArray(game: Game): number {
+        let index = this.games.indexOf(game);
+        if (index > -1) {
+            this.games.splice(index, 1);
+        }
+        return index;
+    }
+
+    saveGame(game: Game): Promise<Game> {
+        return this.http.put(this.gamesUrl + '/' + game.GameID,
+            game,
+            this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then((response) => {
+                let index = this._removeGameFromArray(game);
+                let newGame = this._setupGame(response.json() as Game);
+                if (index > -1) {
+                    this.games.splice(index, 0, newGame);
+                } else {
+                    this.games.push(newGame);
+                }
+                return newGame;
+            })
+            .catch(this.handleError);
+    }
+
+    createGame(): Promise<Game> {
+        return this.http.post(this.gamesUrl,
+            {}, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then((response) => {
+                let game = response.json() as Game;
+                this.games.push(this._setupGame(game));
+                this._sortGames();
+                return game;
+            })
+    }
+
+    private _addTagToGame(game: Game, taggame: TagGame): void {
+        this.tagGames.push(taggame);
+        game.TagGames.push(taggame);
+    }
+
+    saveTagToGame(game: Game, tag: Tag): Promise<TagGame> {
+        return this.http.post(this.tagGameUrl,
+            {
+                TagID: tag.TagID,
+                GameID: game.GameID
+            },
+            this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then(response => {
+                let taggame = response.json() as TagGame;
+                this._addTagToGame(game, taggame);
+
+                return taggame;
+            })
+    }
+
+    deleteTagGame(taggame: TagGame): Promise<boolean> {
+        return this.http.delete(this.tagGameUrl + '/' + taggame.TagGameID,
+            this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then(() => {
+                let index = this.tagGames.indexOf(taggame);
+                if (index > -1) {
+                    this.tagGames.splice(index, 1);
+                }
+                this.getGame(taggame.GameID)
+                    .then(game => this._setupGame(game));
+                return true;
+            })
+    }
+
+    createTag(name: string, game: Game): Promise<Tag> {
+        let postObj = {
+            Name: name,
+            GameID: game.GameID
+        }
+
+        return this.http.post(this.tagUrl,
+            postObj, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then(response => {
+                console.log(response.json());
+
+                let resObj = response.json();
+                let tag = resObj['Tag'] as Tag;
+                this.tags.push(tag);
+
+                let taggame = resObj['TagGame'] as TagGame;
+                this._addTagToGame(game, taggame);
+
+                return tag;
+            });
     }
 
     private handleError(error: any): Promise<any> {
@@ -372,6 +546,23 @@ export class GameDatabaseService {
                     });
             }
         });
+    }
+
+    searchForTags(term: string): Promise<Tag[]> {
+        return new Promise<Tag[]>((resolve, reject) => {
+            term = term.toLocaleLowerCase();
+            let matchingTags: Tag[] = [];
+            if (term) {
+                this.getTags().then(tags => {
+                    tags.forEach(tag => {
+                        if (tag.Name.toLocaleLowerCase().indexOf(term) > -1) {
+                            matchingTags.push(tag);
+                        }
+                    });
+                    resolve(matchingTags);
+                });
+            }
+        })
     }
 
     searchForGames(term: string): Promise<Game[]> {

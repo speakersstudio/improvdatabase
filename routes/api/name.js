@@ -21,7 +21,7 @@ exports.create = function(req, res) {
             if (err) {
                 res.json('500', err);
             } else {
-                res.json('201', {"NameID": response.rows[0].NameID});
+                res.json('201', response.rows[0]);
             }
         });
     } else {

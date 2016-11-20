@@ -6,13 +6,27 @@
     (goBack)="closePage()"></div>
 
 <div class="curtain" [style.top]="(-(scrollpos * 0.5)) + 'px'">
-    <h2 *ngIf="game">{{game.Names[0].Name}}</h2>
+    <h2 *ngIf="game && game.Names && game.Names[0]">{{game.Names[0].Name}}</h2>
+    <h2 *ngIf="game && (!game.Names || !game.Names[0])">New Game</h2>
 </div>
 
 <div class="content" (scroll)="onScroll($event)">
     <div *ngIf="game" class="material">
 
-        <h4>{{game.Names[0].Name}}</h4>
+        <h4>
+            <span *ngIf="!addNameShown && !editNameShown"
+                [class.clickable]="can('name_update')"
+                (click)="showEditName()">{{game.Names[0] ? game.Names[0].Name : 'New Game'}}</span>
+
+            <input name="editName"
+                *ngIf="addNameShown || editNameShown"
+                [(ngModel)]="editName"
+                (keydown.enter)="saveEditName()"
+                (blur)="saveEditName()" />
+
+            <i *ngIf="can('name_submit') && !addNameShown && !editNameShown && game.Names[0]" (click)="showAddName()" 
+                class="fa fa-plus-circle clickable" title="Add an alternate name."></i>
+        </h4>
 
         <div class="metadata">
 
@@ -28,17 +42,76 @@
                 </ol>
             </div>
 
-            <span class="bullet" *ngIf="playerCount" title="{{playerCount.Description}}"><i class="fa fa-group"></i> {{playerCount.Name}}</span>
-            <span class="bullet" *ngIf="duration" title="{{duration.Description}}"><i class="fa fa-clock-o"></i> {{duration.Name}}</span>
+            <span class="bullet"
+                [title]="playerCount && !editPlayerCountShown ? playerCount.Description : ''">
+
+                <i class="fa fa-group"></i> 
+                
+                <span *ngIf="!editPlayerCountShown"
+                    [class.clickable]="can('game_edit')"
+                    (click)="showEditPlayerCount()">{{playerCount ? playerCount.Name : 'No Player Count'}}</span>
+
+                <select name="playerCount" type="number"
+                    *ngIf="editPlayerCountShown"
+                    [(ngModel)]="game.PlayerCountID"
+                    (ngModelChange)="savePlayerCount()">
+
+                    <option *ngFor="let pc of allPlayerCounts" [ngValue]="pc.PlayerCountID" [title]="pc.Description">{{pc.Name}}</option>
+
+                    <option *ngIf="can('meta_create')" [ngValue]="-1">Other...</option>
+                </select>
+
+            </span>
+            
+            <span class="bullet" 
+                [title]="duration && !editDurationShown ? duration.Description : ''">
+                
+                <i class="fa fa-clock-o"></i> 
+                
+                <span *ngIf="!editDurationShown"
+                    [class.clickable]="can('game_edit')"
+                    (click)="showEditDuration()">
+                    {{duration ? duration.Name : 'No Duration'}}</span>
+
+                <select name="duration"
+                    *ngIf="editDurationShown"
+                    [(ngModel)]="game.DurationID"
+                    (ngModelChange)="saveDuration()">
+
+                    <option *ngFor="let d of allDurations" [ngValue]="d.DurationID" [title]="d.Description">{{d.Name}}</option>
+
+                    <option *ngIf="can('meta_create')" [ngValue]="-1">Other...</option>
+                </select>
+                
+            </span>
 
             <ul class="taglist">
-                <li *ngFor="let tag of tags"><i class="fa fa-hashtag"></i> {{tag.Name}}</li>
+                <li *ngFor="let tag of tags" [class.clickable]="can('game_edit')" (click)="removeTag(tag)">
+                    <i class="fa fa-hashtag"></i> {{tag.Name}}</li>
+
+                <li *ngIf="can('game_edit') && !addTagShown"
+                    title="Add Tag" (click)="showAddTag()" class="clickable" [class.flat]="tags.length">
+                        <i class="fa fa-plus-circle"></i></li>
+
+                <li *ngIf="addTagShown">
+                    <i class="fa fa-hashtag"></i> <input type="text" [(ngModel)]="newTagText" (keydown)="newTagKeyDown($event)" />
+
+                    <ul class="tag-hints" *ngIf="tagHints && tagHints.length">
+                        <li *ngFor="let hint of tagHints" (click)="addTag(hint)" class="clickable">{{hint.Name}}</li>
+                    </ul>
+                </li>
             </ul>
         </div>
 
-        <div class="description" [innerHTML]="game.Description"></div>
+        <div class="description" [innerHTML]="game.Description ? game.Description : 'No Description'" *ngIf="!editDescriptionShown"></div>
 
-        <div class="button-group">
+        <textarea name="description" class="description" [(ngModel)]="newDescriptionText" *ngIf="editDescriptionShown"></textarea>
+
+        <div class="button-group" *ngIf="can('game_edit')">
+            <div class="button" *ngIf="!editDescriptionShown" (click)="showEditDescription()">EDIT</div>
+            
+            <div class="button" *ngIf="editDescriptionShown" (click)="_closeAllEdits()">cancel</div>
+            <div class="button raised" *ngIf="editDescriptionShown" (click)="saveDescription()">SAVE</div>
         </div>
     </div>
 
@@ -73,3 +146,6 @@
 
     </div>
 </div>
+
+<create-metadata *ngIf="can('meta_create')" class="dialog-container"
+    [type]="createMetadataType" (done)="onCreateMetadataDone($event)"></create-metadata>

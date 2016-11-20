@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import {AppComponent    } from './app.component';
-import { Tool, ToolbarComponent } from './toolbar.component'
+import { Tool } from '../view/toolbar.view';
 
 @Component({
     moduleId: module.id,

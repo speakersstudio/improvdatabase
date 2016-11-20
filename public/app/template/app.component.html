@@ -15,8 +15,7 @@
             <a routerLink="/user" (click)="toggleNav()" *ngIf="user"><i class="fa fa-user"></i> {{user.Email}}</a>
             
             <div class="login" *ngIf="!user">
-                <a routerLink="/user" (click)="toggleNav()"
-                    routerLinkActive="active"><i class="fa fa-user"></i> Log In</a>
+                <a (click)="login()"><i class="fa fa-user"></i> Log In</a>
             </div>
         </div>
     </div>
@@ -29,15 +28,21 @@
     <a routerLink="/contact" (click)="toggleNav()" routerLinkActive="active"><i class="fa fa-envelope"></i> Contact</a>
 </nav>
 
-<div (click)="closeOverlays()" class="backdrop nav-backdrop" [class.show]="showMenu || showDialog"></div>
+<div (click)="closeOverlays()" class="backdrop nav-backdrop" [class.show]="showBackdrop"></div>
 
 <router-outlet></router-outlet>
 
-<div class="dialog" *ngIf="showDialog" [@dialog]>
-    <h2>{{dialogTitle}}</h2>
-    <p>{{dialogMessage}}</p>
-    <div class="button-group">
-        <button (click)="onDialogDismiss()">Cancel</button>
-        <button (click)="onDialogConfirm()">{{dialogConfirm}}</button>
+<div class="dialog-container" *ngIf="showDialog">
+    <div class="dialog" [@dialog]>
+        <div class="dialog-content">
+            <h2>{{dialogTitle}}</h2>
+            <p>{{dialogMessage}}</p>
+        </div>
+        <div class="button-group">
+            <button (click)="onDialogDismiss()">Cancel</button>
+            <button (click)="onDialogConfirm()">{{dialogConfirm}}</button>
+        </div>
     </div>
 </div>
+
+<login [show]="showLogin" (done)="handleLogin($user)" class="dialog-container"></login>

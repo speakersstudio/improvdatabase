@@ -19,7 +19,7 @@ exports.create = function(req,res) {
             if (err) {
                 res.json('500', err);
             } else {
-                res.json('200', {PlayerCountID: response.rows[0].PlayerCountID});
+                res.json('200', response.rows[0]);
             }
         });
     } else {

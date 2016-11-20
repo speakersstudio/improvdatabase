@@ -20,6 +20,8 @@
     justify-content: space-around;
     align-content: flex-start;
     align-items: flex-start;
+
+    padding-bottom: $fab-width + $content-padding;
 }
 
 .card {

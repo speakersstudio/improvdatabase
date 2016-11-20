@@ -70,6 +70,32 @@
             margin: $content-item-vertical-margin $page-left-margin-no-icon $page-header-spacing;
             font-size: $title-font-size;
             line-height: $title-line-height;
+
+            span {
+                display: inline-block;
+                vertical-align: middle;
+                vertical-align: middle;
+            }
+            i {
+                font-size: 0.7em;
+                opacity: 0;
+                transition: opacity 200ms;
+                line-height: $title-line-height;
+                margin-left: $content-spacing;
+            }
+
+            input {
+                display: inline-block;
+                width: auto;
+                margin: -5px 0 -4px 0;
+                font-size: 0.75em;
+            }
+
+            &:hover {
+                i {
+                    opacity: 1;
+                }
+            }
         }
 
         h5 {
@@ -101,6 +127,11 @@
                 margin-bottom: 0px;
                 padding-bottom: 0px;
             }
+
+            select {
+                height: 20px;
+                vertical-align: middle;
+            }
         }
 
         .description {
@@ -125,6 +156,12 @@
                     text-align: left;
                 }
             }
+
+        }
+
+        textarea.description {
+            width: 90%;
+            height: 180px;
         }
 
         .button-group {

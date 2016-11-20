@@ -1,8 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { 
+    Component,
+    OnInit,
+    OnDestroy
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { Tool, ToolbarComponent } from './toolbar.component';
+import { Subscription } from 'rxjs/Subscription';
+
+import { AppComponent } from './app.component';
+
+import { Tool } from '../view/toolbar.view';
 import { UserService } from "../service/user.service";
 
 import { User } from "../model/user";
@@ -14,11 +22,10 @@ const MAX_ATTEMPTS = 5;
     selector: "user",
     templateUrl: "../template/user.component.html"
 })
-export class UserComponent implements OnInit {
+export class UserComponent implements OnInit, OnDestroy {
 
     email: string;
     password: string;
-
     passwordConfirm: string;
 
     loginError: string;
@@ -32,10 +39,13 @@ export class UserComponent implements OnInit {
 
     isPosting: boolean;
 
+    userSubscription: Subscription;
+
     constructor(
         private userService: UserService,
         private router: Router,
-        private location: Location
+        private location: Location,
+        private _app: AppComponent
     ) { }
 
     ngOnInit(): void {
@@ -43,38 +53,20 @@ export class UserComponent implements OnInit {
         this.weGood = true;
 
         this.user = this.userService.getLoggedInUser();
+        this.userSubscription = this.userService.loginState$.subscribe(user => this.user = user);
+
+        if (!this.user) {
+            // show the login form
+            this._app.login();
+        }
+    }
+
+    ngOnDestroy(): void {
+        this.userSubscription.unsubscribe();
     }
 
     goBack(): void {
         this.location.back();
-    }
-
-    submitLogin(): void {
-        this.loginError = "";
-        this.userService.login(this.email, this.password)
-            .then((user) => {
-                this.router.navigate(['/games']);
-            })
-            .catch((reason) => {
-                this.errorCount++;
-                if (reason.status == 500) {
-                    this.loginError = "Some sort of server error happened. Sorry.";
-                } else {
-                    if (this.errorCount < MAX_ATTEMPTS) {
-                        this.loginError = `<a href="/images/password-incorrect.png" target="_blank">Die wanna wanga!</a>`;
-                    } else if (this.errorCount == MAX_ATTEMPTS) {
-                        this.loginError = "I'll let you take one more crack at it.";
-                    } else {
-                        this.loginError = "That's it, I'm out of here.";
-
-                        this.runaway = true;
-
-                        setTimeout(() => {
-                            this.weGood = false;
-                        }, 5500);
-                    }
-                }
-            });
     }
 
     logout(): void {

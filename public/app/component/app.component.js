@@ -8,19 +8,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-require('rxjs/Subject');
-var router_1 = require('@angular/router');
-var user_service_1 = require('../service/user.service');
-var DIALOG_STYLE_IN = {
-    transform: 'translate(-50%, -50%)',
-    opacity: 1
-};
-var DIALOG_STYLE_OUT = {
-    transform: 'translate(-50%, -150%)',
-    opacity: 0
-};
-var DIALOG_ANIM_DURATION = 200;
+var core_1 = require("@angular/core");
+require("rxjs/Subject");
+var router_1 = require("@angular/router");
+var user_service_1 = require("../service/user.service");
+var anim_util_1 = require("../util/anim.util");
 var AppComponent = (function () {
     function AppComponent(_renderer, router, userService) {
         this._renderer = _renderer;
@@ -44,8 +36,16 @@ var AppComponent = (function () {
         */
     }
     AppComponent.prototype.ngOnInit = function () {
+        var _this = this;
         this.hideLoader();
-        this.user = this.userService.getLoggedInUser();
+        this.setUser(this.userService.getLoggedInUser());
+        this.userSubscription = this.userService.loginState$.subscribe(function (user) { return _this.setUser(user); });
+    };
+    AppComponent.prototype.ngOnDestroy = function () {
+        this.userSubscription.unsubscribe();
+    };
+    AppComponent.prototype.setUser = function (user) {
+        this.user = user;
     };
     AppComponent.prototype.showLoader = function () {
         this.loader.style.display = "block";
@@ -55,10 +55,13 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.toggleNav = function () {
         this.showMenu = !this.showMenu;
+        this.showBackdrop = this.showMenu;
     };
     AppComponent.prototype.closeOverlays = function () {
         this.showDialog = false;
         this.showMenu = false;
+        this.showLogin = false;
+        this.showBackdrop = false;
     };
     AppComponent.prototype.fullscreen = function () {
         // are we full-screen?
@@ -91,6 +94,7 @@ var AppComponent = (function () {
         this.dialogConfirm = button;
         this.dialogOnConfirm = onConfirm;
         this.showDialog = true;
+        this.showBackdrop = true;
     };
     AppComponent.prototype.onDialogDismiss = function () {
         this.closeOverlays();
@@ -105,28 +109,29 @@ var AppComponent = (function () {
             this.closeOverlays();
         }
     };
-    AppComponent = __decorate([
-        core_1.Component({
-            moduleId: module.id,
-            selector: 'my-app',
-            templateUrl: '../template/app.component.html',
-            animations: [
-                core_1.trigger('dialog', [
-                    core_1.state('in', core_1.style(DIALOG_STYLE_IN)),
-                    core_1.transition('void => *', [
-                        core_1.style(DIALOG_STYLE_OUT),
-                        core_1.animate(DIALOG_ANIM_DURATION + 'ms ease-out')
-                    ]),
-                    core_1.transition('* => void', [
-                        core_1.animate(DIALOG_ANIM_DURATION + 'ms ease-in', core_1.style(DIALOG_STYLE_OUT))
-                    ])
-                ])
-            ]
-        }), 
-        __metadata('design:paramtypes', [core_1.Renderer, router_1.Router, user_service_1.UserService])
-    ], AppComponent);
+    AppComponent.prototype.login = function () {
+        this.closeOverlays();
+        this.showLogin = true;
+        this.showBackdrop = true;
+    };
+    AppComponent.prototype.handleLogin = function (user) {
+        this.closeOverlays();
+    };
     return AppComponent;
 }());
+AppComponent = __decorate([
+    core_1.Component({
+        moduleId: module.id,
+        selector: 'my-app',
+        templateUrl: '../template/app.component.html',
+        animations: [
+            anim_util_1.DialogAnim.dialog
+        ]
+    }),
+    __metadata("design:paramtypes", [core_1.Renderer,
+        router_1.Router,
+        user_service_1.UserService])
+], AppComponent);
 exports.AppComponent = AppComponent;
 
 //# sourceMappingURL=app.component.js.map

@@ -31,6 +31,7 @@
     "rxjs": "5.0.0-beta.12",
     "serve-favicon": "~2.3.0",
     "systemjs": "^0.19.40",
+    "typescript": "^2.1.1",
     "underscore": "~1.8.3",
     "zone.js": "^0.6.26"
   },
@@ -48,6 +49,6 @@
     "gulp-sourcemaps": "~2.2.0",
     "gulp-typescript": "^3.0.2",
     "gulp-watch": "^4.3.10",
-    "typescript": "^2.0.6"
+    "typescript": "^2.1.1"
   }
 }

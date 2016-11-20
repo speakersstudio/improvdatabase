@@ -1,6 +1,7 @@
 import {
     Component,
     OnInit,
+    OnDestroy,
     Renderer,
     Injectable,
     trigger,
@@ -11,39 +12,23 @@ import {
 } from '@angular/core';
 import 'rxjs/Subject';
 import { Subject } from 'rxjs/Subject';
+import { Subscription } from 'rxjs/Subscription';
 import { Router, RoutesRecognized } from '@angular/router';
 
 import { User } from "../model/user";
 import { UserService } from '../service/user.service';
 
-const DIALOG_STYLE_IN = {
-        transform: 'translate(-50%, -50%)',
-        opacity: 1
-    };
-const DIALOG_STYLE_OUT = {
-        transform: 'translate(-50%, -150%)',
-        opacity: 0
-    };
-const DIALOG_ANIM_DURATION = 200;
+import { DialogAnim } from '../util/anim.util';
 
 @Component({
     moduleId: module.id,
     selector: 'my-app',
     templateUrl: '../template/app.component.html',
     animations: [
-        trigger('dialog', [
-            state('in', style(DIALOG_STYLE_IN)),
-            transition('void => *', [
-                style(DIALOG_STYLE_OUT),
-                animate(DIALOG_ANIM_DURATION + 'ms ease-out')
-            ]),
-            transition('* => void', [
-                animate(DIALOG_ANIM_DURATION + 'ms ease-in', style(DIALOG_STYLE_OUT))
-            ])
-        ])
+        DialogAnim.dialog
     ]
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
 
     loader = document.getElementById("siteLoader");
     showMenu: boolean = false;
@@ -58,6 +43,11 @@ export class AppComponent implements OnInit {
     dialogMessage: string = "";
     dialogConfirm: string = "";
     dialogOnConfirm: Function;
+
+    showLogin: boolean;
+    showBackdrop: boolean;
+
+    userSubscription: Subscription;
 
     constructor(
         private _renderer: Renderer,
@@ -75,10 +65,19 @@ export class AppComponent implements OnInit {
         */
     }
 
-    ngOnInit(): void {
+    ngOnInit() {
         this.hideLoader();
 
-        this.user = this.userService.getLoggedInUser();
+        this.setUser(this.userService.getLoggedInUser());
+        this.userSubscription = this.userService.loginState$.subscribe(user => this.setUser(user));
+    }
+
+    ngOnDestroy() {
+        this.userSubscription.unsubscribe();
+    }
+
+    setUser(user: User): void {
+        this.user = user;
     }
 
     showLoader(): void {
@@ -91,11 +90,14 @@ export class AppComponent implements OnInit {
 
     toggleNav(): void {
         this.showMenu = !this.showMenu;
+        this.showBackdrop = this.showMenu;
     }
 
     closeOverlays(): void {
         this.showDialog = false;
         this.showMenu = false;
+        this.showLogin = false;
+        this.showBackdrop = false;
     }
 
     fullscreen(): void {
@@ -131,6 +133,7 @@ export class AppComponent implements OnInit {
         this.dialogOnConfirm = onConfirm;
 
         this.showDialog = true;
+        this.showBackdrop = true;
     }
 
     onDialogDismiss(): void {
@@ -145,5 +148,15 @@ export class AppComponent implements OnInit {
         } else {
             this.closeOverlays();
         }
+    }
+
+    login(): void {
+        this.closeOverlays();
+        this.showLogin = true;
+        this.showBackdrop = true;
+    }
+
+    handleLogin(user: User): void {
+        this.closeOverlays();
     }
 }

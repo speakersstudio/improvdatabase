@@ -8,9 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
+var core_1 = require("@angular/core");
 var user_service_1 = require("../service/user.service");
-var anim_util_1 = require('../util/anim.util');
+var anim_util_1 = require("../util/anim.util");
 var MAX_ATTEMPTS = 5;
 var LoginView = (function () {
     function LoginView(userService) {
@@ -56,27 +56,27 @@ var LoginView = (function () {
         this.done.emit(null);
         return false;
     };
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', Boolean)
-    ], LoginView.prototype, "show", void 0);
-    __decorate([
-        core_1.Output(), 
-        __metadata('design:type', core_1.EventEmitter)
-    ], LoginView.prototype, "done", void 0);
-    LoginView = __decorate([
-        core_1.Component({
-            moduleId: module.id,
-            selector: "login",
-            templateUrl: "../template/view/login.view.html",
-            animations: [
-                anim_util_1.DialogAnim.dialog
-            ]
-        }), 
-        __metadata('design:paramtypes', [user_service_1.UserService])
-    ], LoginView);
     return LoginView;
 }());
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", Boolean)
+], LoginView.prototype, "show", void 0);
+__decorate([
+    core_1.Output(),
+    __metadata("design:type", core_1.EventEmitter)
+], LoginView.prototype, "done", void 0);
+LoginView = __decorate([
+    core_1.Component({
+        moduleId: module.id,
+        selector: "login",
+        templateUrl: "../template/view/login.view.html",
+        animations: [
+            anim_util_1.DialogAnim.dialog
+        ]
+    }),
+    __metadata("design:paramtypes", [user_service_1.UserService])
+], LoginView);
 exports.LoginView = LoginView;
 
 //# sourceMappingURL=login.view.js.map

@@ -867,8 +867,7 @@ button,
   display: inline-block;
   vertical-align: middle;
   margin: 4px 0;
-  height: 14px;
-  line-height: 14px; }
+  line-height: 18px; }
   .metadata > span:last-child {
     border-right: 0px;
     margin-right: 0px;

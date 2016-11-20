@@ -90,7 +90,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     toggleNav(): void {
         this.showMenu = !this.showMenu;
-        this.backdrop();
+        this.showBackdrop = this.showMenu;
     }
 
     closeOverlays(): void {
@@ -98,10 +98,6 @@ export class AppComponent implements OnInit, OnDestroy {
         this.showMenu = false;
         this.showLogin = false;
         this.showBackdrop = false;
-    }
-
-    backdrop(): void {
-        this.showBackdrop = true
     }
 
     fullscreen(): void {

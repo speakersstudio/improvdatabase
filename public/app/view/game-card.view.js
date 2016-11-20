@@ -8,10 +8,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-require('rxjs/Subscription');
-var game_database_service_1 = require('../service/game-database.service');
-var game_1 = require('../model/game');
+var core_1 = require("@angular/core");
+require("rxjs/Subscription");
+var game_database_service_1 = require("../service/game-database.service");
+var game_1 = require("../model/game");
 var GameCardView = (function () {
     function GameCardView(gameDatabaseService) {
         this.gameDatabaseService = gameDatabaseService;
@@ -47,24 +47,24 @@ var GameCardView = (function () {
     */
     GameCardView.prototype.ngOnDestroy = function () {
     };
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', game_1.Game)
-    ], GameCardView.prototype, "game", void 0);
-    __decorate([
-        core_1.Input(), 
-        __metadata('design:type', Boolean)
-    ], GameCardView.prototype, "showTags", void 0);
-    GameCardView = __decorate([
-        core_1.Component({
-            moduleId: module.id,
-            selector: '.ng-game-card',
-            templateUrl: '../template/view/game-card.view.html'
-        }), 
-        __metadata('design:paramtypes', [game_database_service_1.GameDatabaseService])
-    ], GameCardView);
     return GameCardView;
 }());
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", game_1.Game)
+], GameCardView.prototype, "game", void 0);
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", Boolean)
+], GameCardView.prototype, "showTags", void 0);
+GameCardView = __decorate([
+    core_1.Component({
+        moduleId: module.id,
+        selector: '.ng-game-card',
+        templateUrl: '../template/view/game-card.view.html'
+    }),
+    __metadata("design:paramtypes", [game_database_service_1.GameDatabaseService])
+], GameCardView);
 exports.GameCardView = GameCardView;
 
 //# sourceMappingURL=game-card.view.js.map

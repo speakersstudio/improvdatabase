@@ -24,6 +24,7 @@ var game_details_component_1 = require('../component/game-details.component');
 var toolbar_view_1 = require('../view/toolbar.view');
 var game_card_view_1 = require('../view/game-card.view');
 var login_view_1 = require('../view/login.view');
+var create_metadata_view_1 = require('../view/create-metadata.view');
 // services
 var game_database_service_1 = require("../service/game-database.service");
 var user_service_1 = require("../service/user.service");
@@ -52,6 +53,7 @@ var AppModule = (function () {
                 toolbar_view_1.ToolbarView,
                 game_card_view_1.GameCardView,
                 login_view_1.LoginView,
+                create_metadata_view_1.CreateMetadataView,
                 game_filter_pipe_1.GameFilterPipe
             ],
             bootstrap: [app_component_1.AppComponent],

@@ -224,6 +224,21 @@ var GameDatabaseService = (function () {
             });
         });
     };
+    GameDatabaseService.prototype.createPlayerCount = function (name, min, max, description) {
+        var _this = this;
+        return this.http.post(this.playerCountUrl, {
+            Name: name,
+            Min: min,
+            Max: max,
+            Description: description
+        }, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then(function (response) {
+            var playercount = response.json();
+            _this.playercounts.push(playercount);
+            return playercount;
+        });
+    };
     GameDatabaseService.prototype.getDurations = function () {
         var _this = this;
         if (!this._durationPromise) {
@@ -247,6 +262,21 @@ var GameDatabaseService = (function () {
                     }
                 });
             });
+        });
+    };
+    GameDatabaseService.prototype.createDuration = function (name, min, max, description) {
+        var _this = this;
+        return this.http.post(this.durationUrl, {
+            Name: name,
+            Min: min,
+            Max: max,
+            Description: description
+        }, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then(function (response) {
+            var duration = response.json();
+            _this.durations.push(duration);
+            return duration;
         });
     };
     GameDatabaseService.prototype.getTags = function () {

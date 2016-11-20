@@ -14,6 +14,7 @@ var common_1 = require('@angular/common');
 var app_component_1 = require("./app.component");
 var game_database_service_1 = require('../service/game-database.service');
 var game_1 = require('../model/game');
+var player_count_1 = require('../model/player-count');
 var user_service_1 = require("../service/user.service");
 var GameDetailsComponent = (function () {
     function GameDetailsComponent(_app, gameDatabaseService, router, route, location, userService) {
@@ -145,8 +146,12 @@ var GameDetailsComponent = (function () {
     };
     GameDetailsComponent.prototype.savePlayerCount = function () {
         if (this.can('game_edit')) {
-            if (this.game.PlayerCountID != 0) {
+            if (this.game.PlayerCountID > -1) {
                 this._saveGame();
+            }
+            else {
+                // show the create player count dialog
+                this.showCreateMetadataDialog("Player Count");
             }
         }
     };
@@ -164,10 +169,32 @@ var GameDetailsComponent = (function () {
     };
     GameDetailsComponent.prototype.saveDuration = function () {
         if (this.can('game_edit')) {
-            if (this.game.DurationID != 0) {
+            if (this.game.DurationID > -1) {
                 this._saveGame();
             }
+            else {
+                this.showCreateMetadataDialog("Duration");
+            }
         }
+    };
+    GameDetailsComponent.prototype.showCreateMetadataDialog = function (type) {
+        this.createMetadataType = type;
+    };
+    GameDetailsComponent.prototype.onCreateMetadataDone = function (metadata) {
+        this.createMetadataType = "";
+        console.log(metadata, metadata instanceof player_count_1.PlayerCount);
+        if (metadata.PlayerCountID) {
+            this.playerCount = metadata;
+            this.allPlayerCounts.push(metadata);
+            this.game.PlayerCountID = metadata.PlayerCountID;
+        }
+        else if (metadata.DurationID) {
+            this.duration = metadata;
+            this.allDurations.push(metadata);
+            this.game.DurationID = metadata.DurationID;
+        }
+        this._closeAllEdits();
+        this.gameDatabaseService.saveGame(this.game);
     };
     GameDetailsComponent.prototype.showAddTag = function () {
         this.addTagShown = true;

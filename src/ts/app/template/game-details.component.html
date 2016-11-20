@@ -56,10 +56,11 @@
                     [(ngModel)]="game.PlayerCountID"
                     (ngModelChange)="savePlayerCount()">
 
-                    <option *ngFor="let pc of allPlayerCounts" [ngValue]="+pc.PlayerCountID" [title]="pc.Description">{{pc.Name}}</option>
+                    <option *ngFor="let pc of allPlayerCounts" [ngValue]="pc.PlayerCountID" [title]="pc.Description">{{pc.Name}}</option>
 
-                    <option *ngIf="can('meta_create')" value="0">Other...</option>
+                    <option *ngIf="can('meta_create')" [ngValue]="-1">Other...</option>
                 </select>
+
             </span>
             
             <span class="bullet" 
@@ -79,7 +80,7 @@
 
                     <option *ngFor="let d of allDurations" [ngValue]="d.DurationID" [title]="d.Description">{{d.Name}}</option>
 
-                    <option *ngIf="can('meta_create')" value="0">Other...</option>
+                    <option *ngIf="can('meta_create')" [ngValue]="-1">Other...</option>
                 </select>
                 
             </span>
@@ -145,3 +146,6 @@
 
     </div>
 </div>
+
+<create-metadata *ngIf="can('meta_create')" class="dialog-container"
+    [type]="createMetadataType" (done)="onCreateMetadataDone($event)"></create-metadata>

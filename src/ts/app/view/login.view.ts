@@ -11,7 +11,7 @@ import { UserService } from "../service/user.service";
 
 import { User } from "../model/user";
 
-import AnimUtils from '../util/anim.util';
+import { DialogAnim } from '../util/anim.util';
 
 const MAX_ATTEMPTS = 5;
 
@@ -20,7 +20,7 @@ const MAX_ATTEMPTS = 5;
     selector: "login",
     templateUrl: "../template/view/login.view.html",
     animations: [
-        AnimUtils.dialog
+        DialogAnim.dialog
     ]
 })
 export class LoginView implements OnInit {

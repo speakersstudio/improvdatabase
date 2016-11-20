@@ -17,7 +17,7 @@ exports.create = function(req,res) {
         if (err) {
             res.json('500', err);
         } else {
-            res.json('200', {DurationID: response.rows[0].DurationID});
+            res.json('200', response.rows[0] );
         }
     });
 };

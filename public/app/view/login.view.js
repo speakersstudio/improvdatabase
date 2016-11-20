@@ -70,7 +70,7 @@ var LoginView = (function () {
             selector: "login",
             templateUrl: "../template/view/login.view.html",
             animations: [
-                anim_util_1.default.dialog
+                anim_util_1.DialogAnim.dialog
             ]
         }), 
         __metadata('design:paramtypes', [user_service_1.UserService])

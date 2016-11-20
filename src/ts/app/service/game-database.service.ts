@@ -244,6 +244,22 @@ export class GameDatabaseService {
         });
     }
 
+    createPlayerCount(name: string, min: number, max: number, description: string): Promise<PlayerCount> {
+        return this.http.post(this.playerCountUrl,
+            {
+                Name: name,
+                Min: min,
+                Max: max,
+                Description: description
+            }, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then((response) => {
+                let playercount = response.json() as PlayerCount;
+                this.playercounts.push(playercount);
+                return playercount;
+            });
+    }
+
     private _durationPromise: Promise<Duration[]>;
     getDurations(): Promise<Duration[]> {
         if (!this._durationPromise) {
@@ -268,6 +284,22 @@ export class GameDatabaseService {
                 });
             })
         });
+    }
+
+    createDuration(name: string, min: number, max: number, description: string): Promise<Duration> {
+        return this.http.post(this.durationUrl,
+            {
+                Name: name,
+                Min: min,
+                Max: max,
+                Description: description
+            }, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then((response) => {
+                let duration = response.json() as Duration;
+                this.durations.push(duration);
+                return duration;
+            });
     }
 
     private _tagPromise: Promise<Tag[]>;

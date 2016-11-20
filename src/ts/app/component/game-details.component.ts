@@ -85,6 +85,8 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     editDescriptionShown: boolean;
     newDescriptionText: string;
 
+    createMetadataType: string;
+
     private tools: Tool[] = [
         {
             icon: "fa-trash",
@@ -213,8 +215,11 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     }
     savePlayerCount(): void {
         if (this.can('game_edit')) {
-            if (this.game.PlayerCountID != 0) {
+            if (this.game.PlayerCountID > -1) {
                 this._saveGame();
+            } else {
+                // show the create player count dialog
+                this.showCreateMetadataDialog("Player Count");
             }
         }
     }
@@ -232,10 +237,34 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     }
     saveDuration(): void {
         if (this.can('game_edit')) {
-            if (this.game.DurationID != 0) {
+            if (this.game.DurationID > -1) {
                 this._saveGame();
+            } else {
+                this.showCreateMetadataDialog("Duration");
             }
         }
+    }
+
+    showCreateMetadataDialog(type: string): void {
+        this.createMetadataType = type;
+    }
+    onCreateMetadataDone(metadata: any): void {
+        this.createMetadataType = "";
+
+        console.log(metadata, metadata instanceof PlayerCount);
+
+        if (metadata.PlayerCountID) {
+            this.playerCount = metadata as PlayerCount;
+            this.allPlayerCounts.push(metadata);
+            this.game.PlayerCountID = metadata.PlayerCountID;
+        } else if (metadata.DurationID) {
+            this.duration = metadata as Duration;
+            this.allDurations.push(metadata);
+            this.game.DurationID = metadata.DurationID;
+        }
+
+        this._closeAllEdits();
+        this.gameDatabaseService.saveGame(this.game);
     }
 
     showAddTag(): void {

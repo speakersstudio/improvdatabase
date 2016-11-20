@@ -912,7 +912,7 @@ button,
 
 .dialog {
   width: 90%;
-  max-width: 280px;
+  max-width: 350px;
   background: #FFFFFF;
   padding: 8px 0;
   border-radius: 2px;
@@ -1043,6 +1043,9 @@ $color-hover: rgb(252,247,209); // table row hover background
         border-bottom: 0px;
         margin-bottom: 0px;
         padding-bottom: 0px; }
+      .page .material .metadata select {
+        height: 20px;
+        vertical-align: middle; }
     .page .material .description {
       line-height: 1.4;
       margin: 0 5%; }

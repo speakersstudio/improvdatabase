@@ -55,11 +55,16 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.toggleNav = function () {
         this.showMenu = !this.showMenu;
+        this.backdrop();
     };
     AppComponent.prototype.closeOverlays = function () {
         this.showDialog = false;
         this.showMenu = false;
         this.showLogin = false;
+        this.showBackdrop = false;
+    };
+    AppComponent.prototype.backdrop = function () {
+        this.showBackdrop = true;
     };
     AppComponent.prototype.fullscreen = function () {
         // are we full-screen?
@@ -92,6 +97,7 @@ var AppComponent = (function () {
         this.dialogConfirm = button;
         this.dialogOnConfirm = onConfirm;
         this.showDialog = true;
+        this.showBackdrop = true;
     };
     AppComponent.prototype.onDialogDismiss = function () {
         this.closeOverlays();
@@ -109,6 +115,7 @@ var AppComponent = (function () {
     AppComponent.prototype.login = function () {
         this.closeOverlays();
         this.showLogin = true;
+        this.showBackdrop = true;
     };
     AppComponent.prototype.handleLogin = function (user) {
         this.closeOverlays();
@@ -119,7 +126,7 @@ var AppComponent = (function () {
             selector: 'my-app',
             templateUrl: '../template/app.component.html',
             animations: [
-                anim_util_1.default.dialog
+                anim_util_1.DialogAnim.dialog
             ]
         }), 
         __metadata('design:paramtypes', [core_1.Renderer, router_1.Router, user_service_1.UserService])

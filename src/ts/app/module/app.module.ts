@@ -16,6 +16,7 @@ import { GameDetailsComponent } from '../component/game-details.component';
 import { ToolbarView } from '../view/toolbar.view';
 import { GameCardView } from '../view/game-card.view';
 import { LoginView } from '../view/login.view';
+import { CreateMetadataView } from '../view/create-metadata.view';
 
 // services
 import { GameDatabaseService } from "../service/game-database.service";
@@ -46,6 +47,7 @@ import { WebStorageService, WebStorageSubscriber } from "../util/webstorage.util
         ToolbarView,
         GameCardView,
         LoginView,
+        CreateMetadataView,
 
         GameFilterPipe
     ],

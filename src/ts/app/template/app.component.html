@@ -28,7 +28,7 @@
     <a routerLink="/contact" (click)="toggleNav()" routerLinkActive="active"><i class="fa fa-envelope"></i> Contact</a>
 </nav>
 
-<div (click)="closeOverlays()" class="backdrop nav-backdrop" [class.show]="showMenu || showDialog || showLogin"></div>
+<div (click)="closeOverlays()" class="backdrop nav-backdrop" [class.show]="showBackdrop"></div>
 
 <router-outlet></router-outlet>
 

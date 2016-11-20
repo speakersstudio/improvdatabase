@@ -18,14 +18,14 @@ import { Router, RoutesRecognized } from '@angular/router';
 import { User } from "../model/user";
 import { UserService } from '../service/user.service';
 
-import AnimUtils from '../util/anim.util';
+import { DialogAnim } from '../util/anim.util';
 
 @Component({
     moduleId: module.id,
     selector: 'my-app',
     templateUrl: '../template/app.component.html',
     animations: [
-        AnimUtils.dialog
+        DialogAnim.dialog
     ]
 })
 export class AppComponent implements OnInit, OnDestroy {
@@ -45,6 +45,7 @@ export class AppComponent implements OnInit, OnDestroy {
     dialogOnConfirm: Function;
 
     showLogin: boolean;
+    showBackdrop: boolean;
 
     userSubscription: Subscription;
 
@@ -89,12 +90,18 @@ export class AppComponent implements OnInit, OnDestroy {
 
     toggleNav(): void {
         this.showMenu = !this.showMenu;
+        this.backdrop();
     }
 
     closeOverlays(): void {
         this.showDialog = false;
         this.showMenu = false;
         this.showLogin = false;
+        this.showBackdrop = false;
+    }
+
+    backdrop(): void {
+        this.showBackdrop = true
     }
 
     fullscreen(): void {
@@ -130,6 +137,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.dialogOnConfirm = onConfirm;
 
         this.showDialog = true;
+        this.showBackdrop = true;
     }
 
     onDialogDismiss(): void {
@@ -149,6 +157,7 @@ export class AppComponent implements OnInit, OnDestroy {
     login(): void {
         this.closeOverlays();
         this.showLogin = true;
+        this.showBackdrop = true;
     }
 
     handleLogin(user: User): void {

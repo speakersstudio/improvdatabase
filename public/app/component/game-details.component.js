@@ -62,7 +62,7 @@ var GameDetailsComponent = (function () {
             this.dialog = true;
             this.setGame(this.game);
         }
-        console.log(this.userService.loggedInUser.Permissions);
+        //console.log(this.userService.loggedInUser.Permissions);
     };
     GameDetailsComponent.prototype.ngOnDestroy = function () {
     };

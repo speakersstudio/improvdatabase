@@ -123,7 +123,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
             this.setGame(this.game);
         }
 
-        console.log(this.userService.loggedInUser.Permissions);
+        //console.log(this.userService.loggedInUser.Permissions);
     }
 
     ngOnDestroy(): void {

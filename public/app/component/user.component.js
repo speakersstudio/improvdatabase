@@ -8,10 +8,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require("@angular/core");
-var router_1 = require("@angular/router");
-var common_1 = require("@angular/common");
-var app_component_1 = require("./app.component");
+var core_1 = require('@angular/core');
+var router_1 = require('@angular/router');
+var common_1 = require('@angular/common');
+var app_component_1 = require('./app.component');
 var user_service_1 = require("../service/user.service");
 var MAX_ATTEMPTS = 5;
 var UserComponent = (function () {
@@ -58,19 +58,16 @@ var UserComponent = (function () {
             _this.isPosting = false;
         });
     };
+    UserComponent = __decorate([
+        core_1.Component({
+            moduleId: module.id,
+            selector: "user",
+            templateUrl: "../template/user.component.html"
+        }), 
+        __metadata('design:paramtypes', [user_service_1.UserService, router_1.Router, common_1.Location, app_component_1.AppComponent])
+    ], UserComponent);
     return UserComponent;
 }());
-UserComponent = __decorate([
-    core_1.Component({
-        moduleId: module.id,
-        selector: "user",
-        templateUrl: "../template/user.component.html"
-    }),
-    __metadata("design:paramtypes", [user_service_1.UserService,
-        router_1.Router,
-        common_1.Location,
-        app_component_1.AppComponent])
-], UserComponent);
 exports.UserComponent = UserComponent;
 
 //# sourceMappingURL=user.component.js.map

@@ -13,8 +13,8 @@ var router_1 = require("@angular/router");
 var game_database_component_1 = require("../component/game-database.component");
 var about_component_1 = require("../component/about.component");
 var contact_component_1 = require("../component/contact.component");
-var game_details_component_1 = require("../component/game-details.component");
-var user_component_1 = require("../component/user.component");
+var game_details_component_1 = require('../component/game-details.component');
+var user_component_1 = require('../component/user.component');
 var routes = [
     {
         path: '',
@@ -45,15 +45,15 @@ var routes = [
 var AppRoutingModule = (function () {
     function AppRoutingModule() {
     }
+    AppRoutingModule = __decorate([
+        core_1.NgModule({
+            imports: [router_1.RouterModule.forRoot(routes)],
+            exports: [router_1.RouterModule]
+        }), 
+        __metadata('design:paramtypes', [])
+    ], AppRoutingModule);
     return AppRoutingModule;
 }());
-AppRoutingModule = __decorate([
-    core_1.NgModule({
-        imports: [router_1.RouterModule.forRoot(routes)],
-        exports: [router_1.RouterModule]
-    }),
-    __metadata("design:paramtypes", [])
-], AppRoutingModule);
 exports.AppRoutingModule = AppRoutingModule;
 ;
 

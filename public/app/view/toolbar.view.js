@@ -8,10 +8,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require("@angular/core");
-require("rxjs/Subject");
-var router_1 = require("@angular/router");
-var app_component_1 = require("../component/app.component");
+var core_1 = require('@angular/core');
+require('rxjs/Subject');
+var router_1 = require('@angular/router');
+var app_component_1 = require('../component/app.component');
 var user_service_1 = require("../service/user.service");
 var Tool = (function () {
     function Tool() {
@@ -121,58 +121,56 @@ var ToolbarView = (function () {
         this.searchResultClick.emit(result);
         this.clearSearch();
     };
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', String)
+    ], ToolbarView.prototype, "title", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Array)
+    ], ToolbarView.prototype, "tools", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Boolean)
+    ], ToolbarView.prototype, "showBack", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Boolean)
+    ], ToolbarView.prototype, "showFilterClear", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Boolean)
+    ], ToolbarView.prototype, "showSearch", void 0);
+    __decorate([
+        core_1.Input(), 
+        __metadata('design:type', Array)
+    ], ToolbarView.prototype, "searchResults", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', core_1.EventEmitter)
+    ], ToolbarView.prototype, "toolClicked", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', Object)
+    ], ToolbarView.prototype, "goBack", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', core_1.EventEmitter)
+    ], ToolbarView.prototype, "search", void 0);
+    __decorate([
+        core_1.Output(), 
+        __metadata('design:type', core_1.EventEmitter)
+    ], ToolbarView.prototype, "searchResultClick", void 0);
+    ToolbarView = __decorate([
+        core_1.Component({
+            moduleId: module.id,
+            selector: '.toolbar',
+            templateUrl: '../template/view/toolbar.view.html'
+        }), 
+        __metadata('design:paramtypes', [app_component_1.AppComponent, router_1.Router, user_service_1.UserService])
+    ], ToolbarView);
     return ToolbarView;
 }());
-__decorate([
-    core_1.Input(),
-    __metadata("design:type", String)
-], ToolbarView.prototype, "title", void 0);
-__decorate([
-    core_1.Input(),
-    __metadata("design:type", Array)
-], ToolbarView.prototype, "tools", void 0);
-__decorate([
-    core_1.Input(),
-    __metadata("design:type", Boolean)
-], ToolbarView.prototype, "showBack", void 0);
-__decorate([
-    core_1.Input(),
-    __metadata("design:type", Boolean)
-], ToolbarView.prototype, "showFilterClear", void 0);
-__decorate([
-    core_1.Input(),
-    __metadata("design:type", Boolean)
-], ToolbarView.prototype, "showSearch", void 0);
-__decorate([
-    core_1.Input(),
-    __metadata("design:type", Array)
-], ToolbarView.prototype, "searchResults", void 0);
-__decorate([
-    core_1.Output(),
-    __metadata("design:type", core_1.EventEmitter)
-], ToolbarView.prototype, "toolClicked", void 0);
-__decorate([
-    core_1.Output(),
-    __metadata("design:type", Object)
-], ToolbarView.prototype, "goBack", void 0);
-__decorate([
-    core_1.Output(),
-    __metadata("design:type", core_1.EventEmitter)
-], ToolbarView.prototype, "search", void 0);
-__decorate([
-    core_1.Output(),
-    __metadata("design:type", core_1.EventEmitter)
-], ToolbarView.prototype, "searchResultClick", void 0);
-ToolbarView = __decorate([
-    core_1.Component({
-        moduleId: module.id,
-        selector: '.toolbar',
-        templateUrl: '../template/view/toolbar.view.html'
-    }),
-    __metadata("design:paramtypes", [app_component_1.AppComponent,
-        router_1.Router,
-        user_service_1.UserService])
-], ToolbarView);
 exports.ToolbarView = ToolbarView;
 
 //# sourceMappingURL=toolbar.view.js.map

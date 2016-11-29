@@ -149,20 +149,20 @@ $color-active-text: #666; // active menu text
 $color-hover: rgb(252,247,209); // table row hover background
 */
 html {
-  background: #8A211D; }
+  background: #64b5f6; }
 
 body {
   font-family: "Roboto", "Helvetica Neue", sans-serif;
-  background: #8A211D;
+  background: #64b5f6;
   overflow: hidden;
   color: #666; }
 
 a {
-  color: #CE872D; }
+  color: #d32f2f; }
   a:visited {
-    color: #CE872D; }
+    color: #d32f2f; }
   a.active {
-    color: #F0CF4E;
+    color: #1b5e20;
     text-decoration: none; }
 
 h2, h3, h4, h5, p, button, textarea, .content-item {
@@ -198,7 +198,7 @@ input, textarea {
   font-family: "Roboto", "Helvetica Neue", sans-serif; }
   input:focus, textarea:focus {
     outline: none;
-    border-color: #CE872D; }
+    border-color: #d32f2f; }
   input.inline-block, textarea.inline-block {
     display: inline-block;
     width: auto; }
@@ -234,7 +234,7 @@ label {
 
 form h3 {
   font-size: 1.8em;
-  color: #CE872D; }
+  color: #d32f2f; }
 
 form .section {
   margin: 24px 0; }
@@ -264,14 +264,14 @@ $color-hover: rgb(252,247,209); // table row hover background
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   padding: 0;
   flex-direction: column;
-  background-color: #CE872D;
-  color: #fcf7d1;
+  background-color: #d32f2f;
+  color: #FFFFFF;
   position: fixed;
   z-index: 8;
   box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
   transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1), background-color 300ms; }
   .toolbar.active {
-    background-color: #F0CF4E;
+    background-color: #1b5e20;
     color: #666; }
     .toolbar.active .toolbar-row button {
       color: #666; }
@@ -371,7 +371,7 @@ $color-hover: rgb(252,247,209); // table row hover background
         display: flex;
         align-items: center; }
         .toolbar .search .results ul li:hover {
-          background-color: #F0CF4E; }
+          background-color: #1b5e20; }
         .toolbar .search .results ul li i {
           margin: 0 14px; }
         .toolbar .search .results ul li:first-child {
@@ -408,13 +408,13 @@ nav button {
   background: none;
   border: 0px;
   font-size: 1.15em;
-  color: #fcf7d1;
+  color: #FFFFFF;
   margin: 0;
   float: left;
   min-width: 0; }
   .toolbar button.active,
   nav button.active {
-    color: #F0CF4E; }
+    color: #1b5e20; }
   .toolbar button i,
   nav button i {
     text-shadow: 0 0 0; }
@@ -443,7 +443,7 @@ nav {
   box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
   transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
   will-change: box-shadow;
-  background-color: rgba(252, 247, 209, 0.9);
+  background-color: rgba(179, 229, 252, 0.9);
   font-size: 20px;
   transform: translate3d(-100%, 0, 0);
   transition: transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1); }
@@ -455,7 +455,7 @@ nav {
     position: relative;
     margin-bottom: 0.5em;
     background-color: #666;
-    color: #F0CF4E;
+    color: #1b5e20;
     box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.3) inset;
     cursor: default; }
     nav .nav-top:before {
@@ -482,15 +482,15 @@ nav {
         margin: 0.5em; }
       nav .nav-top .content > a {
         font-size: 0.7em;
-        color: #F0CF4E;
+        color: #1b5e20;
         display: block;
         text-align: right;
         margin: 0.5em 0; }
         nav .nav-top .content > a:hover {
           background: none;
-          color: #CE872D; }
+          color: #d32f2f; }
       nav .nav-top .content .login {
-        background-color: rgba(252, 247, 209, 0.9);
+        background-color: rgba(179, 229, 252, 0.9);
         transition: height 300ms;
         height: 0px;
         overflow: hidden;
@@ -521,10 +521,10 @@ nav {
     nav a:visited {
       color: #666; }
     nav a:hover {
-      background-color: #F0CF4E; }
+      background-color: #1b5e20; }
     nav a.active {
       background-color: #666;
-      color: #F0CF4E;
+      color: #1b5e20;
       box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.1) inset; }
   nav hr {
     margin: 8px 0;
@@ -541,7 +541,7 @@ $color-hover: rgb(252,247,209); // table row hover background
 */
 .list-metadata {
   text-align: center;
-  color: rgba(252, 247, 209, 0.9); }
+  color: rgba(179, 229, 252, 0.9); }
   .list-metadata p {
     margin-bottom: 0px; }
 
@@ -562,7 +562,7 @@ $color-hover: rgb(252,247,209); // table row hover background
   flex-grow: 1;
   display: inline-block;
   padding: 14px;
-  background: rgba(252, 247, 209, 0.9);
+  background: rgba(179, 229, 252, 0.9);
   margin: 14px;
   border-radius: 4px;
   position: relative;
@@ -581,11 +581,11 @@ $color-hover: rgb(252,247,209); // table row hover background
     position: absolute;
     top: -10px;
     left: -10px;
-    background: #CE872D;
+    background: #d32f2f;
     border-radius: 50%;
     padding: 2px;
     font-size: 20px;
-    color: #fcf7d1;
+    color: #FFFFFF;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
     transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
     will-change: box-shadow; }
@@ -595,10 +595,10 @@ $color-hover: rgb(252,247,209); // table row hover background
     right: 5px;
     font-size: 1.5em; }
   .card.selected {
-    background: #F0CF4E;
+    background: #1b5e20;
     box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12); }
     .card.selected .badge {
-      color: #F0CF4E;
+      color: #1b5e20;
       box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12); }
   .card.clickable:hover {
     box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12); }
@@ -622,7 +622,7 @@ $color-hover: rgb(252,247,209); // table row hover background
   top: 48px;
   margin: 20px 0;
   box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
-  background-color: #fcf7d1; }
+  background-color: #b3e5fc; }
 
 /* maybe not used?
 $color-active-text: #666; // active menu text
@@ -648,8 +648,8 @@ $color-hover: rgb(252,247,209); // table row hover background
   z-index: 2;
   animation: spin 1000ms 1000ms infinite; }
   .loading-icon .small-face, .loading-icon-shadow .small-face {
-    fill: #CE872D;
-    stroke: #8A211D; }
+    fill: #d32f2f;
+    stroke: #64b5f6; }
 
 .loading-icon-shadow {
   z-index: 1;
@@ -719,7 +719,7 @@ $color-hover: rgb(252,247,209); // table row hover background
   bottom: 0;
   left: 0; }
   .content.bg {
-    background-color: rgba(252, 247, 209, 0.9); }
+    background-color: rgba(179, 229, 252, 0.9); }
 
 .content-block {
   margin: 48px 0; }
@@ -738,7 +738,7 @@ button,
   text-align: center;
   margin: 0 8px;
   display: inline-block;
-  color: #CE872D;
+  color: #d32f2f;
   border: 0px;
   cursor: pointer;
   width: auto;
@@ -749,8 +749,8 @@ button,
   transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1), opacity 300ms; }
   button.raised,
   .button.raised {
-    background-color: #CE872D;
-    color: #fcf7d1;
+    background-color: #d32f2f;
+    color: #FFFFFF;
     box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12); }
     button.raised:hover,
     .button.raised:hover {
@@ -771,8 +771,8 @@ button,
     bottom: 16px;
     z-index: 500;
     font-size: 24px;
-    background: #CE872D;
-    color: #fcf7d1;
+    background: #d32f2f;
+    color: #FFFFFF;
     width: 56px;
     height: 56px;
     border-radius: 50%;
@@ -826,8 +826,8 @@ button,
   display: inline-block;
   margin: 2px;
   padding: 2px 5px;
-  background: #CE872D;
-  color: #fcf7d1;
+  background: #d32f2f;
+  color: #FFFFFF;
   border-radius: 4px;
   position: relative;
   box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12); }
@@ -837,7 +837,7 @@ button,
   .taglist li.flat {
     background: none;
     box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
-    color: #CE872D;
+    color: #d32f2f;
     opacity: 0;
     transition: opacity 200ms; }
   .taglist li input {
@@ -847,7 +847,7 @@ button,
     width: 100px;
     font-size: 13px;
     display: inline-block;
-    color: #fcf7d1; }
+    color: #FFFFFF; }
   .taglist li .tag-hints {
     position: absolute;
     top: 100%; }
@@ -939,7 +939,7 @@ $color-hover: rgb(252,247,209); // table row hover background
   bottom: 0;
   left: 0;
   z-index: 11;
-  background-color: rgba(252, 247, 209, 0.9);
+  background-color: rgba(179, 229, 252, 0.9);
   overflow: auto;
   box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12); }
   .page .curtain {
@@ -950,7 +950,7 @@ $color-hover: rgb(252,247,209); // table row hover background
     left: 0;
     right: 0;
     height: 30vw;
-    background: #8A211D;
+    background: #64b5f6;
     overflow: hidden; }
     @media only screen and (max-width: 500px) {
       .page .curtain {
@@ -958,7 +958,7 @@ $color-hover: rgb(252,247,209); // table row hover background
     .page .curtain h2 {
       font-weight: bold;
       font-size: 22vw;
-      color: rgba(252, 247, 209, 0.9);
+      color: rgba(179, 229, 252, 0.9);
       transform: rotateZ(-22deg);
       position: absolute;
       top: -47%;
@@ -1081,7 +1081,7 @@ login .login-form {
 
 login .fa-star {
   position: absolute;
-  color: #CE872D;
+  color: #d32f2f;
   top: 35%;
   margin-left: 50%;
   font-size: 72px;

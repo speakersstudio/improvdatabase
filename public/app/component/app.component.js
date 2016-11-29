@@ -8,11 +8,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require("@angular/core");
-require("rxjs/Subject");
-var router_1 = require("@angular/router");
-var user_service_1 = require("../service/user.service");
-var anim_util_1 = require("../util/anim.util");
+var core_1 = require('@angular/core');
+require('rxjs/Subject');
+var router_1 = require('@angular/router');
+var user_service_1 = require('../service/user.service');
+var anim_util_1 = require('../util/anim.util');
 var AppComponent = (function () {
     function AppComponent(_renderer, router, userService) {
         this._renderer = _renderer;
@@ -117,21 +117,19 @@ var AppComponent = (function () {
     AppComponent.prototype.handleLogin = function (user) {
         this.closeOverlays();
     };
+    AppComponent = __decorate([
+        core_1.Component({
+            moduleId: module.id,
+            selector: 'my-app',
+            templateUrl: '../template/app.component.html',
+            animations: [
+                anim_util_1.DialogAnim.dialog
+            ]
+        }), 
+        __metadata('design:paramtypes', [core_1.Renderer, router_1.Router, user_service_1.UserService])
+    ], AppComponent);
     return AppComponent;
 }());
-AppComponent = __decorate([
-    core_1.Component({
-        moduleId: module.id,
-        selector: 'my-app',
-        templateUrl: '../template/app.component.html',
-        animations: [
-            anim_util_1.DialogAnim.dialog
-        ]
-    }),
-    __metadata("design:paramtypes", [core_1.Renderer,
-        router_1.Router,
-        user_service_1.UserService])
-], AppComponent);
 exports.AppComponent = AppComponent;
 
 //# sourceMappingURL=app.component.js.map

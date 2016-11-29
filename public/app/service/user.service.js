@@ -8,10 +8,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require("@angular/core");
-var http_1 = require("@angular/http");
-require("rxjs/add/operator/toPromise");
-var Subject_1 = require("rxjs/Subject");
+var core_1 = require('@angular/core');
+var http_1 = require('@angular/http');
+require('rxjs/add/operator/toPromise');
+var Subject_1 = require('rxjs/Subject');
 var user_1 = require("../model/user");
 var webstorage_util_1 = require("../util/webstorage.util");
 var UserService = (function () {
@@ -101,24 +101,24 @@ var UserService = (function () {
             return this.loggedInUser.Permissions.indexOf(key) > -1;
         }
     };
+    __decorate([
+        webstorage_util_1.LocalStorage(), 
+        __metadata('design:type', String)
+    ], UserService.prototype, "token", void 0);
+    __decorate([
+        webstorage_util_1.LocalStorage(), 
+        __metadata('design:type', Number)
+    ], UserService.prototype, "tokenExpires", void 0);
+    __decorate([
+        webstorage_util_1.LocalStorage(), 
+        __metadata('design:type', user_1.User)
+    ], UserService.prototype, "loggedInUser", void 0);
+    UserService = __decorate([
+        core_1.Injectable(), 
+        __metadata('design:paramtypes', [http_1.Http])
+    ], UserService);
     return UserService;
 }());
-__decorate([
-    webstorage_util_1.LocalStorage(),
-    __metadata("design:type", String)
-], UserService.prototype, "token", void 0);
-__decorate([
-    webstorage_util_1.LocalStorage(),
-    __metadata("design:type", Number)
-], UserService.prototype, "tokenExpires", void 0);
-__decorate([
-    webstorage_util_1.LocalStorage(),
-    __metadata("design:type", user_1.User)
-], UserService.prototype, "loggedInUser", void 0);
-UserService = __decorate([
-    core_1.Injectable(),
-    __metadata("design:paramtypes", [http_1.Http])
-], UserService);
 exports.UserService = UserService;
 
 //# sourceMappingURL=user.service.js.map

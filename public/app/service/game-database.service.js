@@ -8,10 +8,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require("@angular/core");
-var http_1 = require("@angular/http");
-require("rxjs/add/operator/toPromise");
-var user_service_1 = require("./user.service");
+var core_1 = require('@angular/core');
+var http_1 = require('@angular/http');
+require('rxjs/add/operator/toPromise');
+var user_service_1 = require('./user.service');
 var GameDatabaseService = (function () {
     function GameDatabaseService(http, userService) {
         this.http = http;
@@ -572,13 +572,12 @@ var GameDatabaseService = (function () {
             }
         });
     };
+    GameDatabaseService = __decorate([
+        core_1.Injectable(), 
+        __metadata('design:paramtypes', [http_1.Http, user_service_1.UserService])
+    ], GameDatabaseService);
     return GameDatabaseService;
 }());
-GameDatabaseService = __decorate([
-    core_1.Injectable(),
-    __metadata("design:paramtypes", [http_1.Http,
-        user_service_1.UserService])
-], GameDatabaseService);
 exports.GameDatabaseService = GameDatabaseService;
 
 //# sourceMappingURL=game-database.service.js.map

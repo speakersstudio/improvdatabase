@@ -152,7 +152,7 @@ html {
   background: #64b5f6; }
 
 body {
-  font-family: "Roboto", "Helvetica Neue", sans-serif;
+  font-family: "Lato", sans-serif;
   background: #64b5f6;
   overflow: hidden;
   color: #666; }
@@ -173,6 +173,9 @@ em {
 
 strong {
   font-weight: bold; }
+
+.light {
+  font-weight: 300; }
 
 my-app {
   position: absolute;
@@ -195,7 +198,7 @@ input, textarea {
   position: relative;
   transition: border-color 300ms;
   color: #666;
-  font-family: "Roboto", "Helvetica Neue", sans-serif; }
+  font-family: "Lato", sans-serif; }
   input:focus, textarea:focus {
     outline: none;
     border-color: #d32f2f; }
@@ -261,7 +264,7 @@ $color-hover: rgb(252,247,209); // table row hover background
   min-height: 48px;
   font-size: 20px;
   font-weight: 400;
-  font-family: "Roboto", "Helvetica Neue", sans-serif;
+  font-family: "Lato", sans-serif;
   padding: 0;
   flex-direction: column;
   background-color: #d32f2f;

@@ -38,6 +38,10 @@ strong {
     font-weight: bold;
 }
 
+.light {
+    font-weight: 300;
+}
+
 my-app {
     @include abs(0px, 0px, 0px, 0px);
     z-index: 2;

@@ -5,8 +5,9 @@
  */
 
 var app = require('../app');
-var http = require('http');
+var https = require('https');
 var config = require('../config')();
+var fs = require('fs');
 
 /**
  * Get port from environment and store in Express.
@@ -16,10 +17,23 @@ var port = config.port;
 app.set('port', port);
 
 /**
+ * Configure the SSL key
+ */
+let options = {};
+
+if (process.env.NODE_ENV === 'development') {
+  options.key = fs.readFileSync( 'dev-key.pem' );
+  options.cert = fs.readFileSync( 'dev-cert.crt' );
+  options.rejectUnauthorized = false;
+
+  console.log("Dev HTTPS ready");
+}
+
+/**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+var server = https.createServer(options, app);
 
 /**
  * Listen on provided port, on all network interfaces.

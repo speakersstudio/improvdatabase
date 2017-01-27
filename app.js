@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var exphbs = require('express-handlebars');
 
 var indexRoute  = require('./routes/index'),
     api         = require('./routes/api'),
@@ -13,9 +14,18 @@ var config = require('./config')();
 
 var app = express();
 
+// redirect to https
+app.use(function(req, res, next) {
+  if (req.headers['x-forwarded-proto'] === 'http') {
+    return res.redirect(['https://', req.get('Host'), req.url].join(''));
+  }
+  next();
+})
+
 // view engine setup
+app.engine('handlebars', exphbs({defaultLayout: 'main'}))
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'handlebars');
 
 app.use(favicon(path.join(__dirname, 'public', 'favicon/favicon.ico')));
 

@@ -1,7 +1,7 @@
 <div class="toolbar" 
     [tools]="tools"
     [title]="title"
-    [class.no-shadow]="scrollpos < 80"
+    [class.on]="scrollpos > 20"
     [class.active]="filter"
     [showSearch]="true"
     [searchResults]="searchResults"
@@ -12,19 +12,28 @@
     (goBack)="clearFilter()"
     ></div>
 
-<div class="content" (scroll)="onScroll($event)">
+<div class="page fullbg" (window:scroll)="onScroll($event)">
+
     <div class="list-metadata" *ngIf="filter">
         <p *ngIf="filter.property == 'search'">Showing results for "{{searchTerm}}"</p>
         <p *ngIf="filter.property != 'search'">Filtered results</p>
     </div>
-    <div class="card-list">
-        <div class="card ng-game-card clickable" *ngFor="let game of games; trackBy:trackByGames"
+    <div class="paper-label">
+        All Games
+    </div>
+    <div class="list paper">
+        <div class="item ng-game-card clickable" *ngFor="let game of games; trackBy:trackByGames"
             [game]="game"
             [class.selected] = "game === selectedGame"
             [showTags]="tools[0].active"
             (click)="onSelect(game)">
         </div>
     </div>
+
+    <div id="cornerLogo">
+        <img src="/images/cornerlogo.png" />
+    </div>
+
 </div>
 
 <div *ngIf="selectedGame"

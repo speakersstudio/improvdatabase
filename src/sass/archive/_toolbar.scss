@@ -1,111 +1,35 @@
 @import "vars";
-@import "./mixins/elevation";
+@import "elevation";
 
 .toolbar {
     display: flex;
     box-sizing: border-box;
-    
+
     width: 100%;
     min-height: $toolbar-height;
 
-    font-size: $font-size-toolbar;
+    font-size: $toolbar-font-size;
     font-weight: $toolbar-font-weight;
     font-family: $font-family;
 
-    padding: 0 ($toolbar-height / 2);
+    padding: 0;
 
     flex-direction: column;
-    align-items: center;
 
-    color: $color-text;
+    background-color: $color-primary;
+    color: $color-primary-text;
 
     position: fixed;
     z-index: 8;
 
-    background-color: $color-transparent;
-    @include md-elevation(0);
+    @include md-elevation($toolbar-elevation);
     
     transition: #{$md-elevation-property} #{$md-elevation-transition-duration} #{$md-elevation-transition-timing-function},
         background-color 300ms;
-
-    button {
-        height: $toolbar-height;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        background: none;
-        border: 0px;
-        font-size: 1.15em;
-        margin: 0;
-        padding: 0 $std;
-        float: left;
-        min-width: 0;
-        color: $color-text;
-
-        &.active {
-            color: $color-active;
-        }
-    }
-
-    .tools {
-        button {
-            padding: 0 8px;
-            margin: 0;
-
-            &:last-child {
-                margin-right: 8px;
-            }
-        }
-    }
-
-    // the toolbar comes alive as you scroll
-    &.on {
-        background-color: $color-primary;
-        @include md-elevation($toolbar-elevation);
-        color: $color-primary-text;
-
-        .iplus {
-            background-position: -24px 0;
-        }
-
-        button {
-            color: $color-primary-text;
-        }
-
-        .toolbar-row:first-child:before, .toolbar-row:first-child:after {
-            opacity: 1;
-        }
-
-        $toolbar-on-search-color: rgba(255,255,255,0.5);
-
-        .search {
-            background-color: rgba(255, 255, 255, 0.16);
-            color: $toolbar-on-search-color;
-
-            input {
-                color: $toolbar-on-search-color;
-                border-color: transparent;
-
-                &::-webkit-input-placeholder {
-                    color: $toolbar-on-search-color;
-                }
-                &:-moz-placeholder {
-                    color: $toolbar-on-search-color;
-                }
-                &::-moz-placeholder {
-                    color: $toolbar-on-search-color;
-                }
-                &::-ms-input-placeholder {
-                    color: $toolbar-on-search-color;
-                }
-            }
-        }
-    }
-
+        
     // a highlighted state if a search or filter is active
     &.active {
-        background-color: $color-bg;
+        background-color: $color-active;
         color: $color-text;
 
         .toolbar-row {
@@ -114,23 +38,30 @@
             }
 
             .search {
-                background-color: $color-white;
+                background-color: $color-material-bg;
                 color: $color-text;
             }
         }
     }
 
-    // &.no-shadow {
-    //     @include md-elevation(0);
-    // }
-    
+    &.no-shadow {
+        @include md-elevation(0);
+    }
+    &.transparent {
+        background-color: $color-transparent;
+        @include md-elevation(0);
 
+        button i {
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            transition: text-shadow 200ms;
+        }
+    }
 
     .toolbar-row {
         display: flex;
         box-sizing: border-box;
 
-        width: 100% - (($page-bracket-width * 2) + 1%);
+        width: 100%;
         height: $toolbar-height;
 
         flex-direction: row;
@@ -139,6 +70,11 @@
         h2 {
             margin: 0;
             cursor: pointer;
+
+            span {
+                font-size: 0.7em;
+                font-style: italic;
+            }
         }
 
         .spacer {
@@ -157,24 +93,9 @@
                 }
             }
         }
-
-        &:first-child:before, &:first-child:after {
-            display: block;
-            content: "";
-            border-top: 1px solid $color-primary-text;
-            width: $page-bracket-width;
-            @include abs(($toolbar-height / 2), null, null, ($toolbar-height / 2)+1, 5);
-            transition: opacity $anim-duration;
-            opacity: 0;
-        }
-
-        &:first-child:after {
-            left: auto;
-            right: ($toolbar-height / 2)+1;
-        }
     }
 
-    $search-inactive-color: $color-hr;
+    $search-inactive-color: rgba(255,255,255,0.7);
     $search-active-color: $color-text;
     $search-transition: all 0.2s ease;
 
@@ -201,30 +122,37 @@
         overflow: hidden;
         z-index: 1;
         transition: $search-transition;
-        background-color: rgba(255, 255, 255, 0.35);
-        border-radius: $border-radius;
+        background-color: rgba(255, 255, 255, 0.16);
+        border-radius: $search-border-radius;
         flex: 2;
         color: $search-inactive-color;
         align-self: flex-start;
-        margin-top: $small;
+        margin-top: $search-margins;
 
         .fa-search {
-            @include abs(6px, null, null, $std, 2);
+            position: absolute;
+            z-index: 2;
+            top: 7px;
+            left: $search-icon-margins;
         }
 
         .fa-close {
-            @include abs(6px, $std, null, null, 2);
+            position: absolute;
+            z-index: 2;
+            top: 7px;
+            right: $search-icon-margins;
+            cursor: pointer;
         }
 
         input {
-            border: 1px solid $color-hr;
+            border: 1px solid transparent;
             transition: border 0.1s ease-out;
             background: transparent;
             box-sizing: border-box;
             width: 100%;
             padding: 0 $search-padding;
             height: $search-height;
-            border-radius: $border-radius;
+            border-radius: $search-border-radius;
             margin: 0;
 
             &::-webkit-input-placeholder {
@@ -243,7 +171,7 @@
 
         .results {
             padding: 0;
-            border-radius: 0 0 $border-radius $border-radius;
+            border-radius: 0 0 $search-border-radius $search-border-radius;
             transition: $search-transition;
             color: $search-active-color;
             max-height: 0px;
@@ -261,7 +189,7 @@
                     }
 
                     i {
-                        margin: 0 $small;
+                        margin: 0 $search-icon-margins;
                     }
 
                     &:first-child {
@@ -275,7 +203,7 @@
         }
 
         &.active {
-            background-color: $color-white;
+            background-color: $color-material-bg;
             @include md-elevation(8);
             color: $search-active-color;
             
@@ -302,12 +230,45 @@
                 overflow: auto;
             }
         }
-
     }
+}
 
-} // end of .toolbar
+.toolbar button,
+nav button {
+    height: $toolbar-height;
+    width: $toolbar-height;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: none;
+    border: 0px;
+    font-size: 1.15em;
+    color: $color-primary-text;
+    margin: 0;
+    float: left;
+    min-width: 0;
 
-$nav-bg: $color-white;
+    &.active {
+        color: $color-active;
+    }
+    i {
+        text-shadow: 0 0 0;
+    }
+}
+
+.toolbar button {
+    &:last-child {
+        margin-right: $margin;
+    }
+}
+
+.fa-bars {
+    transition: transform $swift-ease-out-duration $swift-ease-out-timing-function;
+    &.active {
+        transform: rotateZ(90deg);
+    }
+}
 
 nav {
     @include fixed(0, null, 0, 0);
@@ -326,7 +287,8 @@ nav {
     @include md-elevation(0);
     @include md-elevation-transition;
 
-    background-color: $nav-bg;
+    background-color: $color-content-bg;
+    font-size: $toolbar-font-size;
 
     transform: translate3d(-100%, 0, 0);
     transition: transform $swift-ease-out-duration $swift-ease-out-timing-function;
@@ -336,38 +298,14 @@ nav {
         transform: translate3d(0, 0, 0);
     }
 
-    .brackets {
-        border: 2px solid $color-text;
-        @include abs(2vw, 2vw, 2vw, 2vw, 1);
-    }
-
-    h1 {
-      @include abs(-1.25vw, null, null, 50%, 2);
-      background: $nav-bg;
-      font-size: 2vw;
-      width: 10.5vw;
-      margin-left: -5.25vw;
-      text-align: center;
-    }
-
-    footer {
-      @include abs(null, null, -4px, 50%, 2);
-      background: $nav-bg;
-      font-size: 10px;
-      width: 10.5vw;
-      margin-left: -5.25vw;
-      text-align: center;
-      font-style: italic;
-      font-weight: 300;
-    }
-
     .nav-top {
         width: 100%;
         position: relative;
-        margin-bottom: $small;
-        background-color: $nav-bg;
+        margin-bottom: $nav-item-spacing;
+        background-color: $color-menu-active-bg;
+        color: $color-active;
+        box-shadow: 0px 1px 15px rgba(0,0,0,0.3) inset;
         cursor: default;
-        border-bottom: 1px solid $color-text;
 
         &:before {
             /* makes it square! */
@@ -377,64 +315,76 @@ nav {
         }
 
         .content {
-            @include abs(1.25vw, 0, 0, 0);
+            @include abs($toolbar-height, 0, 0, 0);
             display: flex;
             flex-direction: column;
-            justify-content: space-around;
-            align-items: center;
+            justify-content: flex-end;
+            align-items: flex-end;
             overflow: hidden;
             margin: 0;
             cursor: default;
 
-            .user-picture {
-                max-width: 96px;
-                max-height: 96px;
-                width: 8vw;
-                height: 8vw;
-                border-radius: 50%;
-                background: $color-text;
-                overflow: hidden;
-                text-align: center;
+            h1 {
+                text-align: right;
+                font-size: 1.5em;
+                margin: $nav-item-spacing;
+            }
 
-                box-shadow: 0px 5px 5px -3px rgba(0,0,0,0.2) inset,
-                            0px 8px 10px 1px rgba(0,0,0,0.14) inset,
-                            0px 3px 14px 2px rgba(0,0,0,0.12) inset;
+            & > a {
+                font-size: 0.7em;
+                color: $color-active;
+                display: block;
+                text-align: right;
+                margin: $nav-item-spacing 0;
 
-                i {
-                    font-size: 90px;
-                    position: relative;
-                    top: 16px;
-                    color: $color-secondary;
+                &:hover {
+                    background: none;
+                    color: $color-primary;
                 }
             }
 
-            .user-name {
-                font-size: 12px;
+            .login {
+                background-color: $color-content-bg;
+                transition: height $anim-duration;
+                height: 0px;
+                overflow: hidden;
+                width: 100%;
+            }
+
+            div {
+                width: 100%;
+            }
+
+            &:hover {
+                .login {
+                    height: 40px;
+                }
             }
         }
-    } // end of .nav-top
 
-    // nav menu items
+        button {
+            &:first-of-type {
+                @include abs(0, null, null, 0);
+            }
+
+            &:last-of-type {
+                @include abs(0, 0, null, null);
+            }
+        }
+    }
+
     a {
         display: block;
         color: $color-text;
         text-decoration: none;
-        padding: $std;
+        padding: $nav-item-spacing $nav-padding;
         cursor: pointer;
         white-space: nowrap;
-        font-size: $font-size-nav;
-        font-weight: bold;
 
         i {
-            margin: 0 $std 0 0;
+            margin: 0 $nav-item-icon-margin;
             width: 20px;
             text-align: center;
-            font-size: $icon-size !important;
-            vertical-align: middle;
-        }
-
-        span {
-            vertical-align: middle;
         }
 
         &:visited {
@@ -446,9 +396,9 @@ nav {
         }
 
         &.active {
-            background-color: $color-active-bg;
+            background-color: $color-menu-active-bg;
             color: $color-active;
-            box-shadow: 0px 2px 10px rgba(0,0,0,0.1) inset;
+            box-shadow: 0px 1px 10px rgba(0,0,0,0.1) inset;
         }
     }
 
@@ -457,5 +407,4 @@ nav {
         border-width: 1px 0 0 0;
         border-color: $color-hr;
     }
-
-} // end of .nav
+}

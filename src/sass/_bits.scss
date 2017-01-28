@@ -1,5 +1,5 @@
 @import 'vars';
-@import 'elevation';
+@import './mixins/elevation';
 
 .error {
     color: darkred;
@@ -7,6 +7,13 @@
     &select {
         border-color: darkred;
     }
+}
+
+.iplus {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: url('/images/iplus.png') no-repeat;
 }
 
 .loading-icon {
@@ -98,279 +105,62 @@
     opacity: 0.5;
 }
 
-.content {
-    overflow: auto;
-    @include abs($toolbar-height, 0, 0, 0);
+.list {
+    padding: 0;
 
-    &.bg {
-        background-color: $color-content-bg;
-    }
-}
-
-.content-block {
-    margin: $content-spacing-long*2 0;
-}
-
-.button-group {
-    margin-top: $content-spacing-long;
-    text-align: right;
-}
-
-button,
-.button {
-    border-radius: $border-radius;
-    line-height: $button-height;
-    height: $button-height;
-    padding: 0 $content-padding;
-    min-width: $button-min-width;
-    text-align: center;
-    margin: 0 $content-spacing;
-    display: inline-block;
-    color: $color-primary;
-    border: 0px;
-    cursor: pointer;
-    width: auto;
-    box-sizing: border-box;
-    background: none;
-    text-transform: uppercase;
-    text-decoration: none;
-
-    transition: #{$md-elevation-property} #{$md-elevation-transition-duration} #{$md-elevation-transition-timing-function},
-        opacity $anim-duration;
-
-    &.raised {
-        background-color: $color-primary;
-        color: $color-primary-text;
-        @include md-elevation(0);
-        
-        &:hover {
-            @include md-elevation($raised-button-elevation);
-        }
-        &:active {
-            @include md-elevation($raised-button-pressed-elevation);
-        }
-    }
-
-    &[disabled] {
-        opacity: 0.5;
-
-        &:hover {
-            @include md-elevation(0);
-        }
-    }
-
-    &.fab {
-        @include abs(null, 32px, 16px, null, 500);
-        font-size: $fab-icon-size;
-        background: $color-primary;
-        color: $color-primary-text;
-        width: $fab-width;
-        height: $fab-width;
-        border-radius: 50%;
-        padding: 0;
-        min-width: 0;
-        margin: 0;
-        line-height: $fab-icon-size;
-
-        @include md-elevation(6);
-        @include md-elevation-transition();
-
-        &:hover {
-            @include md-elevation(12);
-        }
-    }
-}
-
-.grid {
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    align-items: center;
-}
-
-.column {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
-
-.columns {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    width: 100%;
-    justify-content: space-between;
-
-    .metadata {
-        flex-basis: 26%;
-        margin-right: 4%;
-    }
-    .content {
-        flex-basis: 70%;
-    }
-
-    @media #{$media-desktop} {
-        input {
-            width: 48%;
-            flex-basis: 48%;
-        }
-    }
-
-    @media #{$media-mobile} {
-        flex-direction: column;
-
-        .metadata {
-            flex-basis: 100%;
-            margin: 0;
-        }
-        .content {
-            flex-basis: 100%;
-        }
-    }
-}
-
-.taglist {
-    
-    li {
-       display: inline-block;
-       margin: $tag-spacing;
-       padding: $tag-padding;
-       background: $color-primary;
-       color: $color-primary-text;
-       border-radius: $tag-border-radius;
-       position: relative;
-
-       @include md-elevation(1);
-
-       .fa {
-           font-size: 0.9em;
-           line-height: 14px;
-       }
-
-       &.flat {
-           background: none;
-           @include md-elevation(0);
-           color: $color-primary;
-           opacity: 0;
-           transition: opacity 200ms;
-       }
-
-       input {
-           padding: 0;
-           border: 0;
-           margin: 0 2px;
-           width: 100px;
-           font-size: 13px;
-           display: inline-block;
-           color: $color-primary-text;
-       }
-
-       .tag-hints {
-           position: absolute;
-           top: 100%;
-
-           li {
-                display: block;
-                margin: $tag-spacing * 2;
-                @include md-elevation(8);
-                margin-left: 14px;
-            }
-       }
-    }
-
-    &:hover {
-        .flat {
-            opacity: 1;
-        }
-    }
-}
-
-.metadata {
-    &.right {
-        text-align: right;
-    }
-
-    & > span {
-        display: inline-block;
-        vertical-align: middle;
-        margin: $metadata-spacing 0;
-        
-        line-height: 18px;
+    .item {
+        padding: $std;
+        border-bottom: 1px solid $color-hr;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
 
         &:last-child {
-            border-right: 0px;
-            margin-right: 0px;
-            padding-right: 0px;
+            border-bottom: 0px;
         }
 
-        &:not(:last-child):after {
-            content: "\2022";
-            margin: 0 $metadata-spacing;
+        .badge {
+            font-size: 24px;
+            padding-right: 16px;
         }
-    }
 
-    i {
-        width: 16px;
-        height: 14px;
-        text-align: center;
-        display: inline-block;
+        .metadata {
+            overflow: hidden;
 
-        &.fa-sort-down {
-            transform-origin: 50% 75%;
-            transition: transform 100ms $swift-ease-in-out-timing-function;
-            position: relative;
-            top: -2px;
+            .row {
+                display: flex;
+                flex-direction: row;
+                align-items: flex-end;
 
-            &.open {
-                transform: rotateZ(180deg);
+                &:first-child {
+                    margin-bottom: $small;
+                }
+            }
+
+            h5 {
+                margin: 0 ($large * 2) 0 0;
+                white-space: nowrap;
+                font-size: 16px;
+                font-weight: bold;
+            }
+            .ellipsise {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                font-size: 12px;
+                
+                p {
+                    display: inline-block;
+                    margin: 0;
+                }
+
+                ul, ol, blockquote {
+                    display: none;
+                }
+            }
+            span {
+                margin: 0 $std 0 0;
             }
         }
-    }
-}
-
-.loading {
-    display: inline-block;
-    overflow: hidden;
-    height: 1.3em;
-    margin-top: -0.3em;
-    line-height: 1.5em;
-    vertical-align: text-bottom;
-
-    &:after {
-        display: inline-table;
-        white-space: pre;
-        text-align: left;
-        content: " ●    \A   ●   \A    ●  \A     ● \A      ●\A     ● \A    ●  \A   ●   \A  ●    \A ●     ";
-        animation: loadingSpin 1s steps(10) infinite;
-    }
-}
-
-.dialog-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 70%;
-}
-
-.dialog {
-    width: 90%;
-    max-width: 350px;
-    background: $color-material-bg;
-    padding: $content-spacing 0;
-    border-radius: $border-radius;
-    //@include fixed(30%, null, null, 50%, 5000);
-    //transform: translate(-50%, -50%);
-    position: relative;
-    z-index: 5000;
-
-    @include md-elevation(24);
-
-    .dialog-content {
-        padding: $content-padding $content-spacing-long;
-    }
-
-    h2 {
-        font-size: 1.3em;
-        font-weight: bold;
     }
 }

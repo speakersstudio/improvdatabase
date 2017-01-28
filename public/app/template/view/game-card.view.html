@@ -1,16 +1,20 @@
-<span class="badge"><i class="fa fa-soccer-ball-o"></i></span>
-
-<h5>{{game.Names.length ? game.Names[0].Name : 'New Game'}}</h5>
+<div class="badge"><i class="fa fa-soccer-ball-o"></i></div>
 
 <div class="metadata">
-    <span *ngIf="playerCount" title="{{playerCount.Description}}"><i class="fa fa-group"></i> {{playerCount.Name}}</span>
-    <span *ngIf="duration" title="{{duration.Description}}"><i class="fa fa-clock-o"></i> {{duration.Name}}</span>
+    <div class="row">
+        <h5>{{game.Names.length ? game.Names[0].Name : 'New Game'}}</h5>
 
-    <span *ngIf="!showTags && game.TagGames.length > 0" title="This game has {{game.TagGames.length}} tags associated with it."><i class="fa fa-hashtag"></i> {{game.TagGames.length}}</span>
+        <div class="ellipsise" [innerHtml]="game.Description"></div>
+    </div>
 
-    <ul *ngIf="showTags || opened" class="taglist">
-        <li *ngFor="let tag of tags"><i class="fa fa-hashtag"></i> {{tag.Name}}</li>
-    </ul>
+    <div class="row">
+        <span *ngIf="playerCount" title="{{playerCount.Description}}"><i class="fa fa-group"></i> {{playerCount.Name}}</span>
+        <span *ngIf="duration" title="{{duration.Description}}"><i class="fa fa-clock-o"></i> {{duration.Name}}</span>
+
+        <span *ngIf="!showTags && game.TagGames.length > 0" title="This game has {{game.TagGames.length}} tags associated with it."><i class="fa fa-hashtag"></i> {{game.TagGames.length}}</span>
+
+        <ul *ngIf="showTags || opened" class="taglist">
+            <li *ngFor="let tag of tags"><i class="fa fa-hashtag"></i> {{tag.Name}}</li>
+        </ul>
+    </div>
 </div>
-
-<div class="clearfix"></div>

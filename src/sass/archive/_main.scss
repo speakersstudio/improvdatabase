@@ -1,15 +1,16 @@
-@import "./mixins/mixins";
-@import "./mixins/anim";
-@import "./mixins/elevation";
-
 @import "vars";
+@import "mixins";
+@import "anim";
+@import "elevation";
 
 html {
-    background: $color-bg;
+    background: $color-secondary;
 }
 
 body {
     font-family: $font-family;
+    background: $color-secondary;
+    overflow: hidden;
     color: $color-text;
 }
 
@@ -26,7 +27,7 @@ a {
 }
 
 h2, h3, h4, h5, p, button, textarea, .content-item {
-    margin: $small 0;
+    margin: $content-item-vertical-margin $content-item-horizontal-margin;
 }
 
 em {
@@ -42,10 +43,9 @@ strong {
 }
 
 my-app {
+    @include abs(0px, 0px, 0px, 0px);
     z-index: 2;
     overflow: hidden;
-    position: relative;
-    display: block;
 }
 
 input, textarea {
@@ -53,8 +53,8 @@ input, textarea {
     background: none;
     border-width: 0 0 1px 0;
     border-color: $color-text;
-    padding: $std 0 ($std - 1);
-    margin: $small 0;
+    padding: $content-spacing 0 ($content-spacing - 1);
+    margin: $content-spacing 0;
     width: 100%;
     font-size: $font-size-input;
     position: relative;
@@ -76,12 +76,12 @@ input, textarea {
 input[type="radio"] {
     display: inline-block;
     width: auto;
-    margin-right: $std;
+    margin-right: $content-spacing;
 }
 
 label {
     color: $color-text;
-    margin: $small 0;
+    margin: $content-spacing 0;
 }
 
 ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
@@ -108,7 +108,7 @@ form {
     }
 
     .section {
-        margin: $large 0;
+        margin: $content-spacing-long 0;
     }
 
     & > input:first-child {
@@ -116,11 +116,13 @@ form {
     }
 
     .error {
-        margin: $small 0;
+        margin: $content-spacing 0;
         text-align: center;
     }
 }
 
-@import "bits";
 @import "toolbar";
+@import "cards";
+@import "bits";
 @import "page";
+@import "login";

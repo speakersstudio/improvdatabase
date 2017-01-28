@@ -34,11 +34,11 @@ var WebStorageEmitter = (function () {
             WebStorageEmitter.subscribed[index].unsubscribe();
         }
     };
-    WebStorageEmitter.subscribed = [];
-    WebStorageEmitter.ngZones = [];
-    WebStorageEmitter.subscribers = [];
     return WebStorageEmitter;
 }());
+WebStorageEmitter.subscribed = [];
+WebStorageEmitter.ngZones = [];
+WebStorageEmitter.subscribers = [];
 exports.WebStorageEmitter = WebStorageEmitter;
 var WebStorageService = (function () {
     function WebStorageService(ngZone) {
@@ -48,12 +48,12 @@ var WebStorageService = (function () {
     WebStorageService.prototype.ngOnDestroy = function () {
         WebStorageEmitter.unregister(this.ngZone);
     };
-    WebStorageService = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [core_1.NgZone])
-    ], WebStorageService);
     return WebStorageService;
 }());
+WebStorageService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [core_1.NgZone])
+], WebStorageService);
 exports.WebStorageService = WebStorageService;
 function WebStorageSubscriber(appPromise) {
     appPromise.then(function (bla) {

@@ -51,7 +51,7 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
 
     scrollpos: number = 0;
 
-    private _titleBase: string = "Games ";
+    _titleBase: string = '<span class="light">game</span><strong>database</strong>';
     title: string;
 
     searchResults: SearchResult[] = [];
@@ -163,7 +163,7 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
     }
 
     onScroll($event): void {
-        this.scrollpos = $event.target.scrollTop;
+        this.scrollpos = $event.target.scrollingElement.scrollTop;
     }
 
     onSelect(game: Game): void {

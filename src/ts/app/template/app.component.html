@@ -1,34 +1,75 @@
 <nav [class.show] = "showMenu">
-    <div class="nav-top">
-        <button (click)="toggleNav()">
-            <i class="fa fa-bars" [class.active]="showMenu"></i>
-        </button>
-        <button (click)="fullscreen()">
-            <i class="fa"
-                [class.fa-expand]="!showFullscreen"
-                [class.fa-compress]="showFullscreen"></i>
-        </button>
+    <div class="brackets">
+        
+        <h1><span class="light">improv</span><strong>plus</strong></h1>
+        
+        <div class="nav-top">
+            <!--<button (click)="toggleNav()">
+                <i class="fa fa-bars" [class.active]="showMenu"></i>
+            </button>
+            <button (click)="fullscreen()">
+                <i class="fa"
+                    [class.fa-expand]="!showFullscreen"
+                    [class.fa-compress]="showFullscreen"></i>
+            </button>-->
 
-        <div class="content">
-            <h1><span class="light">improv</span><strong>plus</strong></h1>
+            <!--<div class="content">
 
-            <a routerLink="/user" (click)="toggleNav()" *ngIf="user"><i class="fa fa-user"></i> {{user.Email}}</a>
-            
-            <div class="login" *ngIf="!user">
-                <a (click)="login()"><i class="fa fa-user"></i> Log In</a>
+                <a routerLink="/user" (click)="toggleNav()" *ngIf="user"><i class="fa fa-user"></i> {{user.Email}}</a>
+                
+                <div class="login" *ngIf="!user">
+                    <a (click)="login()"><i class="fa fa-user"></i> Log In</a>
+                </div>
+            </div>-->
+
+            <div class="content">
+
+                <div class="user-picture">
+                    <i class="fa fa-user"></i>
+                </div>
+                <div class="user-name">Your Username Here</div>
+
             </div>
         </div>
+
+        <a (click)="toggleNav()" routerLinkActive="active">
+            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+        </a>
+
+        <a (click)="toggleNav()" routerLinkActive="active">
+            <i class="fa fa-book"></i> <span>Materials Library</span>
+        </a>
+
+        <a routerLink="/games" (click)="toggleNav()" routerLinkActive="active">
+            <i class="fa fa-soccer-ball-o"></i> <span>Game Database</span>
+        </a>
+
+        <hr />
+
+        <a routerLink="/contact" (click)="toggleNav()" routerLinkActive="active">
+            <i class="fa fa-envelope"></i> <span>Contact</span>
+        </a>
+
+        <!--<a routerLink="/about" (click)="toggleNav()" routerLinkActive="active">
+            <i class="fa fa-info-circle"></i> <span>About</span>
+        </a>-->
+
+        <a (click)="toggleNav()" routerLinkActive="active">
+            <i class="fa fa-question"></i> <span>Help</span>
+        </a>
+
+        <footer>
+            &copy;2017 improvplus
+        </footer>
     </div>
-
-    <a routerLink="/games" (click)="toggleNav()" routerLinkActive="active"><i class="fa fa-soccer-ball-o"></i> Game Database</a>
-    <a routerLink="/about" (click)="toggleNav()" routerLinkActive="active"><i class="fa fa-info-circle"></i> About</a>
-
-    <hr />
-
-    <a routerLink="/contact" (click)="toggleNav()" routerLinkActive="active"><i class="fa fa-envelope"></i> Contact</a>
 </nav>
 
+
+
 <div (click)="closeOverlays()" class="backdrop nav-backdrop" [class.show]="showBackdrop"></div>
+
+<div id="left-bracket"></div>
+<div id="right-bracket"></div>
 
 <router-outlet></router-outlet>
 

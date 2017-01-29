@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
     moduleId: module.id,
-    selector: ".page.contact",
+    selector: "contact",
     templateUrl: "../template/contact.component.html",
     styles: [`
         .description {
@@ -49,10 +49,7 @@ import { FormsModule } from '@angular/forms';
     `]
 })
 export class ContactComponent implements OnInit {
-    scrollpos: number = 0;
-    showToolbarScrollPosition: number = window.innerHeight * 0.14;
-
-    title: string = "Contact";
+    title: string = '<span class="light">contact</span><strong>us</strong>';
 
     month: string;
     day: number;
@@ -139,10 +136,6 @@ export class ContactComponent implements OnInit {
                 this.month = "December";
                 break;
         }
-    }
-
-    onScroll($event): void {
-        this.scrollpos = $event.target.scrollTop;
     }
 
     submit(): void {

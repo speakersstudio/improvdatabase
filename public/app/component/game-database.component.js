@@ -25,16 +25,9 @@ var GameDatabaseComponent = (function () {
         this.userService = userService;
         this.games = [];
         this.names = [];
-        this.scrollpos = 0;
         this._titleBase = '<span class="light">game</span><strong>database</strong>';
         this.searchResults = [];
         this.tools = [
-            {
-                icon: "fa-hashtag",
-                name: "showTags",
-                text: "Show Tags",
-                active: false
-            },
             {
                 icon: "fa-random",
                 name: "randomGame",
@@ -48,15 +41,16 @@ var GameDatabaseComponent = (function () {
         this.setTitle();
         //this.toolSubscription = this.toolService.tool$.subscribe(this.onToolClicked);
         this._app.showLoader();
+        this._app.showBackground(true);
         this.getGames();
         this.pathLocationStrategy.onPopState(function () {
             _this.selectedGame = null;
-            //this.clearFilter();
+            _this._app.showBackground(true);
         });
     };
     GameDatabaseComponent.prototype.setTitle = function () {
         if (this.filter) {
-            this.title = "Back";
+            this.title = "back";
         }
         else {
             this.title = this._titleBase;
@@ -121,10 +115,12 @@ var GameDatabaseComponent = (function () {
     GameDatabaseComponent.prototype.trackByGames = function (index, game) {
         return game.GameID;
     };
-    GameDatabaseComponent.prototype.onScroll = function ($event) {
-        this.scrollpos = $event.target.scrollingElement.scrollTop;
-    };
     GameDatabaseComponent.prototype.onSelect = function (game) {
+        // remember the scroll position so we can return there when the user comes back
+        if (!this.selectedGame) {
+            this.previousScrollPosition = window.scrollY;
+        }
+        this._app.showBackground(false);
         if (!game) {
             this.selectedGame = null;
         }
@@ -133,6 +129,7 @@ var GameDatabaseComponent = (function () {
         }
         var newPath = "/game/" + this.selectedGame.GameID;
         this._setPath(newPath);
+        window.scrollTo(0, 0);
     };
     GameDatabaseComponent.prototype._setPath = function (path) {
         if (this.pathLocationStrategy.path().indexOf("/game/") > -1) {
@@ -147,11 +144,16 @@ var GameDatabaseComponent = (function () {
         this.onSelect(this.games[i]);
     };
     GameDatabaseComponent.prototype.closeDetails = function (tool) {
+        var _this = this;
         if (tool && tool.name) {
             this.onToolClicked(tool);
         }
         else {
             this._goBack();
+            setTimeout(function () {
+                window.scrollTo(0, _this.previousScrollPosition);
+                _this.previousScrollPosition = 0;
+            }, 10);
         }
     };
     GameDatabaseComponent.prototype.onToolClicked = function (tool) {

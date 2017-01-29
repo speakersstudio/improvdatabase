@@ -1,25 +1,25 @@
 <div class="toolbar"
-    [class.transparent]="scrollpos < showToolbarScrollPosition"
+    [class.on]="_app.toolbarVisible"
     [tools]="_tools"
+    [title]="title"
     ></div>
 
-<div class="curtain" [style.top]="(-(scrollpos * 0.5)) + 'px'">
+<!--<div class="curtain" [style.top]="(-(scrollpos * 0.5)) + 'px'">
     <h2>{{title}}</h2>
-</div>
+</div>-->
 
-<div class="content" (scroll)="onScroll($event)">
+<div class="page">
 
-    <div class="material">
-
-        <h4>The Improv Comedy Database</h4>
+    <div class="paper has-brackets">
 
         <div class="metadata">
-            <h5>By Shauvon McGill</h5>
+            <h4 class="right">The <span class="light">improv</span><strong>plus</strong> App</h4>
+            <p class="right">Created by Shauvon McGill</p>
 
-            <span>Current version: 1.0.1: <em>Parton</em></span>
-            <span>Created in 2016</span>
-            <span>Licensed under <a href="https://creativecommons.org/licenses/by-nd/4.0/" target="_blank">Creative Commons</a></span>
-            <span>Special thanks to the <a href="http://improvencyclopedia.org/" target="_blank">Improv Encyclopedia</a>, The Crazy Monkeys (RIP), The Second City, and Viewers Like You</span>
+            <span class="bullet"><span class="light">1.1.0</span> <strong><em>Fitzgerald</em></strong> </span>
+            <span>April 1, 2017</span>
+            <!--<span>Licensed under <a href="https://creativecommons.org/licenses/by-nd/4.0/" target="_blank">Creative Commons</a></span>-->
+            <span>Special thanks to the <a href="http://improvencyclopedia.org/" target="_blank">Improv Encyclopedia</a>, The Crazy Monkeys (RIP), The Second City, <a href="http://thespeakers-studio.com">The Speaker's Studio</a>, and Viewers Like You</span>
         </div>
 
         <div class="description">
@@ -28,15 +28,16 @@
             <p>Be excellent to each other and party on, dudes.</p>
         </div>
 
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>about</h1></div>
     </div>
 
-    <div class="material">
+    <div class="paper has-brackets">
 
-        <h4>History</h4>
+        <h4 class="right">History</h4>
+        <p class="right">In Case Anybody is Interested</p>
 
-        <div class="metadata">
-            <h5>in case anybody is interested</h5>
-        </div>
+        <hr />
 
         <div class="description">
             <p>This is the third iteration of the Improv Database created by Shauvon McGill.</p>
@@ -54,19 +55,19 @@
 
             <div class="image">
                 <img src="/images/history/version2.png" />
-                <p>Look at how usable it was!</p>
+                <p>A bit more usable!</p>
             </div>
 
             <p>Shauvon was not content, though. The interface was still a bit wonky and slow, and several features were just not as great as they could be. So, in late 2016, he sat down and completely rebuilt the thing <em>again</em>.</p>
 
             <div class="image">
                 <img src="/images/history/version3.png" />
-                <p>Here is Mark 3 as it first appeared. Not pictured: just how quickly and smoothly it loads.</p>
+                <p>Here is Mark 3 as it first appeared in October, 2016. Not pictured: just how quickly and smoothly it loads.</p>
             </div>
 
-            <p>The Improv Comedy Database Mark III is built with a pure Angular 2 front-end, connecting to a REST API written on NodeJS that interfaces with a PostgreSQL database. It is hosted on Heroku, with domain hosting provided by Hover.com. The project is hosted on a private GitLab server.</p>
+            <p>The ImprovPlus app (nee The Improv Comedy Database) Mark IV is built with a pure Angular 2 front-end, connecting to a REST API written on NodeJS that interfaces with a PostgreSQL database. The application is hosted on Heroku. DNS and SSL services are provided by DNSimple. The SSL certificate currently ensuring your secure perusal of this page was provided by Comodo.</p>
 
-            <p>What do you think? How does The Improv Comedy Database Mark III treat you? Should we go back to a command line interface?</p>
+            <p>What do you think? How does The ImprovPlus app treat you? Should we go back to a command line interface?</p>
 
             <div class="button-group">
                 <a routerLink="/contact" class="button" >Send us your thoughts</a>
@@ -74,14 +75,16 @@
 
         </div>
 
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>about</h1></div>
+
     </div>
 
-    <div class="material">
+    <div class="paper">
 
         <h4>Changelog</h4>
 
-        <div class="metadata">
-        </div>
+        <hr />
 
         <div class="description">
             <div class="content-block">

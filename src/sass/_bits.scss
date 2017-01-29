@@ -105,6 +105,14 @@
     opacity: 0.5;
 }
 
+.block {
+    margin-bottom: $large;
+}
+
+.right {
+    text-align: right;
+}
+
 .list {
     padding: 0;
 
@@ -122,6 +130,12 @@
         .badge {
             font-size: 24px;
             padding-right: 16px;
+
+            i {
+                text-align: center;
+                width: 24px;
+                height: 24px;
+            }
         }
 
         .metadata {
@@ -130,10 +144,16 @@
             .row {
                 display: flex;
                 flex-direction: row;
-                align-items: flex-end;
+                align-items: center;
 
                 &:first-child {
                     margin-bottom: $small;
+                }
+                
+                @media #{$media-mobile} {
+                    & > *:last-child {
+                        display: none;
+                    }
                 }
             }
 
@@ -163,4 +183,101 @@
             }
         }
     }
-}
+} // end of .list
+
+.metadata {
+    & > span {
+        display: inline-block;
+        vertical-align: middle;
+        margin: ($small / 2) 0;
+        
+        line-height: 18px;
+
+        &:last-child {
+            border-right: 0px;
+            margin-right: 0px;
+            padding-right: 0px;
+        }
+
+        &.bullet:after {
+            content: "\2022";
+            margin: 0 ($small / 2);
+        }
+    }
+
+    i {
+        width: 16px;
+        height: 14px;
+        text-align: center;
+        display: inline-block;
+
+        &.fa-sort-down {
+            transform-origin: 50% 75%;
+            transition: transform 100ms $swift-ease-in-out-timing-function;
+            position: relative;
+            top: -2px;
+
+            &.open {
+                transform: rotateZ(180deg);
+            }
+        }
+    }
+} // end of .metadata
+
+.taglist {
+    padding: 0;
+
+    li {
+       display: inline-block;
+       margin: $tag-spacing;
+       padding: $tag-padding;
+       background: $color-primary;
+       color: $color-primary-text;
+       border-radius: $tag-border-radius;
+       position: relative;
+       font-size: 13px;
+
+       @include md-elevation(1);
+
+       .fa {
+           font-size: 0.9em;
+           line-height: 14px;
+       }
+
+       &.flat {
+           background: none;
+           @include md-elevation(0);
+           color: $color-primary;
+           opacity: 0;
+           transition: opacity 200ms;
+       }
+
+       input {
+           padding: 0;
+           border: 0;
+           margin: 0 2px;
+           width: 100px;
+           font-size: 13px;
+           display: inline-block;
+           color: $color-primary-text;
+       }
+
+       .tag-hints {
+           position: absolute;
+           top: 100%;
+
+           li {
+                display: block;
+                margin: $tag-spacing * 2;
+                @include md-elevation(8);
+                margin-left: 14px;
+            }
+       }
+    }
+
+    &:hover {
+        .flat {
+            opacity: 1;
+        }
+    }
+} // end of .taglist

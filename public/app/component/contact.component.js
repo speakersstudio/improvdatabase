@@ -18,9 +18,7 @@ var ContactComponent = (function () {
         this._app = _app;
         this.router = router;
         this.http = http;
-        this.scrollpos = 0;
-        this.showToolbarScrollPosition = window.innerHeight * 0.14;
-        this.title = "Contact";
+        this.title = '<span class="light">contact</span><strong>us</strong>';
         this._tools = [];
     }
     ContactComponent.prototype.ngOnInit = function () {
@@ -76,9 +74,6 @@ var ContactComponent = (function () {
                 break;
         }
     };
-    ContactComponent.prototype.onScroll = function ($event) {
-        this.scrollpos = $event.target.scrollTop;
-    };
     ContactComponent.prototype.submit = function () {
         var _this = this;
         if (this.data.jingers == "robot") {
@@ -122,7 +117,7 @@ var ContactComponent = (function () {
 ContactComponent = __decorate([
     core_1.Component({
         moduleId: module.id,
-        selector: ".page.contact",
+        selector: "contact",
         templateUrl: "../template/contact.component.html",
         styles: ["\n        .description {\n            margin: 0 10%;\n        }\n\n        textarea {\n            width: 100%;\n            font-size: 1.2em;\n        }\n\n        #contactSigOutput {\n            font-family: 'Alex Brush';\n            font-size: 52px;\n            transform: rotateZ(-5deg);\n            transform-origin: 0%;\n            color: #333;\n        }\n\n        .pull-right {\n            text-align: right;\n        }\n\n        .center {\n            text-align: center;\n            margin: 0;\n        }\n\n        .center p {\n            margin: 0;\n        }\n\n        button {\n            margin: 0;\n        }\n    "]
     }),

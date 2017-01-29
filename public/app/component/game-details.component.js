@@ -29,9 +29,7 @@ var GameDetailsComponent = (function () {
         this.tags = [];
         this.tagMap = {};
         this.notes = [];
-        this.scrollpos = 0;
         this.namesOpen = false;
-        this.showToolbarScrollPosition = window.innerWidth * 0.15;
         this.allPlayerCounts = [];
         this.allDurations = [];
         this.tools = [
@@ -310,9 +308,6 @@ var GameDetailsComponent = (function () {
             this.router.navigate(['/games']);
         }
     };
-    GameDetailsComponent.prototype.onScroll = function ($event) {
-        this.scrollpos = $event.target.scrollTop;
-    };
     GameDetailsComponent.prototype.toggleNames = function () {
         this.namesOpen = !this.namesOpen;
     };
@@ -350,7 +345,7 @@ __decorate([
 GameDetailsComponent = __decorate([
     core_1.Component({
         moduleId: module.id,
-        selector: '.page.ng-game-details',
+        selector: 'game-details',
         templateUrl: '../template/game-details.component.html',
         animations: [
             core_1.trigger('expand', [

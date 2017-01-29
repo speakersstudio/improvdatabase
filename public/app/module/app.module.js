@@ -12,11 +12,15 @@ var forms_1 = require("@angular/forms");
 var common_1 = require("@angular/common");
 // main components
 var app_component_1 = require("../component/app.component");
+var dashboard_component_1 = require("../component/dashboard.component");
+var library_component_1 = require("../component/library.component");
 var game_database_component_1 = require("../component/game-database.component");
 var about_component_1 = require("../component/about.component");
 var contact_component_1 = require("../component/contact.component");
 var user_component_1 = require("../component/user.component");
 var game_details_component_1 = require("../component/game-details.component");
+var help_component_1 = require("../component/help.component");
+var legal_component_1 = require("../component/legal.component");
 // sub-views
 var toolbar_view_1 = require("../view/toolbar.view");
 var game_card_view_1 = require("../view/game-card.view");
@@ -44,11 +48,15 @@ AppModule = __decorate([
         ],
         declarations: [
             app_component_1.AppComponent,
+            dashboard_component_1.DashboardComponent,
+            library_component_1.LibraryComponent,
             game_database_component_1.GameDatabaseComponent,
             about_component_1.AboutComponent,
             contact_component_1.ContactComponent,
             user_component_1.UserComponent,
+            help_component_1.HelpComponent,
             game_details_component_1.GameDetailsComponent,
+            legal_component_1.LegalComponent,
             toolbar_view_1.ToolbarView,
             game_card_view_1.GameCardView,
             login_view_1.LoginView,

@@ -15,11 +15,15 @@ var game_1 = require("../model/game");
 var GameCardView = (function () {
     function GameCardView(gameDatabaseService) {
         this.gameDatabaseService = gameDatabaseService;
-        this.showTags = false;
+        this.iconClass = "rocket";
+        //@Input() showTags: boolean = false;
         this.tags = [];
     }
     GameCardView.prototype.ngOnInit = function () {
         var _this = this;
+        var div = document.createElement("div");
+        div.innerHTML = this.game.Description;
+        this.descriptionText = div.textContent || div.innerText || this.game.Description;
         this.gameDatabaseService.getPlayerCountById(this.game.PlayerCountID)
             .then(function (playercount) { return _this.playerCount = playercount; });
         this.gameDatabaseService.getDurationById(this.game.DurationID)
@@ -30,7 +34,19 @@ var GameCardView = (function () {
         var _this = this;
         this.game.TagGames.forEach(function (tagGame) {
             _this.gameDatabaseService.getTagById(tagGame.TagID)
-                .then(function (tag) { return _this.tags.push(tag); });
+                .then(function (tag) {
+                _this.tags.push(tag);
+                switch (tag.Name.toLowerCase()) {
+                    case 'show':
+                        _this.iconClass = 'ticket';
+                        break;
+                    case 'exercise':
+                        _this.iconClass = 'lightbulb-o';
+                        break;
+                    case 'warmup':
+                        _this.iconClass = 'fire';
+                }
+            });
         });
     };
     /*
@@ -53,10 +69,6 @@ __decorate([
     core_1.Input(),
     __metadata("design:type", game_1.Game)
 ], GameCardView.prototype, "game", void 0);
-__decorate([
-    core_1.Input(),
-    __metadata("design:type", Boolean)
-], GameCardView.prototype, "showTags", void 0);
 GameCardView = __decorate([
     core_1.Component({
         moduleId: module.id,

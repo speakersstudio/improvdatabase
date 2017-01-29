@@ -49,7 +49,7 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
     names: Name[] = [];
     selectedGame: Game;
 
-    scrollpos: number = 0;
+    previousScrollPosition: number;
 
     _titleBase: string = '<span class="light">game</span><strong>database</strong>';
     title: string;
@@ -69,12 +69,6 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
 
     private tools: Tool[] = [
         {
-            icon: "fa-hashtag",
-            name: "showTags",
-            text: "Show Tags",
-            active: false
-        },
-        {
             icon: "fa-random",
             name: "randomGame",
             text: "Select Random Game",
@@ -83,22 +77,24 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
     ];
 
     ngOnInit(): void {
+
         this.setTitle();
 
         //this.toolSubscription = this.toolService.tool$.subscribe(this.onToolClicked);
 
         this._app.showLoader();
+        this._app.showBackground(true);
         this.getGames();
 
         this.pathLocationStrategy.onPopState(() => {
             this.selectedGame = null;
-            //this.clearFilter();
+            this._app.showBackground(true);
         });
     }
 
     setTitle(): void {
         if (this.filter) {
-            this.title = "Back";
+            this.title = "back";
         } else {
             this.title = this._titleBase;
         }
@@ -162,11 +158,14 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
         return game.GameID;
     }
 
-    onScroll($event): void {
-        this.scrollpos = $event.target.scrollingElement.scrollTop;
-    }
-
     onSelect(game: Game): void {
+        // remember the scroll position so we can return there when the user comes back
+        if (!this.selectedGame) {
+            this.previousScrollPosition = window.scrollY;
+        }
+
+        this._app.showBackground(false);
+
         if (!game) {
             this.selectedGame = null;
         } else {
@@ -175,6 +174,8 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
     
         let newPath = "/game/" + this.selectedGame.GameID;
         this._setPath(newPath);
+
+        window.scrollTo(0, 0);
     }
 
     private _setPath(path: string): void {
@@ -195,6 +196,11 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
             this.onToolClicked(tool);
         } else {
             this._goBack();
+
+            setTimeout(() => {
+                window.scrollTo(0, this.previousScrollPosition);
+                this.previousScrollPosition = 0;
+            }, 10);
         }
     }
 

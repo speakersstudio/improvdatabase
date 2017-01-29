@@ -1,20 +1,21 @@
 <div class="toolbar"
-    [class.transparent]="scrollpos < showToolbarScrollPosition"
+    [class.on]="_app.toolbarVisible"
+    [title]="title"
     ></div>
 
-<div class="curtain" [style.top]="(-(scrollpos * 0.5)) + 'px'">
+<!--<div class="curtain" [style.top]="(-(scrollpos * 0.5)) + 'px'">
     <h2>{{title}}</h2>
-</div>
+</div>-->
 
-<div class="content" (scroll)="onScroll($event)">
+<div class="page">
 
-    <div class="material" [class.dim]="sending" *ngIf="!sent">
-
-        <h4>Contact Us</h4>
+    <div class="paper has-brackets" [class.dim]="sending" *ngIf="!sent">
 
         <div class="metadata">
-            <span>Fill out this form letter to get your voice heard. Well, perhaps not your voice specifically, but one that we will make up for you as we read your comments.</span>
+            <span>Fill out this form letter to get your voice heard. Perhaps not your voice specifically, but one that we will make up for you as we read your comments.</span>
         </div>
+
+        <hr />
 
         <div class="description">
 
@@ -99,9 +100,12 @@
             </div>
         </div>
 
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>contact us</h1></div>
+
     </div>
 
-    <div class="material" *ngIf="sent">
+    <div class="page has-brackets" *ngIf="sent">
 
         <h4>Message Delivered</h4>
 
@@ -112,6 +116,9 @@
                 <a routerLink="/games" class="button" >Return to the Database</a>
             </div>
         </div>
+
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>contact us</h1></div>
     
     </div>
 

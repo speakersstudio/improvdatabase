@@ -29,6 +29,26 @@ h2, h3, h4, h5, p, button, textarea, .content-item {
     margin: $small 0;
 }
 
+p {
+    line-height: 1.1;
+}
+
+hr {
+    margin: $large 0;
+    border: 0px;
+    height: 1px;
+    background: $color-hr;
+}
+
+img {
+    max-width: 100%;
+}
+
+ul {
+    list-style-type: disc;
+    padding: 0 $large;
+}
+
 em {
     font-style: italic;
 }
@@ -124,3 +144,4 @@ form {
 @import "bits";
 @import "toolbar";
 @import "page";
+@import "card";

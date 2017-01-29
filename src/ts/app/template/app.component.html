@@ -32,44 +32,42 @@
             </div>
         </div>
 
-        <a (click)="toggleNav()" routerLinkActive="active">
+        <a routerLink="/dashboard" (click)="toggleNav()" routerLinkActive="active" class="nav-item">
             <i class="fa fa-dashboard"></i> <span>Dashboard</span>
         </a>
 
-        <a (click)="toggleNav()" routerLinkActive="active">
+        <a routerLink="/library" (click)="toggleNav()" routerLinkActive="active" class="nav-item">
             <i class="fa fa-book"></i> <span>Materials Library</span>
         </a>
 
-        <a routerLink="/games" (click)="toggleNav()" routerLinkActive="active">
-            <i class="fa fa-soccer-ball-o"></i> <span>Game Database</span>
+        <a routerLink="/games" (click)="toggleNav()" routerLinkActive="active" class="nav-item">
+            <i class="fa fa-rocket"></i> <span>Game Database</span>
         </a>
 
         <hr />
 
-        <a routerLink="/contact" (click)="toggleNav()" routerLinkActive="active">
+        <a routerLink="/contact" (click)="toggleNav()" routerLinkActive="active" class="nav-item">
             <i class="fa fa-envelope"></i> <span>Contact</span>
         </a>
 
-        <!--<a routerLink="/about" (click)="toggleNav()" routerLinkActive="active">
-            <i class="fa fa-info-circle"></i> <span>About</span>
-        </a>-->
-
-        <a (click)="toggleNav()" routerLinkActive="active">
+        <a routerLink="/help" (click)="toggleNav()" routerLinkActive="active" class="nav-item">
             <i class="fa fa-question"></i> <span>Help</span>
         </a>
 
         <footer>
-            &copy;2017 improvplus
+            <a routerLink="/about" (click)="toggleNav()">version <strong>{{version}}</strong></a>
         </footer>
     </div>
 </nav>
 
-
-
 <div (click)="closeOverlays()" class="backdrop nav-backdrop" [class.show]="showBackdrop"></div>
 
-<div id="left-bracket"></div>
-<div id="right-bracket"></div>
+<div class="left-bracket"></div>
+<div class="right-bracket"></div>
+
+<div class="curtain" (window:scroll)="onScroll($event)" [style.top]="(scrollpos * 0.75) + 'px'"><img src="/images/header-bg-graphic.png" /></div>
+
+<div class="background" *ngIf="backgroundVisible"></div>
 
 <router-outlet></router-outlet>
 
@@ -87,3 +85,11 @@
 </div>
 
 <login [show]="showLogin" (done)="handleLogin($user)" class="dialog-container"></login>
+
+<footer>
+
+    <a routerLink="/legal">Legal stuff</a>
+    <span>&copy;2017 improvplus</span>
+    <img src="/images/comodo_secure_seal_76x26_transp.png" />
+
+</footer>

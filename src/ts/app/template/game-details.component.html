@@ -1,19 +1,20 @@
 <div class="toolbar" 
     [showBack]="true"
-    [class.transparent]="scrollpos < showToolbarScrollPosition"
+    [class.on]="_app.toolbarVisible"
     [tools]="tools"
     (toolClicked)="onToolClicked($event)"
     (goBack)="closePage()"></div>
 
-<div class="curtain" [style.top]="(-(scrollpos * 0.5)) + 'px'">
+<!--<div class="curtain" [style.top]="(-(scrollpos * 0.5)) + 'px'">
     <h2 *ngIf="game && game.Names && game.Names[0]">{{game.Names[0].Name}}</h2>
     <h2 *ngIf="game && (!game.Names || !game.Names[0])">New Game</h2>
-</div>
+</div>-->
 
-<div class="content" (scroll)="onScroll($event)">
-    <div *ngIf="game" class="material">
+<div class="page">
 
-        <h4>
+    <div *ngIf="game" class="paper has-brackets">
+
+        <h4 class="right">
             <span *ngIf="!addNameShown && !editNameShown"
                 [class.clickable]="can('name_update')"
                 (click)="showEditName()">{{game.Names[0] ? game.Names[0].Name : 'New Game'}}</span>
@@ -28,7 +29,7 @@
                 class="fa fa-plus-circle clickable" title="Add an alternate name."></i>
         </h4>
 
-        <div class="metadata">
+        <div class="metadata right">
 
             <div *ngIf="game.Names.length === 2">
                 <h5>AKA {{game.Names[1].Name}}</h5>
@@ -63,8 +64,7 @@
 
             </span>
             
-            <span class="bullet" 
-                [title]="duration && !editDurationShown ? duration.Description : ''">
+            <span [title]="duration && !editDurationShown ? duration.Description : ''">
                 
                 <i class="fa fa-clock-o"></i> 
                 
@@ -103,6 +103,8 @@
             </ul>
         </div>
 
+        <hr />
+
         <div class="description" [innerHTML]="game.Description ? game.Description : 'No Description'" *ngIf="!editDescriptionShown"></div>
 
         <textarea name="description" class="description" [(ngModel)]="newDescriptionText" *ngIf="editDescriptionShown"></textarea>
@@ -113,17 +115,22 @@
             <div class="button" *ngIf="editDescriptionShown" (click)="_closeAllEdits()">cancel</div>
             <div class="button raised" *ngIf="editDescriptionShown" (click)="saveDescription()">SAVE</div>
         </div>
+
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>game details</h1></div>
     </div>
 
-    <div *ngIf="game && notes.length > 0" class="material">
+    <div *ngIf="game && notes.length > 0" class="paper has-brackets">
 
-        <h4>Discussion</h4>
+        <!--<h4>Discussion</h4>-->
 
-        <div class="metadata">
+        <!--<div class="metadata right">
             <span>The following has been said about <em>{{game.Names[0].Name}}</em>, or the tags associated with it.</span>
         </div>
 
-        <div *ngFor="let note of notes">
+        <hr />-->
+
+        <div *ngFor="let note of notes" class="block">
             <div class="description" [innerHTML]="note.Description"></div>
             <div class="metadata right">
                 <h5>{{note.AddedFirstName}} {{note.AddedLastName}}</h5>
@@ -144,7 +151,10 @@
             </div>
         </div>
 
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>discussion</h1></div>
     </div>
+
 </div>
 
 <create-metadata *ngIf="can('meta_create')" class="dialog-container"

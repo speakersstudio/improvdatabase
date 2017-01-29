@@ -26,7 +26,10 @@ export class GameCardView implements OnInit, OnDestroy {
     playerCount: PlayerCount;
     duration: Duration;
 
-    @Input() showTags: boolean = false;
+    iconClass:string = "rocket";
+    descriptionText: string;
+
+    //@Input() showTags: boolean = false;
     tags: Tag[] = [];
 
     constructor(
@@ -34,6 +37,10 @@ export class GameCardView implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
+        let div = document.createElement("div");
+        div.innerHTML = this.game.Description;
+        this.descriptionText = div.textContent || div.innerText || this.game.Description;
+
         this.gameDatabaseService.getPlayerCountById(this.game.PlayerCountID)
             .then((playercount) => this.playerCount = playercount);
 
@@ -46,7 +53,19 @@ export class GameCardView implements OnInit, OnDestroy {
     loadTags(): void {
         this.game.TagGames.forEach((tagGame) => {
             this.gameDatabaseService.getTagById(tagGame.TagID)
-                .then((tag) => this.tags.push(tag));
+                .then((tag) => {
+                    this.tags.push(tag);
+                    switch(tag.Name.toLowerCase()) {
+                        case 'show':
+                            this.iconClass = 'ticket';
+                            break;
+                        case 'exercise':
+                            this.iconClass = 'lightbulb-o';
+                            break;
+                        case 'warmup':
+                            this.iconClass = 'fire';
+                    }
+                });
         });
     }
 

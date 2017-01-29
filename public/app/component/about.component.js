@@ -15,22 +15,17 @@ var AboutComponent = (function () {
     function AboutComponent(_app, router) {
         this._app = _app;
         this.router = router;
-        this.scrollpos = 0;
-        this.showToolbarScrollPosition = window.innerHeight * 0.14;
-        this.title = "About";
+        this.title = '<span class="light">about</span><strong>us</strong>';
         this._tools = [];
     }
     AboutComponent.prototype.ngOnInit = function () {
-    };
-    AboutComponent.prototype.onScroll = function ($event) {
-        this.scrollpos = $event.target.scrollTop;
     };
     return AboutComponent;
 }());
 AboutComponent = __decorate([
     core_1.Component({
         moduleId: module.id,
-        selector: ".page.about",
+        selector: "history",
         templateUrl: "../template/about.component.html"
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,

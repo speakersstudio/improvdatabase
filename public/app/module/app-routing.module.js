@@ -7,16 +7,28 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
+var dashboard_component_1 = require("../component/dashboard.component");
+var library_component_1 = require("../component/library.component");
+var help_component_1 = require("../component/help.component");
 var game_database_component_1 = require("../component/game-database.component");
 var about_component_1 = require("../component/about.component");
 var contact_component_1 = require("../component/contact.component");
 var game_details_component_1 = require("../component/game-details.component");
 var user_component_1 = require("../component/user.component");
+var legal_component_1 = require("../component/legal.component");
 var routes = [
     {
         path: '',
-        redirectTo: '/games',
+        redirectTo: '/dashboard',
         pathMatch: 'full'
+    },
+    {
+        path: 'dashboard',
+        component: dashboard_component_1.DashboardComponent
+    },
+    {
+        path: 'library',
+        component: library_component_1.LibraryComponent
     },
     {
         path: 'games',
@@ -37,6 +49,14 @@ var routes = [
     {
         path: 'user',
         component: user_component_1.UserComponent
+    },
+    {
+        path: 'help',
+        component: help_component_1.HelpComponent
+    },
+    {
+        path: 'legal',
+        component: legal_component_1.LegalComponent
     }
 ];
 var AppRoutingModule = (function () {

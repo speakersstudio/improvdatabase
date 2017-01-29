@@ -15,25 +15,24 @@ var user_service_1 = require("../service/user.service");
 var anim_util_1 = require("../util/anim.util");
 var AppComponent = (function () {
     function AppComponent(_renderer, router, userService) {
+        var _this = this;
         this._renderer = _renderer;
         this.router = router;
         this.userService = userService;
         this.loader = document.getElementById("siteLoader");
         this.showMenu = false;
         this.showFullscreen = false;
+        this.showToolbarScrollPosition = 20;
         this.showDialog = false;
         this.dialogTitle = "";
         this.dialogMessage = "";
         this.dialogConfirm = "";
-        /* I won't use this, but here is how to subscribe to router events!
-        // when changing route, reset the toolbar
-        router.events.subscribe(val => {
-            if (val instanceof RoutesRecognized) {
-                this.setTitle("");
-                this.setTools([]);
+        this.version = "1.1.0";
+        router.events.subscribe(function (val) {
+            if (val instanceof router_1.RoutesRecognized) {
+                _this.showBackground(false);
             }
-        })
-        */
+        });
     }
     AppComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -43,6 +42,13 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.ngOnDestroy = function () {
         this.userSubscription.unsubscribe();
+    };
+    AppComponent.prototype.onScroll = function ($event) {
+        this.scrollpos = $event.target.scrollingElement.scrollTop;
+        this.toolbarVisible = this.scrollpos > this.showToolbarScrollPosition;
+    };
+    AppComponent.prototype.showBackground = function (show) {
+        this.backgroundVisible = show;
     };
     AppComponent.prototype.setUser = function (user) {
         this.user = user;

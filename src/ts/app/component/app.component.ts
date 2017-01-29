@@ -34,6 +34,12 @@ export class AppComponent implements OnInit, OnDestroy {
     showMenu: boolean = false;
     showFullscreen: boolean = false;
 
+    scrollpos: number;
+    showToolbarScrollPosition: number = 20;
+    toolbarVisible: boolean;
+
+    backgroundVisible: boolean;
+
     isLoggedIn: boolean;
 
     user: User;
@@ -49,20 +55,18 @@ export class AppComponent implements OnInit, OnDestroy {
 
     userSubscription: Subscription;
 
+    version: string = "1.1.0";
+
     constructor(
         private _renderer: Renderer,
         private router: Router,
         private userService: UserService
     ) {
-        /* I won't use this, but here is how to subscribe to router events!
-        // when changing route, reset the toolbar
         router.events.subscribe(val => {
             if (val instanceof RoutesRecognized) {
-                this.setTitle("");
-                this.setTools([]);
+                this.showBackground(false);
             }
         })
-        */
     }
 
     ngOnInit() {
@@ -74,6 +78,15 @@ export class AppComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.userSubscription.unsubscribe();
+    }
+    
+    onScroll($event): void {
+        this.scrollpos = $event.target.scrollingElement.scrollTop;
+        this.toolbarVisible = this.scrollpos > this.showToolbarScrollPosition;
+    }
+
+    showBackground(show: boolean): void {
+        this.backgroundVisible = show;
     }
 
     setUser(user: User): void {

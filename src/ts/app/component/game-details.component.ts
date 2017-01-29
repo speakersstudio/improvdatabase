@@ -32,7 +32,7 @@ import { UserService } from "../service/user.service";
 
 @Component({
     moduleId: module.id,
-    selector: '.page.ng-game-details',
+    selector: 'game-details',
     templateUrl: '../template/game-details.component.html',
     animations: [
         trigger('expand', [
@@ -61,11 +61,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     tagMap: Object = {};
     notes: Note[] = [];
 
-    scrollpos: number = 0;
-
     namesOpen: boolean = false;
-
-    showToolbarScrollPosition: number = window.innerWidth * 0.15;
 
     editNameShown: boolean;
     addNameShown: boolean;
@@ -112,6 +108,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
+
         if (!this.game) {
             this.route.params.forEach((params: Params) => {
                 let id = +params['id'];
@@ -390,10 +387,6 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         } else {
             this.router.navigate(['/games']);
         }
-    }
-
-    onScroll($event): void {
-        this.scrollpos = $event.target.scrollTop;
     }
 
     toggleNames(): void {

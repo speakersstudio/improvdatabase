@@ -18,6 +18,10 @@ $color-hr: rgba(96,96,96,0.5); // color for dividers
 
 $color-transparent: rgba(0,0,0,0); //utility!
 
+$color-red: #d32f2f;
+$color-orange: #ffa70f; // Speaker's Studio Orange!
+$color-yellow: #F9D423; // yellow!
+$color-blue: #64b5f6;
 
 // FONT
 $font-family: 'Lato', sans-serif !default;
@@ -55,6 +59,11 @@ $page-bracket-width: 8.7%;
 
 // BITS!
 $dropdown-max-height: 337px;
+
+// tags
+$tag-spacing: 2px;
+$tag-padding: 2px 5px;
+$tag-border-radius: $border-radius * 2;
 
 // toolbar
 $toolbar-height: 48px;

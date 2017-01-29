@@ -6,11 +6,15 @@ import { PathLocationStrategy } from '@angular/common';
 
 // main components
 import { AppComponent } from '../component/app.component';
+import { DashboardComponent } from '../component/dashboard.component';
+import { LibraryComponent } from "../component/library.component";
 import { GameDatabaseComponent } from '../component/game-database.component';
 import { AboutComponent } from '../component/about.component';
 import { ContactComponent } from '../component/contact.component';
 import { UserComponent } from '../component/user.component';
 import { GameDetailsComponent } from '../component/game-details.component';
+import { HelpComponent } from "../component/help.component";
+import { LegalComponent } from "../component/legal.component";
 
 // sub-views
 import { ToolbarView } from '../view/toolbar.view';
@@ -38,11 +42,15 @@ import { WebStorageService, WebStorageSubscriber } from "../util/webstorage.util
      ],
     declarations: [
         AppComponent,
+        DashboardComponent,
+        LibraryComponent,
         GameDatabaseComponent,
         AboutComponent,
         ContactComponent,
         UserComponent,
+        HelpComponent,
         GameDetailsComponent,
+        LegalComponent,
         
         ToolbarView,
         GameCardView,

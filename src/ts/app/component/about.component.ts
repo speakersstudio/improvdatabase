@@ -6,14 +6,12 @@ import { Tool } from '../view/toolbar.view';
 
 @Component({
     moduleId: module.id,
-    selector: ".page.about",
+    selector: "history",
     templateUrl: "../template/about.component.html"
 })
 export class AboutComponent implements OnInit {
-    scrollpos: number = 0;
-    showToolbarScrollPosition: number = window.innerHeight * 0.14;
 
-    title: string = "About";
+    title: string = '<span class="light">about</span><strong>us</strong>';
 
     constructor(
         private _app: AppComponent,
@@ -27,7 +25,4 @@ export class AboutComponent implements OnInit {
 
     }
 
-    onScroll($event): void {
-        this.scrollpos = $event.target.scrollTop;
-    }
 }

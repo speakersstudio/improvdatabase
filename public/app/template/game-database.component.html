@@ -1,7 +1,7 @@
 <div class="toolbar" 
     [tools]="tools"
     [title]="title"
-    [class.on]="scrollpos > 20"
+    [class.on]="_app.toolbarVisible"
     [class.active]="filter"
     [showSearch]="true"
     [searchResults]="searchResults"
@@ -10,35 +10,41 @@
     (search)="onSearch($event)"
     (searchResultClick)="onSearchResultClick($event)"
     (goBack)="clearFilter()"
+
+    *ngIf="!selectedGame"
     ></div>
 
-<div class="page fullbg" (window:scroll)="onScroll($event)">
+<div class="page fullbg" *ngIf="!selectedGame">
 
-    <div class="list-metadata" *ngIf="filter">
-        <p *ngIf="filter.property == 'search'">Showing results for "{{searchTerm}}"</p>
-        <p *ngIf="filter.property != 'search'">Filtered results</p>
+    <div class="paper-label" *ngIf="filter && filter.property == 'search'">
+        Showing results for "{{searchTerm}}"
     </div>
-    <div class="paper-label">
+
+    <div class="paper-label" *ngIf="filter && filter.property != 'search'">
+        Filtered results
+    </div>
+
+    <div class="paper-label" *ngIf="!filter">
         All Games
     </div>
+
     <div class="list paper">
         <div class="item ng-game-card clickable" *ngFor="let game of games; trackBy:trackByGames"
             [game]="game"
             [class.selected] = "game === selectedGame"
-            [showTags]="tools[0].active"
             (click)="onSelect(game)">
+            <!--[routerLink]="['/game', game.GameID]">-->
         </div>
     </div>
 
-    <div id="cornerLogo">
+    <!--<div id="cornerLogo">
         <img src="/images/cornerlogo.png" />
-    </div>
+    </div>-->
 
 </div>
 
-<div *ngIf="selectedGame"
-    class="page ng-game-details"
+<game-details *ngIf="selectedGame"
     [game]="selectedGame"
-    (onClose)="closeDetails($event)" ></div>
+    (onClose)="closeDetails($event)" ></game-details>
 
 <button class="fab" *ngIf="userService.can('game_create')" (click)="createGame()"><i class="fa fa-plus"></i></button>

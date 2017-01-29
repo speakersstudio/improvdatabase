@@ -15,7 +15,7 @@ module.exports = function () {
             },
             port: 1919
         };
-    } else if (process.env.NODE_ENV === 'production') {
+    } else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'qa') {
         return {
             token: process.env.SECRET,
             postgres: {

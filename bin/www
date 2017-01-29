@@ -33,7 +33,11 @@ if (process.env.NODE_ENV === 'development') {
  * Create HTTP server.
  */
 
+console.log('creating server!')
+
 var server = https.createServer(options, app);
+
+console.log('server created!')
 
 /**
  * Listen on provided port, on all network interfaces.

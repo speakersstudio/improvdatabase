@@ -20,7 +20,10 @@ app.use(function(req, res, next) {
     return res.redirect(['https://', req.get('Host'), req.url].join(''));
   }
   next();
-})
+});
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
 // view engine setup
 app.engine('handlebars', exphbs({defaultLayout: 'main'}))
@@ -34,9 +37,6 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
 // TODO: include front-end node modules?
 

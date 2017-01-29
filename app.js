@@ -15,12 +15,12 @@ var config = require('./config')();
 var app = express();
 
 // redirect to https
-app.use(function(req, res, next) {
-  if (req.headers['x-forwarded-proto'] === 'http') {
-    return res.redirect(['https://', req.get('Host'), req.url].join(''));
-  }
-  next();
-})
+// app.use(function(req, res, next) {
+//   if (req.headers['x-forwarded-proto'] === 'http') {
+//     return res.redirect(['https://', req.get('Host'), req.url].join(''));
+//   }
+//   next();
+// })
 
 // view engine setup
 app.engine('handlebars', exphbs({defaultLayout: 'main'}))

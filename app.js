@@ -14,13 +14,13 @@ var config = require('./config')();
 
 var app = express();
 
-// redirect to https
-// app.use(function(req, res, next) {
-//   if (req.headers['x-forwarded-proto'] === 'http') {
-//     return res.redirect(['https://', req.get('Host'), req.url].join(''));
-//   }
-//   next();
-// })
+// redirect to https (this is a Heroku thing)
+app.use(function(req, res, next) {
+  if (req.headers['x-forwarded-proto'] === 'http') {
+    return res.redirect(['https://', req.get('Host'), req.url].join(''));
+  }
+  next();
+})
 
 // view engine setup
 app.engine('handlebars', exphbs({defaultLayout: 'main'}))
@@ -90,7 +90,7 @@ app.use(function(req, res, next) {
 
 // development error handler
 // will print stacktrace
-//if (app.get('env') === 'development') {
+if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
@@ -98,7 +98,7 @@ app.use(function(req, res, next) {
       error: err
     });
   });
-//}
+}
 
 // production error handler
 // no stacktraces leaked to user

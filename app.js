@@ -17,6 +17,7 @@ var app = express();
 // redirect to https (this is a Heroku thing)
 app.use(function(req, res, next) {
   if (req.headers['x-forwarded-proto'] === 'http') {
+    console.log('Redirecting an insecure Heroku connection to HTTPS');
     return res.redirect(['https://', req.get('Host'), req.url].join(''));
   }
   next();

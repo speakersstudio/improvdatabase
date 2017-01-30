@@ -363,6 +363,8 @@ nav {
     .brackets {
         border: 2px solid $color-text;
         @include abs(2vw, 2vw, 2vw, 2vw, 1);
+        display: flex;
+        flex-direction: column;
 
         @media #{$media-mobile} {
             top: 3vw;
@@ -411,7 +413,6 @@ nav {
     .nav-top {
         width: 100%;
         position: relative;
-        margin-bottom: $small;
         background-color: $nav-bg;
         cursor: default;
         border-bottom: 1px solid $color-text;

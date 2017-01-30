@@ -31,28 +31,31 @@
 
             </div>
         </div>
+        
+        <div class="scroll">
 
-        <a routerLink="/dashboard" (click)="toggleNav()" routerLinkActive="active" class="nav-item">
-            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
-        </a>
+            <a routerLink="/dashboard" (click)="toggleNav()" routerLinkActive="active" class="nav-item">
+                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+            </a>
 
-        <a routerLink="/library" (click)="toggleNav()" routerLinkActive="active" class="nav-item">
-            <i class="fa fa-book"></i> <span>Materials Library</span>
-        </a>
+            <a routerLink="/library" (click)="toggleNav()" routerLinkActive="active" class="nav-item">
+                <i class="fa fa-book"></i> <span>Materials Library</span>
+            </a>
 
-        <a routerLink="/games" (click)="toggleNav()" routerLinkActive="active" class="nav-item">
-            <i class="fa fa-rocket"></i> <span>Game Database</span>
-        </a>
+            <a routerLink="/games" (click)="toggleNav()" routerLinkActive="active" class="nav-item">
+                <i class="fa fa-rocket"></i> <span>Game Database</span>
+            </a>
 
-        <hr />
+            <hr />
 
-        <a routerLink="/contact" (click)="toggleNav()" routerLinkActive="active" class="nav-item">
-            <i class="fa fa-envelope"></i> <span>Contact</span>
-        </a>
+            <a routerLink="/contact" (click)="toggleNav()" routerLinkActive="active" class="nav-item">
+                <i class="fa fa-envelope"></i> <span>Contact</span>
+            </a>
 
-        <a routerLink="/help" (click)="toggleNav()" routerLinkActive="active" class="nav-item">
-            <i class="fa fa-question"></i> <span>Help</span>
-        </a>
+            <a routerLink="/help" (click)="toggleNav()" routerLinkActive="active" class="nav-item">
+                <i class="fa fa-question"></i> <span>Help</span>
+            </a>
+        </div>
 
         <footer>
             <a routerLink="/about" (click)="toggleNav()">version <strong>{{version}}</strong></a>

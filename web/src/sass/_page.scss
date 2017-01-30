@@ -1,0 +1,190 @@
+@import "./mixins/elevation";
+@import "./mixins/mixins";
+
+@import "vars";
+
+$paper-bg: $color-white;
+
+.left-bracket,
+.right-bracket {
+    @include abs(($toolbar-height / 2), null, ($toolbar-height / 2), null, 5);
+    border: 1px solid $color-text;
+    width: $page-bracket-width;
+
+    h1 {
+        font-size: 18px;
+        padding: 0 $std;
+        background: $paper-bg;
+        transform: translateY(-55%);
+    }
+}
+
+.left-bracket {
+    left: ($toolbar-height / 2);
+    border-right-width: 0px;
+
+    h1 {
+        @include abs(0, null, null, ($toolbar-height / 2));
+    }
+
+    @media #{$media-mobile} {
+        left: ($toolbar-height / 4);
+
+        h1 {
+            display: none;
+        }
+    }
+}
+
+.right-bracket {
+    right: ($toolbar-height / 2);
+    border-left-width: 0px;
+
+    h1 {
+        @include abs(0, ($toolbar-height / 2), null, null);
+        font-style: italic;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    @media #{$media-mobile} {
+        right: ($toolbar-height / 4);
+
+        h1 {
+            right: ($toolbar-height / 2);
+        }
+    }
+}
+
+@media #{$media-mobile} {
+    my-app > .left-bracket,
+    my-app > .right-bracket {
+        display: none;
+    }
+}
+
+.curtain {
+    @include abs(0, 0, null, 0, 1);
+    height: $curtain-height;
+
+    @include background-linear-gradient-down($color-secondary-fade, 12px, $color-secondary, ($toolbar-height * 1.8), $color-secondary);
+
+    img {
+        width: 100%;
+    }
+}
+
+.background {
+    @include abs(0,0,0,0,0);
+    background: $color-secondary;
+}
+
+.page {
+    min-height: 100vh;
+    box-sizing: border-box;
+    position: relative;
+    padding: $toolbar-height $page-bracket-width $page-bracket-width;
+
+    @media #{$media-mobile} {
+        padding: $toolbar-height $std $page-bracket-width;
+    }
+
+    .curtain {
+        display: none;
+        @include abs(0, 0, null, 0, 1);
+        height: $curtain-height;
+
+        @include background-linear-gradient-down($color-secondary-fade, 12px, $color-secondary, ($toolbar-height * 1.8), $color-secondary); 
+    }
+
+    .paper-label {
+        font-size: 16px;
+        padding: $std;
+        margin: 0 ($toolbar-height / 2)+2;
+        position: relative;
+        z-index: 2;
+
+        @media #{$media-mobile} {
+            margin: 0 ($toolbar-height / 4) + 2;
+        }
+    }
+
+    .paper {
+        border-radius: $border-radius;
+        @include md-elevation($card-elevation-default);
+        background: $paper-bg;
+        padding: $std;
+        position: relative;
+        z-index:  2;
+        margin: 0 ($toolbar-height / 2)+2 $std;
+
+        @media #{$media-mobile} {
+            margin: 0 0 $std;
+        }
+
+        &:first-child {
+            margin-top: ($curtain-height * 0.3);
+        }
+
+        &.list {
+            padding: 0;
+        }
+
+        &.has-brackets {
+            padding: $toolbar-height ($toolbar-height + $std);
+
+            @media #{$media-mobile} {
+                padding: $toolbar-height (($toolbar-height * 0.75) + $std);
+            }
+        }
+
+        & > :not(.left-bracket, .right-bracket) {
+            position: relative;
+            z-index: 6;
+        }
+
+        h4 {
+            font-size: 28px;
+        }
+
+        h5 {
+            font-size: 18px;
+        }
+
+        .description, .description p {
+            line-height: 1.25;
+        }
+    }
+
+    &.fullbg {
+        //background: $color-secondary;
+
+        .paper:first-child {
+            margin-top: 0;
+        }
+    }
+}
+
+footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    @include abs(null, $page-bracket-width, 0, $page-bracket-width, 1);
+    height: $toolbar-height;
+    padding: 0 ($toolbar-height / 2);
+    font-size: 13px;
+    font-weight: 300;
+
+    a {
+        color: $color-text;
+    }
+}
+
+dashboard .page {
+    .paper-label {
+        padding: ($large * 2) $std;
+        font-size: 32px;
+        text-align: center;
+    }
+}

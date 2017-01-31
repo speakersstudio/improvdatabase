@@ -12,13 +12,11 @@ var core_1 = require("@angular/core");
 require("rxjs/Subject");
 var router_1 = require("@angular/router");
 var AppComponent = (function () {
-    function AppComponent(_renderer, router) {
-        this._renderer = _renderer;
+    function AppComponent(router) {
         this.router = router;
+        this.scrollpos = 0;
     }
     AppComponent.prototype.ngOnInit = function () {
-    };
-    AppComponent.prototype.ngOnDestroy = function () {
     };
     AppComponent.prototype.onScroll = function ($event) {
         this.scrollpos = $event.target.scrollingElement.scrollTop;
@@ -32,8 +30,7 @@ AppComponent = __decorate([
         templateUrl: '../template/app.component.html',
         animations: []
     }),
-    __metadata("design:paramtypes", [core_1.Renderer,
-        router_1.Router])
+    __metadata("design:paramtypes", [router_1.Router])
 ], AppComponent);
 exports.AppComponent = AppComponent;
 

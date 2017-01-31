@@ -52,7 +52,7 @@ gulp.task('webcompile', function() {
         .pipe(ts(webtsoptions.compilerOptions))
         .pipe(maps.write('./'))
         .pipe(plumber.stop())
-        .pipe(gulp.dest('./web/public/app'));
+        .pipe(gulp.dest('./web/public/js'));
 });
 
 gulp.task('templateCopy', function () {
@@ -62,7 +62,7 @@ gulp.task('templateCopy', function () {
 
 gulp.task('webtemplateCopy', function () {
     return gulp.src('./web/src/ts/**/*.html')
-        .pipe(gulp.dest('./web/public'));
+        .pipe(gulp.dest('./web/public/js'));
 });
 
 function handleError(err) {
@@ -75,7 +75,7 @@ gulp.task('watch', function () {
     gulp.watch('./app/src/ts/**/*.ts', ['tscompile']);
     gulp.watch('./app/src/ts/**/*.html', ['templateCopy']);
 
-    gulp.watch('./web/src/ts/**/*.ts', ['webtscompile']);
+    gulp.watch('./web/src/ts/**/*.ts', ['webcompile']);
     gulp.watch('./web/src/ts/**/*.html', ['webtemplateCopy']);
 
     gulp.watch('./app/src/sass/**/*.scss', ['compileAppSass']);
@@ -85,4 +85,4 @@ gulp.task('watch', function () {
 });
 
 gulp.task('build', ['compileAppSass', 'tscompile', 'templateCopy']);
-gulp.task('buildweb', ['compileWebSass', 'webtscompile', 'webtemplateCopy'])
+gulp.task('buildweb', ['compileWebSass', 'webcompile', 'webtemplateCopy'])

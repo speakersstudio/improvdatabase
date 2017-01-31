@@ -1,8 +1,3 @@
-@import "./mixins/elevation";
-@import "./mixins/mixins";
-
-@import "vars";
-
 $paper-bg: $color-white;
 
 .left-bracket,
@@ -10,12 +5,17 @@ $paper-bg: $color-white;
     @include abs(($toolbar-height / 2), null, ($toolbar-height / 2), null, 5);
     border: 1px solid $color-text;
     width: $page-bracket-width;
+    transition: border-color 200ms;
 
     h1 {
         font-size: 18px;
         padding: 0 $std;
         background: $paper-bg;
         transform: translateY(-55%);
+    }
+
+    &.white {
+        border-color: $color-white;
     }
 }
 
@@ -56,61 +56,97 @@ $paper-bg: $color-white;
     }
 }
 
-@media #{$media-mobile} {
-    my-app > .left-bracket,
-    my-app > .right-bracket {
-        display: none;
-    }
-}
-
-.curtain {
-    @include abs(0, 0, null, 0, 1);
-    height: $curtain-height;
-
-    @include background-linear-gradient-down($color-secondary-fade, 12px, $color-secondary, ($toolbar-height * 1.8), $color-secondary);
-
-    img {
-        width: 100%;
-    }
-}
-
-.background {
-    @include abs(0,0,0,0,0);
-    background: $color-secondary;
-}
-
-.page {
-    min-height: 100vh;
-    box-sizing: border-box;
+.landing {
     position: relative;
-    padding: $toolbar-height $page-bracket-width $page-bracket-width;
+    width: 100vw;
+    height: 100vh;
+    z-index: 3;
+    @include md-elevation(8);
 
-    @media #{$media-mobile} {
-        padding: $toolbar-height $std $page-bracket-width;
-    }
+    .background {
+        @include abs(0, null, null, 0, 1);
+        width: 100%;
+        height: 100%;
+        filter: saturate(2%);
+        overflow: hidden;
+        background: $color-bg;
 
-    .curtain {
-        display: none;
-        @include abs(0, 0, null, 0, 1);
-        height: $curtain-height;
+        img {
+            @include abs(0,null,null,0);
+            z-index: 1;
+            max-width: none;
+        }
 
-        @include background-linear-gradient-down($color-secondary-fade, 12px, $color-secondary, ($toolbar-height * 1.8), $color-secondary); 
-    }
+        iframe {
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            position: relative;
+            z-index: 2;
 
-    .paper-label {
-        font-size: 16px;
-        padding: $std;
-        margin: 0 ($toolbar-height / 2)+2;
-        position: relative;
-        z-index: 2;
-
-        @media #{$media-mobile} {
-            margin: 0 ($toolbar-height / 4) + 2;
+            transition: opacity 600ms;
         }
     }
 
+    .content {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: $color-white;
+
+        h1 {
+            font-size: 110px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-top: $large;
+        }
+        
+        .button {
+            margin-top: 24px;
+            color: $color-white;
+            
+            &:before,
+            &:after {
+                border-color: $color-white;
+            }
+
+            &:hover {
+                &:before,
+                &:after {
+                    border-color: $color-primary;
+                }
+            }
+        }
+    }
+
+    .iplus {
+        @include abs(($toolbar-height / 2), null, null, 50%, 5);
+        margin-top: -12px;
+        margin-left: -12px;
+    }
+
+    .fa-chevron-down {
+        @include abs(null, null, $std, 50%, 10);
+        font-size: 50px;
+        color: $color-white;
+        margin-left: -25px;
+    }
+}
+
+.page {
+    box-sizing: border-box;
+    position: relative;
+    padding: 0 $page-bracket-width $page-bracket-width;
+
     .paper {
-        border-radius: $border-radius;
+        border-radius: 0 0 $border-radius $border-radius;
         @include md-elevation($card-elevation-default);
         background: $paper-bg;
         padding: $std;
@@ -120,10 +156,6 @@ $paper-bg: $color-white;
 
         @media #{$media-mobile} {
             margin: 0 0 $std;
-        }
-
-        &:first-child {
-            margin-top: ($curtain-height * 0.3);
         }
 
         &.list {
@@ -154,37 +186,5 @@ $paper-bg: $color-white;
         .description, .description p {
             line-height: 1.25;
         }
-    }
-
-    &.fullbg {
-        //background: $color-secondary;
-
-        .paper:first-child {
-            margin-top: 0;
-        }
-    }
-}
-
-footer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    @include abs(null, $page-bracket-width, 0, $page-bracket-width, 1);
-    height: $toolbar-height;
-    padding: 0 ($toolbar-height / 2);
-    font-size: 13px;
-    font-weight: 300;
-
-    a {
-        color: $color-text;
-    }
-}
-
-dashboard .page {
-    .paper-label {
-        padding: ($large * 2) $std;
-        font-size: 32px;
-        text-align: center;
     }
 }

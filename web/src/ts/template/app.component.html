@@ -1,9 +1,9 @@
-<div class="left-bracket"></div>
-<div class="right-bracket"></div>
+<div class="left-bracket" [class.white]="scrollpos < 300"></div>
+<div class="right-bracket" [class.white]="scrollpos < 300"></div>
 
 <router-outlet></router-outlet>
 
-<footer>
+<footer (window:scroll)="onScroll($event)">
 
     <a routerLink="/legal">Legal stuff</a>
     <span>&copy;2017 improvplus</span>

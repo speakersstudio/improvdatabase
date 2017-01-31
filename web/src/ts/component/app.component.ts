@@ -1,14 +1,6 @@
 import {
     Component,
-    OnInit,
-    OnDestroy,
-    Renderer,
-    Injectable,
-    trigger,
-    state,
-    style,
-    transition,
-    animate
+    OnInit
 } from '@angular/core';
 import 'rxjs/Subject';
 import { Subject } from 'rxjs/Subject';
@@ -22,19 +14,15 @@ import { Router, RoutesRecognized } from '@angular/router';
     animations: [
     ]
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
 
-    scrollpos: number;
+    scrollpos: number = 0;
 
     constructor(
-        private _renderer: Renderer,
         private router: Router
     ) { }
 
     ngOnInit() {
-    }
-
-    ngOnDestroy() {
     }
     
     onScroll($event): void {

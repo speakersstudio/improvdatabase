@@ -1,9 +1,3 @@
-@import "./mixins/mixins";
-@import "./mixins/anim";
-@import "./mixins/elevation";
-
-@import "./vars";
-
 html {
     background: $color-bg;
 }
@@ -140,6 +134,3 @@ form {
         text-align: center;
     }
 }
-
-@import "bits";
-@import "page";

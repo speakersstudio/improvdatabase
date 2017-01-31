@@ -14,6 +14,10 @@
     width: 24px;
     height: 24px;
     background: url('/app/images/iplus.png') no-repeat;
+
+    &.white {
+        background-position: -24px 0;
+    }
 }
 
 .loading-icon {
@@ -113,12 +117,122 @@
     text-align: right;
 }
 
+.center {
+    text-align: center;
+}
+
 .scroll {
     overflow: auto;
 
     &:after {
         @include abs(null, -10px, 0, 10px, 5);
         box-shadow: 0 -5px 10px rgba(0,0,0,0.4);
+    }
+}
+
+.button-group {
+    margin-top: $std;
+    text-align: right;
+}
+
+button,
+.button {
+    border-radius: $border-radius;
+    line-height: $button-height;
+    height: $button-height;
+    padding: 0 $std;
+    min-width: $button-min-width;
+    text-align: center;
+    margin: 0 $std;
+    display: inline-block;
+    color: $color-primary;
+    border: 0px;
+    cursor: pointer;
+    width: auto;
+    box-sizing: border-box;
+    background: none;
+    text-transform: uppercase;
+    text-decoration: none;
+
+    @include md-elevation-transition(opacity $anim-duration);
+
+    &.raised {
+        background-color: $color-primary;
+        color: $color-primary-text;
+        @include md-elevation(0);
+        
+        &:hover {
+            @include md-elevation($raised-button-elevation);
+        }
+        &:active {
+            @include md-elevation($raised-button-pressed-elevation);
+        }
+    }
+
+    &.brackets {
+        @include md-elevation(0);
+        position: relative;
+        transition: color 200ms;
+
+        &:before,
+        &:after {
+            content: "";
+            width: 1em;
+            border-style: solid;
+            border-color: $color-primary;
+            transition: width 200ms, border-color 200ms;
+        }
+
+        &:before {
+            @include abs(0, null, 0, 0);
+            border-width: 3px 0 3px 3px;
+        }
+
+        &:after {
+            @include abs(0, 0, 0, null);
+            border-width: 3px 3px 3px 0;
+        }
+        
+        &:hover {
+            @include md-elevation($raised-button-elevation);
+
+            &:before,
+            &:after {
+                width: 50%;
+            }
+        }
+        &:active {
+            @include md-elevation($raised-button-pressed-elevation);
+        }
+    }
+
+    &[disabled] {
+        opacity: 0.5;
+
+        &:hover {
+            @include md-elevation(0);
+        }
+    }
+
+    &.fab {
+        @include abs(null, 32px, 16px, null, 500);
+        font-size: $fab-icon-size;
+        background: $color-primary;
+        color: $color-primary-text;
+        width: $fab-width;
+        height: $fab-width;
+        border-radius: 50%;
+        padding: 0;
+        min-width: 0;
+        margin: 0;
+        line-height: $fab-icon-size;
+
+        @include md-elevation(6);
+        @include md-elevation-transition();
+
+        &:hover {
+            @include md-elevation(12);
+        }
     }
 }
 

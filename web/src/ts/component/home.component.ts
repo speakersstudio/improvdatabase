@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit {
     bgtop: number;
 
     YT = (<any>window).YT;
-    player: any = {};
+    player: any;
     playbackSpeed: number = 0.4;
     currentTime: number;
 
@@ -49,32 +49,68 @@ export class HomeComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        this.setupSize();
+    }
 
-        // if (window.innerHeight > window.innerWidth) {
+    setupSize(): void {
+        console.log('setup size');
+
+        let targetRatio = 1920 / 1080,
+            screenRatio = window.innerWidth / window.innerHeight;
+
+        if (targetRatio >= screenRatio) {
             this.bgheight = window.innerHeight;
             this.bgwidth = 1920 * (this.bgheight / 1080);
             this.bgtop = 0;
-        // } else {
-        //     this.bgwidth = window.innerWidth;
-        //     this.bgheight = 1080 * (this.bgwidth / 1920);
-        //     this.bgtop = (this.bgheight - window.innerHeight) / 2;
-        // }
-        this.bgleft = (this.bgwidth - window.innerWidth) / 2;
+            this.bgleft = (this.bgwidth - window.innerWidth) / 2;
+        } else {
+            this.bgwidth = window.innerWidth;
+            this.bgheight = 1080 * (this.bgwidth / 1920);
+            this.bgtop = (this.bgheight - window.innerHeight) / 2;
+            this.bgleft = 0;
+        }
 
-        this.initVideoBG();
+        if (window.innerWidth < 768) {
+            // don't do video on tablet or mobile
+            if (this.player) {
+                this.player.getIframe().remove();
+                this.player = null;
+            }
+        } else {
+            if (!this.player) {
+                this.initVideoBG();
+            } else {
+                this.resizeVideo();
+            }
+        }
+    }
+
+    resizeVideo(): void {
+        let iframe = this.player.getIframe();
+
+        iframe.style.width = this.bgwidth + 'px';
+        iframe.style.height = this.bgheight + 'px';
+        iframe.style.left = '-' + this.bgleft + 'px';
+        iframe.style.top = '-' + this.bgtop + 'px';
     }
 
     initVideoBG(): void {
 
         var currentTime = null;
+
+        if (window.innerWidth < 768) {
+            return;
+        }
             
         if (this.YT.loaded !== 1) {
-            //setTimeout(this.setVideoPlayer.bind(this), 100);
-            // TODO: wait for it to load?
-            console.log('the youtube api is not loaded yet');
+            setTimeout(() => this.initVideoBG(), 500);
         } else {
         
             let frameCallback = () => {
+                if (!this.player) {
+                    return;
+                }
+
                 if (!this.currentTime){
                     // restart the player
                     if (this.player.getCurrentTime() + 0.1 >= this.player.getDuration()) {
@@ -113,12 +149,7 @@ export class HomeComponent implements OnInit {
                         onReady: (event) => {
                             //this.syncPlayer(); scale the video and set the speed
 
-                            let iframe = this.player.getIframe();
-
-                            iframe.style.width = this.bgwidth + 'px';
-                            iframe.style.height = this.bgheight + 'px';
-                            iframe.style.left = '-' + this.bgleft + 'px';
-                            iframe.style.top = '-' + this.bgtop + 'px';
+                            this.resizeVideo();
 
                             this.player.setPlaybackRate(this.playbackSpeed);
 

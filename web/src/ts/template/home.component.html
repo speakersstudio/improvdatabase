@@ -1,4 +1,4 @@
-<div class="landing">
+<div class="landing" (window:resize)="setupSize()">
 
     <div class="background">
         <img [style.width]="bgwidth + 'px'" [style.height]="bgheight + 'px'" [style.left]="-bgleft + 'px'" [style.top]="-bgtop + 'px'" src="/images/home-background.png" />

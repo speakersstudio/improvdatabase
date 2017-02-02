@@ -15,10 +15,11 @@
     height: 24px;
     text-align: center;
     position: relative;
-    font-size: 18px;
+    font-size: 20px;
     white-space: nowrap;
     // background: url('/app/images/iplus.png') no-repeat;
     transition: width 300ms, height 300ms, font-size 300ms;
+    cursor: default;
 
     &.white {
         // background-position: -24px 0;
@@ -31,19 +32,20 @@
     }
 
     .bracket {
-        font-size: 111.11%;
+        font-size: 100%;
+        vertical-align: top;
     }
     .i {
-        font-size: 100%;
+        font-size: 83%;
         font-weight: bold;
         margin-left: -5%;
         margin-right: -1%;
     }
     .plus {
-        font-size: 83.3333%;
+        font-size: 70%;
         font-weight: bold;
         position: relative;
-        top: -12%;
+        top: -15%;
         margin-right: -8%;
     }
 

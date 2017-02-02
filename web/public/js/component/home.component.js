@@ -21,32 +21,63 @@ var HomeComponent = (function () {
         this.http = http;
         this.videoId = "p00Q8pomuc0";
         this.YT = window.YT;
-        this.player = {};
         this.playbackSpeed = 0.4;
     }
     HomeComponent.prototype.ngOnInit = function () {
-        // if (window.innerHeight > window.innerWidth) {
-        this.bgheight = window.innerHeight;
-        this.bgwidth = 1920 * (this.bgheight / 1080);
-        this.bgtop = 0;
-        // } else {
-        //     this.bgwidth = window.innerWidth;
-        //     this.bgheight = 1080 * (this.bgwidth / 1920);
-        //     this.bgtop = (this.bgheight - window.innerHeight) / 2;
-        // }
-        this.bgleft = (this.bgwidth - window.innerWidth) / 2;
-        this.initVideoBG();
+        this.setupSize();
+    };
+    HomeComponent.prototype.setupSize = function () {
+        console.log('setup size');
+        var targetRatio = 1920 / 1080, screenRatio = window.innerWidth / window.innerHeight;
+        if (targetRatio >= screenRatio) {
+            this.bgheight = window.innerHeight;
+            this.bgwidth = 1920 * (this.bgheight / 1080);
+            this.bgtop = 0;
+            this.bgleft = (this.bgwidth - window.innerWidth) / 2;
+        }
+        else {
+            this.bgwidth = window.innerWidth;
+            this.bgheight = 1080 * (this.bgwidth / 1920);
+            this.bgtop = (this.bgheight - window.innerHeight) / 2;
+            this.bgleft = 0;
+        }
+        if (window.innerWidth < 768) {
+            // don't do video on tablet or mobile
+            if (this.player) {
+                this.player.getIframe().remove();
+                this.player = null;
+            }
+        }
+        else {
+            if (!this.player) {
+                this.initVideoBG();
+            }
+            else {
+                this.resizeVideo();
+            }
+        }
+    };
+    HomeComponent.prototype.resizeVideo = function () {
+        var iframe = this.player.getIframe();
+        iframe.style.width = this.bgwidth + 'px';
+        iframe.style.height = this.bgheight + 'px';
+        iframe.style.left = '-' + this.bgleft + 'px';
+        iframe.style.top = '-' + this.bgtop + 'px';
     };
     HomeComponent.prototype.initVideoBG = function () {
         var _this = this;
         var currentTime = null;
+        if (window.innerWidth < 768) {
+            return;
+        }
         if (this.YT.loaded !== 1) {
-            //setTimeout(this.setVideoPlayer.bind(this), 100);
-            // TODO: wait for it to load?
-            console.log('the youtube api is not loaded yet');
+            setTimeout(function () { return _this.initVideoBG(); }, 500);
         }
         else {
             var frameCallback_1 = function () {
+                if (!_this.player) {
+                    return;
+                }
                 if (!_this.currentTime) {
                     // restart the player
                     if (_this.player.getCurrentTime() + 0.1 >= _this.player.getDuration()) {
@@ -81,11 +112,7 @@ var HomeComponent = (function () {
                 events: {
                     onReady: function (event) {
                         //this.syncPlayer(); scale the video and set the speed
-                        var iframe = _this.player.getIframe();
-                        iframe.style.width = _this.bgwidth + 'px';
-                        iframe.style.height = _this.bgheight + 'px';
-                        iframe.style.left = '-' + _this.bgleft + 'px';
-                        iframe.style.top = '-' + _this.bgtop + 'px';
+                        _this.resizeVideo();
                         _this.player.setPlaybackRate(_this.playbackSpeed);
                         _this.player.mute();
                         _this.player.playVideo();

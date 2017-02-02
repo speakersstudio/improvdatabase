@@ -261,26 +261,28 @@ form .error {
   height: 24px;
   text-align: center;
   position: relative;
-  font-size: 18px;
+  font-size: 20px;
   white-space: nowrap;
-  transition: width 300ms, height 300ms, font-size 300ms; }
+  transition: width 300ms, height 300ms, font-size 300ms;
+  cursor: default; }
   .iplus.white {
     color: #FFFFFF; }
   .iplus > * {
     display: inline-block;
     vertical-align: middle; }
   .iplus .bracket {
-    font-size: 111.11%; }
-  .iplus .i {
     font-size: 100%;
+    vertical-align: top; }
+  .iplus .i {
+    font-size: 83%;
     font-weight: bold;
     margin-left: -5%;
     margin-right: -1%; }
   .iplus .plus {
-    font-size: 83.3333%;
+    font-size: 70%;
     font-weight: bold;
     position: relative;
-    top: -12%;
+    top: -15%;
     margin-right: -8%; }
   .iplus .text {
     width: 0px;

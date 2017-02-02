@@ -130,6 +130,19 @@
     }
 }
 
+.columns {
+    display: flex;
+    flex-direction: row;
+
+    & > * {
+        margin-right: $std;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}
+
 .button-group {
     margin-top: $std;
     text-align: right;
@@ -404,3 +417,32 @@ button,
         }
     }
 } // end of .taglist
+
+.dialog-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    @include fixed(0, 0, 0, 0, 500);
+}
+
+.dialog {
+    width: 90%;
+    max-width: 500px;
+    background: $color-white;
+    padding: $std 0;
+    border-radius: $border-radius;
+    position: relative;
+    z-index: 5000;
+
+    @include md-elevation(24);
+
+    .dialog-content {
+        padding: $std;
+    }
+
+    h2 {
+        color: $color-primary;
+        font-size: 28px;
+        text-align: center;
+    }
+}

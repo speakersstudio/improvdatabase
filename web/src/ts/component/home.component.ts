@@ -3,10 +3,15 @@ import { Router } from '@angular/router';
 
 import { AppComponent } from './app.component';
 
+import { DialogAnim } from '../util/anim.util';
+
 @Component({
     moduleId: module.id,
     selector: "home",
-    templateUrl: "../template/home.component.html"
+    templateUrl: "../template/home.component.html",
+    animations: [
+        DialogAnim.dialog
+    ]
 })
 export class HomeComponent implements OnInit {
 
@@ -20,6 +25,8 @@ export class HomeComponent implements OnInit {
     player: any = {};
     playbackSpeed: number = 0.4;
     currentTime: number;
+
+    getNotifiedDialogVisible: boolean;
 
     constructor(
         private _app: AppComponent,
@@ -165,6 +172,13 @@ export class HomeComponent implements OnInit {
         };
 
         requestAnimationFrame(scrollFunc);
+    }
+
+    showGetNotified(): void {
+        this.getNotifiedDialogVisible = true;
+    }
+    hideGetNotified(): void {
+        this.getNotifiedDialogVisible = false;
     }
 
 }

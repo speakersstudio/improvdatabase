@@ -356,6 +356,14 @@ form .error {
     z-index: 5;
     box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.4); }
 
+.columns {
+  display: flex;
+  flex-direction: row; }
+  .columns > * {
+    margin-right: 16px; }
+    .columns > *:last-child {
+      margin-right: 0; }
+
 .button-group {
   margin-top: 16px;
   text-align: right; }
@@ -568,6 +576,33 @@ button,
         margin-left: 14px; }
   .taglist:hover .flat {
     opacity: 1; }
+
+.dialog-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 500; }
+
+.dialog {
+  width: 90%;
+  max-width: 500px;
+  background: #FFFFFF;
+  padding: 16px 0;
+  border-radius: 2px;
+  position: relative;
+  z-index: 5000;
+  box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12); }
+  .dialog .dialog-content {
+    padding: 16px; }
+  .dialog h2 {
+    color: #d32f2f;
+    font-size: 28px;
+    text-align: center; }
 
 .toolbar {
   display: flex;

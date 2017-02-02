@@ -11,7 +11,7 @@
         <h1><span class="light">improv</span><strong>plus</strong></h1>
         <h2>Adding new dimension to talent development.</h2>
 
-        <a href="#" class="button brackets">Get Notified</a>
+        <a class="button brackets" (click)="showGetNotified()">Get Notified</a>
     </div>
 
     <i class="fa fa-chevron-down clickable" (click)="scrollBelowLanding()"></i>
@@ -44,8 +44,38 @@
         </ol>
 
         <p class="center">
-            <a href="#" class="button brackets">Get Notified</a>
+            <a (click)="showGetNotified()" class="button brackets">Get Notified</a>
         </p>
     </div>
 
+</div>
+
+<div class="dialog-container" *ngIf="getNotifiedDialogVisible">
+    <div class="dialog" [@dialog]>
+
+        <form name="getNotified" (ngSubmit)="submitGetNotified()" #getNotifiedForm="ngForm">
+            <div class="dialog-content">
+                <h2>Get Notified About <span class="light">improv</span><strong>plus</strong></h2>
+
+                <div class="columns">
+                    <input name="firstName" [(ngModel)]="firstName" required type="text" placeholder="First Name" />
+                    <input name="lastName" [(ngModel)]="lastName" required type="text" placeholder="Last Name" />
+                </div>
+
+                <input name="email" [(ngModel)]="email" required type="text" placeholder="Email Address" />
+
+                <div class="error" *ngIf="getNotifiedError" [innerHTML]="getNotifiedError"></div>
+            </div>
+
+            <div class="button-group" *ngIf="!isPosting">
+                <div class="button" (click)="hideGetNotified()">Cancel</div>
+                <input type="submit" class="button raised" value="SUBMIT" [disabled]="!getNotifiedForm.form.valid" />
+            </div>
+
+            <div class="button-group" *ngIf="isPosting">
+                <div class="button"><i class="loading"></i></div>
+            </div>
+        </form>
+
+    </div>
 </div>

@@ -78,10 +78,9 @@ gulp.task('watch', function () {
     gulp.watch('./web/src/ts/**/*.ts', ['webcompile']);
     gulp.watch('./web/src/ts/**/*.html', ['webtemplateCopy']);
 
-    gulp.watch('./app/src/sass/**/*.scss', ['compileAppSass']);
-    gulp.watch('./web/src/sass/**/*.scss', ['compileWebSass']);
+    gulp.watch('./**/*.scss', ['compileAppSass', 'compileWebSass']);
 
-    gulp.watch(['./app/public/**']).on('change', livereload.changed);
+    gulp.watch(['./app/public/**', './web/public/**']).on('change', livereload.changed);
 });
 
 gulp.task('build', ['compileAppSass', 'tscompile', 'templateCopy']);

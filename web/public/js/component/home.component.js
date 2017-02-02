@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var app_component_1 = require("./app.component");
+var anim_util_1 = require("../util/anim.util");
 var HomeComponent = (function () {
     function HomeComponent(_app, router) {
         this._app = _app;
@@ -128,13 +129,22 @@ var HomeComponent = (function () {
         };
         requestAnimationFrame(scrollFunc);
     };
+    HomeComponent.prototype.showGetNotified = function () {
+        this.getNotifiedDialogVisible = true;
+    };
+    HomeComponent.prototype.hideGetNotified = function () {
+        this.getNotifiedDialogVisible = false;
+    };
     return HomeComponent;
 }());
 HomeComponent = __decorate([
     core_1.Component({
         moduleId: module.id,
         selector: "home",
-        templateUrl: "../template/home.component.html"
+        templateUrl: "../template/home.component.html",
+        animations: [
+            anim_util_1.DialogAnim.dialog
+        ]
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,
         router_1.Router])

@@ -70,6 +70,7 @@ app.all('/api/*', auth.checkToken);
 
 // CONTACT
 app.post('/contact', contact.send);
+app.post('/getNotified', contact.getNotified);
 
 //CRUD
 app.post('/api/:op', api.create);

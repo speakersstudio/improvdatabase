@@ -290,10 +290,10 @@ form .error {
 
 #siteLoader {
   position: absolute;
-  top: 40px;
-  left: 0;
+  top: 0;
   right: 0;
   bottom: 0;
+  left: 0;
   z-index: 5000; }
 
 #cornerLogo {
@@ -1053,6 +1053,17 @@ footer {
   footer a {
     color: #606060; }
 
+#siteLoader {
+  background: rgba(0, 0, 0, 0.4); }
+  #siteLoader .iplus {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    z-index: 5;
+    margin-top: -12px;
+    margin-left: -3px;
+    animation: spin 1000ms 1000ms infinite; }
+
 .left-bracket,
 .right-bracket {
   position: absolute;
@@ -1176,7 +1187,7 @@ footer {
     border-radius: 0 0 2px 2px;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
     background: #FFFFFF;
-    padding: 16px;
+    padding: 24px 16px;
     position: relative;
     z-index: 2;
     margin: 0 26px 16px; }
@@ -1194,9 +1205,12 @@ footer {
       position: relative;
       z-index: 6; }
     .page .paper h4 {
-      font-size: 28px; }
+      font-size: 28px;
+      margin-bottom: 24px; }
     .page .paper h5 {
       font-size: 18px; }
+    .page .paper p {
+      margin-bottom: 24px; }
     .page .paper .description, .page .paper .description p {
       line-height: 1.25; }
 

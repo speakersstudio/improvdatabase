@@ -15,11 +15,22 @@ var AppComponent = (function () {
     function AppComponent(router) {
         this.router = router;
         this.scrollpos = 0;
+        this.loader = document.getElementById("siteLoader");
+        this.loaderVisible = true;
     }
     AppComponent.prototype.ngOnInit = function () {
+        this.hideLoader();
     };
     AppComponent.prototype.onScroll = function ($event) {
         this.scrollpos = $event.target.scrollingElement.scrollTop;
+    };
+    AppComponent.prototype.showLoader = function () {
+        this.loader.style.display = "block";
+        this.loaderVisible = true;
+    };
+    AppComponent.prototype.hideLoader = function () {
+        this.loader.style.display = "none";
+        this.loaderVisible = false;
     };
     return AppComponent;
 }());

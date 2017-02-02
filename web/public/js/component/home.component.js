@@ -10,22 +10,35 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
+var http_1 = require("@angular/http");
+require("rxjs/add/operator/toPromise");
 var app_component_1 = require("./app.component");
 var anim_util_1 = require("../util/anim.util");
 var HomeComponent = (function () {
-    function HomeComponent(_app, router) {
+    function HomeComponent(_app, router, http) {
         this._app = _app;
         this.router = router;
+        this.http = http;
         this.videoId = "p00Q8pomuc0";
         this.YT = window.YT;
         this.player = {};
         this.playbackSpeed = 0.4;
     }
     HomeComponent.prototype.ngOnInit = function () {
+        // if (window.innerHeight > window.innerWidth) {
+        this.bgheight = window.innerHeight;
+        this.bgwidth = 1920 * (this.bgheight / 1080);
+        this.bgtop = 0;
+        // } else {
+        //     this.bgwidth = window.innerWidth;
+        //     this.bgheight = 1080 * (this.bgwidth / 1920);
+        //     this.bgtop = (this.bgheight - window.innerHeight) / 2;
+        // }
+        this.bgleft = (this.bgwidth - window.innerWidth) / 2;
+        this.initVideoBG();
+    };
+    HomeComponent.prototype.initVideoBG = function () {
         var _this = this;
-        this.bgheight = window.innerHeight,
-            this.bgwidth = 1920 * (this.bgheight / 1080),
-            this.bgleft = (this.bgwidth - window.innerWidth) / 2;
         var currentTime = null;
         if (this.YT.loaded !== 1) {
             //setTimeout(this.setVideoPlayer.bind(this), 100);
@@ -72,6 +85,7 @@ var HomeComponent = (function () {
                         iframe.style.width = _this.bgwidth + 'px';
                         iframe.style.height = _this.bgheight + 'px';
                         iframe.style.left = '-' + _this.bgleft + 'px';
+                        iframe.style.top = '-' + _this.bgtop + 'px';
                         _this.player.setPlaybackRate(_this.playbackSpeed);
                         _this.player.mute();
                         _this.player.playVideo();
@@ -134,6 +148,30 @@ var HomeComponent = (function () {
     };
     HomeComponent.prototype.hideGetNotified = function () {
         this.getNotifiedDialogVisible = false;
+        this.sent = false;
+        this.sending = false;
+    };
+    HomeComponent.prototype.submitGetNotified = function () {
+        var _this = this;
+        if (!this.firstName || !this.lastName || !this.email) {
+            this.error = "Please enter your name and email to be notified when ImprovPlus is ready.";
+        }
+        else {
+            this.error = "";
+            this.sending = true;
+            this._app.showLoader();
+            this.http.post('/getNotified', {
+                firstName: this.firstName,
+                lastName: this.lastName,
+                email: this.email
+            })
+                .toPromise()
+                .then(function (response) {
+                _this._app.hideLoader();
+                _this.sending = false;
+                _this.sent = true;
+            });
+        }
     };
     return HomeComponent;
 }());
@@ -147,7 +185,8 @@ HomeComponent = __decorate([
         ]
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,
-        router_1.Router])
+        router_1.Router,
+        http_1.Http])
 ], HomeComponent);
 exports.HomeComponent = HomeComponent;
 

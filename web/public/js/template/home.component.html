@@ -1,11 +1,11 @@
 <div class="landing">
 
     <div class="background">
-        <img [style.width]="bgwidth + 'px'" [style.height]="bgheight + 'px'" [style.left]="-bgleft + 'px'" src="/images/home-background.png" />
+        <img [style.width]="bgwidth + 'px'" [style.height]="bgheight + 'px'" [style.left]="-bgleft + 'px'" [style.top]="-bgtop + 'px'" src="/images/home-background.png" />
         <div id="player"></div>
     </div>
 
-    <i class="iplus white"></i>
+    <i class="iplus white" *ngIf="!_app.loaderVisible"></i>
 
     <div class="content">
         <h1><span class="light">improv</span><strong>plus</strong></h1>
@@ -20,16 +20,21 @@
 
 <div class="page">
 
-    <div class="paper">
-        <p class="center">ImprovPlus will be launched by The Speaker’s Studio in May of 2016.</p>
-        
-        <p>ImprovPlus combines Applied Improvisation with business training and talent development. We developed this offerings over the past 5 years. Working across the country with groups of different sizes, from different industries and at different levels of experience.</p>
+    <div class="paper center">
+
+        <h4>IMPROV + TRAINING = <span class="light">improv</span><strong>plus</strong></h4>
+
+        <p><em>ImprovPlus will be launched by The Speaker’s Studio in May of 2016.</em></p>
 
         <p>Improv is an incredible flexible and dynamic tool. But how do you use it? How do you introduce it?</p>
-        
-        <p>ImprovPlus offers a number of Talent Development and Training options.</p>
 
-        <ol>
+        <p>Welcome to ImprovPlus - our most popular Improv workshops distilled into comprehensive guides for Facilitators and Trainers to use.</p>
+
+        <p>We walk you through the activities, the agenda, the questions, and the discussion that will bring out the best in your team.</p>
+
+        <p>Whether you are a new Trainer looking for accessible training guides or a seasoned Facilitator looking for a new approach we have a solution for you.
+
+        <!--<ol>
             <li>You can hire us!  Bring us in to conduct a 90 minute or 3 hour ImprovPlus Training. Options include
                 <br />
                 ImprovPlus Networking<br />
@@ -41,9 +46,9 @@
             <li>You can download our ImprovPlus Facilitator Guide<br />
                 You provide the Trainer/Facilitator we provide everything else. Our packages include  Handouts, Facilitator, Instructions,  Faciliator Tips, Discussion Guides, Agendas as well as access to our ImprovPlus Dashboard and Database. You can even sign-up for Facilitation support – 1:1 Coaching calls to support the success your trainings. 
             </li>
-        </ol>
+        </ol>-->
 
-        <p class="center">
+        <p>
             <a (click)="showGetNotified()" class="button brackets">Get Notified</a>
         </p>
     </div>
@@ -51,7 +56,7 @@
 </div>
 
 <div class="dialog-container" *ngIf="getNotifiedDialogVisible">
-    <div class="dialog" [@dialog]>
+    <div class="dialog" [@dialog] *ngIf="!sent && !sending">
 
         <form name="getNotified" (ngSubmit)="submitGetNotified()" #getNotifiedForm="ngForm">
             <div class="dialog-content">
@@ -67,15 +72,29 @@
                 <div class="error" *ngIf="getNotifiedError" [innerHTML]="getNotifiedError"></div>
             </div>
 
-            <div class="button-group" *ngIf="!isPosting">
+            <div class="button-group" *ngIf="!sending">
                 <div class="button" (click)="hideGetNotified()">Cancel</div>
                 <input type="submit" class="button raised" value="SUBMIT" [disabled]="!getNotifiedForm.form.valid" />
             </div>
 
-            <div class="button-group" *ngIf="isPosting">
+            <div class="button-group" *ngIf="sending">
                 <div class="button"><i class="loading"></i></div>
             </div>
         </form>
+
+    </div>
+
+    <div class="dialog" [@dialog] *ngIf="sent">
+
+        <div class="dialog-content center">
+            <h2>Your Information has been Saved</h2>
+
+            <p>You will be among the first to know when ImprovPlus is ready to change your world.</p>
+        </div>
+
+        <div class="button-group">
+            <div class="button" (click)="hideGetNotified()">Done</div>
+        </div>
 
     </div>
 </div>

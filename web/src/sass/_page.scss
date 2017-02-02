@@ -1,5 +1,16 @@
 $paper-bg: $color-white;
 
+#siteLoader {
+    background: rgba(0,0,0,0.4);
+
+    .iplus {
+        @include abs(($toolbar-height / 2), null, null, 50%, 5);
+        margin-top: -12px;
+        margin-left: -3px;
+        animation: spin 1000ms 1000ms infinite;
+    }
+}
+
 .left-bracket,
 .right-bracket {
     @include abs(($toolbar-height / 2), null, ($toolbar-height / 2), null, 5);
@@ -149,7 +160,7 @@ $paper-bg: $color-white;
         border-radius: 0 0 $border-radius $border-radius;
         @include md-elevation($card-elevation-default);
         background: $paper-bg;
-        padding: $std;
+        padding: $large $std;
         position: relative;
         z-index:  2;
         margin: 0 ($toolbar-height / 2)+2 $std;
@@ -177,10 +188,15 @@ $paper-bg: $color-white;
 
         h4 {
             font-size: 28px;
+            margin-bottom: $large;
         }
 
         h5 {
             font-size: 18px;
+        }
+
+        p {
+            margin-bottom: $large;
         }
 
         .description, .description p {

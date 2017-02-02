@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Headers, Http } from '@angular/http';
+import { FormsModule } from '@angular/forms';
+
+import 'rxjs/add/operator/toPromise';
 
 import { AppComponent } from './app.component';
 
@@ -20,6 +24,7 @@ export class HomeComponent implements OnInit {
     bgheight: number;
     bgwidth: number;
     bgleft: number;
+    bgtop: number;
 
     YT = (<any>window).YT;
     player: any = {};
@@ -28,16 +33,38 @@ export class HomeComponent implements OnInit {
 
     getNotifiedDialogVisible: boolean;
 
+    firstName: string;
+    lastName: string;
+    email: string;
+
+    error: string;
+
+    sending: boolean;
+    sent: boolean;
+
     constructor(
         private _app: AppComponent,
-        private router: Router
+        private router: Router,
+        private http: Http
     ) { }
 
     ngOnInit(): void {
 
-        this.bgheight = window.innerHeight,
-        this.bgwidth = 1920 * (this.bgheight / 1080),
+        // if (window.innerHeight > window.innerWidth) {
+            this.bgheight = window.innerHeight;
+            this.bgwidth = 1920 * (this.bgheight / 1080);
+            this.bgtop = 0;
+        // } else {
+        //     this.bgwidth = window.innerWidth;
+        //     this.bgheight = 1080 * (this.bgwidth / 1920);
+        //     this.bgtop = (this.bgheight - window.innerHeight) / 2;
+        // }
         this.bgleft = (this.bgwidth - window.innerWidth) / 2;
+
+        this.initVideoBG();
+    }
+
+    initVideoBG(): void {
 
         var currentTime = null;
             
@@ -91,6 +118,7 @@ export class HomeComponent implements OnInit {
                             iframe.style.width = this.bgwidth + 'px';
                             iframe.style.height = this.bgheight + 'px';
                             iframe.style.left = '-' + this.bgleft + 'px';
+                            iframe.style.top = '-' + this.bgtop + 'px';
 
                             this.player.setPlaybackRate(this.playbackSpeed);
 
@@ -129,8 +157,6 @@ export class HomeComponent implements OnInit {
         } // end of if YT is loaded yet
 
     } // end of ngOnInit
-
-    scrollInterval: any;
 
     scrollBelowLanding(): void {
         this._scrollTo(this.bgheight, 500);
@@ -179,6 +205,30 @@ export class HomeComponent implements OnInit {
     }
     hideGetNotified(): void {
         this.getNotifiedDialogVisible = false;
+        this.sent = false;
+        this.sending = false;
+    }
+
+    submitGetNotified(): void {
+        if (!this.firstName || !this.lastName || !this.email) {
+            this.error = "Please enter your name and email to be notified when ImprovPlus is ready."
+        } else {
+            this.error = "";
+            
+            this.sending = true;
+            this._app.showLoader();
+            this.http.post('/getNotified', {
+                firstName: this.firstName,
+                lastName: this.lastName,
+                email: this.email
+            })
+                .toPromise()
+                .then(response => {
+                    this._app.hideLoader();
+                    this.sending = false;
+                    this.sent = true;
+                });
+        }
     }
 
 }

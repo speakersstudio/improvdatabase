@@ -259,9 +259,42 @@ form .error {
   display: inline-block;
   width: 24px;
   height: 24px;
-  background: url("/app/images/iplus.png") no-repeat; }
+  text-align: center;
+  position: relative;
+  font-size: 18px;
+  white-space: nowrap;
+  transition: width 300ms, height 300ms, font-size 300ms; }
   .iplus.white {
-    background-position: -24px 0; }
+    color: #FFFFFF; }
+  .iplus > * {
+    display: inline-block;
+    vertical-align: middle; }
+  .iplus .bracket {
+    font-size: 111.11%; }
+  .iplus .i {
+    font-size: 100%;
+    font-weight: bold;
+    margin-left: -5%;
+    margin-right: -1%; }
+  .iplus .plus {
+    font-size: 83.3333%;
+    font-weight: bold;
+    position: relative;
+    top: -12%;
+    margin-right: -8%; }
+  .iplus .text {
+    width: 0px;
+    overflow: hidden;
+    transition: width 200ms;
+    height: 100%;
+    font-size: 90%;
+    line-height: 100%; }
+  .iplus:hover .text {
+    width: 50px; }
+  .iplus.large {
+    width: 48px;
+    height: 48px;
+    font-size: 36px; }
 
 .loading-icon, .loading-icon-shadow {
   position: absolute;
@@ -288,7 +321,7 @@ form .error {
     stroke: none; }
 
 #siteLoader {
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   bottom: 0;

@@ -8,6 +8,8 @@ import { PathLocationStrategy } from '@angular/common';
 import { AppComponent } from '../component/app.component';
 import { HomeComponent } from '../component/home.component';
 
+import { IPlusView } from '../view/iplus.view';
+
 import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
@@ -19,7 +21,8 @@ import { AppRoutingModule } from './app-routing.module';
      ],
     declarations: [
         AppComponent,
-        HomeComponent
+        HomeComponent,
+        IPlusView
     ],
     bootstrap: [ AppComponent ],
     providers: [ ]

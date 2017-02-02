@@ -12,6 +12,7 @@ var forms_1 = require("@angular/forms");
 // main components
 var app_component_1 = require("../component/app.component");
 var home_component_1 = require("../component/home.component");
+var iplus_view_1 = require("../view/iplus.view");
 var app_routing_module_1 = require("./app-routing.module");
 var AppModule = (function () {
     function AppModule() {
@@ -28,7 +29,8 @@ AppModule = __decorate([
         ],
         declarations: [
             app_component_1.AppComponent,
-            home_component_1.HomeComponent
+            home_component_1.HomeComponent,
+            iplus_view_1.IPlusView
         ],
         bootstrap: [app_component_1.AppComponent],
         providers: []

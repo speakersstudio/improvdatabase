@@ -1,10 +1,10 @@
 {
-  "name": "ImprovDatabase",
-  "version": "1.0.0",
-  "description": "Improv Comedy Database for the 21st Century.",
+  "name": "improvplus",
+  "version": "1.1.0",
+  "description": "Powerful tool to help facilitate Improv for everyone.",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./server"
   },
   "dependencies": {
     "@angular/common": "~2.1.1",
@@ -22,7 +22,7 @@
     "cookie-parser": "~1.4.3",
     "core-js": "^2.4.1",
     "express": "~4.13.4",
-    "jade": "~1.11.0",
+    "express-handlebars": "^3.0.0",
     "jwt-simple": "~0.5.0",
     "morgan": "~1.7.0",
     "nodemailer": "~2.6.4",
@@ -31,7 +31,7 @@
     "rxjs": "5.0.0-beta.12",
     "serve-favicon": "~2.3.0",
     "systemjs": "^0.19.40",
-    "typescript": "^2.1.1",
+    "typescript": "^2.1.5",
     "underscore": "~1.8.3",
     "zone.js": "^0.6.26"
   },
@@ -49,6 +49,6 @@
     "gulp-sourcemaps": "~2.2.0",
     "gulp-typescript": "^3.0.2",
     "gulp-watch": "^4.3.10",
-    "typescript": "^2.1.1"
+    "typescript": "^2.1.4"
   }
 }

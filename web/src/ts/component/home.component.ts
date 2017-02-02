@@ -53,8 +53,6 @@ export class HomeComponent implements OnInit {
     }
 
     setupSize(): void {
-        console.log('setup size');
-
         let targetRatio = 1920 / 1080,
             screenRatio = window.innerWidth / window.innerHeight;
 

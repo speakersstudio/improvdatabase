@@ -123,22 +123,48 @@ export class HomeComponent implements OnInit {
 
     } // end of ngOnInit
 
-    scrollBelowLanding(): void {
-        var gotoScrollY = Math.min(this.bgheight, (document.body.scrollHeight - window.innerWidth)),
-            cosParameter = (window.scrollY - gotoScrollY) / 2,
-            scrollCount = 0,
-            oldTimestamp = performance.now(),
-            duration = 500;
+    scrollInterval: any;
 
-        function step (newTimestamp) {
-            scrollCount += Math.PI / (duration / (newTimestamp - oldTimestamp));
-            if (scrollCount >= Math.PI) window.scrollTo(0, 0);
-            if (window.scrollY === 0) return;
-            window.scrollTo(0, Math.round(cosParameter + cosParameter * Math.cos(scrollCount)));
-            oldTimestamp = newTimestamp;
-            window.requestAnimationFrame(step);
+    scrollBelowLanding(): void {
+        this._scrollTo(this.bgheight, 500);
+    }
+
+    private _scrollTo(to, duration) {
+        let maxScroll = document.body.scrollHeight - window.innerHeight;
+        if (maxScroll < to) {
+            duration = duration * (maxScroll / to);
+            to = maxScroll;
         }
-        window.requestAnimationFrame(step);
+        
+        let from = window.scrollY,
+            difference = to - from,
+            perTick = duration > 0 ? difference / duration * 10 : difference;
+
+        let easeInOutQuad = function (time, start, end, duration) {
+            time /= duration/2;
+            if (time < 1) return end/2*time*time + start;
+            time--;
+            return -end/2 * (time*(time-2) - 1) + start;
+        }
+
+        let startTime = 0;
+
+        let scrollFunc = function(time) {
+            if (startTime === 0) {
+                startTime = time;
+            }
+            if (window.scrollY === to || (time - startTime) >= duration) {
+                return;
+            }
+            window.scroll(0, easeInOutQuad((time - startTime), from, to, duration));
+            // if (window.scrollY === to) return;
+            // if (duration - 10 > 0) {
+            //     this._scrollTo(to, duration - 10);
+            // }
+            requestAnimationFrame(scrollFunc);
+        };
+
+        requestAnimationFrame(scrollFunc);
     }
 
 }

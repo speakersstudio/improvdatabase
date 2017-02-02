@@ -95,18 +95,38 @@ var HomeComponent = (function () {
         } // end of if YT is loaded yet
     }; // end of ngOnInit
     HomeComponent.prototype.scrollBelowLanding = function () {
-        var gotoScrollY = Math.min(this.bgheight, (document.body.scrollHeight - window.innerWidth)), cosParameter = (window.scrollY - gotoScrollY) / 2, scrollCount = 0, oldTimestamp = performance.now(), duration = 500;
-        function step(newTimestamp) {
-            scrollCount += Math.PI / (duration / (newTimestamp - oldTimestamp));
-            if (scrollCount >= Math.PI)
-                window.scrollTo(0, 0);
-            if (window.scrollY === 0)
-                return;
-            window.scrollTo(0, Math.round(cosParameter + cosParameter * Math.cos(scrollCount)));
-            oldTimestamp = newTimestamp;
-            window.requestAnimationFrame(step);
+        this._scrollTo(this.bgheight, 500);
+    };
+    HomeComponent.prototype._scrollTo = function (to, duration) {
+        var maxScroll = document.body.scrollHeight - window.innerHeight;
+        if (maxScroll < to) {
+            duration = duration * (maxScroll / to);
+            to = maxScroll;
         }
-        window.requestAnimationFrame(step);
+        var from = window.scrollY, difference = to - from, perTick = duration > 0 ? difference / duration * 10 : difference;
+        var easeInOutQuad = function (time, start, end, duration) {
+            time /= duration / 2;
+            if (time < 1)
+                return end / 2 * time * time + start;
+            time--;
+            return -end / 2 * (time * (time - 2) - 1) + start;
+        };
+        var startTime = 0;
+        var scrollFunc = function (time) {
+            if (startTime === 0) {
+                startTime = time;
+            }
+            if (window.scrollY === to || (time - startTime) >= duration) {
+                return;
+            }
+            window.scroll(0, easeInOutQuad((time - startTime), from, to, duration));
+            // if (window.scrollY === to) return;
+            // if (duration - 10 > 0) {
+            //     this._scrollTo(to, duration - 10);
+            // }
+            requestAnimationFrame(scrollFunc);
+        };
+        requestAnimationFrame(scrollFunc);
     };
     return HomeComponent;
 }());

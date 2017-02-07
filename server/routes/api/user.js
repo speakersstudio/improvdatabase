@@ -1,7 +1,7 @@
 var connection  = require("../connection"),
     bcrypt      = require('bcrypt-nodejs'),
     auth        = require('../../auth'),
-    
+    roles       = require('../../roles'),
     formProperties = ["FirstName", "LastName", "Gender", "Email", "URL", "Password", "Description"];
 
 exports.create = function(req,res) {
@@ -103,10 +103,11 @@ function findUser (UserID, Email, callback) {
     var q,
         p = [];
     
-    q  = 'SELECT "UserID", "FirstName", "LastName", "Gender", "Email", "URL", "DateAdded", "DateModified", "Password", "Description", ';
-    q += 'ARRAY(SELECT permissionkey."Name" FROM userlevel, permissionkey, permissionkeyuserlevel WHERE ';
-    q += 'userlevel."UserLevelID"= ANY(users."UserLevel") AND permissionkeyuserlevel."UserLevelID"=userlevel."UserLevelID" ';
-    q += 'AND permissionkey."PermissionKeyID" = permissionkeyuserlevel."PermissionKeyID") AS "Permissions" FROM users WHERE ';
+    // q  = 'SELECT "UserID", "FirstName", "LastName", "Gender", "Email", "URL", "DateAdded", "DateModified", "Password", "Description", ';
+    // q += 'ARRAY(SELECT permissionkey."Name" FROM userlevel, permissionkey, permissionkeyuserlevel WHERE ';
+    // q += 'userlevel."UserLevelID"= ANY(users."UserLevel") AND permissionkeyuserlevel."UserLevelID"=userlevel."UserLevelID" ';
+    // q += 'AND permissionkey."PermissionKeyID" = permissionkeyuserlevel."PermissionKeyID") AS "Permissions" FROM users WHERE ';
+    q = 'SELECT * FROM users WHERE ';
     
     if (UserID) {
         q += '"UserID"';
@@ -125,6 +126,8 @@ function findUser (UserID, Email, callback) {
             callback(err, null);
         } else {
             if (result.rows.length) {
+                let user = result.rows[0];
+
                 callback(null, result.rows[0]);
             } else {
                 callback(null, false);

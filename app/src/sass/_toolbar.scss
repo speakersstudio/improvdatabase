@@ -52,6 +52,11 @@
         }
     }
 
+    iplus {
+        padding: $std;
+        cursor: pointer;
+    }
+
     .tools {
         button {
             padding: 0 8px;
@@ -70,7 +75,7 @@
         color: $color-primary-text;
 
         .iplus {
-            background-position: -24px 0;
+            color: $color-primary-text;
         }
 
         button {

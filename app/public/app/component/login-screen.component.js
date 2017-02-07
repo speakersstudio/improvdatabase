@@ -9,37 +9,28 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require("@angular/core");
-var IPlusView = (function () {
-    function IPlusView() {
+var router_1 = require("@angular/router");
+var app_component_1 = require("./app.component");
+var LoginScreenComponent = (function () {
+    function LoginScreenComponent(_app, router) {
+        this._app = _app;
+        this.router = router;
     }
-    IPlusView.prototype.ngOnInit = function () {
+    LoginScreenComponent.prototype.ngOnInit = function () {
+        this._app.showBackground(true);
+        this._app.login();
     };
-    IPlusView.prototype.ngOnDestroy = function () {
-    };
-    IPlusView.prototype.over = function () {
-        this.hover = true;
-    };
-    IPlusView.prototype.out = function () {
-        this.hover = false;
-    };
-    return IPlusView;
+    return LoginScreenComponent;
 }());
-__decorate([
-    core_1.Input(),
-    __metadata("design:type", Boolean)
-], IPlusView.prototype, "white", void 0);
-__decorate([
-    core_1.Input(),
-    __metadata("design:type", String)
-], IPlusView.prototype, "text", void 0);
-IPlusView = __decorate([
+LoginScreenComponent = __decorate([
     core_1.Component({
         moduleId: module.id,
-        selector: 'iplus',
-        templateUrl: '../template/view/iplus.view.html'
+        selector: "login-screen",
+        template: "<div class=\"page\"></div>"
     }),
-    __metadata("design:paramtypes", [])
-], IPlusView);
-exports.IPlusView = IPlusView;
+    __metadata("design:paramtypes", [app_component_1.AppComponent,
+        router_1.Router])
+], LoginScreenComponent);
+exports.LoginScreenComponent = LoginScreenComponent;
 
-//# sourceMappingURL=iplus.view.js.map
+//# sourceMappingURL=login-screen.component.js.map

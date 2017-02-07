@@ -24,7 +24,7 @@
 
             <div class="content">
 
-                <div class="user-picture">
+                <div class="user-picture" (click)="login()">
                     <i class="fa fa-user"></i>
                 </div>
                 <div class="user-name">Your Username Here</div>
@@ -87,11 +87,11 @@
     </div>
 </div>
 
-<login [show]="showLogin" (done)="handleLogin($user)" class="dialog-container"></login>
+<login [show]="showLogin" (done)="handleLogin($user)" class="dialog-container" [class.show]="showLogin"></login>
 
 <footer>
 
-    <a routerLink="/legal">Legal stuff</a>
+    <a routerLink="/legal" *ngIf="user">Legal stuff</a>
     <span>&copy;2017 improvplus</span>
     <img src="/images/comodo_secure_seal_76x26_transp.png" />
 

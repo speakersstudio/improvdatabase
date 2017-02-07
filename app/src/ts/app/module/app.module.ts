@@ -6,6 +6,7 @@ import { PathLocationStrategy } from '@angular/common';
 
 // main components
 import { AppComponent } from '../component/app.component';
+import { LoginScreenComponent } from '../component/login-screen.component';
 import { DashboardComponent } from '../component/dashboard.component';
 import { LibraryComponent } from "../component/library.component";
 import { GameDatabaseComponent } from '../component/game-database.component';
@@ -17,6 +18,7 @@ import { HelpComponent } from "../component/help.component";
 import { LegalComponent } from "../component/legal.component";
 
 // sub-views
+import { IPlusView } from '../view/iplus.view';
 import { ToolbarView } from '../view/toolbar.view';
 import { GameCardView } from '../view/game-card.view';
 import { LoginView } from '../view/login.view';
@@ -42,6 +44,7 @@ import { WebStorageService, WebStorageSubscriber } from "../util/webstorage.util
      ],
     declarations: [
         AppComponent,
+        LoginScreenComponent,
         DashboardComponent,
         LibraryComponent,
         GameDatabaseComponent,
@@ -52,6 +55,7 @@ import { WebStorageService, WebStorageSubscriber } from "../util/webstorage.util
         GameDetailsComponent,
         LegalComponent,
         
+        IPlusView,
         ToolbarView,
         GameCardView,
         LoginView,

@@ -30,7 +30,7 @@ var UserService = (function () {
     UserService.prototype.login = function (email, password) {
         var _this = this;
         return this.http.post(this.loginUrl, {
-            username: email,
+            email: email,
             password: password
         }).toPromise()
             .then(function (response) {
@@ -78,28 +78,28 @@ var UserService = (function () {
     };
     UserService.prototype.getPermissions = function () {
         var permObject = {};
-        var perms = this.loggedInUser && this.loggedInUser.Permissions ? this.loggedInUser.Permissions : [];
-        perms.forEach(function (perm) {
-            /*
-            let parts = perm.split('_');
-            let cat = parts[0];
-            let act = parts[1];
-            if (!permObject[cat]) {
-                permObject[cat] = {};
-            }
-            permObject[cat][act] = true;
-            */
-            permObject[perm] = true;
-        });
+        // let perms = this.loggedInUser && this.loggedInUser.Permissions ? this.loggedInUser.Permissions : [];
+        // perms.forEach((perm) => {
+        //     /*
+        //     let parts = perm.split('_');
+        //     let cat = parts[0];
+        //     let act = parts[1];
+        //     if (!permObject[cat]) {
+        //         permObject[cat] = {};
+        //     }
+        //     permObject[cat][act] = true;
+        //     */
+        //     permObject[perm] = true;
+        // });
         return permObject;
     };
     UserService.prototype.can = function (key) {
-        if (!this.loggedInUser || !this.loggedInUser.Permissions.length) {
-            return false;
-        }
-        else {
-            return this.loggedInUser.Permissions.indexOf(key) > -1;
-        }
+        // if (!this.loggedInUser || !this.loggedInUser.Permissions.length) {
+        //     return false;
+        // } else {
+        //     return this.loggedInUser.Permissions.indexOf(key) > -1;
+        // }
+        return true;
     };
     return UserService;
 }());

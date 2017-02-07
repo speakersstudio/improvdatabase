@@ -1,1 +1,7 @@
-<span class="bracket">[</span><span class="i">i</span><span class="plus">+</span><span class="bracket">]</span>
+<i class="iplus" [class.white]="white" [class.clickable]="text">
+    <span class="bracket">[</span>
+    <span class="i">i</span>
+    <span class="plus">+</span>
+    <span class="text" *ngIf="text">{{text}}</span>
+    <span class="bracket">]</span>
+</i>

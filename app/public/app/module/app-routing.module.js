@@ -7,6 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
+var login_screen_component_1 = require("../component/login-screen.component");
 var dashboard_component_1 = require("../component/dashboard.component");
 var library_component_1 = require("../component/library.component");
 var help_component_1 = require("../component/help.component");
@@ -21,6 +22,10 @@ var routes = [
         path: '',
         redirectTo: '/dashboard',
         pathMatch: 'full'
+    },
+    {
+        path: 'login',
+        component: login_screen_component_1.LoginScreenComponent
     },
     {
         path: 'dashboard',

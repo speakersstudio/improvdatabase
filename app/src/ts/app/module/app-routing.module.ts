@@ -1,6 +1,7 @@
 import { NgModule }         from "@angular/core";
 import { RouterModule, Routes }     from "@angular/router";
 
+import { LoginScreenComponent } from '../component/login-screen.component';
 import { DashboardComponent } from "../component/dashboard.component";
 import { LibraryComponent } from "../component/library.component";
 import { HelpComponent } from "../component/help.component";
@@ -16,6 +17,10 @@ const routes: Routes = [
         path: '',
         redirectTo: '/dashboard',
         pathMatch: 'full'
+    },
+    {
+        path: 'login',
+        component: LoginScreenComponent
     },
     {
         path: 'dashboard',

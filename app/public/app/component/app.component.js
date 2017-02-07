@@ -29,7 +29,17 @@ var AppComponent = (function () {
         this.dialogConfirm = "";
         this.version = "1.1.0";
         router.events.subscribe(function (val) {
-            if (val instanceof router_1.RoutesRecognized) {
+            if (val instanceof router_1.NavigationStart) {
+                // if no user is logged in, redirect them to the login screen
+                if (_this.userService.getLoggedInUser()) {
+                    _this.setUser(_this.userService.getLoggedInUser());
+                }
+                else if (val.url !== '/login') {
+                    _this.redirectUrl = val.url;
+                    _this.router.navigate(['/login']);
+                }
+            }
+            else if (val instanceof router_1.RoutesRecognized) {
                 _this.showBackground(false);
             }
         });
@@ -37,8 +47,14 @@ var AppComponent = (function () {
     AppComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.hideLoader();
-        this.setUser(this.userService.getLoggedInUser());
-        this.userSubscription = this.userService.loginState$.subscribe(function (user) { return _this.setUser(user); });
+        this.userSubscription = this.userService.loginState$.subscribe(function (user) {
+            _this.setUser(user);
+            var redirect = _this.redirectUrl;
+            if (!redirect) {
+                redirect = "/dashboard";
+            }
+            _this.router.navigate([redirect]);
+        });
     };
     AppComponent.prototype.ngOnDestroy = function () {
         this.userSubscription.unsubscribe();
@@ -64,10 +80,12 @@ var AppComponent = (function () {
         this.showBackdrop = this.showMenu;
     };
     AppComponent.prototype.closeOverlays = function () {
-        this.showDialog = false;
-        this.showMenu = false;
-        this.showLogin = false;
-        this.showBackdrop = false;
+        if (this.user) {
+            this.showDialog = false;
+            this.showMenu = false;
+            this.showLogin = false;
+            this.showBackdrop = false;
+        }
     };
     AppComponent.prototype.fullscreen = function () {
         // are we full-screen?

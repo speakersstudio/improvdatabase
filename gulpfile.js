@@ -71,13 +71,8 @@ function handleError(err) {
 }
 
 gulp.task('watch', function () {
-    livereload.listen();
-    gulp.watch('./app/src/ts/**/*.ts', ['tscompile']);
-    gulp.watch('./app/src/ts/**/*.html', ['templateCopy']);
-
-    gulp.watch('./web/src/ts/**/*.ts', ['webcompile']);
-    gulp.watch('./web/src/ts/**/*.html', ['webtemplateCopy']);
-
+    gulp.watch('./**/*.ts', ['tscompile', 'webcompile']);
+    gulp.watch('./**/*.html', ['templateCopy', 'webtemplateCopy']);
     gulp.watch('./**/*.scss', ['compileAppSass', 'compileWebSass']);
 
     gulp.watch(['./app/public/**', './web/public/**']).on('change', livereload.changed);

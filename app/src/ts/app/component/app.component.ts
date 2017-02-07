@@ -13,7 +13,7 @@ import {
 import 'rxjs/Subject';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
-import { Router, RoutesRecognized } from '@angular/router';
+import { Router, NavigationStart, RoutesRecognized } from '@angular/router';
 
 import { User } from "../model/user";
 import { UserService } from '../service/user.service';
@@ -40,7 +40,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     backgroundVisible: boolean;
 
-    isLoggedIn: boolean;
+    redirectUrl: string;
 
     user: User;
 
@@ -63,7 +63,15 @@ export class AppComponent implements OnInit, OnDestroy {
         private userService: UserService
     ) {
         router.events.subscribe(val => {
-            if (val instanceof RoutesRecognized) {
+            if (val instanceof NavigationStart) {
+                // if no user is logged in, redirect them to the login screen
+                if (this.userService.getLoggedInUser()) {
+                    this.setUser(this.userService.getLoggedInUser());
+                } else if (val.url !== '/login') {
+                    this.redirectUrl = val.url;
+                    this.router.navigate(['/login']);
+                }
+            } else if (val instanceof RoutesRecognized) {
                 this.showBackground(false);
             }
         })
@@ -72,8 +80,14 @@ export class AppComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.hideLoader();
 
-        this.setUser(this.userService.getLoggedInUser());
-        this.userSubscription = this.userService.loginState$.subscribe(user => this.setUser(user));
+        this.userSubscription = this.userService.loginState$.subscribe(user => {
+            this.setUser(user)
+            let redirect = this.redirectUrl;
+            if (!redirect) {
+                redirect = "/dashboard";
+            }
+            this.router.navigate([redirect]);
+        });
     }
 
     ngOnDestroy() {
@@ -107,10 +121,12 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     closeOverlays(): void {
-        this.showDialog = false;
-        this.showMenu = false;
-        this.showLogin = false;
-        this.showBackdrop = false;
+        if (this.user) {
+            this.showDialog = false;
+            this.showMenu = false;
+            this.showLogin = false;
+            this.showBackdrop = false;
+        }
     }
 
     fullscreen(): void {

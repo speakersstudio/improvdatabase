@@ -126,9 +126,12 @@ function findUser (UserID, Email, callback) {
             callback(err, null);
         } else {
             if (result.rows.length) {
-                let user = result.rows[0];
+                let user = result.rows[0],
+                    roleId = user.RoleID;
 
-                callback(null, result.rows[0]);
+                user.actions = roles.getActionsForRole(roleId);
+
+                callback(null, user);
             } else {
                 callback(null, false);
             }

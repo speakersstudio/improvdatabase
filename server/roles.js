@@ -47,17 +47,50 @@ const roles = [
 
 exports.roles = roles;
 
+function union_arrays (x, y) {
+    var obj = {};
+    for (var i = x.length-1; i >= 0; -- i) {
+        obj[x[i]] = x[i];
+    }
+    for (var i = y.length-1; i >= 0; -- i) {
+        obj[y[i]] = y[i];
+    }
+    var res = []
+    for (var k in obj) {
+        if (obj.hasOwnProperty(k)) {
+            res.push(obj[k]);
+        }
+    }
+    return res;
+}
+
 let getActionsForRole = function(roleId) {
     let actions = [];
     roles.forEach(role => {
-        if (role.id === roleId) {
-            actions.concat(role.actions);
-            actions.inherits.forEach(id => {
-                actions.concat(getActionsForRole(id));
-            });
+        if (role.id === parseInt(roleId, 10)) {
+            actions = union_arrays(actions, role.actions);
+            if (role.inherits && role.inherits.length) {
+                role.inherits.forEach(id => {
+                    actions = union_arrays(actions, getActionsForRole(id));
+                });
+            }
         }
     });
     return actions;
 }
 
 exports.getActionsForRole = getActionsForRole;
+
+exports.doesUserHaveAction = function (user, action) {
+    if (!user) {
+        return false;
+    }
+    let actions = user.actions;
+    if (!actions) {
+        actions = getActionsForRole(user.RoleID);
+    }
+    if (!actions) {
+        return false;
+    }
+    return actions.indexOf(action) > -1;
+}

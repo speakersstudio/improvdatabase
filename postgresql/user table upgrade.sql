@@ -3,6 +3,8 @@ DROP TABLE IF EXISTS public.permissionkey;
 DROP TABLE IF EXISTS public.userlevel;
 DROP TABLE IF EXISTS public.permissionkeyuserlevel;
 
+CREATE EXTENSION IF NOT EXISTS citext;
+
 CREATE TABLE public.users
 (
     "UserID" UUID,
@@ -57,4 +59,29 @@ INSERT INTO public.users VALUES (
     false,
     19,
     'A super cool dude.'
-)
+);
+
+INSERT INTO public.users VALUES (
+    'e4448afb-2aff-4a40-a3c7-047a28777ec6',
+    'testly@mctestingtons.com',
+    '$2a$06$6lF2qnoJavJwJ/YLltJPue0v9VeP9fDluVA7QTGrqQ.iQTuyLuW1i', -- password
+    'Testly',
+    'McTestington',
+    'Tester',
+    'McTestingtons',
+    '',
+    '1234 Fake St.',
+    'Chicago',
+    'IL',
+    '60606',
+    'United States',
+    1,
+    1,
+    false,
+    'http://www.google.com',
+    '2017-02-07 14:38:00.000',
+    '2017-02-07 14:38:00.000',
+    false,
+    1,
+    'An enigma'
+);

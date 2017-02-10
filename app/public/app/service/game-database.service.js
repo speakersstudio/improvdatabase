@@ -62,7 +62,7 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype._getGames = function () {
         var _this = this;
         if (!this._gamePromise) {
-            this._gamePromise = this.http.get(this.gamesUrl)
+            this._gamePromise = this.http.get(this.gamesUrl, this.userService.getAuthorizationHeader())
                 .toPromise()
                 .then(function (response) {
                 _this.games = response.json();
@@ -86,7 +86,7 @@ var GameDatabaseService = (function () {
         }
         else {
             // either no games are loaded or we couldn't find the specified one
-            return this.http.get(this.gamesUrl + '/' + id)
+            return this.http.get(this.gamesUrl + '/' + id, this.userService.getAuthorizationHeader())
                 .toPromise()
                 .then(function (response) {
                 return response.json()[0];
@@ -117,7 +117,7 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype.getNames = function () {
         var _this = this;
         if (!this._namePromise) {
-            this._namePromise = this.http.get(this.namesUrl)
+            this._namePromise = this.http.get(this.namesUrl, this.userService.getAuthorizationHeader())
                 .toPromise()
                 .then(function (response) {
                 _this.names = response.json();
@@ -185,7 +185,7 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype.getTagGames = function () {
         var _this = this;
         if (!this._tagGamePromise) {
-            this._tagGamePromise = this.http.get(this.tagGameUrl)
+            this._tagGamePromise = this.http.get(this.tagGameUrl, this.userService.getAuthorizationHeader())
                 .toPromise()
                 .then(function (response) {
                 _this.tagGames = response.json();
@@ -202,7 +202,7 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype.getPlayerCounts = function () {
         var _this = this;
         if (!this._playerCountPromise) {
-            this._playerCountPromise = this.http.get(this.playerCountUrl)
+            this._playerCountPromise = this.http.get(this.playerCountUrl, this.userService.getAuthorizationHeader())
                 .toPromise()
                 .then(function (response) {
                 _this.playercounts = response.json();
@@ -242,7 +242,7 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype.getDurations = function () {
         var _this = this;
         if (!this._durationPromise) {
-            this._durationPromise = this.http.get(this.durationUrl)
+            this._durationPromise = this.http.get(this.durationUrl, this.userService.getAuthorizationHeader())
                 .toPromise()
                 .then(function (response) {
                 _this.durations = response.json();
@@ -282,7 +282,7 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype.getTags = function () {
         var _this = this;
         if (!this._tagPromise) {
-            this._tagPromise = this.http.get(this.tagUrl)
+            this._tagPromise = this.http.get(this.tagUrl, this.userService.getAuthorizationHeader())
                 .toPromise()
                 .then(function (response) {
                 _this.tags = response.json();
@@ -317,7 +317,7 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype.getNotes = function () {
         var _this = this;
         if (!this._notePromise) {
-            this._notePromise = this.http.get(this.noteUrl)
+            this._notePromise = this.http.get(this.noteUrl, this.userService.getAuthorizationHeader())
                 .toPromise()
                 .then(function (response) {
                 _this.notes = response.json();

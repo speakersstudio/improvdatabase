@@ -67,59 +67,51 @@ exports.get = function(req, res) {
     });
 };
 exports.update = function(req, res) {
-    if (req.user && (auth.hasPermission(req.user, 'user_edit') || req.user.UserID === req.params.id)) {
-        var formData = connection.getPostData(req.body, formProperties),
-            password = formData.Password,
-            callback = function (hasherr, hash) {
-                if (hasherr) {
-                    res.json('500', {message: 'Server Error', error: hasherr });
-                }
+    var formData = connection.getPostData(req.body, formProperties),
+        password = formData.Password,
+        callback = function (hasherr, hash) {
+            if (hasherr) {
+                res.json('500', {message: 'Server Error', error: hasherr });
+            }
 
-                if (hash) {
-                    formData.Password = hash;
-                }
-                formData.DateModified = 'NOW';
-            
-                var q = connection.getUpdateQuery('users', formData, { UserID: req.params.id });
-
-                connection.query(q.query, q.values, function(err, response) {
-                    if (err) {
-                        res.json('500', err);
-                    } else {
-                        let user = response.rows[0],
-                            roleId = user.RoleID;
-
-                        // don't respond with the user's password
-                        delete user.Password;
-
-                        user.actions = roles.getActionsForRole(roleId);
-
-                        res.json('200', user);
-                    }
-                });
-            };
+            if (hash) {
+                formData.Password = hash;
+            }
+            formData.DateModified = 'NOW';
         
-        if (password) {
-            bcrypt.hash(password, null, null, callback);
-        } else {
-            callback(null, null);
-        }
+            var q = connection.getUpdateQuery('users', formData, { UserID: req.params.id });
+
+            connection.query(q.query, q.values, function(err, response) {
+                if (err) {
+                    res.json('500', err);
+                } else {
+                    let user = response.rows[0],
+                        roleId = user.RoleID;
+
+                    // don't respond with the user's password
+                    delete user.Password;
+
+                    user.actions = roles.getActionsForRole(roleId);
+
+                    res.json('200', user);
+                }
+            });
+        };
+    
+    if (password) {
+        bcrypt.hash(password, null, null, callback);
     } else {
-        auth.unauthorized(req,res);
+        callback(null, null);
     }
 };
 exports.delete = function(req, res) {
-    if (req.user && (auth.hasPermission(req.user, 'user_delete') || req.user.UserID === req.params.id)) {
-        connection.query('DELETE FROM users WHERE "UserID"=$1;', [req.params.id], function(err) {
-            if (err) {
-                res.json("500", err);
-            } else {
-                res.json("200", "User Deleted");
-            }
-        });
-    } else {
-        auth.unauthorized(req,res);
-    }
+    connection.query('DELETE FROM users WHERE "UserID"=$1;', [req.params.id], function(err) {
+        if (err) {
+            res.json("500", err);
+        } else {
+            res.json("200", "User Deleted");
+        }
+    });
 };
 
 function findUser (UserID, Email, callback) {

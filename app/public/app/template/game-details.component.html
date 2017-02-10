@@ -16,7 +16,7 @@
 
         <h4 class="right">
             <span *ngIf="!addNameShown && !editNameShown"
-                [class.clickable]="can('name_update')"
+                [class.clickable]="can('name_edit')"
                 (click)="showEditName()">{{game.Names[0] ? game.Names[0].Name : 'New Game'}}</span>
 
             <input name="editName"
@@ -25,7 +25,7 @@
                 (keydown.enter)="saveEditName()"
                 (blur)="saveEditName()" />
 
-            <i *ngIf="can('name_submit') && !addNameShown && !editNameShown && game.Names[0]" (click)="showAddName()" 
+            <i *ngIf="can('name_create') && !addNameShown && !editNameShown && game.Names[0]" (click)="showAddName()" 
                 class="fa fa-plus-circle clickable" title="Add an alternate name."></i>
         </h4>
 
@@ -35,7 +35,7 @@
                 <h5>AKA {{game.Names[1].Name}}</h5>
             </div>
             <div *ngIf="game.Names.length > 2">
-                <h5 (click)="toggleNames()"><i class="fa fa-sort-down"
+                <h5 (click)="toggleNames()" class="clickable"><i class="fa fa-sort-down"
                     [class.open]="namesOpen"></i> {{game.Names.length - 1}} known aliases</h5>
 
                 <ol *ngIf="namesOpen" [@expand]>
@@ -59,7 +59,7 @@
 
                     <option *ngFor="let pc of allPlayerCounts" [ngValue]="pc.PlayerCountID" [title]="pc.Description">{{pc.Name}}</option>
 
-                    <option *ngIf="can('meta_create')" [ngValue]="-1">Other...</option>
+                    <option *ngIf="can('metadata_create')" [ngValue]="-1">Other...</option>
                 </select>
 
             </span>
@@ -80,16 +80,13 @@
 
                     <option *ngFor="let d of allDurations" [ngValue]="d.DurationID" [title]="d.Description">{{d.Name}}</option>
 
-                    <option *ngIf="can('meta_create')" [ngValue]="-1">Other...</option>
+                    <option *ngIf="can('metadata_create')" [ngValue]="-1">Other...</option>
                 </select>
                 
             </span>
 
             <ul class="taglist">
-                <li *ngFor="let tag of tags" [class.clickable]="can('game_edit')" (click)="removeTag(tag)">
-                    <i class="fa fa-hashtag"></i> {{tag.Name}}</li>
-
-                <li *ngIf="can('game_edit') && !addTagShown"
+                <li *ngIf="can('game_tag_add') && !addTagShown"
                     title="Add Tag" (click)="showAddTag()" class="clickable" [class.flat]="tags.length">
                         <i class="fa fa-plus-circle"></i></li>
 
@@ -100,6 +97,11 @@
                         <li *ngFor="let hint of tagHints" (click)="addTag(hint)" class="clickable">{{hint.Name}}</li>
                     </ul>
                 </li>
+
+                <li *ngFor="let tag of tags" 
+                    [title]="tag.Description || ''"
+                    [class.clickable]="can('game_tag_remove')" (click)="removeTag(tag)">
+                    <i class="fa fa-hashtag"></i> {{tag.Name}}</li>
             </ul>
         </div>
 

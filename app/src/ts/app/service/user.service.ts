@@ -14,6 +14,7 @@ export class UserService {
 
     private loginUrl = '/login';
     private logoutUrl = '/logout';
+    private refreshUrl = '/refreshToken';
     private userUrl = '/api/user/';
 
     @LocalStorage() token: string;
@@ -39,17 +40,25 @@ export class UserService {
                 email: email,
                 password: password
             }).toPromise()
-            .then(response => {
-                let responseData = response.json();
+            .then(response => this._handleLoginRequest(response));
+    }
 
-                this.token = responseData['token'];
-                this.tokenExpires = responseData['expires'];
-                this.loggedInUser = responseData['user'];
+    refreshToken(): Promise<User> {
+        return this.http.post(this.refreshUrl, {}, this.getAuthorizationHeader())
+            .toPromise()
+            .then(response => this._handleLoginRequest(response));
+    }
 
-                this.announceLoginState();
+    _handleLoginRequest(response): User {
+        let responseData = response.json();
 
-                return this.loggedInUser;
-            });
+        this.token = responseData['token'];
+        this.tokenExpires = responseData['expires'];
+        this.loggedInUser = responseData['user'];
+
+        this.announceLoginState();
+
+        return this.loggedInUser;
     }
 
     getAuthorizationHeader (): Object {
@@ -83,6 +92,9 @@ export class UserService {
         return this.loggedInUser;
     }
 
+    /**
+     * Change information on the current user
+     */
     updateUser(): Promise<User> {
         return this.http.put(this.userUrl + this.loggedInUser.UserID, this.loggedInUser, 
             this.getAuthorizationHeader())

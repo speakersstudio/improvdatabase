@@ -75,7 +75,7 @@ export class GameDatabaseService {
     private _gamePromise: Promise<Game[]>;
     private _getGames(): Promise<Game[]> {
         if (!this._gamePromise) {
-            this._gamePromise = this.http.get(this.gamesUrl)
+            this._gamePromise = this.http.get(this.gamesUrl, this.userService.getAuthorizationHeader())
                 .toPromise()
                 .then(response => {
                     this.games = response.json() as Game[];
@@ -99,7 +99,7 @@ export class GameDatabaseService {
             return Promise.resolve(gameToReturn);
         } else {
             // either no games are loaded or we couldn't find the specified one
-            return this.http.get(this.gamesUrl + '/' + id)
+            return this.http.get(this.gamesUrl + '/' + id, this.userService.getAuthorizationHeader())
                 .toPromise()
                 .then(response => {
                     return response.json()[0] as Game;
@@ -132,7 +132,7 @@ export class GameDatabaseService {
     private _namePromise: Promise<Name[]>;
     getNames(): Promise<Name[]> {
         if (!this._namePromise) {
-            this._namePromise = this.http.get(this.namesUrl)
+            this._namePromise = this.http.get(this.namesUrl, this.userService.getAuthorizationHeader())
                 .toPromise()
                 .then(response => {
                     this.names = response.json() as Name[];
@@ -202,7 +202,7 @@ export class GameDatabaseService {
     private _tagGamePromise: Promise<TagGame[]>;
     private getTagGames(): Promise<TagGame[]> {
         if (!this._tagGamePromise) {
-            this._tagGamePromise = this.http.get(this.tagGameUrl)
+            this._tagGamePromise = this.http.get(this.tagGameUrl, this.userService.getAuthorizationHeader())
                 .toPromise()
                 .then(response => {
                     this.tagGames = response.json() as TagGame[];
@@ -221,7 +221,7 @@ export class GameDatabaseService {
     private _playerCountPromise: Promise<PlayerCount[]>;
     getPlayerCounts(): Promise<PlayerCount[]> {
         if (!this._playerCountPromise) {
-            this._playerCountPromise = this.http.get(this.playerCountUrl)
+            this._playerCountPromise = this.http.get(this.playerCountUrl, this.userService.getAuthorizationHeader())
                 .toPromise()
                 .then(response => {
                     this.playercounts = response.json() as PlayerCount[];
@@ -263,7 +263,7 @@ export class GameDatabaseService {
     private _durationPromise: Promise<Duration[]>;
     getDurations(): Promise<Duration[]> {
         if (!this._durationPromise) {
-            this._durationPromise = this.http.get(this.durationUrl)
+            this._durationPromise = this.http.get(this.durationUrl, this.userService.getAuthorizationHeader())
                 .toPromise()
                 .then(response => {
                     this.durations = response.json() as Duration[];
@@ -305,7 +305,7 @@ export class GameDatabaseService {
     private _tagPromise: Promise<Tag[]>;
     getTags(): Promise<Tag[]> {
         if (!this._tagPromise) {
-            this._tagPromise = this.http.get(this.tagUrl)
+            this._tagPromise = this.http.get(this.tagUrl, this.userService.getAuthorizationHeader())
                 .toPromise()
                 .then(response => {
                     this.tags = response.json() as Tag[];
@@ -342,7 +342,7 @@ export class GameDatabaseService {
     private _notePromise: Promise<Note[]>;
     getNotes(): Promise<Note[]> {
         if (!this._notePromise) {
-            this._notePromise = this.http.get(this.noteUrl)
+            this._notePromise = this.http.get(this.noteUrl, this.userService.getAuthorizationHeader())
                 .toPromise()
                 .then(response => {
                     this.notes = response.json() as Note[];

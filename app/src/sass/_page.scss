@@ -172,3 +172,28 @@ dashboard .page {
         text-align: center;
     }
 }
+
+game-details {
+    h4 {
+        span {
+            vertical-align: middle;
+        }
+        .fa-plus-circle {
+            font-size: 0.5em;
+            vertical-align: middle;
+            display: none;
+        }
+        input {
+            text-align: right;
+        }
+
+        &:hover {
+            .fa-plus-circle {
+                display: inline-block;
+            }
+        }
+    }
+    textarea {
+        height: 15em;
+    }
+}

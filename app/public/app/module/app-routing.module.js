@@ -55,14 +55,14 @@ var routes = [
                 path: 'games',
                 component: game_database_component_1.GameDatabaseComponent,
                 data: {
-                    action: 'games_view'
+                    action: 'game_view'
                 }
             },
             {
                 path: 'game/:id',
                 component: game_details_component_1.GameDetailsComponent,
                 data: {
-                    action: 'games_view'
+                    action: 'game_view'
                 }
             },
             {

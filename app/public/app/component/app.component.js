@@ -41,17 +41,12 @@ var AppComponent = (function () {
         this.hideLoader();
         this.userSubscription = this.userService.loginState$.subscribe(function (user) {
             _this.setUser(user);
-            if (user) {
-                var redirect = _this.redirectUrl;
-                if (!redirect) {
-                    redirect = "/dashboard";
-                }
-                _this.router.navigate([redirect]);
-            }
-            else {
-                _this.router.navigate(['/login']);
-            }
         });
+        if (this.userService.getLoggedInUser()) {
+            console.log('Refreshing user');
+            // TODO: where is the best place for this?
+            this.userService.refreshToken();
+        }
     };
     AppComponent.prototype.ngOnDestroy = function () {
         this.userSubscription.unsubscribe();
@@ -139,6 +134,7 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.logout = function () {
         this.userService.logout();
+        this.router.navigate(['/login']);
     };
     return AppComponent;
 }());

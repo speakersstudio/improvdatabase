@@ -5,56 +5,52 @@ var connection = require("../connection"),
     formProperties = ["Description", "DurationID", "PlayerCountID", "ParentGameID"];
 
 exports.create = function(req,res) {
-    if (req.user && auth.hasPermission(req.user, 'game_create')) {
-        var data = connection.getPostData(req.body, formProperties),
-        UserID = req.user.UserID;
+    var data = connection.getPostData(req.body, formProperties),
+    UserID = req.user.UserID;
 
-        data.AddedUserID = UserID; //
-        data.ModifiedUserID = UserID;
+    data.AddedUserID = UserID; //
+    data.ModifiedUserID = UserID;
 
-        data.DateModified = 'NOW';
-        data.DateAdded = 'NOW';
+    data.DateModified = 'NOW';
+    data.DateAdded = 'NOW';
 
-        var q = connection.getInsertQuery('game', data, 'GameID');
+    var q = connection.getInsertQuery('game', data, 'GameID');
 
-        var tagIDs = req.body.Tags || [];
+    var tagIDs = req.body.Tags || [];
 
-        connection.query(q.query, q.values, function(err, result) {
-            if (err) {
-                res.json("500", err);
-            } else {
-                if (req.body.Name) {
-                    var nameData = {
-                        GameID: result.rows[0].GameID,
-                        DateAdded: 'NOW',
-                        DateModified: 'NOW',
-                        Name: req.body.Name,
-                        Weight: 1,
-                        AddedUserID: UserID,
-                        ModifiedUserID: UserID
-                    };
+    connection.query(q.query, q.values, function(err, result) {
+        if (err) {
+            res.json("500", err);
+        } else {
+            if (req.body.Name) {
+                var nameData = {
+                    GameID: result.rows[0].GameID,
+                    DateAdded: 'NOW',
+                    DateModified: 'NOW',
+                    Name: req.body.Name,
+                    Weight: 1,
+                    AddedUserID: UserID,
+                    ModifiedUserID: UserID
+                };
 
-                    var nameq = connection.getInsertQuery('name', nameData, 'NameID');
+                var nameq = connection.getInsertQuery('name', nameData, 'NameID');
 
-                    connection.query(nameq.query, nameq.values, function(err, nameResponse) {
-                        if (err) {
-                            res.json("500", err);
-                        } else {
-                            for(var t = 0, maxt = tagIDs.length; t < maxt; t++) {
-                                tagApi.tagGame(nameData.GameID, tagIDs[t], UserID);
-                            }
-
-                            res.json("200", { Game: result.rows[0], Name: nameResponse.rows[0] });
+                connection.query(nameq.query, nameq.values, function(err, nameResponse) {
+                    if (err) {
+                        res.json("500", err);
+                    } else {
+                        for(var t = 0, maxt = tagIDs.length; t < maxt; t++) {
+                            tagApi.tagGame(nameData.GameID, tagIDs[t], UserID);
                         }
-                    });
-                } else {
-                    res.json("200", result.rows[0]);
-                }
+
+                        res.json("200", { Game: result.rows[0], Name: nameResponse.rows[0] });
+                    }
+                });
+            } else {
+                res.json("200", result.rows[0]);
             }
-        });
-    } else {
-        auth.unauthorized(req,res);
-    }
+        }
+    });
 };
 
 exports.getAll = function(req, res) {
@@ -162,56 +158,47 @@ exports.get = function(req,res) {
     });
 };
 exports.update = function(req,res) {
-    if (req.user && auth.hasPermission(req.user, 'game_edit')) {
-        var data = connection.getPostData(req.body, formProperties),
-            UserID = 1;
-        data.ModifiedUserID = UserID;
+    var data = connection.getPostData(req.body, formProperties),
+        UserID = 1;
+    data.ModifiedUserID = UserID;
 
-        var gameid;
-        if (req.params.id) {
-            gameid = req.params.id;
-        } else {
-            gameid = req.body.GameID;
-        }
-
-        var q = connection.getUpdateQuery('game', data, { GameID: gameid });
-
-        connection.query(q.query, q.values, function(err, response) {
-            if (err) {
-                res.json("500", err);
-            } else {
-                res.json("200", response.rows[0]);
-            }
-        });
+    var gameid;
+    if (req.params.id) {
+        gameid = req.params.id;
     } else {
-        console.error('User does not have permission to edit games', req.user);
-        auth.unauthorized(req,res);
+        gameid = req.body.GameID;
     }
+
+    var q = connection.getUpdateQuery('game', data, { GameID: gameid });
+
+    connection.query(q.query, q.values, function(err, response) {
+        if (err) {
+            res.json("500", err);
+        } else {
+            res.json("200", response.rows[0]);
+        }
+    });
 };
 exports.delete = function(req, res) {
-    if (req.user && auth.hasPermission(req.user, 'game_delete')) {
-        connection.query('DELETE FROM game WHERE "GameID"=$1;', [req.params.id], function(err) {
-            if (err) {
-                res.json("500", err);
-            } else {
-                connection.query('DELETE FROM name WHERE "GameID"=$1;', [req.params.id], function(err) {
-                    if (err) {
-                        res.json("500", err);
-                    } else {
-                        connection.query('DELETE FROM taggame WHERE "GameID"=$1;', [req.params.id], function(err) {
-                            if (err) {
-                                res.json("500", err);
-                            } else {
-                                res.json("200", "Game Deleted");
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    } else {
-        auth.unauthorized(req,res);
-    }
+    connection.query('DELETE FROM game WHERE "GameID"=$1;', [req.params.id], function(err) {
+        if (err) {
+            res.json("500", err);
+        } else {
+            connection.query('DELETE FROM name WHERE "GameID"=$1;', [req.params.id], function(err) {
+                if (err) {
+                    res.json("500", err);
+                } else {
+                    connection.query('DELETE FROM taggame WHERE "GameID"=$1;', [req.params.id], function(err) {
+                        if (err) {
+                            res.json("500", err);
+                        } else {
+                            res.json("200", "Game Deleted");
+                        }
+                    });
+                }
+            });
+        }
+    });
 };
 
 //unique things!
@@ -243,34 +230,26 @@ exports.getTags = function(req,res) {
     });
 };
 exports.addTag = function(req, res) {
-    if (req.user && auth.hasPermission(req.user, 'game_edit')) {
-        var data = [
-                req.params.id,
-                req.params.toId,
-                1
-            ],
-            query = 'INSERT INTO taggame ("GameID", "TagID", "AddedUserID") VALUES ($1, $2, $3);';
-        connection.query(query, data, function(err) {
-            if (err) {
-                res.json("500", err);
-            } else {
-                res.send("200", "Tag applied");
-            }
-        });
-    } else {
-        auth.unauthorized(req,res);
-    }
+    var data = [
+            req.params.id,
+            req.params.toId,
+            1
+        ],
+        query = 'INSERT INTO taggame ("GameID", "TagID", "AddedUserID") VALUES ($1, $2, $3);';
+    connection.query(query, data, function(err) {
+        if (err) {
+            res.json("500", err);
+        } else {
+            res.send("200", "Tag applied");
+        }
+    });
 };
 exports.removeTag = function(req, res) {
-    if (req.user && auth.hasPermission(req.user, 'game_edit')) {
-        connection.query('DELETE FROM taggame WHERE "GameID"=$1 AND "TagID"=$2', [req.params.id, req.params.toId], function(err) {
-            if (err) {
-                res.json("500", err);
-            } else {
-                res.send("200", "Tag removed");
-            }
-        });
-    } else {
-        auth.unauthorized(req,res);
-    }
+    connection.query('DELETE FROM taggame WHERE "GameID"=$1 AND "TagID"=$2', [req.params.id, req.params.toId], function(err) {
+        if (err) {
+            res.json("500", err);
+        } else {
+            res.send("200", "Tag removed");
+        }
+    });
 };

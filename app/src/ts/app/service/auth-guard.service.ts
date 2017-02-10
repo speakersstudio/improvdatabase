@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { CanActivateChild, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
+import { AppComponent } from '../component/app.component';
+
 import { User } from "../model/user";
 import { UserService } from '../service/user.service';
 
@@ -20,11 +22,11 @@ export class AuthGuard implements CanActivateChild {
             if (!data.action || this.userService.can(data.action)) {
                 return true;
             } else {
-                //this.router.navigate(['/unauthorized']);
+                this.router.navigate(['/unauthorized']);
                 // TODO: show dialog
             }
         } else {
-            this.router.navigate(['/login']);
+            this.router.navigate(['/login'], { replaceUrl: true });
         }
         return false;
     }

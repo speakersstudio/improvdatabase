@@ -80,18 +80,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
         this.userSubscription = this.userService.loginState$.subscribe(user => {
             this.setUser(user);
-
-            if (user) {
-                let redirect = this.redirectUrl;
-                if (!redirect) {
-                    redirect = "/dashboard";
-                }
-                this.router.navigate([redirect]);
-            } else {
-                this.router.navigate(['/login']);
-            }
         });
 
+        if (this.userService.getLoggedInUser()) {
+            console.log('Refreshing user');
+            // TODO: where is the best place for this?
+            this.userService.refreshToken();
+        }
     }
 
     ngOnDestroy() {
@@ -194,5 +189,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
     logout(): void {
         this.userService.logout();
+        this.router.navigate(['/login']);
     }
 }

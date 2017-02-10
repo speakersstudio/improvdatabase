@@ -39,12 +39,16 @@ var GameCardView = (function () {
                 switch (tag.Name.toLowerCase()) {
                     case 'show':
                         _this.iconClass = 'ticket';
+                        _this.iconDescription = tag.Description;
                         break;
                     case 'exercise':
                         _this.iconClass = 'lightbulb-o';
+                        _this.iconDescription = tag.Description;
                         break;
                     case 'warmup':
                         _this.iconClass = 'fire';
+                        _this.iconDescription = tag.Description;
+                        break;
                 }
             });
         });

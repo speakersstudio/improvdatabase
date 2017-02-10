@@ -27,6 +27,7 @@ export class GameCardView implements OnInit, OnDestroy {
     duration: Duration;
 
     iconClass:string = "rocket";
+    iconDescription: string;
     descriptionText: string;
 
     //@Input() showTags: boolean = false;
@@ -58,12 +59,16 @@ export class GameCardView implements OnInit, OnDestroy {
                     switch(tag.Name.toLowerCase()) {
                         case 'show':
                             this.iconClass = 'ticket';
+                            this.iconDescription = tag.Description;
                             break;
                         case 'exercise':
                             this.iconClass = 'lightbulb-o';
+                            this.iconDescription = tag.Description;
                             break;
                         case 'warmup':
                             this.iconClass = 'fire';
+                            this.iconDescription = tag.Description;
+                            break;
                     }
                 });
         });

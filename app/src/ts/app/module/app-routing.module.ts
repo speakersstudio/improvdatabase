@@ -51,14 +51,14 @@ const routes: Routes = [
                 path: 'games',
                 component: GameDatabaseComponent,
                 data: {
-                    action: 'games_view'
+                    action: 'game_view'
                 }
             },
             {
                 path: 'game/:id',
                 component: GameDetailsComponent,
                 data: {
-                    action: 'games_view'
+                    action: 'game_view'
                 }
             },
             {

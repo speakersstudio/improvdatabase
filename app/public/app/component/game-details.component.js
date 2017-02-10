@@ -76,19 +76,25 @@ var GameDetailsComponent = (function () {
         }
     };
     GameDetailsComponent.prototype.showEditName = function () {
-        if (!this.game.Names.length) {
-            this.showAddName();
-        }
-        else {
-            this.editName = this.game.Names[0].Name;
-            this.editNameShown = true;
-            this._focusInput();
+        this._closeAllEdits();
+        if (this.can('name_edit')) {
+            if (!this.game.Names.length) {
+                this.showAddName();
+            }
+            else {
+                this.editName = this.game.Names[0].Name;
+                this.editNameShown = true;
+                this._focusInput();
+            }
         }
     };
     GameDetailsComponent.prototype.showAddName = function () {
-        this.editName = "";
-        this.addNameShown = true;
-        this._focusInput();
+        this._closeAllEdits();
+        if (this.can('name_create')) {
+            this.editName = "";
+            this.addNameShown = true;
+            this._focusInput();
+        }
     };
     GameDetailsComponent.prototype.saveEditName = function () {
         var _this = this;
@@ -176,7 +182,9 @@ var GameDetailsComponent = (function () {
         }
     };
     GameDetailsComponent.prototype.showCreateMetadataDialog = function (type) {
-        this.createMetadataType = type;
+        if (this.can('metadata_create')) {
+            this.createMetadataType = type;
+        }
     };
     GameDetailsComponent.prototype.onCreateMetadataDone = function (metadata) {
         this.createMetadataType = "";
@@ -195,7 +203,9 @@ var GameDetailsComponent = (function () {
         this.gameDatabaseService.saveGame(this.game);
     };
     GameDetailsComponent.prototype.showAddTag = function () {
-        this.addTagShown = true;
+        if (this.can('game_tag_add')) {
+            this.addTagShown = true;
+        }
     };
     GameDetailsComponent.prototype.newTagKeyDown = function (event) {
         var _this = this;
@@ -227,7 +237,7 @@ var GameDetailsComponent = (function () {
         }
     };
     GameDetailsComponent.prototype.removeTag = function (tag) {
-        if (!this.can('game_edit')) {
+        if (!this.can('game_tag_remove')) {
             return;
         }
         var index = this.tags.indexOf(tag);
@@ -266,11 +276,13 @@ var GameDetailsComponent = (function () {
         this.tagHints = [];
     };
     GameDetailsComponent.prototype.addTag = function (tag) {
-        this.tags.push(tag);
-        this.gameDatabaseService.saveTagToGame(this.game, tag)
-            .then(function (taggame) { });
-        this.newTagText = "";
-        this.tagHints = [];
+        if (this.can('game_tag_add')) {
+            this.tags.push(tag);
+            this.gameDatabaseService.saveTagToGame(this.game, tag)
+                .then(function (taggame) { });
+            this.newTagText = "";
+            this.tagHints = [];
+        }
     };
     GameDetailsComponent.prototype.showEditDescription = function () {
         this.newDescriptionText = this.game.Description;

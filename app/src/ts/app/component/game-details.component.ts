@@ -141,19 +141,25 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     }
 
     showEditName(): void {
-        if (!this.game.Names.length) {
-            this.showAddName();
-        } else {
-            this.editName = this.game.Names[0].Name;
-            this.editNameShown = true;
-            this._focusInput();
+        this._closeAllEdits();
+        if (this.can('name_edit')) {
+            if (!this.game.Names.length) {
+                this.showAddName();
+            } else {
+                this.editName = this.game.Names[0].Name;
+                this.editNameShown = true;
+                this._focusInput();
+            }
         }
     }
 
     showAddName(): void {
-        this.editName = "";
-        this.addNameShown = true;
-        this._focusInput();
+        this._closeAllEdits();
+        if (this.can('name_create')) {
+            this.editName = "";
+            this.addNameShown = true;
+            this._focusInput();
+        }
     }
 
     saveEditName(): void {
@@ -243,7 +249,9 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     }
 
     showCreateMetadataDialog(type: string): void {
-        this.createMetadataType = type;
+        if (this.can('metadata_create')) {
+            this.createMetadataType = type;
+        }
     }
     onCreateMetadataDone(metadata: any): void {
         this.createMetadataType = "";
@@ -265,7 +273,9 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     }
 
     showAddTag(): void {
-        this.addTagShown = true;
+        if (this.can('game_tag_add')) {
+            this.addTagShown = true;
+        }
     }
 
     _tagTypeDebounce;
@@ -299,7 +309,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     }
 
     removeTag(tag: Tag): void {
-        if (!this.can('game_edit')) {
+        if (!this.can('game_tag_remove')) {
             return;
         }
         let index = this.tags.indexOf(tag);
@@ -339,12 +349,14 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     }
 
     addTag(tag: Tag): void {
-        this.tags.push(tag);
-        this.gameDatabaseService.saveTagToGame(this.game, tag)
-            .then(taggame => {});
-        
-        this.newTagText = "";
-        this.tagHints = [];
+        if (this.can('game_tag_add')) {
+            this.tags.push(tag);
+            this.gameDatabaseService.saveTagToGame(this.game, tag)
+                .then(taggame => {});
+            
+            this.newTagText = "";
+            this.tagHints = [];
+        }
     }
 
     showEditDescription(): void {

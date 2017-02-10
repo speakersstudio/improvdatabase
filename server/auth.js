@@ -1,5 +1,6 @@
 var jwt = require('jwt-simple'),
     userApi = require('./routes/api/user'),
+    roles = require('./roles'),
     config  = require('./config')(),
     url = require('url');
     //redis   = require('redis'),
@@ -93,7 +94,13 @@ exports.refresh = function (req, res) {
         }
     });
     */
-    res.status(200).json(token);
+
+    genToken(req.user, function (err, token) {
+        if (err) {
+            console.error('REDIS ERROR', err);
+        }
+        res.status(200).json(token);
+    });
 };
 
 function genToken(user, callback) {
@@ -131,8 +138,10 @@ function expiresIn(days) {
     return dateObj.setDate(dateObj.getDate() + days);
 }
 
+/**
+ * Load the supplied token, and use it to fetch the user requesting this action
+ */
 exports.checkToken = function (req, res, next) {
-
     var token = (req.body && req.body.access_token) ||
         (req.query && req.query.access_token) || req.headers['x-access-token'];
 
@@ -158,19 +167,21 @@ exports.checkToken = function (req, res, next) {
                         });
                         */
                         req.user = user;
-                        next();
-                    } else {
-                        next();
                     }
+                    next();
                 });
             } else {
                 next();
             }
         } catch (err) {
-            return next();
+            console.log("Token decode error: ", err);
+            next();
         }
     } else {
-        return next();
+        req.user = {
+            actions: roles.getActionsForRole(0)
+        }
+        next();
     }
 };
 
@@ -181,10 +192,39 @@ function unauthorized (req, res) {
 }
 exports.unauthorized = unauthorized;
 
-exports.hasPermission = function (user, key) {
-    var perms = user.Permissions;
-    if (!perms) {
-        return false;
+// hasPermission = function (user, key) {
+//     if (!key) {
+//         return true;
+//     }
+//     var perms = user.actions;
+//     if (!perms) {
+//         return false;
+//     }
+//     return perms.indexOf(key) > -1;
+// };
+// exports.hasPermission = hasPermission;
+
+/**
+ * Check the user's list of actions to see if they can do what they're trying to do
+ */
+exports.checkAuth = function (req, res, next) {
+    console.log("Checking auth for: " + req.url);
+    const url = req.url;
+
+    let action = roles.findActionForUrl(url, req.method),
+        perm = true;
+
+    if (typeof(action) === 'function') {
+        console.log('Action for ' + req.method + ':' + url + ' is a function');
+        perm = action(url, req.method, req.user);
+    } else if (action) {
+        console.log('Action for ' + req.method + ':' + url + ' is ' + action);
+        perm = roles.doesUserHaveAction(req.user, action);
     }
-    return perms.indexOf(key) > -1;
-};
+
+    if (!perm) {
+        unauthorized(req, res);
+    } else {
+        next();
+    }
+}

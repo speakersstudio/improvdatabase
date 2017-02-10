@@ -65,7 +65,7 @@ var auth = require('./auth');
 app.post('/login', auth.login);
 app.post('/logout', auth.logout);
 app.post('/refreshToken', auth.checkToken, auth.refresh);
-app.all('/api/*', auth.checkToken);
+app.all('/api/*', auth.checkToken, auth.checkAuth);
 
 // CONTACT
 app.post('/contact', contact.send);

@@ -19,6 +19,7 @@ var UserService = (function () {
         this.http = http;
         this.loginUrl = '/login';
         this.logoutUrl = '/logout';
+        this.refreshUrl = '/refreshToken';
         this.userUrl = '/api/user/';
         this.logginStateSource = new Subject_1.Subject();
         this.loginState$ = this.logginStateSource.asObservable();
@@ -33,14 +34,21 @@ var UserService = (function () {
             email: email,
             password: password
         }).toPromise()
-            .then(function (response) {
-            var responseData = response.json();
-            _this.token = responseData['token'];
-            _this.tokenExpires = responseData['expires'];
-            _this.loggedInUser = responseData['user'];
-            _this.announceLoginState();
-            return _this.loggedInUser;
-        });
+            .then(function (response) { return _this._handleLoginRequest(response); });
+    };
+    UserService.prototype.refreshToken = function () {
+        var _this = this;
+        return this.http.post(this.refreshUrl, {}, this.getAuthorizationHeader())
+            .toPromise()
+            .then(function (response) { return _this._handleLoginRequest(response); });
+    };
+    UserService.prototype._handleLoginRequest = function (response) {
+        var responseData = response.json();
+        this.token = responseData['token'];
+        this.tokenExpires = responseData['expires'];
+        this.loggedInUser = responseData['user'];
+        this.announceLoginState();
+        return this.loggedInUser;
     };
     UserService.prototype.getAuthorizationHeader = function () {
         var headers = new http_1.Headers();
@@ -67,6 +75,9 @@ var UserService = (function () {
     UserService.prototype.getLoggedInUser = function () {
         return this.loggedInUser;
     };
+    /**
+     * Change information on the current user
+     */
     UserService.prototype.updateUser = function () {
         var _this = this;
         return this.http.put(this.userUrl + this.loggedInUser.UserID, this.loggedInUser, this.getAuthorizationHeader())

@@ -3,6 +3,11 @@ DROP TABLE IF EXISTS public.permissionkey;
 DROP TABLE IF EXISTS public.userlevel;
 DROP TABLE IF EXISTS public.permissionkeyuserlevel;
 
+DROP TABLE IF EXISTS public.comedygroup;
+DROP TABLE IF EXISTS public.suggestion;
+DROP TABLE IF EXISTS public.suggestiontype;
+DROP TABLE IF EXISTS public.suggestiontypegame;
+
 CREATE EXTENSION IF NOT EXISTS citext;
 
 CREATE TABLE public.users
@@ -110,3 +115,75 @@ INSERT INTO public.users VALUES (
     1,
     'An enigma'
 );
+
+ALTER TABLE public.duration
+    DROP COLUMN IF EXISTS "AddedUserID",
+    DROP COLUMN IF EXISTS "ModifiedUserID",
+    ADD COLUMN "AddedUserID" UUID REFERENCES public.users("UserID"),
+    ADD COLUMN "ModifiedUserID" UUID REFERENCES public.users("UserID");
+
+UPDATE public.duration SET "AddedUserID" = 'c83dfaf0-ceb1-46cf-9c8f-6a2fe771c9f4',
+                             "ModifiedUserID" = 'c83dfaf0-ceb1-46cf-9c8f-6a2fe771c9f4';
+
+ALTER TABLE public.game
+    DROP COLUMN IF EXISTS "AddedUserID",
+    DROP COLUMN IF EXISTS "ModifiedUserID",
+    ADD COLUMN "AddedUserID" UUID REFERENCES public.users("UserID"),
+    ADD COLUMN "ModifiedUserID" UUID REFERENCES public.users("UserID");
+
+UPDATE public.game SET "AddedUserID" = 'c83dfaf0-ceb1-46cf-9c8f-6a2fe771c9f4',
+                             "ModifiedUserID" = 'c83dfaf0-ceb1-46cf-9c8f-6a2fe771c9f4';
+
+ALTER TABLE public.name
+    DROP COLUMN IF EXISTS "AddedUserID",
+    DROP COLUMN IF EXISTS "ModifiedUserID",
+    ADD COLUMN "AddedUserID" UUID REFERENCES public.users("UserID"),
+    ADD COLUMN "ModifiedUserID" UUID REFERENCES public.users("UserID");
+
+UPDATE public.name SET "AddedUserID" = 'c83dfaf0-ceb1-46cf-9c8f-6a2fe771c9f4',
+                             "ModifiedUserID" = 'c83dfaf0-ceb1-46cf-9c8f-6a2fe771c9f4';
+
+ALTER TABLE public.note
+    DROP COLUMN IF EXISTS "AddedUserID",
+    DROP COLUMN IF EXISTS "ModifiedUserID",
+    ADD COLUMN "AddedUserID" UUID REFERENCES public.users("UserID"),
+    ADD COLUMN "ModifiedUserID" UUID REFERENCES public.users("UserID");
+
+UPDATE public.note SET "AddedUserID" = 'c83dfaf0-ceb1-46cf-9c8f-6a2fe771c9f4',
+                             "ModifiedUserID" = 'c83dfaf0-ceb1-46cf-9c8f-6a2fe771c9f4';
+
+ALTER TABLE public.playercount
+    DROP COLUMN IF EXISTS "AddedUserID",
+    DROP COLUMN IF EXISTS "ModifiedUserID",
+    ADD COLUMN "AddedUserID" UUID REFERENCES public.users("UserID"),
+    ADD COLUMN "ModifiedUserID" UUID REFERENCES public.users("UserID");
+
+UPDATE public.playercount SET "AddedUserID" = 'c83dfaf0-ceb1-46cf-9c8f-6a2fe771c9f4',
+                             "ModifiedUserID" = 'c83dfaf0-ceb1-46cf-9c8f-6a2fe771c9f4';
+
+ALTER TABLE public.tag
+    DROP COLUMN IF EXISTS "AddedUserID",
+    DROP COLUMN IF EXISTS "ModifiedUserID",
+    ADD COLUMN "AddedUserID" UUID REFERENCES public.users("UserID"),
+    ADD COLUMN "ModifiedUserID" UUID REFERENCES public.users("UserID");
+
+UPDATE public.tag SET "AddedUserID" = 'c83dfaf0-ceb1-46cf-9c8f-6a2fe771c9f4',
+                             "ModifiedUserID" = 'c83dfaf0-ceb1-46cf-9c8f-6a2fe771c9f4';
+
+ALTER TABLE public.taggame
+    DROP COLUMN IF EXISTS "AddedUserID",
+    DROP COLUMN IF EXISTS "ModifiedUserID",
+    ADD COLUMN "AddedUserID" UUID REFERENCES public.users("UserID"),
+    ADD COLUMN "ModifiedUserID" UUID REFERENCES public.users("UserID");
+
+UPDATE public.taggame SET "AddedUserID" = 'c83dfaf0-ceb1-46cf-9c8f-6a2fe771c9f4',
+                             "ModifiedUserID" = 'c83dfaf0-ceb1-46cf-9c8f-6a2fe771c9f4';
+
+UPDATE public.tag SET "Description" = 'This game is suitable for a performance, and is great for practicing all of your Improv skills.'
+    WHERE "TagID" = 1;
+
+UPDATE public.tag SET "Description" = 'This game is an exercise, designed to practice specific skills.'
+    WHERE "TagID" = 2;
+
+UPDATE public.tag SET "Description" = 'This is a warmup, or "circle game" designed simply to get participants on their feet and interacting with each other.'
+    WHERE "TagID" = 24;

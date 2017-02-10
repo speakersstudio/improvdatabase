@@ -311,6 +311,7 @@
             input {
                 border-bottom: 1px solid #e5e5e5;
                 transition: border 0.1s ease-in;
+                color: $search-active-color;
 
                 &::-webkit-input-placeholder {
                     color: $search-active-color;

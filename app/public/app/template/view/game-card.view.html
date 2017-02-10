@@ -1,4 +1,4 @@
-<div class="badge"><i class="fa" [ngClass]="'fa-' + iconClass"></i></div>
+<div class="badge"><i class="fa" [ngClass]="'fa-' + iconClass" [title]="iconDescription || ''"></i></div>
 
 <div class="metadata">
     <div class="row">
@@ -14,7 +14,7 @@
         <!--<span *ngIf="!showTags && game.TagGames.length > 0" title="This game has {{game.TagGames.length}} tags associated with it."><i class="fa fa-hashtag"></i> {{game.TagGames.length}}</span>-->
 
         <ul class="taglist">
-            <li *ngFor="let tag of tags"><i class="fa fa-hashtag"></i> {{tag.Name}}</li>
+            <li *ngFor="let tag of tags" [title]="tag.Description || ''"><i class="fa fa-hashtag"></i> {{tag.Name}}</li>
         </ul>
     </div>
 </div>

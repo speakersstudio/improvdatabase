@@ -55,8 +55,8 @@
 
 </div>
 
-<div class="dialog-container" *ngIf="getNotifiedDialogVisible">
-    <div class="dialog" [@dialog] *ngIf="!sent && !sending">
+<div class="dialog-container" [class.show]="getNotifiedDialogVisible">
+    <div class="dialog" [@dialog] *ngIf="getNotifiedDialogVisible && !sent && !sending">
 
         <form name="getNotified" (ngSubmit)="submitGetNotified()" #getNotifiedForm="ngForm">
             <div class="dialog-content">

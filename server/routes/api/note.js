@@ -4,26 +4,22 @@ var connection = require('../connection'),
     formProperties = ['GameID', 'TagID', 'DurationID', 'PlayerCountID', 'Description', 'Public'];
 
 exports.create = function(req,res) {
-    if (req.user && auth.hasPermission(req.user, 'note_public')) {
-        var data = connection.getPostData(req.body, formProperties);
-        data.AddedUserID = req.user.UserID;
-        data.ModifiedUserID = req.user.UserID;
+    var data = connection.getPostData(req.body, formProperties);
+    data.AddedUserID = req.user.UserID;
+    data.ModifiedUserID = req.user.UserID;
 
-        data.DateAdded = 'NOW';
-        data.DateModified = 'NOW';
+    data.DateAdded = 'NOW';
+    data.DateModified = 'NOW';
 
-        var q = connection.getInsertQuery('note', data, 'NoteID');
+    var q = connection.getInsertQuery('note', data, 'NoteID');
 
-        connection.query(q.query, q.values, function(err, response) {
-            if (err) {
-                res.json('500', err);
-            } else {
-                res.json('201', {NoteID: response.rows[0].NoteID});
-            }
-        });
-    } else {
-        auth.unauthorized(req,res);
-    }
+    connection.query(q.query, q.values, function(err, response) {
+        if (err) {
+            res.json('500', err);
+        } else {
+            res.json('201', {NoteID: response.rows[0].NoteID});
+        }
+    });
 };
 
 function getSelectQuery() {

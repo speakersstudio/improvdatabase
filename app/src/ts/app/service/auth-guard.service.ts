@@ -12,10 +12,11 @@ export class AuthGuard implements CanActivateChild {
     ) {}
 
     canActivateChild (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        console.log(this.userService.getLoggedInUser());
+        //console.log(this.userService.getLoggedInUser());
 
         if (this.userService.getLoggedInUser()) {
             let data:any = route.data;
+            //console.log(data, this.userService.can(data.action));
             if (!data.action || this.userService.can(data.action)) {
                 return true;
             } else {

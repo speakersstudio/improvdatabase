@@ -48,7 +48,7 @@ var routes = [
                 path: 'library',
                 component: library_component_1.LibraryComponent,
                 data: {
-                    action: 'library_poo'
+                    action: 'library_view'
                 }
             },
             {

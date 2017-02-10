@@ -17,9 +17,10 @@ var AuthGuard = (function () {
         this.userService = userService;
     }
     AuthGuard.prototype.canActivateChild = function (route, state) {
-        console.log(this.userService.getLoggedInUser());
+        //console.log(this.userService.getLoggedInUser());
         if (this.userService.getLoggedInUser()) {
             var data = route.data;
+            //console.log(data, this.userService.can(data.action));
             if (!data.action || this.userService.can(data.action)) {
                 return true;
             }

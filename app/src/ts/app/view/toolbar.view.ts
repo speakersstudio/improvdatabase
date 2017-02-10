@@ -76,9 +76,9 @@ export class ToolbarView implements OnInit {
     }
 
     ngOnInit(): void {
-        let perms = this.userService.getPermissions();
+        // let perms = this.userService.getPermissions();
         this.tools.forEach(tool => {
-            if (!tool.permission || perms[tool.permission]) {
+            if (!tool.permission || this.userService.can(tool.permission)) {
                 this.allowedTools.push(tool);
             }
         });

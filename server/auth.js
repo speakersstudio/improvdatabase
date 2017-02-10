@@ -19,8 +19,6 @@ exports.login = function(req, res) {
     var email = req.body.email || '';
     var password = req.body.password || '';
 
-    console.log(req.body, email, password);
-
     if (email === '' || password === '') {
         res.status(401).json({
             "status": 401,

@@ -57,9 +57,9 @@ var ToolbarView = (function () {
     }
     ToolbarView.prototype.ngOnInit = function () {
         var _this = this;
-        var perms = this.userService.getPermissions();
+        // let perms = this.userService.getPermissions();
         this.tools.forEach(function (tool) {
-            if (!tool.permission || perms[tool.permission]) {
+            if (!tool.permission || _this.userService.can(tool.permission)) {
                 _this.allowedTools.push(tool);
             }
         });

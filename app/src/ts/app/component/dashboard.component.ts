@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import {AppComponent    } from './app.component';
 import { Tool } from '../view/toolbar.view';
 
+import { UserService } from '../service/user.service';
+
 @Component({
     moduleId: module.id,
     selector: "dashboard",
@@ -15,7 +17,8 @@ export class DashboardComponent implements OnInit {
 
     constructor(
         private _app: AppComponent,
-        private router: Router
+        private router: Router,
+        private userService: UserService
     ) { }
 
     private _tools: Tool[] = [

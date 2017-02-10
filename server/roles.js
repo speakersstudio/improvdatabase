@@ -13,16 +13,14 @@ const roles = [
         actions: [
             'games_filter',
             'dashboard_view',
-            'materials_view',
+            'library_view',
             'videos_view',
             'glossary_view',
-            'notes_view',
+            'notes_public_view',
             'blog_view',
-            'notes_private',
+            'notes_private_create',
             'names_vote',
-            'discussion_view',
-            'discussion_public',
-            'account_self',
+            'account_edit',
             'messages'
         ]
     },
@@ -33,10 +31,9 @@ const roles = [
         actions: [
             'users_view',
             'users_lock',
-            'account_all',
-            'account_permissions',
-            'notes_public',
+            'users_edit',
             'users_delete',
+            'notes_public_create',
             'games_create',
             'games_edit',
             'games_delete',

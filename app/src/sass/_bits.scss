@@ -195,10 +195,20 @@ iplus {
 
     & > * {
         margin-right: $std;
+        width: 100%;
 
         &:last-child {
             margin-right: 0;
         }
+    }
+
+    & > input {
+        margin-top: 0px;
+    }
+
+    & > input[name="state"] {
+        width: 2em;
+        text-align: center;
     }
 }
 
@@ -500,12 +510,29 @@ button,
     @include md-elevation(24);
 
     .dialog-content {
-        padding: $std;
+        padding: 0 $std;
     }
 
     h2 {
         color: $color-primary;
         font-size: 28px;
         text-align: center;
+    }
+}
+
+.loading {
+    display: inline-block;
+    overflow: hidden;
+    height: 1.3em;
+    margin-top: -0.3em;
+    line-height: 1.5em;
+    vertical-align: text-bottom;
+
+    &:after {
+        display: inline-table;
+        white-space: pre;
+        text-align: left;
+        content: " ●    \A   ●   \A    ●  \A     ● \A      ●\A     ● \A    ●  \A   ●   \A  ●    \A ●     ";
+        animation: loadingSpin 1s steps(10) infinite;
     }
 }

@@ -10,12 +10,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require("@angular/core");
 require("rxjs/Subject");
+require("rxjs/add/operator/filter");
 var router_1 = require("@angular/router");
 var user_service_1 = require("../service/user.service");
 var anim_util_1 = require("../util/anim.util");
 var AppComponent = (function () {
     function AppComponent(_renderer, router, userService) {
-        var _this = this;
         this._renderer = _renderer;
         this.router = router;
         this.userService = userService;
@@ -28,32 +28,29 @@ var AppComponent = (function () {
         this.dialogMessage = "";
         this.dialogConfirm = "";
         this.version = "1.1.0";
-        router.events.subscribe(function (val) {
-            if (val instanceof router_1.NavigationStart) {
-                // if no user is logged in, redirect them to the login screen
-                if (_this.userService.getLoggedInUser()) {
-                    _this.setUser(_this.userService.getLoggedInUser());
-                }
-                else if (val.url !== '/login') {
-                    _this.redirectUrl = val.url;
-                    _this.router.navigate(['/login']);
-                }
-            }
-            else if (val instanceof router_1.RoutesRecognized) {
-                _this.showBackground(false);
-            }
-        });
     }
     AppComponent.prototype.ngOnInit = function () {
         var _this = this;
+        this.router.events.filter(function (event) { return event instanceof router_1.NavigationStart; }).subscribe(function (event) {
+            if (event instanceof router_1.NavigationStart) {
+                _this.showBackground(false);
+                _this.closeOverlays();
+            }
+        });
+        this.setUser(this.userService.getLoggedInUser());
         this.hideLoader();
         this.userSubscription = this.userService.loginState$.subscribe(function (user) {
             _this.setUser(user);
-            var redirect = _this.redirectUrl;
-            if (!redirect) {
-                redirect = "/dashboard";
+            if (user) {
+                var redirect = _this.redirectUrl;
+                if (!redirect) {
+                    redirect = "/dashboard";
+                }
+                _this.router.navigate([redirect]);
             }
-            _this.router.navigate([redirect]);
+            else {
+                _this.router.navigate(['/login']);
+            }
         });
     };
     AppComponent.prototype.ngOnDestroy = function () {
@@ -70,6 +67,7 @@ var AppComponent = (function () {
         this.user = user;
     };
     AppComponent.prototype.showLoader = function () {
+        console.log('show loader');
         this.loader.style.display = "block";
     };
     AppComponent.prototype.hideLoader = function () {
@@ -80,12 +78,10 @@ var AppComponent = (function () {
         this.showBackdrop = this.showMenu;
     };
     AppComponent.prototype.closeOverlays = function () {
-        if (this.user) {
-            this.showDialog = false;
-            this.showMenu = false;
-            this.showLogin = false;
-            this.showBackdrop = false;
-        }
+        this.showDialog = false;
+        this.showMenu = false;
+        this.showLogin = false;
+        this.showBackdrop = false;
     };
     AppComponent.prototype.fullscreen = function () {
         // are we full-screen?
@@ -140,6 +136,9 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.handleLogin = function (user) {
         this.closeOverlays();
+    };
+    AppComponent.prototype.logout = function () {
+        this.userService.logout();
     };
     return AppComponent;
 }());

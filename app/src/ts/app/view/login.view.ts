@@ -55,6 +55,9 @@ export class LoginView implements OnInit {
         this.loginError = "";
         this.userService.login(this.email, this.password)
             .then((user) => {
+                this.email = "";
+                this.password = "";
+
                 //this.router.navigate(['/games']);
                 this.done.emit(user);
             })

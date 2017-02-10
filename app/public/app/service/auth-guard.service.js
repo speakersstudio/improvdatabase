@@ -10,31 +10,34 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
-var app_component_1 = require("./app.component");
 var user_service_1 = require("../service/user.service");
-var DashboardComponent = (function () {
-    function DashboardComponent(_app, router, userService) {
-        this._app = _app;
+var AuthGuard = (function () {
+    function AuthGuard(router, userService) {
         this.router = router;
         this.userService = userService;
-        this.title = '<span class="light">dash</span><strong>board</strong>';
-        this._tools = [];
     }
-    DashboardComponent.prototype.ngOnInit = function () {
-        this._app.showBackground(true);
+    AuthGuard.prototype.canActivateChild = function (route, state) {
+        console.log(this.userService.getLoggedInUser());
+        if (this.userService.getLoggedInUser()) {
+            var data = route.data;
+            if (!data.action || this.userService.can(data.action)) {
+                return true;
+            }
+            else {
+            }
+        }
+        else {
+            this.router.navigate(['/login']);
+        }
+        return false;
     };
-    return DashboardComponent;
+    return AuthGuard;
 }());
-DashboardComponent = __decorate([
-    core_1.Component({
-        moduleId: module.id,
-        selector: "dashboard",
-        templateUrl: "../template/dashboard.component.html"
-    }),
-    __metadata("design:paramtypes", [app_component_1.AppComponent,
-        router_1.Router,
+AuthGuard = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [router_1.Router,
         user_service_1.UserService])
-], DashboardComponent);
-exports.DashboardComponent = DashboardComponent;
+], AuthGuard);
+exports.AuthGuard = AuthGuard;
 
-//# sourceMappingURL=dashboard.component.js.map
+//# sourceMappingURL=auth-guard.service.js.map

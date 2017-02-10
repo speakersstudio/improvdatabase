@@ -26,6 +26,8 @@ var LoginView = (function () {
         this.loginError = "";
         this.userService.login(this.email, this.password)
             .then(function (user) {
+            _this.email = "";
+            _this.password = "";
             //this.router.navigate(['/games']);
             _this.done.emit(user);
         })

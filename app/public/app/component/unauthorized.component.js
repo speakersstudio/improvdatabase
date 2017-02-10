@@ -11,30 +11,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var app_component_1 = require("./app.component");
-var user_service_1 = require("../service/user.service");
-var DashboardComponent = (function () {
-    function DashboardComponent(_app, router, userService) {
+var UnauthorizedComponent = (function () {
+    function UnauthorizedComponent(_app, router) {
         this._app = _app;
         this.router = router;
-        this.userService = userService;
-        this.title = '<span class="light">dash</span><strong>board</strong>';
+        this.title = '';
         this._tools = [];
     }
-    DashboardComponent.prototype.ngOnInit = function () {
-        this._app.showBackground(true);
+    UnauthorizedComponent.prototype.ngOnInit = function () {
     };
-    return DashboardComponent;
+    return UnauthorizedComponent;
 }());
-DashboardComponent = __decorate([
+UnauthorizedComponent = __decorate([
     core_1.Component({
         moduleId: module.id,
-        selector: "dashboard",
-        templateUrl: "../template/dashboard.component.html"
+        selector: "unauthorized",
+        templateUrl: "../template/unauthorized.component.html"
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,
-        router_1.Router,
-        user_service_1.UserService])
-], DashboardComponent);
-exports.DashboardComponent = DashboardComponent;
+        router_1.Router])
+], UnauthorizedComponent);
+exports.UnauthorizedComponent = UnauthorizedComponent;
 
-//# sourceMappingURL=dashboard.component.js.map
+//# sourceMappingURL=unauthorized.component.js.map

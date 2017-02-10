@@ -11,9 +11,10 @@ import {
     animate
 } from '@angular/core';
 import 'rxjs/Subject';
+import 'rxjs/add/operator/filter';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
-import { Router, NavigationStart, RoutesRecognized } from '@angular/router';
+import { Router, NavigationStart } from '@angular/router';
 
 import { User } from "../model/user";
 import { UserService } from '../service/user.service';
@@ -62,32 +63,35 @@ export class AppComponent implements OnInit, OnDestroy {
         private router: Router,
         private userService: UserService
     ) {
-        router.events.subscribe(val => {
-            if (val instanceof NavigationStart) {
-                // if no user is logged in, redirect them to the login screen
-                if (this.userService.getLoggedInUser()) {
-                    this.setUser(this.userService.getLoggedInUser());
-                } else if (val.url !== '/login') {
-                    this.redirectUrl = val.url;
-                    this.router.navigate(['/login']);
-                }
-            } else if (val instanceof RoutesRecognized) {
-                this.showBackground(false);
-            }
-        })
     }
 
     ngOnInit() {
+
+        this.router.events.filter(event => event instanceof NavigationStart).subscribe(event => {
+            if (event instanceof NavigationStart) {
+                this.showBackground(false);
+                this.closeOverlays();
+            }
+        });
+
+        this.setUser(this.userService.getLoggedInUser());
+
         this.hideLoader();
 
         this.userSubscription = this.userService.loginState$.subscribe(user => {
-            this.setUser(user)
-            let redirect = this.redirectUrl;
-            if (!redirect) {
-                redirect = "/dashboard";
+            this.setUser(user);
+
+            if (user) {
+                let redirect = this.redirectUrl;
+                if (!redirect) {
+                    redirect = "/dashboard";
+                }
+                this.router.navigate([redirect]);
+            } else {
+                this.router.navigate(['/login']);
             }
-            this.router.navigate([redirect]);
         });
+
     }
 
     ngOnDestroy() {
@@ -108,6 +112,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     showLoader(): void {
+        console.log('show loader');
         this.loader.style.display = "block";
     }
 
@@ -121,12 +126,10 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     closeOverlays(): void {
-        if (this.user) {
-            this.showDialog = false;
-            this.showMenu = false;
-            this.showLogin = false;
-            this.showBackdrop = false;
-        }
+        this.showDialog = false;
+        this.showMenu = false;
+        this.showLogin = false;
+        this.showBackdrop = false;
     }
 
     fullscreen(): void {
@@ -187,5 +190,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
     handleLogin(user: User): void {
         this.closeOverlays();
+    }
+
+    logout(): void {
+        this.userService.logout();
     }
 }

@@ -55,7 +55,7 @@ INSERT INTO public.users VALUES (
     true,
     'http://www.denyconformity.com',
     '2014-12-01 12:06:35.098',
-    '2017-02-06 12:06:35.098',
+    now(),
     false,
     19,
     'A super cool dude.'
@@ -80,7 +80,32 @@ INSERT INTO public.users VALUES (
     false,
     'http://www.google.com',
     '2017-02-07 14:38:00.000',
-    '2017-02-07 14:38:00.000',
+    now(),
+    false,
+    1,
+    'An enigma'
+);
+
+INSERT INTO public.users VALUES (
+    '3a36cfff-d4d9-4e79-855d-652f3b0cbb6d',
+    'kate@katebringardner.com',
+    '$2a$06$6lF2qnoJavJwJ/YLltJPue0v9VeP9fDluVA7QTGrqQ.iQTuyLuW1i', -- password
+    'Kate',
+    'Bringardner',
+    'Founder',
+    'ImprovPlus',
+    '',
+    'PO Box 4501',
+    'Louisville',
+    'KY',
+    '40204',
+    'United States',
+    3,
+    5,
+    false,
+    'http://www.katebringardner.com',
+    '2017-02-07 09:12:00.000',
+    now(),
     false,
     1,
     'An enigma'

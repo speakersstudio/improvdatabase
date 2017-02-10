@@ -93,31 +93,30 @@ export class UserService {
             });
     }
 
-    getPermissions (): Object {
-        let permObject = {};
-        // let perms = this.loggedInUser && this.loggedInUser.Permissions ? this.loggedInUser.Permissions : [];
-        // perms.forEach((perm) => {
-        //     /*
-        //     let parts = perm.split('_');
-        //     let cat = parts[0];
-        //     let act = parts[1];
-        //     if (!permObject[cat]) {
-        //         permObject[cat] = {};
-        //     }
-        //     permObject[cat][act] = true;
-        //     */
-        //     permObject[perm] = true;
-        // });
-        return permObject;
-    }
+    // getPermissions (): Object {
+    //     let permObject = {};
+    //     // let perms = this.loggedInUser && this.loggedInUser.Permissions ? this.loggedInUser.Permissions : [];
+    //     // perms.forEach((perm) => {
+    //     //     /*
+    //     //     let parts = perm.split('_');
+    //     //     let cat = parts[0];
+    //     //     let act = parts[1];
+    //     //     if (!permObject[cat]) {
+    //     //         permObject[cat] = {};
+    //     //     }
+    //     //     permObject[cat][act] = true;
+    //     //     */
+    //     //     permObject[perm] = true;
+    //     // });
+    //     return permObject;
+    // }
 
     can (key: string): boolean {
-        // if (!this.loggedInUser || !this.loggedInUser.Permissions.length) {
-        //     return false;
-        // } else {
-        //     return this.loggedInUser.Permissions.indexOf(key) > -1;
-        // }
-        return true;
+        if (!this.loggedInUser || !this.loggedInUser.actions.length) {
+            return false;
+        } else {
+            return this.loggedInUser.actions.indexOf(key) > -1;
+        }
     }
 
 }

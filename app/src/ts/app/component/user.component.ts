@@ -6,8 +6,6 @@ import {
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { Subscription } from 'rxjs/Subscription';
-
 import { AppComponent } from './app.component';
 
 import { Tool } from '../view/toolbar.view';
@@ -24,6 +22,8 @@ const MAX_ATTEMPTS = 5;
 })
 export class UserComponent implements OnInit, OnDestroy {
 
+    title: string = "Account";
+
     email: string;
     password: string;
     passwordConfirm: string;
@@ -39,8 +39,6 @@ export class UserComponent implements OnInit, OnDestroy {
 
     isPosting: boolean;
 
-    userSubscription: Subscription;
-
     constructor(
         private userService: UserService,
         private router: Router,
@@ -48,32 +46,28 @@ export class UserComponent implements OnInit, OnDestroy {
         private _app: AppComponent
     ) { }
 
+    private _tools: Tool[] = [
+        {
+            icon: "fa-sign-out",
+            name: "logout",
+            text: "Log Out",
+            active: false
+        }
+    ]
+
     ngOnInit(): void {
         this.errorCount = 0;
         this.weGood = true;
 
-        this.user = this.userService.getLoggedInUser();
-        this.userSubscription = this.userService.loginState$.subscribe(user => this.user = user);
-
-        if (!this.user) {
-            // show the login form
-            this._app.login();
-        }
+        this.user = this._app.user;
     }
 
     ngOnDestroy(): void {
-        this.userSubscription.unsubscribe();
-    }
 
-    goBack(): void {
-        this.location.back();
     }
 
     logout(): void {
-        this.userService.logout().then(() => {
-            this.user = null;
-            this.goBack();
-        })
+        this._app.logout();
     }
 
     submitEditUser(): void {
@@ -84,10 +78,21 @@ export class UserComponent implements OnInit, OnDestroy {
 
         this.userService.updateUser()
             .then(() => {
+                console.log(this.user);
                 this.isPosting = false;
             })
             .catch(() => {
                 this.isPosting = false;
             })
+    }
+
+    onToolClicked(tool: Tool): void {
+        this._app.showLoader();
+        
+        switch (tool.name) {
+            case "logout":
+                this.logout();
+                break;
+        }
     }
 }

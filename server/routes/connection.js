@@ -81,11 +81,13 @@ exports.getPostData = function(postData, names) {
 };
 
 exports.getSelectQuery = function (table) {
-    var q = 'SELECT ' + table + '.*, ';
-        q += 'addeduser."FirstName" AS "AddedFirstName", addeduser."LastName" AS "AddedLastName", ';
-        q += 'moduser."FirstName" AS "ModifiedFirstName", moduser."LastName" AS "ModifiedLastName" ';
-        q += 'FROM ' + table + ' INNER JOIN users addeduser ON addeduser."UserID" = ' + table + '."AddedUserID" ';
-        q += 'INNER JOIN users moduser ON moduser."UserID" = ' + table + '."ModifiedUserID"';
+    // var q = 'SELECT ' + table + '.*, ';
+        // q += 'addeduser."FirstName" AS "AddedFirstName", addeduser."LastName" AS "AddedLastName", ';
+        // q += 'moduser."FirstName" AS "ModifiedFirstName", moduser."LastName" AS "ModifiedLastName" ';
+        // q += 'FROM ' + table + ' INNER JOIN users addeduser ON addeduser."UserID" = ' + table + '."AddedUserID" ';
+        // q += 'INNER JOIN users moduser ON moduser."UserID" = ' + table + '."ModifiedUserID"';
+
+    let q = 'SELECT * FROM ' + table + ';';
 
     return q;
 };

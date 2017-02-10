@@ -20,30 +20,25 @@ var UserComponent = (function () {
         this.router = router;
         this.location = location;
         this._app = _app;
+        this.title = "Account";
+        this._tools = [
+            {
+                icon: "fa-sign-out",
+                name: "logout",
+                text: "Log Out",
+                active: false
+            }
+        ];
     }
     UserComponent.prototype.ngOnInit = function () {
-        var _this = this;
         this.errorCount = 0;
         this.weGood = true;
-        this.user = this.userService.getLoggedInUser();
-        this.userSubscription = this.userService.loginState$.subscribe(function (user) { return _this.user = user; });
-        if (!this.user) {
-            // show the login form
-            this._app.login();
-        }
+        this.user = this._app.user;
     };
     UserComponent.prototype.ngOnDestroy = function () {
-        this.userSubscription.unsubscribe();
-    };
-    UserComponent.prototype.goBack = function () {
-        this.location.back();
     };
     UserComponent.prototype.logout = function () {
-        var _this = this;
-        this.userService.logout().then(function () {
-            _this.user = null;
-            _this.goBack();
-        });
+        this._app.logout();
     };
     UserComponent.prototype.submitEditUser = function () {
         // TODO: updating the password
@@ -52,11 +47,20 @@ var UserComponent = (function () {
         this.isPosting = true;
         this.userService.updateUser()
             .then(function () {
+            console.log(_this.user);
             _this.isPosting = false;
         })
             .catch(function () {
             _this.isPosting = false;
         });
+    };
+    UserComponent.prototype.onToolClicked = function (tool) {
+        this._app.showLoader();
+        switch (tool.name) {
+            case "logout":
+                this.logout();
+                break;
+        }
     };
     return UserComponent;
 }());

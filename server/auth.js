@@ -16,10 +16,10 @@ if (config.redis.url) {
 */
 
 exports.login = function(req, res) {
-    var username = req.body.username || '';
+    var email = req.body.email || '';
     var password = req.body.password || '';
 
-    if (username === '' || password === '') {
+    if (email === '' || password === '') {
         res.status(401).json({
             "status": 401,
             "message": "Invalid credentials"
@@ -28,7 +28,7 @@ exports.login = function(req, res) {
     }
 
     // Fire a query to your DB and check if the credentials are valid
-    userApi.validateUser(username, password, function (err, user) {
+    userApi.validateUser(email, password, function (err, user) {
         if (err) {
             res.status(500).json({ 'message': 'Server error', 'error': err });
         } else {

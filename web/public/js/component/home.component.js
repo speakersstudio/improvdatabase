@@ -26,8 +26,10 @@ var HomeComponent = (function () {
     HomeComponent.prototype.ngOnInit = function () {
         this.setupSize();
     };
+    HomeComponent.prototype.login = function () {
+        window.location.href = "/app";
+    };
     HomeComponent.prototype.setupSize = function () {
-        console.log('setup size');
         var targetRatio = 1920 / 1080, screenRatio = window.innerWidth / window.innerHeight;
         if (targetRatio >= screenRatio) {
             this.bgheight = window.innerHeight;

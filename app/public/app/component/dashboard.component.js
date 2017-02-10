@@ -11,10 +11,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var app_component_1 = require("./app.component");
+var user_service_1 = require("../service/user.service");
 var DashboardComponent = (function () {
-    function DashboardComponent(_app, router) {
+    function DashboardComponent(_app, router, userService) {
         this._app = _app;
         this.router = router;
+        this.userService = userService;
         this.title = '<span class="light">dash</span><strong>board</strong>';
         this._tools = [];
     }
@@ -30,7 +32,8 @@ DashboardComponent = __decorate([
         templateUrl: "../template/dashboard.component.html"
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,
-        router_1.Router])
+        router_1.Router,
+        user_service_1.UserService])
 ], DashboardComponent);
 exports.DashboardComponent = DashboardComponent;
 

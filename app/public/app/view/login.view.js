@@ -26,6 +26,8 @@ var LoginView = (function () {
         this.loginError = "";
         this.userService.login(this.email, this.password)
             .then(function (user) {
+            _this.email = "";
+            _this.password = "";
             //this.router.navigate(['/games']);
             _this.done.emit(user);
         })
@@ -35,7 +37,16 @@ var LoginView = (function () {
                 _this.loginError = "Some sort of server error happened. Sorry.";
             }
             else {
-                if (_this.errorCount < MAX_ATTEMPTS) {
+                if (_this.errorCount === 1) {
+                    _this.loginError = "That is not the correct username or password.";
+                }
+                else if (_this.errorCount === 2) {
+                    _this.loginError = "That is still not the correct username or password.";
+                }
+                else if (_this.errorCount === 3) {
+                    _this.loginError = "Yo, dawg, try using your actual password.";
+                }
+                else if (_this.errorCount === 4) {
                     _this.loginError = "<a href=\"/images/password-incorrect.png\" target=\"_blank\">Die wanna wanga!</a>";
                 }
                 else if (_this.errorCount == MAX_ATTEMPTS) {

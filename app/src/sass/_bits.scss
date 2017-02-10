@@ -9,17 +9,23 @@
     }
 }
 
+iplus {
+    display: inline-block;
+    cursor: default;
+
+    &.white .iplus {
+        color: $color-white;
+    }
+}
+
 .iplus {
     display: inline-block;
-    width: 24px;
+    min-width: 24px;
     height: 24px;
     text-align: center;
     position: relative;
     font-size: 20px;
     white-space: nowrap;
-    // background: url('/app/images/iplus.png') no-repeat;
-    transition: width 300ms, height 300ms, font-size 300ms;
-    cursor: default;
 
     &.white {
         // background-position: -24px 0;
@@ -27,47 +33,54 @@
     }
 
     & > * {
-        display: inline-block;
-        vertical-align: middle;
+        position: absolute;
     }
 
     .bracket {
         font-size: 100%;
-        vertical-align: top;
+        top: 0px;
+        left: 2px;
+
+        &:last-child {
+            left: auto;
+            right: 2px;
+        }
     }
     .i {
         font-size: 83%;
         font-weight: bold;
-        margin-left: -5%;
-        margin-right: -1%;
+        left: 6px;
+        top: 5px;
+        transition: color 300ms;
     }
     .plus {
         font-size: 70%;
         font-weight: bold;
-        position: relative;
-        top: -15%;
-        margin-right: -8%;
+        top: 2px;
+        left: 10px;
+        transition: color 300ms;
     }
 
     .text {
-        width: 0px;
+        width: auto;
+        max-width: 0px;
         overflow: hidden;
-        transition: width 200ms;
-        height: 100%;
-        font-size: 90%;
-        line-height: 100%;
+        transition: max-width 500ms, margin 300ms;
+        font-size: 70%;
+        line-height: 24px;
+        position: static;
+        display: block;
+        margin: 0 4px 0 19px;
     }
 
     &:hover {
-        .text {
-            width: 50px;
+        .plus {
+            color: $color-primary;
         }
-    }
-
-    &.large {
-        width: 48px;
-        height: 48px;
-        font-size: 36px;
+        .text {
+            max-width: 100px;
+            margin: 0 7px 0 19px;
+        }
     }
 }
 
@@ -123,7 +136,7 @@
 
 .backdrop {
     @include fixed(0,100%,0,0);
-    z-index: 4000;
+    z-index: 400;
     background: $color-shade;
     opacity: 0;
     transition: opacity $swift-ease-out-duration $swift-ease-out-timing-function, right 0ms $swift-ease-out-duration;
@@ -182,10 +195,20 @@
 
     & > * {
         margin-right: $std;
+        width: 100%;
 
         &:last-child {
             margin-right: 0;
         }
+    }
+
+    & > input {
+        margin-top: 0px;
+    }
+
+    & > input[name="state"] {
+        width: 2em;
+        text-align: center;
     }
 }
 
@@ -468,7 +491,11 @@ button,
     display: flex;
     justify-content: center;
     align-items: center;
-    @include fixed(0, 0, 0, 0, 500);
+    @include fixed(0, 0, 0, 0, 0);
+
+    &.show {
+        z-index: 500;
+    }
 }
 
 .dialog {
@@ -477,18 +504,35 @@ button,
     background: $color-white;
     padding: $std 0;
     border-radius: $border-radius;
-    position: relative;
-    z-index: 5000;
+    // @include fixed(50%, null, null, 50%, 5000);
+    // transform: translate(-50%, -50%);
 
     @include md-elevation(24);
 
     .dialog-content {
-        padding: $std;
+        padding: 0 $std;
     }
 
     h2 {
         color: $color-primary;
         font-size: 28px;
         text-align: center;
+    }
+}
+
+.loading {
+    display: inline-block;
+    overflow: hidden;
+    height: 1.3em;
+    margin-top: -0.3em;
+    line-height: 1.5em;
+    vertical-align: text-bottom;
+
+    &:after {
+        display: inline-table;
+        white-space: pre;
+        text-align: left;
+        content: " ●    \A   ●   \A    ●  \A     ● \A      ●\A     ● \A    ●  \A   ●   \A  ●    \A ●     ";
+        animation: loadingSpin 1s steps(10) infinite;
     }
 }

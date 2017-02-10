@@ -11,9 +11,10 @@ import {
     animate
 } from '@angular/core';
 import 'rxjs/Subject';
+import 'rxjs/add/operator/filter';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
-import { Router, RoutesRecognized } from '@angular/router';
+import { Router, NavigationStart } from '@angular/router';
 
 import { User } from "../model/user";
 import { UserService } from '../service/user.service';
@@ -40,7 +41,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     backgroundVisible: boolean;
 
-    isLoggedIn: boolean;
+    redirectUrl: string;
 
     user: User;
 
@@ -62,18 +63,35 @@ export class AppComponent implements OnInit, OnDestroy {
         private router: Router,
         private userService: UserService
     ) {
-        router.events.subscribe(val => {
-            if (val instanceof RoutesRecognized) {
-                this.showBackground(false);
-            }
-        })
     }
 
     ngOnInit() {
-        this.hideLoader();
+
+        this.router.events.filter(event => event instanceof NavigationStart).subscribe(event => {
+            if (event instanceof NavigationStart) {
+                this.showBackground(false);
+                this.closeOverlays();
+            }
+        });
 
         this.setUser(this.userService.getLoggedInUser());
-        this.userSubscription = this.userService.loginState$.subscribe(user => this.setUser(user));
+
+        this.hideLoader();
+
+        this.userSubscription = this.userService.loginState$.subscribe(user => {
+            this.setUser(user);
+
+            if (user) {
+                let redirect = this.redirectUrl;
+                if (!redirect) {
+                    redirect = "/dashboard";
+                }
+                this.router.navigate([redirect]);
+            } else {
+                this.router.navigate(['/login']);
+            }
+        });
+
     }
 
     ngOnDestroy() {
@@ -94,6 +112,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     showLoader(): void {
+        console.log('show loader');
         this.loader.style.display = "block";
     }
 
@@ -171,5 +190,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
     handleLogin(user: User): void {
         this.closeOverlays();
+    }
+
+    logout(): void {
+        this.userService.logout();
     }
 }

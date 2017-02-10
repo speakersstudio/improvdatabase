@@ -22,48 +22,51 @@
                 </div>
             </div>-->
 
-            <div class="content">
+            <div class="content clickable" *ngIf="user && userService.can('account_edit')" routerLink="/user">
 
                 <div class="user-picture">
                     <i class="fa fa-user"></i>
                 </div>
-                <div class="user-name">Your Username Here</div>
+                <div class="user-name">{{user.Email}}</div>
 
             </div>
         </div>
         
         <div class="scroll">
 
-            <a routerLink="/dashboard" (click)="toggleNav()" routerLinkActive="active" class="nav-item">
+            <a routerLink="/dashboard" routerLinkActive="active" class="nav-item"
+                *ngIf="userService.can('dashboard_view')">
                 <i class="fa fa-dashboard"></i> <span>Dashboard</span>
             </a>
 
-            <a routerLink="/library" (click)="toggleNav()" routerLinkActive="active" class="nav-item">
+            <a routerLink="/library" routerLinkActive="active" class="nav-item"
+                *ngIf="userService.can('library_view')">
                 <i class="fa fa-book"></i> <span>Materials Library</span>
             </a>
 
-            <a routerLink="/games" (click)="toggleNav()" routerLinkActive="active" class="nav-item">
+            <a routerLink="/games" routerLinkActive="active" class="nav-item"
+                *ngIf="userService.can('games_view')">
                 <i class="fa fa-rocket"></i> <span>Game Database</span>
             </a>
 
             <hr />
 
-            <a routerLink="/contact" (click)="toggleNav()" routerLinkActive="active" class="nav-item">
+            <a routerLink="/contact" routerLinkActive="active" class="nav-item">
                 <i class="fa fa-envelope"></i> <span>Contact</span>
             </a>
 
-            <a routerLink="/help" (click)="toggleNav()" routerLinkActive="active" class="nav-item">
+            <a routerLink="/help" routerLinkActive="active" class="nav-item">
                 <i class="fa fa-question"></i> <span>Help</span>
             </a>
         </div>
 
         <footer>
-            <a routerLink="/about" (click)="toggleNav()">version <strong>{{version}}</strong></a>
+            <a routerLink="/about">version <strong>{{version}}</strong></a>
         </footer>
     </div>
 </nav>
 
-<div (click)="closeOverlays()" class="backdrop nav-backdrop" [class.show]="showBackdrop"></div>
+<div (click)="user ? closeOverlays() : false" class="backdrop nav-backdrop" [class.show]="showBackdrop"></div>
 
 <div class="left-bracket"></div>
 <div class="right-bracket"></div>
@@ -87,12 +90,13 @@
     </div>
 </div>
 
-<login [show]="showLogin" (done)="handleLogin($user)" class="dialog-container"></login>
+<login [show]="showLogin" (done)="handleLogin($user)" class="dialog-container" [class.show]="showLogin"></login>
 
 <footer>
 
-    <a routerLink="/legal">Legal stuff</a>
     <span>&copy;2017 improvplus</span>
+    <a routerLink="/legal" *ngIf="user">Legal stuff</a>
     <img src="/images/comodo_secure_seal_76x26_transp.png" />
+    <a *ngIf="user" (click)="logout()">Log Out</a>
 
 </footer>

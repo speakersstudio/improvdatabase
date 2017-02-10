@@ -12,6 +12,8 @@ var forms_1 = require("@angular/forms");
 var common_1 = require("@angular/common");
 // main components
 var app_component_1 = require("../component/app.component");
+var login_screen_component_1 = require("../component/login-screen.component");
+var unauthorized_component_1 = require("../component/unauthorized.component");
 var dashboard_component_1 = require("../component/dashboard.component");
 var library_component_1 = require("../component/library.component");
 var game_database_component_1 = require("../component/game-database.component");
@@ -22,6 +24,7 @@ var game_details_component_1 = require("../component/game-details.component");
 var help_component_1 = require("../component/help.component");
 var legal_component_1 = require("../component/legal.component");
 // sub-views
+var iplus_view_1 = require("../view/iplus.view");
 var toolbar_view_1 = require("../view/toolbar.view");
 var game_card_view_1 = require("../view/game-card.view");
 var login_view_1 = require("../view/login.view");
@@ -29,6 +32,7 @@ var create_metadata_view_1 = require("../view/create-metadata.view");
 // services
 var game_database_service_1 = require("../service/game-database.service");
 var user_service_1 = require("../service/user.service");
+var auth_guard_service_1 = require("../service/auth-guard.service");
 var app_routing_module_1 = require("./app-routing.module");
 var game_filter_pipe_1 = require("../pipe/game-filter.pipe");
 // utils
@@ -48,6 +52,8 @@ AppModule = __decorate([
         ],
         declarations: [
             app_component_1.AppComponent,
+            login_screen_component_1.LoginScreenComponent,
+            unauthorized_component_1.UnauthorizedComponent,
             dashboard_component_1.DashboardComponent,
             library_component_1.LibraryComponent,
             game_database_component_1.GameDatabaseComponent,
@@ -57,6 +63,7 @@ AppModule = __decorate([
             help_component_1.HelpComponent,
             game_details_component_1.GameDetailsComponent,
             legal_component_1.LegalComponent,
+            iplus_view_1.IPlusView,
             toolbar_view_1.ToolbarView,
             game_card_view_1.GameCardView,
             login_view_1.LoginView,
@@ -68,7 +75,8 @@ AppModule = __decorate([
             game_database_service_1.GameDatabaseService,
             user_service_1.UserService,
             common_1.PathLocationStrategy,
-            webstorage_util_1.WebStorageService
+            webstorage_util_1.WebStorageService,
+            auth_guard_service_1.AuthGuard
         ]
     })
 ], AppModule);

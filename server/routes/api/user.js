@@ -1,8 +1,25 @@
-var connection  = require("../connection"),
+const connection  = require("../connection"),
     bcrypt      = require('bcrypt-nodejs'),
     auth        = require('../../auth'),
-    
-    formProperties = ["FirstName", "LastName", "Gender", "Email", "URL", "Password", "Description"];
+    roles       = require('../../roles'),
+    formProperties = [
+            "Email",
+            "FirstName",
+            "LastName",
+            "Title",
+            "Company",
+            "Phone",
+            "Address",
+            "City",
+            "State",
+            "Zip",
+            "Country",
+            "ImprovExp",
+            "FacilitationExp",
+            "TrainingInterest",
+            "URL",
+            "Description"
+        ];
 
 exports.create = function(req,res) {
     var data = connection.getPostData(req.body, formProperties),
@@ -51,26 +68,32 @@ exports.get = function(req, res) {
 };
 exports.update = function(req, res) {
     if (req.user && (auth.hasPermission(req.user, 'user_edit') || req.user.UserID === req.params.id)) {
-        var data = connection.getPostData(req.body, formProperties),
-            password = data.Password,
+        var formData = connection.getPostData(req.body, formProperties),
+            password = formData.Password,
             callback = function (hasherr, hash) {
                 if (hasherr) {
                     res.json('500', {message: 'Server Error', error: hasherr });
                 }
 
                 if (hash) {
-                    data.Password = hash;
+                    formData.Password = hash;
                 }
-                data.DateModified = 'NOW';
+                formData.DateModified = 'NOW';
             
-                var q = connection.getUpdateQuery('users', data, { UserID: req.params.id });
+                var q = connection.getUpdateQuery('users', formData, { UserID: req.params.id });
 
                 connection.query(q.query, q.values, function(err, response) {
                     if (err) {
                         res.json('500', err);
                     } else {
-                        var user = response.rows[0];
+                        let user = response.rows[0],
+                            roleId = user.RoleID;
+
+                        // don't respond with the user's password
                         delete user.Password;
+
+                        user.actions = roles.getActionsForRole(roleId);
+
                         res.json('200', user);
                     }
                 });
@@ -103,10 +126,11 @@ function findUser (UserID, Email, callback) {
     var q,
         p = [];
     
-    q  = 'SELECT "UserID", "FirstName", "LastName", "Gender", "Email", "URL", "DateAdded", "DateModified", "Password", "Description", ';
-    q += 'ARRAY(SELECT permissionkey."Name" FROM userlevel, permissionkey, permissionkeyuserlevel WHERE ';
-    q += 'userlevel."UserLevelID"= ANY(users."UserLevel") AND permissionkeyuserlevel."UserLevelID"=userlevel."UserLevelID" ';
-    q += 'AND permissionkey."PermissionKeyID" = permissionkeyuserlevel."PermissionKeyID") AS "Permissions" FROM users WHERE ';
+    // q  = 'SELECT "UserID", "FirstName", "LastName", "Gender", "Email", "URL", "DateAdded", "DateModified", "Password", "Description", ';
+    // q += 'ARRAY(SELECT permissionkey."Name" FROM userlevel, permissionkey, permissionkeyuserlevel WHERE ';
+    // q += 'userlevel."UserLevelID"= ANY(users."UserLevel") AND permissionkeyuserlevel."UserLevelID"=userlevel."UserLevelID" ';
+    // q += 'AND permissionkey."PermissionKeyID" = permissionkeyuserlevel."PermissionKeyID") AS "Permissions" FROM users WHERE ';
+    q = 'SELECT * FROM users WHERE ';
     
     if (UserID) {
         q += '"UserID"';
@@ -125,7 +149,12 @@ function findUser (UserID, Email, callback) {
             callback(err, null);
         } else {
             if (result.rows.length) {
-                callback(null, result.rows[0]);
+                let user = result.rows[0],
+                    roleId = user.RoleID;
+
+                user.actions = roles.getActionsForRole(roleId);
+
+                callback(null, user);
             } else {
                 callback(null, false);
             }

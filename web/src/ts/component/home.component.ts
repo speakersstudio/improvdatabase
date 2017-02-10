@@ -52,6 +52,10 @@ export class HomeComponent implements OnInit {
         this.setupSize();
     }
 
+    login(): void {
+        window.location.href = "/app";
+    }
+
     setupSize(): void {
         let targetRatio = 1920 / 1080,
             screenRatio = window.innerWidth / window.innerHeight;

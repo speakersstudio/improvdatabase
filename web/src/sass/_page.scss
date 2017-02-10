@@ -145,10 +145,10 @@ $paper-bg: $color-white;
         }
     }
 
-    .iplus {
+    iplus {
         @include abs(($toolbar-height / 2), null, null, 50%, 7);
         margin-top: -12px;
-        margin-left: -12px;
+        transform: translateX(-50%);
     }
 
     .fa-chevron-down {

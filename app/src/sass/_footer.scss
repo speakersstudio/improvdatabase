@@ -11,5 +11,7 @@ footer {
 
     a {
         color: $color-text;
+        text-decoration: underline;
+        cursor: pointer;
     }
 }

@@ -52,6 +52,11 @@
         }
     }
 
+    iplus {
+        padding: $std;
+        cursor: pointer;
+    }
+
     .tools {
         button {
             padding: 0 8px;
@@ -70,7 +75,7 @@
         color: $color-primary-text;
 
         .iplus {
-            background-position: -24px 0;
+            color: $color-primary-text;
         }
 
         button {
@@ -432,7 +437,7 @@ nav {
             align-items: center;
             overflow: hidden;
             margin: 0;
-            cursor: default;
+            cursor: pointer;
 
             .user-picture {
                 max-width: 96px;
@@ -463,6 +468,14 @@ nav {
 
             .user-name {
                 font-size: 12px;
+                text-decoration: none;
+                transition: color 300ms;
+            }
+
+            &:hover {
+                .user-name {
+                    color: $color-primary;
+                }
             }
         }
     } // end of .nav-top
@@ -477,6 +490,7 @@ nav {
         white-space: nowrap;
         font-size: $font-size-nav;
         font-weight: bold;
+        transition: background-color 100ms;
 
         i {
             margin: 0 $std 0 0;

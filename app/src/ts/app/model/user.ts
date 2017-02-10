@@ -1,14 +1,24 @@
 export class User {
-    UserID: number;
+    UserID: string;
+    Email: string;
     FirstName: string;
     LastName: string;
-    Gender: string;
-    Email: string;
+    Company: string;
+    Phone: string;
+    Address: string;
+    City: string;
+    State: string;
+    Zip: string;
+    Country: string;
+    ImprovExp: number;
+    FacilitationExp: number;
+    TrainingInterest: boolean;
     URL: string;
     DateAdded: string;
     DateModified: string;
-    UserLevel: number[];
     Locked: boolean;
+    RoleID: number;
     Description: string;
-    Permissions: string[];
+    Permissions: Object;
+    actions: string[];
 }

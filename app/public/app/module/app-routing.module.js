@@ -7,9 +7,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
+var auth_guard_service_1 = require("../service/auth-guard.service");
+var login_screen_component_1 = require("../component/login-screen.component");
 var dashboard_component_1 = require("../component/dashboard.component");
 var library_component_1 = require("../component/library.component");
 var help_component_1 = require("../component/help.component");
+var unauthorized_component_1 = require("../component/unauthorized.component");
 var game_database_component_1 = require("../component/game-database.component");
 var about_component_1 = require("../component/about.component");
 var contact_component_1 = require("../component/contact.component");
@@ -23,20 +26,53 @@ var routes = [
         pathMatch: 'full'
     },
     {
-        path: 'dashboard',
-        component: dashboard_component_1.DashboardComponent
+        path: 'login',
+        component: login_screen_component_1.LoginScreenComponent
     },
     {
-        path: 'library',
-        component: library_component_1.LibraryComponent
+        path: 'unauthorized',
+        component: unauthorized_component_1.UnauthorizedComponent
     },
     {
-        path: 'games',
-        component: game_database_component_1.GameDatabaseComponent
-    },
-    {
-        path: 'game/:id',
-        component: game_details_component_1.GameDetailsComponent
+        path: '',
+        canActivateChild: [auth_guard_service_1.AuthGuard],
+        children: [
+            {
+                path: 'dashboard',
+                component: dashboard_component_1.DashboardComponent,
+                data: {
+                    action: 'dashboard_view'
+                }
+            },
+            {
+                path: 'library',
+                component: library_component_1.LibraryComponent,
+                data: {
+                    action: 'library_poo'
+                }
+            },
+            {
+                path: 'games',
+                component: game_database_component_1.GameDatabaseComponent,
+                data: {
+                    action: 'games_view'
+                }
+            },
+            {
+                path: 'game/:id',
+                component: game_details_component_1.GameDetailsComponent,
+                data: {
+                    action: 'games_view'
+                }
+            },
+            {
+                path: 'user',
+                component: user_component_1.UserComponent,
+                data: {
+                    action: 'account_edit'
+                }
+            }
+        ]
     },
     {
         path: 'about',
@@ -45,10 +81,6 @@ var routes = [
     {
         path: 'contact',
         component: contact_component_1.ContactComponent
-    },
-    {
-        path: 'user',
-        component: user_component_1.UserComponent
     },
     {
         path: 'help',

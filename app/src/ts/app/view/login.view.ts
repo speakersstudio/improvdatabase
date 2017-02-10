@@ -55,6 +55,9 @@ export class LoginView implements OnInit {
         this.loginError = "";
         this.userService.login(this.email, this.password)
             .then((user) => {
+                this.email = "";
+                this.password = "";
+
                 //this.router.navigate(['/games']);
                 this.done.emit(user);
             })
@@ -63,7 +66,13 @@ export class LoginView implements OnInit {
                 if (reason.status == 500) {
                     this.loginError = "Some sort of server error happened. Sorry.";
                 } else {
-                    if (this.errorCount < MAX_ATTEMPTS) {
+                    if (this.errorCount === 1) {
+                        this.loginError = "That is not the correct username or password.";
+                    } else if (this.errorCount === 2) {
+                        this.loginError = "That is still not the correct username or password.";
+                    } else if (this.errorCount === 3) {
+                        this.loginError = "Yo, dawg, try using your actual password.";
+                    } else if (this.errorCount === 4) {
                         this.loginError = `<a href="/images/password-incorrect.png" target="_blank">Die wanna wanga!</a>`;
                     } else if (this.errorCount == MAX_ATTEMPTS) {
                         this.loginError = "I'll let you take one more crack at it.";

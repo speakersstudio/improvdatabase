@@ -13,12 +13,14 @@ require("rxjs/Subject");
 require("rxjs/add/operator/filter");
 var router_1 = require("@angular/router");
 var user_service_1 = require("../service/user.service");
+var auth_guard_service_1 = require("../service/auth-guard.service");
 var anim_util_1 = require("../util/anim.util");
 var AppComponent = (function () {
-    function AppComponent(_renderer, router, userService) {
+    function AppComponent(_renderer, router, userService, authGuard) {
         this._renderer = _renderer;
         this.router = router;
         this.userService = userService;
+        this.authGuard = authGuard;
         this.loader = document.getElementById("siteLoader");
         this.showMenu = false;
         this.showFullscreen = false;
@@ -40,6 +42,24 @@ var AppComponent = (function () {
         this.setUser(this.userService.getLoggedInUser());
         this.hideLoader();
         this.userSubscription = this.userService.loginState$.subscribe(function (user) {
+            if (!_this.user) {
+                // we just logged in
+                var path_1 = [];
+                if (_this.authGuard.redirect) {
+                    _this.authGuard.redirect.forEach(function (segment) {
+                        path_1.push('/' + segment.path);
+                    });
+                }
+                else {
+                    path_1.push('/dashboard');
+                }
+                _this.router.navigate(path_1);
+            }
+            if (!user) {
+                // we just logged out
+                _this.router.navigate(['/login']);
+                _this.hideLoader();
+            }
             _this.setUser(user);
         });
         if (this.userService.getLoggedInUser()) {
@@ -62,7 +82,6 @@ var AppComponent = (function () {
         this.user = user;
     };
     AppComponent.prototype.showLoader = function () {
-        console.log('show loader');
         this.loader.style.display = "block";
     };
     AppComponent.prototype.hideLoader = function () {
@@ -133,8 +152,8 @@ var AppComponent = (function () {
         this.closeOverlays();
     };
     AppComponent.prototype.logout = function () {
+        this.showLoader();
         this.userService.logout();
-        this.router.navigate(['/login']);
     };
     return AppComponent;
 }());
@@ -149,7 +168,8 @@ AppComponent = __decorate([
     }),
     __metadata("design:paramtypes", [core_1.Renderer,
         router_1.Router,
-        user_service_1.UserService])
+        user_service_1.UserService,
+        auth_guard_service_1.AuthGuard])
 ], AppComponent);
 exports.AppComponent = AppComponent;
 

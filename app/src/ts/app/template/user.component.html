@@ -117,6 +117,7 @@
                     <input name="change-password-confirm" [(ngModel)]="passwordConfirm" type="password" placeholder="Confirm Password" />
                 </div>
                 <label>(Leave the password blank if you don't want to change it)</label>
+                <label class="error" *ngIf="passwordMatchError">The two passwords you entered do not match.</label>
             </div>
             
             <div class="button-group" *ngIf="!isPosting">

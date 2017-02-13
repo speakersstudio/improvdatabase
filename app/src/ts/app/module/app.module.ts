@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PathLocationStrategy } from '@angular/common';
 
 // main components
@@ -27,6 +27,7 @@ import { CreateMetadataView } from '../view/create-metadata.view';
 
 // services
 import { GameDatabaseService } from "../service/game-database.service";
+import { LibraryService } from "../service/library.service";
 import { UserService } from "../service/user.service";
 import { AuthGuard } from "../service/auth-guard.service";
 
@@ -41,6 +42,7 @@ import { WebStorageService, WebStorageSubscriber } from "../util/webstorage.util
     imports: [
         BrowserModule,
         FormsModule,
+        ReactiveFormsModule,
         HttpModule,
         AppRoutingModule
      ],
@@ -69,6 +71,7 @@ import { WebStorageService, WebStorageSubscriber } from "../util/webstorage.util
     bootstrap: [ AppComponent ],
     providers: [ 
         GameDatabaseService,
+        LibraryService,
         UserService,
         PathLocationStrategy,
         WebStorageService,

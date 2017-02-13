@@ -18,6 +18,7 @@ import { Router, NavigationStart } from '@angular/router';
 
 import { User } from "../model/user";
 import { UserService } from '../service/user.service';
+import { AuthGuard } from '../service/auth-guard.service';
 
 import { DialogAnim } from '../util/anim.util';
 
@@ -61,7 +62,8 @@ export class AppComponent implements OnInit, OnDestroy {
     constructor(
         private _renderer: Renderer,
         private router: Router,
-        private userService: UserService
+        private userService: UserService,
+        private authGuard: AuthGuard
     ) {
     }
 
@@ -79,6 +81,23 @@ export class AppComponent implements OnInit, OnDestroy {
         this.hideLoader();
 
         this.userSubscription = this.userService.loginState$.subscribe(user => {
+            if (!this.user) {
+                // we just logged in
+                let path:string[] = [];
+                if (this.authGuard.redirect) {
+                    this.authGuard.redirect.forEach(segment => {
+                        path.push('/' + segment.path);
+                    });
+                } else {
+                    path.push('/dashboard');
+                }
+                this.router.navigate(path);
+            }
+            if (!user) {
+                // we just logged out
+                this.router.navigate(['/login']);
+                this.hideLoader();
+            }
             this.setUser(user);
         });
 
@@ -107,7 +126,6 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     showLoader(): void {
-        console.log('show loader');
         this.loader.style.display = "block";
     }
 
@@ -188,7 +206,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     logout(): void {
+        this.showLoader();
         this.userService.logout();
-        this.router.navigate(['/login']);
     }
 }

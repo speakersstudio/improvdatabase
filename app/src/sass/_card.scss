@@ -20,7 +20,7 @@
         margin: $std;
         border-radius: $border-radius;
         position: relative;
-        max-width: 500px;
+        max-width: 46%;
         box-sizing: border-box;
         @include md-elevation($card-elevation-default);
         @include md-elevation-transition;
@@ -28,6 +28,7 @@
         @media #{$media-mobile} {
             display: block;
             width: 90%;
+            max-width: 90%;
             box-sizing: border-box;
         }
 
@@ -108,6 +109,12 @@
                     border-color: $color-yellow;
                 }
             }
+        }
+    }
+
+    .paper & {
+        .card {
+            @include md-elevation(0);
         }
     }
 }

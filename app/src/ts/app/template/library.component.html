@@ -17,7 +17,7 @@
 
     <div class="paper has-brackets" *ngFor="let package of packages">
 
-        <div class="card-list">
+        <div class="card-list content">
             <div class="card red brackets clickable" 
                 *ngFor="let material of getMaterials(package.PackageID)">
 
@@ -33,7 +33,7 @@
 
     <div class="paper has-brackets" *ngIf="getAddons().length > 0">
 
-        <div class="card-list">
+        <div class="card-list content">
             <div class="card red brackets clickable" 
                 *ngFor="let material of getAddons()">
 

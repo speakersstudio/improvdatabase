@@ -131,13 +131,24 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         return this.userService.can(permission);
     }
 
-    private _focusInput(): void {
+    private _getInput(name?:string): HTMLInputElement {
+        name = name || 'editName';
+        let i = <HTMLInputElement>document.querySelector('[name="' + name + '"]');
+        return i;
+    }
+
+    private _focusInput(name?:string): void {
+
         // TODO: figure out how to focus the new input element - probably stupid complicated with Angular
         // http://stackoverflow.com/questions/34522306/angular-2-focus-on-newly-added-input-element
-        let i = <HTMLInputElement>document.querySelector('[name="editName"]');
-        if (i) {
-            i.focus();
-        }
+
+        // but hey, this works for now!
+        setTimeout(() => {
+            let i = this._getInput(name);
+            if (i) {
+                i.focus();
+            }
+        }, 100);
     }
 
     showEditName(): void {
@@ -275,36 +286,70 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     showAddTag(): void {
         if (this.can('game_tag_add')) {
             this.addTagShown = true;
+
+            this._focusInput('addTag');
         }
     }
 
     _tagTypeDebounce;
+    _selectedTagIndex: number = -1;
     newTagKeyDown(event): void {
-        if (event.keyCode == 13) {
-            this.addTagByName();
-        } else if (event.keyCode == 27) {
-            this._closeAllEdits();
-        } else {
 
-            clearTimeout(this._tagTypeDebounce);
-            this._tagTypeDebounce = setTimeout(() => {
-                this.tagHints = [];
-                if (this.newTagText) {
-                    this.gameDatabaseService.searchForTags(this.newTagText)
-                        .then(tags => {
-                            let max = tags.length > 8 ? 8 : tags.length;
-                            for(let cnt = 0; cnt < max; cnt++) {
-                                let tag = tags[cnt];
-                                // only hint tags that aren't already added to this game,
-                                // and only show the first 8 hints, why not
-                                if (this.tags.indexOf(tag) == -1) {
-                                    this.tagHints.push(tag);
-                                }
-                            }
-                        });
+        let key = event.keyCode;
+
+        switch(key) {
+            case 13:
+                this._selectedTagIndex = -1;
+
+                this.addTagByName();
+                break;
+            case 27:
+                this._selectedTagIndex = -1;
+
+                this._closeAllEdits();
+                break;
+            case 40: // down
+            case 38: // up
+
+                if (key === 40) {
+                    if (this._selectedTagIndex < this.tagHints.length - 1) {
+                        this._selectedTagIndex++;
+                    } else {
+                        this._selectedTagIndex = 0;
+                    }
+                } else {
+                    if (this._selectedTagIndex > 0) {
+                        this._selectedTagIndex--;
+                    } else {
+                        this._selectedTagIndex = this.tagHints.length - 1;
+                    }
                 }
-            }, 100);
+                if (this.tagHints[this._selectedTagIndex]) {
+                    this.newTagText = this.tagHints[this._selectedTagIndex].Name;
+                    this._focusInput('addTag');
+                }
 
+                break;
+            default:
+                clearTimeout(this._tagTypeDebounce);
+                this._tagTypeDebounce = setTimeout(() => {
+                    this.tagHints = [];
+                    if (this.newTagText) {
+                        this.gameDatabaseService.searchForTags(this.newTagText)
+                            .then(tags => {
+                                let max = tags.length > 8 ? 8 : tags.length;
+                                for(let cnt = 0; cnt < max; cnt++) {
+                                    let tag = tags[cnt];
+                                    // only hint tags that aren't already added to this game,
+                                    // and only show the first 8 hints, why not
+                                    if (this.tags.indexOf(tag) == -1) {
+                                        this.tagHints.push(tag);
+                                    }
+                                }
+                            });
+                    }
+                }, 100);
+                break;
         }
     }
 
@@ -334,6 +379,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
                 tag = hint;
             }
         });
+
         if (tag) {
             this.addTag(tag);
         } else {
@@ -346,6 +392,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
 
         this.newTagText = "";
         this.tagHints = [];
+        this._selectedTagIndex = -1;
     }
 
     addTag(tag: Tag): void {

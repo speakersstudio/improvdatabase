@@ -14,108 +14,112 @@
 
     <div *ngIf="game" class="paper has-brackets">
 
-        <h4 class="right">
-            <span *ngIf="!addNameShown && !editNameShown"
-                [class.clickable]="can('name_edit')"
-                (click)="showEditName()">{{game.Names[0] ? game.Names[0].Name : 'New Game'}}</span>
+        <div class="content">
 
-            <input name="editName"
-                *ngIf="addNameShown || editNameShown"
-                [(ngModel)]="editName"
-                (keydown.enter)="saveEditName()"
-                (blur)="saveEditName()" />
+            <h4 class="right">
+                <span *ngIf="!addNameShown && !editNameShown"
+                    [class.clickable]="can('name_edit')"
+                    (click)="showEditName()">{{game.Names[0] ? game.Names[0].Name : 'New Game'}}</span>
 
-            <i *ngIf="can('name_create') && !addNameShown && !editNameShown && game.Names[0]" (click)="showAddName()" 
-                class="fa fa-plus-circle clickable" title="Add an alternate name."></i>
-        </h4>
+                <input name="editName"
+                    *ngIf="addNameShown || editNameShown"
+                    [(ngModel)]="editName"
+                    (keydown.enter)="saveEditName()"
+                    (blur)="saveEditName()" />
 
-        <div class="metadata right">
+                <i *ngIf="can('name_create') && !addNameShown && !editNameShown && game.Names[0]" (click)="showAddName()" 
+                    class="fa fa-plus-circle clickable" title="Add an alternate name."></i>
+            </h4>
 
-            <div *ngIf="game.Names.length === 2">
-                <h5>AKA {{game.Names[1].Name}}</h5>
+            <div class="metadata right">
+
+                <div *ngIf="game.Names.length === 2">
+                    <h5>AKA {{game.Names[1].Name}}</h5>
+                </div>
+                <div *ngIf="game.Names.length > 2">
+                    <h5 (click)="toggleNames()" class="clickable"><i class="fa fa-sort-down"
+                        [class.open]="namesOpen"></i> {{game.Names.length - 1}} known aliases</h5>
+
+                    <ol *ngIf="namesOpen" [@expand]>
+                        <li *ngFor="let name of game.Names" [class.hide]="name.Name === game.Names[0].Name">{{name.Name}}</li>
+                    </ol>
+                </div>
+
+                <span class="bullet"
+                    [title]="playerCount && !editPlayerCountShown ? playerCount.Description : ''">
+
+                    <i class="fa fa-group"></i> 
+                    
+                    <span *ngIf="!editPlayerCountShown"
+                        [class.clickable]="can('game_edit')"
+                        (click)="showEditPlayerCount()">{{playerCount ? playerCount.Name : 'No Player Count'}}</span>
+
+                    <select name="playerCount" type="number"
+                        *ngIf="editPlayerCountShown"
+                        [(ngModel)]="game.PlayerCountID"
+                        (ngModelChange)="savePlayerCount()">
+
+                        <option *ngFor="let pc of allPlayerCounts" [ngValue]="pc.PlayerCountID" [title]="pc.Description">{{pc.Name}}</option>
+
+                        <option *ngIf="can('metadata_create')" [ngValue]="-1">Other...</option>
+                    </select>
+
+                </span>
+                
+                <span [title]="duration && !editDurationShown ? duration.Description : ''">
+                    
+                    <i class="fa fa-clock-o"></i> 
+                    
+                    <span *ngIf="!editDurationShown"
+                        [class.clickable]="can('game_edit')"
+                        (click)="showEditDuration()">
+                        {{duration ? duration.Name : 'No Duration'}}</span>
+
+                    <select name="duration"
+                        *ngIf="editDurationShown"
+                        [(ngModel)]="game.DurationID"
+                        (ngModelChange)="saveDuration()">
+
+                        <option *ngFor="let d of allDurations" [ngValue]="d.DurationID" [title]="d.Description">{{d.Name}}</option>
+
+                        <option *ngIf="can('metadata_create')" [ngValue]="-1">Other...</option>
+                    </select>
+                    
+                </span>
+
+                <ul class="taglist">
+                    <li *ngIf="can('game_tag_add') && !addTagShown"
+                        title="Add Tag" (click)="showAddTag()" class="clickable" [class.flat]="tags.length">
+                            <i class="fa fa-plus-circle"></i></li>
+
+                    <li *ngIf="addTagShown">
+                        <i class="fa fa-hashtag"></i> <input type="text" name="addTag" [(ngModel)]="newTagText" (keydown)="newTagKeyDown($event)" />
+
+                        <ul class="tag-hints" *ngIf="tagHints && tagHints.length">
+                            <li *ngFor="let hint of tagHints" [class.hover]="hint.Name === newTagText" (click)="addTag(hint)" class="clickable">{{hint.Name}}</li>
+                        </ul>
+                    </li>
+
+                    <li *ngFor="let tag of tags" 
+                        [title]="tag.Description || ''"
+                        [class.clickable]="can('game_tag_remove')" (click)="removeTag(tag)">
+                        <i class="fa fa-hashtag"></i> {{tag.Name}}</li>
+                </ul>
             </div>
-            <div *ngIf="game.Names.length > 2">
-                <h5 (click)="toggleNames()" class="clickable"><i class="fa fa-sort-down"
-                    [class.open]="namesOpen"></i> {{game.Names.length - 1}} known aliases</h5>
 
-                <ol *ngIf="namesOpen" [@expand]>
-                    <li *ngFor="let name of game.Names" [class.hide]="name.Name === game.Names[0].Name">{{name.Name}}</li>
-                </ol>
+            <hr />
+
+            <div class="description" [innerHTML]="game.Description ? game.Description : 'No Description'" *ngIf="!editDescriptionShown"></div>
+
+            <textarea name="description" class="description" [(ngModel)]="newDescriptionText" *ngIf="editDescriptionShown"></textarea>
+
+            <div class="button-group" *ngIf="can('game_edit')">
+                <div class="button" *ngIf="!editDescriptionShown" (click)="showEditDescription()">EDIT</div>
+                
+                <div class="button" *ngIf="editDescriptionShown" (click)="_closeAllEdits()">cancel</div>
+                <div class="button raised" *ngIf="editDescriptionShown" (click)="saveDescription()">SAVE</div>
             </div>
 
-            <span class="bullet"
-                [title]="playerCount && !editPlayerCountShown ? playerCount.Description : ''">
-
-                <i class="fa fa-group"></i> 
-                
-                <span *ngIf="!editPlayerCountShown"
-                    [class.clickable]="can('game_edit')"
-                    (click)="showEditPlayerCount()">{{playerCount ? playerCount.Name : 'No Player Count'}}</span>
-
-                <select name="playerCount" type="number"
-                    *ngIf="editPlayerCountShown"
-                    [(ngModel)]="game.PlayerCountID"
-                    (ngModelChange)="savePlayerCount()">
-
-                    <option *ngFor="let pc of allPlayerCounts" [ngValue]="pc.PlayerCountID" [title]="pc.Description">{{pc.Name}}</option>
-
-                    <option *ngIf="can('metadata_create')" [ngValue]="-1">Other...</option>
-                </select>
-
-            </span>
-            
-            <span [title]="duration && !editDurationShown ? duration.Description : ''">
-                
-                <i class="fa fa-clock-o"></i> 
-                
-                <span *ngIf="!editDurationShown"
-                    [class.clickable]="can('game_edit')"
-                    (click)="showEditDuration()">
-                    {{duration ? duration.Name : 'No Duration'}}</span>
-
-                <select name="duration"
-                    *ngIf="editDurationShown"
-                    [(ngModel)]="game.DurationID"
-                    (ngModelChange)="saveDuration()">
-
-                    <option *ngFor="let d of allDurations" [ngValue]="d.DurationID" [title]="d.Description">{{d.Name}}</option>
-
-                    <option *ngIf="can('metadata_create')" [ngValue]="-1">Other...</option>
-                </select>
-                
-            </span>
-
-            <ul class="taglist">
-                <li *ngIf="can('game_tag_add') && !addTagShown"
-                    title="Add Tag" (click)="showAddTag()" class="clickable" [class.flat]="tags.length">
-                        <i class="fa fa-plus-circle"></i></li>
-
-                <li *ngIf="addTagShown">
-                    <i class="fa fa-hashtag"></i> <input type="text" [(ngModel)]="newTagText" (keydown)="newTagKeyDown($event)" />
-
-                    <ul class="tag-hints" *ngIf="tagHints && tagHints.length">
-                        <li *ngFor="let hint of tagHints" (click)="addTag(hint)" class="clickable">{{hint.Name}}</li>
-                    </ul>
-                </li>
-
-                <li *ngFor="let tag of tags" 
-                    [title]="tag.Description || ''"
-                    [class.clickable]="can('game_tag_remove')" (click)="removeTag(tag)">
-                    <i class="fa fa-hashtag"></i> {{tag.Name}}</li>
-            </ul>
-        </div>
-
-        <hr />
-
-        <div class="description" [innerHTML]="game.Description ? game.Description : 'No Description'" *ngIf="!editDescriptionShown"></div>
-
-        <textarea name="description" class="description" [(ngModel)]="newDescriptionText" *ngIf="editDescriptionShown"></textarea>
-
-        <div class="button-group" *ngIf="can('game_edit')">
-            <div class="button" *ngIf="!editDescriptionShown" (click)="showEditDescription()">EDIT</div>
-            
-            <div class="button" *ngIf="editDescriptionShown" (click)="_closeAllEdits()">cancel</div>
-            <div class="button raised" *ngIf="editDescriptionShown" (click)="saveDescription()">SAVE</div>
         </div>
 
         <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
@@ -132,25 +136,29 @@
 
         <hr />-->
 
-        <div *ngFor="let note of notes" class="block">
-            <div class="description" [innerHTML]="note.Description"></div>
-            <div class="metadata right">
-                <h5>{{note.AddedFirstName}} {{note.AddedLastName}}</h5>
-                
-                <span>Regarding
-                    <i class="fa"
-                        [class.fa-soccer-ball-o]="note.GameID"
-                        [class.fa-hashtag]="note.TagID"
-                        [class.fa-group]="note.PlayerCountID"
-                        [class.fa-clock-o]="note.DurationID"
-                        ></i>
-                     <em *ngIf="note.GameID">{{game.Names[0].Name}}</em>
-                     <em *ngIf="note.TagID && tagMap">{{tagMap[note.TagID]}}</em>
-                     <em *ngIf="note.PlayerCountID && playerCount">{{playerCount.Name}}</em>
-                     <em *ngIf="note.DurationID && duration">{{duration.Name}}</em>
-                </span>
-                
+        <div class="content">
+
+            <div *ngFor="let note of notes" class="block">
+                <div class="description" [innerHTML]="note.Description"></div>
+                <div class="metadata right">
+                    <h5>{{note.AddedFirstName}} {{note.AddedLastName}}</h5>
+                    
+                    <span>Regarding
+                        <i class="fa"
+                            [class.fa-soccer-ball-o]="note.GameID"
+                            [class.fa-hashtag]="note.TagID"
+                            [class.fa-group]="note.PlayerCountID"
+                            [class.fa-clock-o]="note.DurationID"
+                            ></i>
+                        <em *ngIf="note.GameID">{{game.Names[0].Name}}</em>
+                        <em *ngIf="note.TagID && tagMap">{{tagMap[note.TagID]}}</em>
+                        <em *ngIf="note.PlayerCountID && playerCount">{{playerCount.Name}}</em>
+                        <em *ngIf="note.DurationID && duration">{{duration.Name}}</em>
+                    </span>
+                    
+                </div>
             </div>
+
         </div>
 
         <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>

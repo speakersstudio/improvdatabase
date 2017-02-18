@@ -46,6 +46,7 @@ var GameDetailsComponent = (function () {
                 active: false
             }
         ];
+        this._selectedTagIndex = -1;
     }
     GameDetailsComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -67,13 +68,22 @@ var GameDetailsComponent = (function () {
     GameDetailsComponent.prototype.can = function (permission) {
         return this.userService.can(permission);
     };
-    GameDetailsComponent.prototype._focusInput = function () {
+    GameDetailsComponent.prototype._getInput = function (name) {
+        name = name || 'editName';
+        var i = document.querySelector('[name="' + name + '"]');
+        return i;
+    };
+    GameDetailsComponent.prototype._focusInput = function (name) {
         // TODO: figure out how to focus the new input element - probably stupid complicated with Angular
         // http://stackoverflow.com/questions/34522306/angular-2-focus-on-newly-added-input-element
-        var i = document.querySelector('[name="editName"]');
-        if (i) {
-            i.focus();
-        }
+        var _this = this;
+        // but hey, this works for now!
+        setTimeout(function () {
+            var i = _this._getInput(name);
+            if (i) {
+                i.focus();
+            }
+        }, 100);
     };
     GameDetailsComponent.prototype.showEditName = function () {
         this._closeAllEdits();
@@ -205,35 +215,64 @@ var GameDetailsComponent = (function () {
     GameDetailsComponent.prototype.showAddTag = function () {
         if (this.can('game_tag_add')) {
             this.addTagShown = true;
+            this._focusInput('addTag');
         }
     };
     GameDetailsComponent.prototype.newTagKeyDown = function (event) {
         var _this = this;
-        if (event.keyCode == 13) {
-            this.addTagByName();
-        }
-        else if (event.keyCode == 27) {
-            this._closeAllEdits();
-        }
-        else {
-            clearTimeout(this._tagTypeDebounce);
-            this._tagTypeDebounce = setTimeout(function () {
-                _this.tagHints = [];
-                if (_this.newTagText) {
-                    _this.gameDatabaseService.searchForTags(_this.newTagText)
-                        .then(function (tags) {
-                        var max = tags.length > 8 ? 8 : tags.length;
-                        for (var cnt = 0; cnt < max; cnt++) {
-                            var tag = tags[cnt];
-                            // only hint tags that aren't already added to this game,
-                            // and only show the first 8 hints, why not
-                            if (_this.tags.indexOf(tag) == -1) {
-                                _this.tagHints.push(tag);
-                            }
-                        }
-                    });
+        var key = event.keyCode;
+        switch (key) {
+            case 13:
+                this._selectedTagIndex = -1;
+                this.addTagByName();
+                break;
+            case 27:
+                this._selectedTagIndex = -1;
+                this._closeAllEdits();
+                break;
+            case 40: // down
+            case 38:
+                if (key === 40) {
+                    if (this._selectedTagIndex < this.tagHints.length - 1) {
+                        this._selectedTagIndex++;
+                    }
+                    else {
+                        this._selectedTagIndex = 0;
+                    }
                 }
-            }, 100);
+                else {
+                    if (this._selectedTagIndex > 0) {
+                        this._selectedTagIndex--;
+                    }
+                    else {
+                        this._selectedTagIndex = this.tagHints.length - 1;
+                    }
+                }
+                if (this.tagHints[this._selectedTagIndex]) {
+                    this.newTagText = this.tagHints[this._selectedTagIndex].Name;
+                    this._focusInput('addTag');
+                }
+                break;
+            default:
+                clearTimeout(this._tagTypeDebounce);
+                this._tagTypeDebounce = setTimeout(function () {
+                    _this.tagHints = [];
+                    if (_this.newTagText) {
+                        _this.gameDatabaseService.searchForTags(_this.newTagText)
+                            .then(function (tags) {
+                            var max = tags.length > 8 ? 8 : tags.length;
+                            for (var cnt = 0; cnt < max; cnt++) {
+                                var tag = tags[cnt];
+                                // only hint tags that aren't already added to this game,
+                                // and only show the first 8 hints, why not
+                                if (_this.tags.indexOf(tag) == -1) {
+                                    _this.tagHints.push(tag);
+                                }
+                            }
+                        });
+                    }
+                }, 100);
+                break;
         }
     };
     GameDetailsComponent.prototype.removeTag = function (tag) {
@@ -274,6 +313,7 @@ var GameDetailsComponent = (function () {
         }
         this.newTagText = "";
         this.tagHints = [];
+        this._selectedTagIndex = -1;
     };
     GameDetailsComponent.prototype.addTag = function (tag) {
         if (this.can('game_tag_add')) {

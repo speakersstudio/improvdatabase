@@ -158,8 +158,8 @@ exports.get = function(req,res) {
     });
 };
 exports.update = function(req,res) {
-    var data = connection.getPostData(req.body, formProperties),
-        UserID = 1;
+    let data = connection.getPostData(req.body, formProperties),
+        UserID = req.user.UserID;
     data.ModifiedUserID = UserID;
 
     var gameid;

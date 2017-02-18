@@ -505,7 +505,7 @@ button,
       box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12); }
   button.fab,
   .button.fab {
-    position: absolute;
+    position: fixed;
     right: 32px;
     bottom: 16px;
     z-index: 500;
@@ -614,6 +614,7 @@ button,
     border-radius: 4px;
     position: relative;
     font-size: 13px;
+    transition: all 200ms;
     box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12); }
     .taglist li .fa {
       font-size: 0.9em;
@@ -634,12 +635,19 @@ button,
       color: #FFFFFF; }
     .taglist li .tag-hints {
       position: absolute;
-      top: 100%; }
+      top: 100%;
+      padding: 0; }
       .taglist li .tag-hints li {
         display: block;
         margin: 4px;
         box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
-        margin-left: 14px; }
+        margin-left: 16px; }
+        .taglist li .tag-hints li.hover, .taglist li .tag-hints li:hover {
+          box-shadow: 0px 6px 7px -4px rgba(0, 0, 0, 0.2), 0px 11px 15px 1px rgba(0, 0, 0, 0.14), 0px 4px 20px 3px rgba(0, 0, 0, 0.12);
+          margin-right: 2px;
+          margin-left: 8px;
+          padding-left: 10px;
+          padding-right: 7px; }
   .taglist:hover .flat {
     opacity: 1; }
 
@@ -1065,7 +1073,7 @@ nav {
     margin: 16px;
     border-radius: 2px;
     position: relative;
-    max-width: 500px;
+    max-width: 46%;
     box-sizing: border-box;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
     transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -1074,6 +1082,7 @@ nav {
       .card-list .card {
         display: block;
         width: 90%;
+        max-width: 90%;
         box-sizing: border-box; } }
     .card-list .card.clickable:hover {
       box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12); }
@@ -1123,6 +1132,8 @@ nav {
         border-color: #ffa70f; }
       .card-list .card.brackets.yellow:after, .card-list .card.brackets.yellow:before {
         border-color: #F9D423; }
+  .paper .card-list .card {
+    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12); }
 
 footer {
   display: flex;
@@ -1532,9 +1543,12 @@ user .user-form {
       @media only screen and (max-width: 500px) {
         .page .paper.has-brackets {
           padding: 48px 52px; } }
-    .page .paper > :not(.left-bracket):not(.right-bracket) {
+    .page .paper > .content {
       position: relative;
       z-index: 6; }
+    .page .paper .metadata {
+      position: relative;
+      z-index: 7; }
     .page .paper h4 {
       font-size: 28px; }
     .page .paper h5 {

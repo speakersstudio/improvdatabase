@@ -44,7 +44,7 @@ exports.get = function(req,res) {
 };
 exports.update = function(req,res) {
     var data = connection.getPostData(req.body, formProperties);
-    data.ModifiedUserID = 1;
+    data.ModifiedUserID = req.user.UserID;
     data.DateModified = 'NOW';
 
     var q = connection.getUpdateQuery('name', data, {NameID: req.params.id});

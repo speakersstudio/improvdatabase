@@ -282,13 +282,20 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype.getTags = function () {
         var _this = this;
         if (!this._tagPromise) {
-            this._tagPromise = this.http.get(this.tagUrl, this.userService.getAuthorizationHeader())
-                .toPromise()
-                .then(function (response) {
-                _this.tags = response.json();
-                return _this.tags;
-            })
-                .catch(this.handleError);
+            if (this.userService.can('tag_view')) {
+                this._tagPromise = this.http.get(this.tagUrl, this.userService.getAuthorizationHeader())
+                    .toPromise()
+                    .then(function (response) {
+                    _this.tags = response.json();
+                    return _this.tags;
+                })
+                    .catch(this.handleError);
+            }
+            else {
+                this._tagPromise = new Promise(function (resolve, reject) {
+                    resolve([]);
+                });
+            }
         }
         return this._tagPromise;
     };
@@ -317,13 +324,20 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype.getNotes = function () {
         var _this = this;
         if (!this._notePromise) {
-            this._notePromise = this.http.get(this.noteUrl, this.userService.getAuthorizationHeader())
-                .toPromise()
-                .then(function (response) {
-                _this.notes = response.json();
-                return _this.notes;
-            })
-                .catch(this.handleError);
+            if (this.userService.can('note_public_view')) {
+                this._notePromise = this.http.get(this.noteUrl, this.userService.getAuthorizationHeader())
+                    .toPromise()
+                    .then(function (response) {
+                    _this.notes = response.json();
+                    return _this.notes;
+                })
+                    .catch(this.handleError);
+            }
+            else {
+                this._notePromise = new Promise(function (resolve, reject) {
+                    resolve([]);
+                });
+            }
         }
         return this._notePromise;
     };

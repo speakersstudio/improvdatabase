@@ -56,6 +56,9 @@ export class UserService {
         this.tokenExpires = responseData['expires'];
         this.loggedInUser = responseData['user'];
 
+        // don't save the password
+        this.loggedInUser.Password = "";
+
         this.announceLoginState();
 
         return this.loggedInUser;
@@ -95,7 +98,10 @@ export class UserService {
     /**
      * Change information on the current user
      */
-    updateUser(): Promise<User> {
+    updateUser(password: string): Promise<User> {
+        if (password) {
+            this.loggedInUser.Password = password;
+        }
         return this.http.put(this.userUrl + this.loggedInUser.UserID, this.loggedInUser, 
             this.getAuthorizationHeader())
             .toPromise()

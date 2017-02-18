@@ -138,9 +138,14 @@ $paper-bg: $color-white;
             }
         }
 
-        & > :not(.left-bracket, .right-bracket) {
+        & > .content {
             position: relative;
             z-index: 6;
+        }
+
+        & .metadata {
+            position: relative;
+            z-index: 7;
         }
 
         h4 {

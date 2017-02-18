@@ -11,28 +11,52 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var app_component_1 = require("./app.component");
+var library_service_1 = require("../service/library.service");
 var LibraryComponent = (function () {
-    function LibraryComponent(_app, router) {
+    function LibraryComponent(_app, router, libraryService) {
         this._app = _app;
         this.router = router;
+        this.libraryService = libraryService;
         this.title = '<span class="light">materials</span><strong>library</strong>';
         this.searchResults = [];
         this._tools = [];
     }
     LibraryComponent.prototype.ngOnInit = function () {
+        this._app.showLoader();
+        this.getLibrary();
     };
     LibraryComponent.prototype.onToolClicked = function (tool) {
+    };
+    LibraryComponent.prototype.getLibrary = function () {
+        var _this = this;
+        Promise.all([
+            this.libraryService.getMaterials(),
+            this.libraryService.getOwnedPackages()
+        ]).then(function (items) {
+            setTimeout(function () {
+                _this._app.hideLoader();
+                _this.materials = items[0];
+                _this.packages = items[1];
+            }, 150);
+        });
+    };
+    LibraryComponent.prototype.getMaterials = function (packageId) {
+        return this.materials.filter(function (material) { return material.PackageID === packageId && !material.Addon; });
+    };
+    LibraryComponent.prototype.getAddons = function () {
+        return this.materials.filter(function (material) { return material.Addon; });
     };
     return LibraryComponent;
 }());
 LibraryComponent = __decorate([
     core_1.Component({
         moduleId: module.id,
-        selector: "dashboard",
+        selector: "library",
         templateUrl: "../template/library.component.html"
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,
-        router_1.Router])
+        router_1.Router,
+        library_service_1.LibraryService])
 ], LibraryComponent);
 exports.LibraryComponent = LibraryComponent;
 

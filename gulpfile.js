@@ -71,11 +71,15 @@ function handleError(err) {
 }
 
 gulp.task('watch', function () {
-    gulp.watch('./**/*.ts', ['tscompile', 'webcompile']);
-    gulp.watch('./**/*.html', ['templateCopy', 'webtemplateCopy']);
-    gulp.watch('./**/*.scss', ['compileAppSass', 'compileWebSass']);
+    gulp.watch('./app/**/*.ts', ['tscompile']);
+    gulp.watch('./app/**/*.html', ['templateCopy']);
+    gulp.watch('./app/**/*.scss', ['compileAppSass']);
 
-    gulp.watch(['./app/public/**', './web/public/**']).on('change', livereload.changed);
+    gulp.watch('./web/**/*.ts', ['webcompile']);
+    gulp.watch('./web/**/*.html', ['webtemplateCopy']);
+    gulp.watch('./web/**/*.scss', ['compileWebSass']);
+
+    // gulp.watch(['./app/public/**', './web/public/**']).on('change', livereload.changed);
 });
 
 gulp.task('build', ['compileAppSass', 'tscompile', 'templateCopy']);

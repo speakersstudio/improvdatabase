@@ -305,13 +305,19 @@ export class GameDatabaseService {
     private _tagPromise: Promise<Tag[]>;
     getTags(): Promise<Tag[]> {
         if (!this._tagPromise) {
-            this._tagPromise = this.http.get(this.tagUrl, this.userService.getAuthorizationHeader())
-                .toPromise()
-                .then(response => {
-                    this.tags = response.json() as Tag[];
-                    return this.tags;
-                })
-                .catch(this.handleError);
+            if (this.userService.can('tag_view')) {
+                this._tagPromise = this.http.get(this.tagUrl, this.userService.getAuthorizationHeader())
+                    .toPromise()
+                    .then(response => {
+                        this.tags = response.json() as Tag[];
+                        return this.tags;
+                    })
+                    .catch(this.handleError);
+            } else {
+                this._tagPromise = new Promise<Tag[]>((resolve, reject) => {
+                    resolve([]);
+                });
+            }
         }
         return this._tagPromise;
     }
@@ -342,13 +348,19 @@ export class GameDatabaseService {
     private _notePromise: Promise<Note[]>;
     getNotes(): Promise<Note[]> {
         if (!this._notePromise) {
-            this._notePromise = this.http.get(this.noteUrl, this.userService.getAuthorizationHeader())
-                .toPromise()
-                .then(response => {
-                    this.notes = response.json() as Note[];
-                    return this.notes;
+            if (this.userService.can('note_public_view')) {
+                this._notePromise = this.http.get(this.noteUrl, this.userService.getAuthorizationHeader())
+                    .toPromise()
+                    .then(response => {
+                        this.notes = response.json() as Note[];
+                        return this.notes;
+                    })
+                    .catch(this.handleError);
+            } else {
+                this._notePromise = new Promise<Note[]>((resolve, reject) => {
+                    resolve([]);
                 })
-                .catch(this.handleError);
+            }
         }
         return this._notePromise;
     }

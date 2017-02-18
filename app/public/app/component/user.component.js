@@ -11,15 +11,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var common_1 = require("@angular/common");
+var forms_1 = require("@angular/forms");
 var app_component_1 = require("./app.component");
 var user_service_1 = require("../service/user.service");
 var MAX_ATTEMPTS = 5;
 var UserComponent = (function () {
-    function UserComponent(userService, router, location, _app) {
+    function UserComponent(userService, router, location, _app, fb) {
         this.userService = userService;
         this.router = router;
         this.location = location;
         this._app = _app;
+        this.fb = fb;
         this.title = "Account";
         this._tools = [
             {
@@ -41,18 +43,23 @@ var UserComponent = (function () {
         this._app.logout();
     };
     UserComponent.prototype.submitEditUser = function () {
-        // TODO: updating the password
-        // TODO: validation on the form to make sure the password and confirmation match
         var _this = this;
-        this.isPosting = true;
-        this.userService.updateUser()
-            .then(function () {
-            console.log(_this.user);
-            _this.isPosting = false;
-        })
-            .catch(function () {
-            _this.isPosting = false;
-        });
+        this.passwordMatchError = false;
+        if (this.password === this.passwordConfirm) {
+            this.isPosting = true;
+            this.userService.updateUser(this.password)
+                .then(function () {
+                _this.isPosting = false;
+                _this.password = "";
+                _this.passwordConfirm = "";
+            })
+                .catch(function () {
+                _this.isPosting = false;
+            });
+        }
+        else {
+            this.passwordMatchError = true;
+        }
     };
     UserComponent.prototype.onToolClicked = function (tool) {
         this._app.showLoader();
@@ -73,7 +80,8 @@ UserComponent = __decorate([
     __metadata("design:paramtypes", [user_service_1.UserService,
         router_1.Router,
         common_1.Location,
-        app_component_1.AppComponent])
+        app_component_1.AppComponent,
+        forms_1.FormBuilder])
 ], UserComponent);
 exports.UserComponent = UserComponent;
 

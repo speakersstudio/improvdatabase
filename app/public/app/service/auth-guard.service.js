@@ -29,6 +29,7 @@ var AuthGuard = (function () {
             }
         }
         else {
+            this.redirect = route.url;
             this.router.navigate(['/login'], { replaceUrl: true });
         }
         return false;

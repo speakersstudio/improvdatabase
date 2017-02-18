@@ -4,7 +4,7 @@
     [title]="title"
 
     [class.active]="filter"
-    [showSearch]="true"
+    [showSearch]="false"
     [searchResults]="searchResults"
     [showBack]="filter"
     (toolClicked)="onToolClicked($event)"
@@ -13,16 +13,38 @@
     (goBack)="clearFilter()"
     ></div>
 
-<div class="page">
+<div class="page" *ngIf="materials && packages">
 
-    <div class="paper has-brackets">
+    <div class="paper has-brackets" *ngFor="let package of packages">
 
-        <h4 class="right">Your Stuff</h4>
+        <div class="card-list content">
+            <div class="card red brackets clickable" 
+                *ngFor="let material of getMaterials(package.PackageID)">
 
-        <p>Please be patient. This isn't built yet.</p>
+                <h4>{{material.Name}}</h4>
+                <p>{{material.Description}}</p>
+            </div>
+        </div>
 
         <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
-        <div class="right-bracket"><h1>materials</h1></div>
+        <div class="right-bracket"><h1>{{package.Name}}</h1></div>
+
+    </div>
+
+    <div class="paper has-brackets" *ngIf="getAddons().length > 0">
+
+        <div class="card-list content">
+            <div class="card red brackets clickable" 
+                *ngFor="let material of getAddons()">
+
+                <h4>{{material.Name}}</h4>
+                <p>{{material.Description}}</p>
+            </div>
+        </div>
+
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>addon items</h1></div>
+
     </div>
 
 </div>

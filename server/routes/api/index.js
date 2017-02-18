@@ -8,10 +8,13 @@ var connection = require("../connection"),
         "name": require("./name"),
         "note": require("./note"),
         "tag": require("./tag"),
-        "suggestion": require("./suggestion"),
-        "suggestionType": require("./suggestionType"),
-        "suggestionTypeGame": require("./suggestionTypeGame"),
-        "tagGame": require("./tagGame")
+        // "suggestion": require("./suggestion"),
+        // "suggestionType": require("./suggestionType"),
+        // "suggestionTypeGame": require("./suggestionTypeGame"),
+        "tagGame": require("./tagGame"),
+
+        "package": require("./package"),
+        "library": require("./library")
     };
 exports.ops = ops;
 

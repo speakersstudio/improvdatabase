@@ -68,7 +68,7 @@ exports.get = function(req, res) {
 };
 exports.update = function(req, res) {
     var formData = connection.getPostData(req.body, formProperties),
-        password = formData.Password,
+        password = req.body.Password,
         callback = function (hasherr, hash) {
             if (hasherr) {
                 res.json('500', {message: 'Server Error', error: hasherr });
@@ -76,6 +76,8 @@ exports.update = function(req, res) {
 
             if (hash) {
                 formData.Password = hash;
+            } else {
+                delete formData.Password;
             }
             formData.DateModified = 'NOW';
         
@@ -98,6 +100,7 @@ exports.update = function(req, res) {
             });
         };
     
+    console.log('password?', password);
     if (password) {
         bcrypt.hash(password, null, null, callback);
     } else {
@@ -146,6 +149,7 @@ function findUser (UserID, Email, callback) {
 
                 user.actions = roles.getActionsForRole(roleId);
 
+
                 callback(null, user);
             } else {
                 callback(null, false);
@@ -165,7 +169,7 @@ function validateUser (email, password, callback) {
                     if (comperr) {
                         callback(comperr, null);
                     } else if (valid) {
-                        delete user.Password;
+                        user.Password = "";
                         callback(null, user);
                     } else {
                         callback(null, false);

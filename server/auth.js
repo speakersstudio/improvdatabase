@@ -211,18 +211,19 @@ exports.checkAuth = function (req, res, next) {
     console.log("Checking auth for: " + req.url);
     const url = req.url;
 
-    let action = roles.findActionForUrl(url, req.method),
-        perm = true;
+    let perm = roles.canUserHave(url, req.method, req.user);
+    //     perm = true;
 
-    if (typeof(action) === 'function') {
-        console.log('Action for ' + req.method + ':' + url + ' is a function');
-        perm = action(url, req.method, req.user);
-    } else if (action) {
-        console.log('Action for ' + req.method + ':' + url + ' is ' + action);
-        perm = roles.doesUserHaveAction(req.user, action);
-    }
+    // if (typeof(action) === 'function') {
+    //     console.log('Action for ' + req.method + ':' + url + ' is a function');
+    //     perm = action(url, req.method, req.user);
+    // } else if (action) {
+    //     console.log('Action for ' + req.method + ':' + url + ' is ' + action);
+    //     perm = roles.doesUserHaveAction(req.user, action);
+    // }
 
     if (!perm) {
+        console.log('Auth not permitted!');
         unauthorized(req, res);
     } else {
         next();

@@ -11,14 +11,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var app_component_1 = require("./app.component");
+var user_service_1 = require("../service/user.service");
 var LoginScreenComponent = (function () {
-    function LoginScreenComponent(_app, router) {
+    function LoginScreenComponent(_app, router, userService) {
         this._app = _app;
         this.router = router;
+        this.userService = userService;
     }
     LoginScreenComponent.prototype.ngOnInit = function () {
-        this._app.showBackground(true);
-        this._app.login();
+        if (this.userService.getLoggedInUser()) {
+            this.router.navigate(['/dashboard']);
+        }
+        else {
+            this._app.showBackground(true);
+            this._app.login();
+        }
     };
     return LoginScreenComponent;
 }());
@@ -29,7 +36,8 @@ LoginScreenComponent = __decorate([
         template: "<div class=\"page\"></div>"
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,
-        router_1.Router])
+        router_1.Router,
+        user_service_1.UserService])
 ], LoginScreenComponent);
 exports.LoginScreenComponent = LoginScreenComponent;
 

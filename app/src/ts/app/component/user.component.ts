@@ -5,6 +5,7 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 
@@ -27,6 +28,7 @@ export class UserComponent implements OnInit, OnDestroy {
     email: string;
     password: string;
     passwordConfirm: string;
+    passwordMatchError: boolean;
 
     loginError: string;
 
@@ -43,7 +45,8 @@ export class UserComponent implements OnInit, OnDestroy {
         private userService: UserService,
         private router: Router,
         private location: Location,
-        private _app: AppComponent
+        private _app: AppComponent,
+        private fb: FormBuilder
     ) { }
 
     private _tools: Tool[] = [
@@ -71,19 +74,23 @@ export class UserComponent implements OnInit, OnDestroy {
     }
 
     submitEditUser(): void {
-        // TODO: updating the password
-        // TODO: validation on the form to make sure the password and confirmation match
+        this.passwordMatchError = false;
 
-        this.isPosting = true;
+        if (this.password === this.passwordConfirm) {
+            this.isPosting = true;
 
-        this.userService.updateUser()
-            .then(() => {
-                console.log(this.user);
-                this.isPosting = false;
-            })
-            .catch(() => {
-                this.isPosting = false;
-            })
+            this.userService.updateUser(this.password)
+                .then(() => {
+                    this.isPosting = false;
+                    this.password = "";
+                    this.passwordConfirm = "";
+                })
+                .catch(() => {
+                    this.isPosting = false;
+                })
+        } else {
+            this.passwordMatchError = true;
+        }
     }
 
     onToolClicked(tool: Tool): void {

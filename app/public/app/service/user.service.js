@@ -47,6 +47,8 @@ var UserService = (function () {
         this.token = responseData['token'];
         this.tokenExpires = responseData['expires'];
         this.loggedInUser = responseData['user'];
+        // don't save the password
+        this.loggedInUser.Password = "";
         this.announceLoginState();
         return this.loggedInUser;
     };
@@ -78,8 +80,11 @@ var UserService = (function () {
     /**
      * Change information on the current user
      */
-    UserService.prototype.updateUser = function () {
+    UserService.prototype.updateUser = function (password) {
         var _this = this;
+        if (password) {
+            this.loggedInUser.Password = password;
+        }
         return this.http.put(this.userUrl + this.loggedInUser.UserID, this.loggedInUser, this.getAuthorizationHeader())
             .toPromise()
             .then(function (response) {

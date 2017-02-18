@@ -31,6 +31,7 @@ var login_view_1 = require("../view/login.view");
 var create_metadata_view_1 = require("../view/create-metadata.view");
 // services
 var game_database_service_1 = require("../service/game-database.service");
+var library_service_1 = require("../service/library.service");
 var user_service_1 = require("../service/user.service");
 var auth_guard_service_1 = require("../service/auth-guard.service");
 var app_routing_module_1 = require("./app-routing.module");
@@ -47,6 +48,7 @@ AppModule = __decorate([
         imports: [
             platform_browser_1.BrowserModule,
             forms_1.FormsModule,
+            forms_1.ReactiveFormsModule,
             http_1.HttpModule,
             app_routing_module_1.AppRoutingModule
         ],
@@ -73,6 +75,7 @@ AppModule = __decorate([
         bootstrap: [app_component_1.AppComponent],
         providers: [
             game_database_service_1.GameDatabaseService,
+            library_service_1.LibraryService,
             user_service_1.UserService,
             common_1.PathLocationStrategy,
             webstorage_util_1.WebStorageService,

@@ -297,7 +297,7 @@ button,
     }
 
     &.fab {
-        @include abs(null, 32px, 16px, null, 500);
+        @include fixed(null, ($std * 2), $std, null, 500);
         font-size: $fab-icon-size;
         background: $color-primary;
         color: $color-primary-text;
@@ -442,12 +442,13 @@ button,
     li {
        display: inline-block;
        margin: $tag-spacing;
-       padding: $tag-padding;
+       padding: $tag-padding-vertical $tag-padding-horizontal;
        background: $color-primary;
        color: $color-primary-text;
        border-radius: $tag-border-radius;
        position: relative;
        font-size: 13px;
+       transition: all 200ms;
 
        @include md-elevation(1);
 
@@ -477,12 +478,21 @@ button,
        .tag-hints {
            position: absolute;
            top: 100%;
+           padding: 0;
 
            li {
                 display: block;
                 margin: $tag-spacing * 2;
                 @include md-elevation(8);
-                margin-left: 14px;
+                margin-left: $std;
+
+                &.hover, &:hover {
+                    @include md-elevation(11);
+                    margin-right: $tag-spacing;
+                    margin-left: $small;
+                    padding-left: $tag-padding-vertical + $small;
+                    padding-right: $tag-padding-horizontal + $tag-spacing;
+                }
             }
        }
     }

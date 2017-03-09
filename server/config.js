@@ -13,6 +13,10 @@ module.exports = function () {
                 host: '127.0.0.1',
                 auth: null
             },
+            mongodb: {
+                host: 'localhost',
+                dbName: 'improvplus'
+            },
             port: 1919
         };
     } else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'qa') {

@@ -5,9 +5,9 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: center;
     align-content: flex-start;
-    align-items: flex-start;
+    align-items: stretch;
     position: relative;
     z-index: 3;
 
@@ -25,6 +25,9 @@
         @include md-elevation($card-elevation-default);
         @include md-elevation-transition;
 
+        color: $color-text;
+        text-decoration: none;
+
         @media #{$media-mobile} {
             display: block;
             width: 90%;
@@ -34,6 +37,84 @@
 
         &.clickable:hover {
             @include md-elevation($card-elevation-active);
+        }
+
+        &.small {
+            max-width: 275px;
+        }
+
+        .top {
+            margin: -$std;
+            margin-bottom: 0;
+            position: relative;
+            color: $color-white;
+            background: $color-text;
+            box-shadow: 0px 5px 15px -3px rgba(0, 0, 0, 0.2) inset,
+                        0px 8px 20px 1px rgba(0, 0, 0, 0.14) inset,
+                        0px 3px 24px 2px rgba(0, 0, 0, 0.12) inset;
+            
+            &:before {
+                content: "";
+                display: block;
+                width: 100%;
+                padding-top: 60%;
+            }
+
+            h3 {
+                @include abs(null, null, 0, 0);
+                padding: $large;
+                font-size: 1.5em;
+            }
+
+            em {
+                @include abs($small, $small, null, null);
+                font-size: 0.7em;
+                opacity: 0.5;
+            }
+
+            .fa {
+                @include abs($large, $large);
+                font-size: $icon-size;
+            }
+        }
+
+        .body {
+            margin: 0 (-$std);
+            padding: $large;
+        }
+
+        .action {
+            margin: 0 (-$std) (-$std);
+            padding: $small 0;
+            border-top: 1px solid $color-hr;
+
+            .button:first-child {
+                margin-left: $small;
+            }
+        }
+
+        &.red {
+            .top {
+                background-color: $color-red;
+            }
+        }
+
+        &.blue {
+            .top {
+                background-color: $color-blue;
+            }
+        }
+
+        &.orange {
+            .top {
+                background-color: $color-orange;
+            }
+        }
+
+        &.yellow {
+            .top {
+                background-color: $color-yellow;
+            }
         }
 
         $bracket-thickness: 10px;
@@ -112,9 +193,9 @@
         }
     }
 
-    .paper & {
-        .card {
-            @include md-elevation(0);
-        }
-    }
+    // .paper & {
+    //     .card {
+    //         @include md-elevation(0);
+    //     }
+    // }
 }

@@ -13,8 +13,9 @@ var connection = require("../connection"),
         // "suggestionTypeGame": require("./suggestionTypeGame"),
         "tagGame": require("./tagGame"),
 
-        "package": require("./package"),
-        "library": require("./library")
+        "package": require('./package.controller'),
+        "subscription": require('./subscription.controller'),
+        "material": require('./material-item.controller')
     };
 exports.ops = ops;
 

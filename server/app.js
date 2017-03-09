@@ -5,10 +5,12 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var exphbs = require('express-handlebars');
+var mongoose = require('mongoose');
 
 var indexRoute  = require('./routes/index'),
     api         = require('./routes/api'),
-    contact     = require('./routes/contact');
+    contact     = require('./routes/contact'),
+    materialCtrl = require('./routes/api/material-item.controller');
 
 var config = require('./config')();
 
@@ -21,7 +23,10 @@ app.use(function(req, res, next) {
     return res.redirect(['https://', req.get('Host'), req.url].join(''));
   }
   next();
-})
+});
+
+// connect to MongoDB
+mongoose.connect(`mongodb://${config.mongodb.host}/${config.mongodb.dbName}`);
 
 // view engine setup
 let hbs = exphbs.create({
@@ -82,6 +87,9 @@ app.put('/api/:op/:id', api.update);
 app.delete('/api/:op/:id', api.delete);
 app.all('/api/:op/:id/:method', api.method);
 app.all('/api/:op/:id/:method/:toId', api.method);
+
+/* Download Materials */
+app.get('/download/:token', materialCtrl.download);
 
 app.get('/*', indexRoute);
 

@@ -1,10 +1,19 @@
+import { MaterialItem } from './material-item';
+
+export class PackageMaterial {
+    "_id": string;
+    "materialItem": MaterialItem;
+    "addon": boolean;
+}
+
 export class Package {
-    "PackageID": string;
-    "Name": string;
-    "Description": string;
-    "Price": string;
-    "Public": boolean;
-    "DateAdded": string;
-    "DateModified": string;
-    "Owned": boolean
+    "_id": string;
+    "slug": string;
+    "name": string;
+    "description": string;
+    "color": string;
+    "price": number;
+    "dateAdded": Date;
+    "dateModified": Date;
+    "materials": PackageMaterial[];
 }

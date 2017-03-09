@@ -15,7 +15,7 @@ var app_component_1 = require("../component/app.component");
 var login_screen_component_1 = require("../component/login-screen.component");
 var unauthorized_component_1 = require("../component/unauthorized.component");
 var dashboard_component_1 = require("../component/dashboard.component");
-var library_component_1 = require("../component/library.component");
+var materials_library_component_1 = require("../component/materials-library.component");
 var game_database_component_1 = require("../component/game-database.component");
 var about_component_1 = require("../component/about.component");
 var contact_component_1 = require("../component/contact.component");
@@ -57,7 +57,7 @@ AppModule = __decorate([
             login_screen_component_1.LoginScreenComponent,
             unauthorized_component_1.UnauthorizedComponent,
             dashboard_component_1.DashboardComponent,
-            library_component_1.LibraryComponent,
+            materials_library_component_1.MaterialsLibraryComponent,
             game_database_component_1.GameDatabaseComponent,
             about_component_1.AboutComponent,
             contact_component_1.ContactComponent,

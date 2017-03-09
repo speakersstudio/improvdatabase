@@ -13,6 +13,8 @@ var router_1 = require("@angular/router");
 var app_component_1 = require("./app.component");
 var library_service_1 = require("../service/library.service");
 var LibraryComponent = (function () {
+    // packages: Package[];
+    // materials: MaterialItem[];
     function LibraryComponent(_app, router, libraryService) {
         this._app = _app;
         this.router = router;
@@ -23,28 +25,26 @@ var LibraryComponent = (function () {
     }
     LibraryComponent.prototype.ngOnInit = function () {
         this._app.showLoader();
+        this._app.showBackground(true);
         this.getLibrary();
     };
     LibraryComponent.prototype.onToolClicked = function (tool) {
     };
     LibraryComponent.prototype.getLibrary = function () {
         var _this = this;
-        Promise.all([
-            this.libraryService.getMaterials(),
-            this.libraryService.getOwnedPackages()
-        ]).then(function (items) {
-            setTimeout(function () {
-                _this._app.hideLoader();
-                _this.materials = items[0];
-                _this.packages = items[1];
-            }, 150);
+        // Promise.all([
+        //         this.libraryService.getLibrary()
+        //     ]).then((items) => {
+        //         setTimeout(() => {
+        //             this._app.hideLoader();
+        //             this.materials = items[0];
+        //             this.packages = items[1];
+        //         }, 150);
+        //     });
+        this.libraryService.getSubscriptions().then(function (subs) {
+            _this.subscriptions = subs;
+            _this._app.hideLoader();
         });
-    };
-    LibraryComponent.prototype.getMaterials = function (packageId) {
-        return this.materials.filter(function (material) { return material.PackageID === packageId && !material.Addon; });
-    };
-    LibraryComponent.prototype.getAddons = function () {
-        return this.materials.filter(function (material) { return material.Addon; });
     };
     return LibraryComponent;
 }());

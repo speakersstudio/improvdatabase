@@ -1,9 +1,17 @@
+export class MaterialItemVersion {
+    "_id": string;
+    "ver": number;
+    "description": string;
+    "dateAdded": Date;
+}
+
 export class MaterialItem {
-    "MaterialItemID": string;
-    "Name": string;
-    "Description": string;
-    "Addon": boolean;
-    "DateAdded": string;
-    "DateModified": string;
-    "PackageID": string;
+    "_id": string;
+    "name": string;
+    "description": string;
+    "versions": MaterialItemVersion[];
+
+    test(): string {
+        return "test";
+    }
 }

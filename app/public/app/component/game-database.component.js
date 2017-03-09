@@ -128,17 +128,16 @@ var GameDatabaseComponent = (function () {
             this.selectedGame = game;
         }
         var newPath = "/game/" + this.selectedGame.GameID;
-        this._setPath(newPath);
+        this._app.setPath(newPath);
         window.scrollTo(0, 0);
     };
-    GameDatabaseComponent.prototype._setPath = function (path) {
-        if (this.pathLocationStrategy.path().indexOf("/game/") > -1) {
-            this.pathLocationStrategy.replaceState({}, "", path, "");
-        }
-        else {
-            this.pathLocationStrategy.pushState({}, "", path, "");
-        }
-    };
+    // private _setPath(path: string): void {
+    //     if (this.pathLocationStrategy.path().indexOf("/game/") > -1) {
+    //         this.pathLocationStrategy.replaceState({}, "", path, "");
+    //     } else {
+    //         this.pathLocationStrategy.pushState({}, "", path, "");
+    //     }
+    // }
     GameDatabaseComponent.prototype.selectRandomGame = function () {
         var i = Math.floor((Math.random() * this.games.length));
         this.onSelect(this.games[i]);

@@ -1,0 +1,74 @@
+<div class="toolbar"
+    [class.on]="_app.toolbarVisible"
+    [tools]="_tools"
+    [title]="title"
+
+    [class.active]="filter"
+    [showSearch]="false"
+    [searchResults]="searchResults"
+    [showBack]="filter || selectedSubscription"
+    (toolClicked)="onToolClicked($event)"
+    (search)="onSearch($event)"
+    (searchResultClick)="onSearchResultClick($event)"
+    (goBack)="clearFilter()"
+    ></div>
+
+<div class="page" *ngIf="subscriptions && !selectedSubscription">
+
+    <div class="paper-label big">
+        your <span class="light">improv</span><strong>plus</strong> packages
+    </div>
+
+    <div class="card-list">
+        
+        <div *ngFor="let subscription of subscriptions" 
+            (click)="selectSubscription(subscription)"
+            class="card brackets clickable {{subscription.package.color}}">
+            <h4>{{subscription.package.name}}</h4>
+            <p>{{subscription.package.description}}</p>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="page" *ngIf="selectedSubscription">
+
+    <div class="paper has-brackets">
+
+        <div class="content">
+            <h4 class="right">Materials</h4>
+
+            <div class="card-list">
+
+                <div class="card small clickable 
+                        {{material.addon ? '' : selectedSubscription.package.color}}"
+                    *ngFor="let material of selectedSubscription.package.materials"
+                    (click)="selectMaterial(material.materialItem)">
+
+                    <div class="top">
+                        <i class="fa fa-file-pdf-o" title="PDF"></i>
+                        <h3>{{material.materialItem.name}}</h3>
+                        <em>{{versionTag(material.materialItem)}}</em>
+                    </div>
+                    <div class="body">
+                        <p>{{material.materialItem.description}}</p>
+                        <ul class="taglist grey">
+                            <li *ngIf="material.addon">Addon item</li>
+                        </ul>
+                    </div>
+                    <!--<div class="action">
+                        <a href="#" class="button">Download</a>
+                    </div>-->
+                </div>
+
+            </div>
+
+            <p><em>Please note that you might need to tell your browser to allow popups.</em></p>
+        </div>
+
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>{{selectedSubscription.package.name}}</h1></div>
+    </div>
+
+</div>

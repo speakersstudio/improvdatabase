@@ -1,3 +1,5 @@
+// DEPRECATED! Library stuff is in mongo now!
+
 var connection = require('../connection');
 
 exports.getAll = function(req,res) {

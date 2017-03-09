@@ -1,3 +1,5 @@
+// DEPRECATED - packages are in mongo now!
+
 var connection = require('../connection'),
     
     formProperties = ["Name", "Description", "Price", "Addon", "Public"];

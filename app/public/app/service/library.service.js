@@ -16,58 +16,111 @@ var LibraryService = (function () {
     function LibraryService(http, userService) {
         this.http = http;
         this.userService = userService;
-        this.packageUrl = '/api/package';
-        this.materialsUrl = '/api/library';
+        this.subscriptionUrl = '/api/subscription';
+        this.materialsUrl = '/api/material/';
     }
-    LibraryService.prototype.getLibrary = function () {
+    LibraryService.prototype.getSubscriptions = function () {
         var _this = this;
-        // TODO: add videos?
-        return Promise.all([this.getPackages(), this.getMaterials()])
-            .then(function () {
-            // TODO: sort?
-            return _this.materials;
-        });
-    };
-    LibraryService.prototype.getPackages = function () {
-        var _this = this;
-        if (!this._packagePromise) {
-            this._packagePromise = this.http.get(this.packageUrl, this.userService.getAuthorizationHeader())
+        if (!this._subscriptionPromise) {
+            this._subscriptionPromise = this.http.get(this.subscriptionUrl, this.userService.getAuthorizationHeader())
                 .toPromise()
                 .then(function (response) {
-                _this.packages = response.json();
-                return _this.packages;
+                _this.subscriptions = response.json();
+                _this.subscriptions.forEach(function (sub) {
+                    _this._sortMaterials(sub);
+                });
+                return _this.subscriptions;
             })
                 .catch(this.handleError);
         }
-        return this._packagePromise;
+        return this._subscriptionPromise;
     };
-    LibraryService.prototype.getOwnedPackages = function () {
+    LibraryService.prototype.getSubscription = function (slug) {
         var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.getPackages().then(function (packages) {
-                var owned = [];
-                packages.forEach(function (p) {
-                    if (p.Owned) {
-                        owned.push(p);
-                    }
-                    resolve(owned);
+        if (this._subscriptionPromise) {
+            return new Promise(function (resolve, reject) {
+                _this.getSubscriptions().then(function (subscriptions) {
+                    subscriptions.forEach(function (s) {
+                        if (s.package.slug === slug) {
+                            resolve(_this._sortMaterials(s));
+                        }
+                    });
                 });
             });
-        });
-    };
-    LibraryService.prototype.getMaterials = function () {
-        var _this = this;
-        if (!this._materialsPromise) {
-            this._materialsPromise = this.http.get(this.materialsUrl, this.userService.getAuthorizationHeader())
+        }
+        else {
+            return this.http.get(this.subscriptionUrl + '/' + slug, this.userService.getAuthorizationHeader())
                 .toPromise()
                 .then(function (response) {
-                _this.materials = response.json();
-                return _this.materials;
+                return _this._sortMaterials(response.json());
             })
                 .catch(this.handleError);
         }
-        return this._materialsPromise;
     };
+    LibraryService.prototype._sortMaterials = function (sub) {
+        sub.package.materials.sort(function (a, b) {
+            if (a.addon) {
+                return 1;
+            }
+            else if (b.addon) {
+                return -1;
+            }
+        });
+        return sub;
+    };
+    LibraryService.prototype.downloadMaterial = function (id) {
+        this.http.get(this.materialsUrl + id, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then(function (response) {
+            var url = response.json().url;
+            window.open(location.origin + url);
+        });
+    };
+    LibraryService.prototype.getLatestVersionForMaterialItem = function (m) {
+        m.versions.sort(function (a, b) {
+            return b.ver - a.ver;
+        });
+        return m.versions[0];
+    };
+    // private _packagePromise: Promise<Package[]>;
+    // getPackages(): Promise<Package[]> {
+    //     if (!this._packagePromise) {
+    //         this._packagePromise = this.http.get(this.packageUrl, this.userService.getAuthorizationHeader())
+    //             .toPromise()
+    //             .then(response => {
+    //                 this.packages = response.json() as Package[];
+    //                 return this.packages;
+    //             })
+    //             .catch(this.handleError);
+    //     } 
+    //     return this._packagePromise;
+    // }
+    // getOwnedPackages(): Promise<Package[]> {
+    //     return new Promise<Package[]>((resolve, reject) => {
+    //         this.getPackages().then(packages => {
+    //             let owned: Package[] = [];
+    //             packages.forEach(p => {
+    //                 if (p.Owned) {
+    //                     owned.push(p);
+    //                 }
+    //                 resolve(owned);
+    //             })
+    //         })
+    //     });
+    // }
+    // private _materialsPromise: Promise<MaterialItem[]>;
+    // getMaterials(): Promise<MaterialItem[]> {
+    //     if (!this._materialsPromise) {
+    //         this._materialsPromise = this.http.get(this.materialsUrl, this.userService.getAuthorizationHeader())
+    //             .toPromise()
+    //             .then(response => {
+    //                 this.materials = response.json() as MaterialItem[];
+    //                 return this.materials;
+    //             })
+    //             .catch(this.handleError);
+    //     } 
+    //     return this._materialsPromise;
+    // }
     LibraryService.prototype.handleError = function (error) {
         console.error('An error has occurred', error);
         return Promise.reject(error.message || error);

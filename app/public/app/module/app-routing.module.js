@@ -10,7 +10,7 @@ var router_1 = require("@angular/router");
 var auth_guard_service_1 = require("../service/auth-guard.service");
 var login_screen_component_1 = require("../component/login-screen.component");
 var dashboard_component_1 = require("../component/dashboard.component");
-var library_component_1 = require("../component/library.component");
+var materials_library_component_1 = require("../component/materials-library.component");
 var help_component_1 = require("../component/help.component");
 var unauthorized_component_1 = require("../component/unauthorized.component");
 var game_database_component_1 = require("../component/game-database.component");
@@ -45,10 +45,17 @@ var routes = [
                 }
             },
             {
-                path: 'library',
-                component: library_component_1.LibraryComponent,
+                path: 'materials',
+                component: materials_library_component_1.MaterialsLibraryComponent,
                 data: {
-                    action: 'library_view'
+                    action: 'materials_view'
+                }
+            },
+            {
+                path: 'materials/:packageSlug',
+                component: materials_library_component_1.MaterialsLibraryComponent,
+                data: {
+                    action: 'materials_view'
                 }
             },
             {

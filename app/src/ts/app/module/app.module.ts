@@ -9,7 +9,7 @@ import { AppComponent } from '../component/app.component';
 import { LoginScreenComponent } from '../component/login-screen.component';
 import { UnauthorizedComponent } from "../component/unauthorized.component";
 import { DashboardComponent } from '../component/dashboard.component';
-import { LibraryComponent } from "../component/library.component";
+import { MaterialsLibraryComponent } from "../component/materials-library.component";
 import { GameDatabaseComponent } from '../component/game-database.component';
 import { AboutComponent } from '../component/about.component';
 import { ContactComponent } from '../component/contact.component';
@@ -51,7 +51,7 @@ import { WebStorageService, WebStorageSubscriber } from "../util/webstorage.util
         LoginScreenComponent,
         UnauthorizedComponent,
         DashboardComponent,
-        LibraryComponent,
+        MaterialsLibraryComponent,
         GameDatabaseComponent,
         AboutComponent,
         ContactComponent,

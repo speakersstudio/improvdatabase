@@ -107,6 +107,12 @@ $paper-bg: $color-white;
         @media #{$media-mobile} {
             margin: 0 ($toolbar-height / 4) + 2;
         }
+
+        &.big {
+            padding: ($large * 2) $std;
+            font-size: 32px;
+            text-align: center;
+        }
     }
 
     .paper {
@@ -167,14 +173,6 @@ $paper-bg: $color-white;
         .paper:first-child {
             margin-top: 0;
         }
-    }
-}
-
-dashboard .page {
-    .paper-label {
-        padding: ($large * 2) $std;
-        font-size: 32px;
-        text-align: center;
     }
 }
 

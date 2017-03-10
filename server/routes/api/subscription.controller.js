@@ -24,7 +24,7 @@ getSubs = (userId, populate) => {
 
     return Subscription
         .find({})
-        .where('userId').equals(userId)
+        .where('user').equals(userId)
         .where('expires').gt(Date.now())
         .select('package expires dateAdded')
         .populate(pop)
@@ -35,8 +35,8 @@ module.exports = {
 
     getAll: (req, res) => {
 
-        if (req.user.UserID) {
-            getSubs(req.user.UserID, 2)
+        if (req.user._id) {
+            getSubs(req.user._id, 2)
                 .catch(err => {
                     res.status(500).json(err)
                 })
@@ -54,7 +54,7 @@ module.exports = {
         let slug = req.params.id,
             subscriptions;
 
-        getSubs(req.user.UserID, false)
+        getSubs(req.user.id, false)
             .catch(err => {
                 res.status(500).json(err);
             })
@@ -77,7 +77,7 @@ module.exports = {
             .then(package => {
                 let selectedSub;
                 subscriptions.forEach(sub => {
-                    if (sub.package.toString().trim() == package._id.toString().trim()) {
+                    if (sub.package.toString().trim() == package.id.toString().trim()) {
                         selectedSub = sub;
                     }
                 });

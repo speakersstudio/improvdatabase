@@ -258,7 +258,6 @@ let getActionsForRole = function(roleId) {
     });
     return actions;
 }
-
 exports.getActionsForRole = getActionsForRole;
 
 doesUserHaveAction = function (user, action) {

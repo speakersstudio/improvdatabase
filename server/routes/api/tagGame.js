@@ -5,8 +5,8 @@ var connection = require("../connection"),
 
 exports.create = function(req,res) {
     var data = connection.getPostData(req.body, formProperties);
-    data.AddedUserID = req.user.UserID;
-    data.ModifiedUserID = req.user.UserID;
+    data.AddedUserID = req.user._id;
+    data.ModifiedUserID = req.user._id;
     data.DateAdded = 'NOW';
 
     var q = connection.getInsertQuery('taggame', data, 'TagGameID');

@@ -26,7 +26,7 @@ app.use(function(req, res, next) {
 });
 
 // connect to MongoDB
-mongoose.connect(`mongodb://${config.mongodb.host}/${config.mongodb.dbName}`);
+mongoose.connect(config.mongodb.uri);
 
 // view engine setup
 let hbs = exphbs.create({

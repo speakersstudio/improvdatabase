@@ -102,7 +102,7 @@ export class UserService {
         if (password) {
             this.loggedInUser.Password = password;
         }
-        return this.http.put(this.userUrl + this.loggedInUser.UserID, this.loggedInUser, 
+        return this.http.put(this.userUrl + this.loggedInUser._id, this.loggedInUser, 
             this.getAuthorizationHeader())
             .toPromise()
             .then((response) => {

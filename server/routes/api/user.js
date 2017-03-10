@@ -1,3 +1,6 @@
+// DEPRECATED!
+// this stuff has been migrated to Mongo - see user.controller.js
+
 const connection  = require("../connection"),
     bcrypt      = require('bcrypt-nodejs'),
     auth        = require('../../auth'),

@@ -16,7 +16,7 @@ module.exports = {
 
     get: (req, res) => {
 
-        let userId = req.user.UserID,
+        let userId = req.user._id,
             materialId = req.params.id,
             materialItem,
             access = false;
@@ -49,7 +49,7 @@ module.exports = {
 
                     let token = jwt.encode({
                         exp: dateObj.getTime(),
-                        iss: materialItem._id
+                        iss: materialItem.id
                     }, config.token);
 
                     res.json({

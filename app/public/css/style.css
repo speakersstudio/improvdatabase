@@ -648,6 +648,8 @@ button,
           margin-left: 8px;
           padding-left: 10px;
           padding-right: 7px; }
+  .taglist.grey li {
+    background-color: #606060; }
   .taglist:hover .flat {
     opacity: 1; }
 
@@ -1060,9 +1062,9 @@ nav {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: center;
   align-content: flex-start;
-  align-items: flex-start;
+  align-items: stretch;
   position: relative;
   z-index: 3; }
   .card-list .card {
@@ -1077,7 +1079,9 @@ nav {
     box-sizing: border-box;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
     transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: box-shadow; }
+    will-change: box-shadow;
+    color: #606060;
+    text-decoration: none; }
     @media only screen and (max-width: 500px) {
       .card-list .card {
         display: block;
@@ -1086,6 +1090,54 @@ nav {
         box-sizing: border-box; } }
     .card-list .card.clickable:hover {
       box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12); }
+    .card-list .card.small {
+      max-width: 275px; }
+    .card-list .card .top {
+      margin: -16px;
+      margin-bottom: 0;
+      position: relative;
+      color: #FFFFFF;
+      background: #606060;
+      box-shadow: 0px 5px 15px -3px rgba(0, 0, 0, 0.2) inset, 0px 8px 20px 1px rgba(0, 0, 0, 0.14) inset, 0px 3px 24px 2px rgba(0, 0, 0, 0.12) inset; }
+      .card-list .card .top:before {
+        content: "";
+        display: block;
+        width: 100%;
+        padding-top: 60%; }
+      .card-list .card .top h3 {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        padding: 24px;
+        font-size: 1.5em; }
+      .card-list .card .top em {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        font-size: 0.7em;
+        opacity: 0.5; }
+      .card-list .card .top .fa {
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        font-size: 24px; }
+    .card-list .card .body {
+      margin: 0 -16px;
+      padding: 24px; }
+    .card-list .card .action {
+      margin: 0 -16px -16px;
+      padding: 8px 0;
+      border-top: 1px solid rgba(96, 96, 96, 0.5); }
+      .card-list .card .action .button:first-child {
+        margin-left: 8px; }
+    .card-list .card.red .top {
+      background-color: #d32f2f; }
+    .card-list .card.blue .top {
+      background-color: #64b5f6; }
+    .card-list .card.orange .top {
+      background-color: #ffa70f; }
+    .card-list .card.yellow .top {
+      background-color: #F9D423; }
     .card-list .card.brackets {
       text-align: center;
       padding: 24px 32px; }
@@ -1132,8 +1184,6 @@ nav {
         border-color: #ffa70f; }
       .card-list .card.brackets.yellow:after, .card-list .card.brackets.yellow:before {
         border-color: #F9D423; }
-  .paper .card-list .card {
-    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12); }
 
 footer {
   display: flex;
@@ -1523,6 +1573,10 @@ user .user-form {
     @media only screen and (max-width: 500px) {
       .page .paper-label {
         margin: 0 14px; } }
+    .page .paper-label.big {
+      padding: 48px 16px;
+      font-size: 32px;
+      text-align: center; }
   .page .paper {
     border-radius: 2px;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
@@ -1557,11 +1611,6 @@ user .user-form {
       line-height: 1.25; }
   .page.fullbg .paper:first-child {
     margin-top: 0; }
-
-dashboard .page .paper-label {
-  padding: 48px 16px;
-  font-size: 32px;
-  text-align: center; }
 
 game-details h4 span {
   vertical-align: middle; }

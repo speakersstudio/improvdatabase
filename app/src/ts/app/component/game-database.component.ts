@@ -173,18 +173,18 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
         }
     
         let newPath = "/game/" + this.selectedGame.GameID;
-        this._setPath(newPath);
+        this._app.setPath(newPath);
 
         window.scrollTo(0, 0);
     }
 
-    private _setPath(path: string): void {
-        if (this.pathLocationStrategy.path().indexOf("/game/") > -1) {
-            this.pathLocationStrategy.replaceState({}, "", path, "");
-        } else {
-            this.pathLocationStrategy.pushState({}, "", path, "");
-        }
-    }
+    // private _setPath(path: string): void {
+    //     if (this.pathLocationStrategy.path().indexOf("/game/") > -1) {
+    //         this.pathLocationStrategy.replaceState({}, "", path, "");
+    //     } else {
+    //         this.pathLocationStrategy.pushState({}, "", path, "");
+    //     }
+    // }
 
     selectRandomGame(): void {
         let i = Math.floor((Math.random() * this.games.length));

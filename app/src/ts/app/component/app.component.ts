@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import 'rxjs/Subject';
 import 'rxjs/add/operator/filter';
+import { PathLocationStrategy } from '@angular/common';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { Router, NavigationStart } from '@angular/router';
@@ -63,7 +64,8 @@ export class AppComponent implements OnInit, OnDestroy {
         private _renderer: Renderer,
         private router: Router,
         private userService: UserService,
-        private authGuard: AuthGuard
+        private authGuard: AuthGuard,
+        private pathLocationStrategy: PathLocationStrategy
     ) {
     }
 
@@ -208,5 +210,14 @@ export class AppComponent implements OnInit, OnDestroy {
     logout(): void {
         this.showLoader();
         this.userService.logout();
+    }
+
+    setPath(path: string): void {
+        let pathRoot = path.split('/')[1]
+        if (this.pathLocationStrategy.path().indexOf('/' + pathRoot + '/') > -1) {
+            this.pathLocationStrategy.replaceState({}, '', path, '');
+        } else {
+            this.pathLocationStrategy.pushState({}, '', path, '');
+        }
     }
 }

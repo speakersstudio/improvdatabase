@@ -5,7 +5,7 @@ import { AuthGuard } from '../service/auth-guard.service';
 
 import { LoginScreenComponent } from '../component/login-screen.component';
 import { DashboardComponent } from "../component/dashboard.component";
-import { LibraryComponent } from "../component/library.component";
+import { MaterialsLibraryComponent } from "../component/materials-library.component";
 import { HelpComponent } from "../component/help.component";
 import { UnauthorizedComponent } from "../component/unauthorized.component";
 import { GameDatabaseComponent } from "../component/game-database.component";
@@ -41,10 +41,17 @@ const routes: Routes = [
                 }
             },
             {
-                path: 'library',
-                component: LibraryComponent,
+                path: 'materials',
+                component: MaterialsLibraryComponent,
                 data: {
-                    action: 'library_view'
+                    action: 'materials_view'
+                }
+            },
+            {
+                path: 'materials/:packageSlug',
+                component: MaterialsLibraryComponent,
+                data: {
+                    action: 'materials_view'
                 }
             },
             {

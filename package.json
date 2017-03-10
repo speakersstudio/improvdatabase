@@ -4,7 +4,10 @@
   "description": "Powerful tool to help facilitate Improv for everyone.",
   "private": true,
   "scripts": {
-    "start": "node ./server"
+    "start": "npm run checkdb && node ./server",
+    "cleardb": "node -e \"require('./server/reset').clear()\"",
+    "checkdb": "node -e \"require('./server/reset').checkForSeed()\"",
+    "reset": "node -e \"require('./server/reset').resetAll()\""
   },
   "dependencies": {
     "@angular/common": "~2.1.1",
@@ -24,6 +27,7 @@
     "express": "~4.13.4",
     "express-handlebars": "^3.0.0",
     "jwt-simple": "~0.5.0",
+    "mongoose": "^4.8.6",
     "morgan": "~1.7.0",
     "nodemailer": "~2.6.4",
     "pg": "^6.1.0",

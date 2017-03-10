@@ -13,27 +13,27 @@
             <div class="section">
                 <label>
                     Email*
-                    <input name="email" [(ngModel)]="user.Email" required type="text" placeholder="Email" />
+                    <input name="email" [(ngModel)]="user.email" required type="text" placeholder="Email" />
                 </label>
 
                 <div class="columns">
                     <label>Name*
-                        <input name="first-name" [(ngModel)]="user.FirstName" required type="text" placeholder="First Name" />
+                        <input name="first-name" [(ngModel)]="user.firstName" required type="text" placeholder="First Name" />
                     </label>
                     <label>&nbsp;
-                        <input name="last-name" [(ngModel)]="user.LastName" required type="text" placeholder="Last Name" />
+                        <input name="last-name" [(ngModel)]="user.lastName" required type="text" placeholder="Last Name" />
                     </label>
                 </div>
 
                 <div class="columns">
                     <div>
                         <label>Title
-                            <input name="title" [(ngModel)]="user.Title" type="text" placeholder="Title" />
+                            <input name="title" [(ngModel)]="user.title" type="text" placeholder="Title" />
                         </label>
                     </div>
                     <div>
                         <label>Company (if applicable)
-                            <input name="company" [(ngModel)]="user.Company" type="text" placeholder="Company" />
+                            <input name="company" [(ngModel)]="user.company" type="text" placeholder="Company" />
                         </label>
                     </div>
                 </div>
@@ -56,19 +56,19 @@
                 </div>-->
                 <div class="columns">
                     <label>Address*
-                        <input name="address" [(ngModel)]="user.Address" required type="text" placeholder="Address" />
+                        <input name="address" [(ngModel)]="user.address" required type="text" placeholder="Address" />
                         <div class="columns">
-                            <input name="city" [(ngModel)]="user.City" required type="text" placeholder="City" />
-                            <input name="state" [(ngModel)]="user.State" maxlength="2" required type="text" placeholder="State" />
+                            <input name="city" [(ngModel)]="user.city" required type="text" placeholder="City" />
+                            <input name="state" [(ngModel)]="user.state" maxlength="2" required type="text" placeholder="State" />
                         </div>
-                        <input name="country" [(ngModel)]="user.Country" type="text" placeholder="Country" />
+                        <input name="country" [(ngModel)]="user.country" type="text" placeholder="Country" />
                     </label>
                     <div>
                         <label>Phone*
-                            <input name="phone" [(ngModel)]="user.Phone" required type="text" placeholder="Phone" />
+                            <input name="phone" [(ngModel)]="user.phone" required type="text" placeholder="Phone" />
                         </label>
                         <label>Website
-                            <input name="URL" [(ngModel)]="user.URL" type="text" placeholder="URL" />
+                            <input name="URL" [(ngModel)]="user.url" type="text" placeholder="URL" />
                         </label>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
             <div class="section">
                 <div class="columns">
                     <label>Description
-                        <textarea name="description" [(ngModel)]="user.Description" rows="4"></textarea>
+                        <textarea name="description" [(ngModel)]="user.description" rows="4"></textarea>
                     </label>
                 </div>
             </div>
@@ -86,7 +86,7 @@
             <div class="section">
                 <div class="columns">
                     <label>Improv Experience
-                        <select name="improv-experience" [(ngModel)]="user.ImprovExp">
+                        <select name="improv-experience" [(ngModel)]="user.improvExp">
                             <option value="1">1 (none)</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -95,7 +95,7 @@
                         </select>
                     </label>
                     <label>Facilitation Experience
-                        <select name="facilitation-experience" [(ngModel)]="user.FacilitationExp">
+                        <select name="facilitation-experience" [(ngModel)]="user.facilitationExp">
                             <option value="1">1 (none)</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -106,7 +106,7 @@
                 </div>
 
                 <label class="checkbox center">
-                    <input type="checkbox" class="inline-block" name="training-interest" value="true" [(ngModel)]="user.TrainingInterest" />
+                    <input type="checkbox" class="inline-block" name="training-interest" value="true" [(ngModel)]="user.trainingInterest" />
                     Interested in Facilitation or Improv Training (for yourself)?
                 </label>
             </div>

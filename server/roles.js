@@ -8,7 +8,8 @@ const roles = [
         actions: [
             'game_view',
             'name_view',
-            'package_view'
+            'package_view',
+            'subscription_create'
         ]
     },
     {
@@ -23,10 +24,12 @@ const roles = [
             'game_filter',
 
             'dashboard_view',
-            'library_view',
+            'materials_view',
             'videos_view',
             'glossary_view',
             'blog_view',
+
+            'subscription_view',
 
             'note_public_view',
             'note_private_create',
@@ -34,7 +37,9 @@ const roles = [
             'name_vote',
 
             'account_edit',
-            'messages'
+            'messages',
+
+            'material_view' // downloading material items
         ]
     },
     {
@@ -158,7 +163,6 @@ const actionmap = {
         }
     },
     // TODO: add lock user route here
-    // TODO: add material route here
     // TODO: add video route here
     // TODO: add glossary route here
     // TODO: add blog route here
@@ -254,7 +258,6 @@ let getActionsForRole = function(roleId) {
     });
     return actions;
 }
-
 exports.getActionsForRole = getActionsForRole;
 
 doesUserHaveAction = function (user, action) {

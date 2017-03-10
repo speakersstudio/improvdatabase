@@ -5,8 +5,8 @@ var connection = require('../connection'),
 
 exports.create = function(req,res) {
     var data = connection.getPostData(req.body, formProperties);
-    data.AddedUserID = req.user.UserID;
-    data.ModifiedUserID = req.user.UserID;
+    data.AddedUserID = req.user._id;
+    data.ModifiedUserID = req.user._id;
 
     data.DateAdded = 'NOW';
     data.DateModified = 'NOW';
@@ -63,9 +63,9 @@ exports.get = function(req,res) {
 exports.update = function(req,res) {
     if (req.user) {
         getNote(req.params.id, function (err, response) {
-            if (!err && parseInt(response.rows.length && response.rows[0].AddedUserID) === parseInt(req.user.UserID)) {
+            if (!err && parseInt(response.rows.length && response.rows[0].AddedUserID) === parseInt(req.user._id)) {
                 var data = connection.getPostData(req.body, formProperties);
-                data.ModifiedUserID = req.user.UserID;
+                data.ModifiedUserID = req.user._id;
                 data.DateModified = 'NOW';
 
                 var q = connection.getUpdateQuery('note', data, {NoteID: req.params.id});
@@ -89,7 +89,7 @@ exports.update = function(req,res) {
 exports.delete = function(req,res) {
     if (req.user) {
         getNote(req.params.id, function (err, response) {
-            if (!err && parseInt(response.rows.length && response.rows[0].AddedUserID) === parseInt(req.user.UserID)) {
+            if (!err && parseInt(response.rows.length && response.rows[0].AddedUserID) === parseInt(req.user._id)) {
                 connection.query('DELETE FROM note WHERE "NoteID"=$1;', [req.params.id], function(err) {
                     if (err) {
                         res.json('500', err);

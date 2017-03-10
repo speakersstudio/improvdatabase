@@ -5,7 +5,7 @@ var connection = require('../connection'),
 
 exports.create = function(req,res) {
     var data = connection.getPostData(req.body, formProperties),
-        UserID = req.user.UserID;
+        UserID = req.user._id;
 
     data.AddedUserID = UserID;
     data.ModifiedUserID = UserID;
@@ -63,7 +63,7 @@ exports.get = function(req,res) {
 };
 exports.update = function(req,res) {
     var data = connection.getPostData(req.body, formProperties);
-    data.ModifiedUserID = req.user.UserID; 
+    data.ModifiedUserID = req.user._id; 
     data.DateModified = 'NOW';
 
     var q = connection.getUpdateQuery('tag', data, {TagID: req.params.id});

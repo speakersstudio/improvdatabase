@@ -6,7 +6,7 @@ var connection = require("../connection"),
 
 exports.create = function(req,res) {
     var data = connection.getPostData(req.body, formProperties),
-    UserID = req.user.UserID;
+    UserID = req.user._id;
 
     data.AddedUserID = UserID; //
     data.ModifiedUserID = UserID;
@@ -159,7 +159,7 @@ exports.get = function(req,res) {
 };
 exports.update = function(req,res) {
     let data = connection.getPostData(req.body, formProperties),
-        UserID = req.user.UserID;
+        UserID = req.user._id;
     data.ModifiedUserID = UserID;
 
     var gameid;

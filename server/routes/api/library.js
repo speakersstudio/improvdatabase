@@ -1,3 +1,5 @@
+// DEPRECATED! Library stuff is in mongo now!
+
 var connection = require('../connection');
 
 exports.getAll = function(req,res) {
@@ -5,7 +7,7 @@ exports.getAll = function(req,res) {
         q+= 'materialitem."MaterialItemID", materialitem."Name", materialitem."Description", ';
         q+= 'materialitem."Addon", materialitem."DateAdded", materialitem."DateModified", package."PackageID" ';
         q+= 'FROM packageuser, package, materialitempackage, materialitem ';
-        q+= 'WHERE packageuser."UserID" = \'' + req.user.UserID + '\' ';
+        q+= 'WHERE packageuser."UserID" = \'' + req.user._id + '\' ';
         q+=     ' AND package."PackageID" = packageuser."PackageID" ';
         q+=     ' AND materialitempackage."PackageID"=package."PackageID" ';
         q+=     ' AND materialitem."MaterialItemID"=materialitempackage."MaterialItemID"; ';

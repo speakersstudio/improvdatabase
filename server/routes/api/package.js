@@ -1,3 +1,5 @@
+// DEPRECATED - packages are in mongo now!
+
 var connection = require('../connection'),
     
     formProperties = ["Name", "Description", "Price", "Addon", "Public"];
@@ -11,8 +13,8 @@ exports.getAll = function(req,res) {
         }
     };
 
-    if (req.user.UserID) {
-        getAllForUser(req.user.UserID, callback);
+    if (req.user._id) {
+        getAllForUser(req.user._id, callback);
     } else {
         getAll(callback);
     }

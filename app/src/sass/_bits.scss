@@ -497,6 +497,12 @@ button,
        }
     }
 
+    &.grey {
+        li {
+            background-color: $color-text;
+        }
+    }
+
     &:hover {
         .flat {
             opacity: 1;

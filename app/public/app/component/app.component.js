@@ -11,16 +11,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require("@angular/core");
 require("rxjs/Subject");
 require("rxjs/add/operator/filter");
+var common_1 = require("@angular/common");
 var router_1 = require("@angular/router");
 var user_service_1 = require("../service/user.service");
 var auth_guard_service_1 = require("../service/auth-guard.service");
 var anim_util_1 = require("../util/anim.util");
 var AppComponent = (function () {
-    function AppComponent(_renderer, router, userService, authGuard) {
+    function AppComponent(_renderer, router, userService, authGuard, pathLocationStrategy) {
         this._renderer = _renderer;
         this.router = router;
         this.userService = userService;
         this.authGuard = authGuard;
+        this.pathLocationStrategy = pathLocationStrategy;
         this.loader = document.getElementById("siteLoader");
         this.showMenu = false;
         this.showFullscreen = false;
@@ -155,6 +157,15 @@ var AppComponent = (function () {
         this.showLoader();
         this.userService.logout();
     };
+    AppComponent.prototype.setPath = function (path) {
+        var pathRoot = path.split('/')[1];
+        if (this.pathLocationStrategy.path().indexOf('/' + pathRoot + '/') > -1) {
+            this.pathLocationStrategy.replaceState({}, '', path, '');
+        }
+        else {
+            this.pathLocationStrategy.pushState({}, '', path, '');
+        }
+    };
     return AppComponent;
 }());
 AppComponent = __decorate([
@@ -169,7 +180,8 @@ AppComponent = __decorate([
     __metadata("design:paramtypes", [core_1.Renderer,
         router_1.Router,
         user_service_1.UserService,
-        auth_guard_service_1.AuthGuard])
+        auth_guard_service_1.AuthGuard,
+        common_1.PathLocationStrategy])
 ], AppComponent);
 exports.AppComponent = AppComponent;
 

@@ -27,7 +27,7 @@
                 <div class="user-picture">
                     <i class="fa fa-user"></i>
                 </div>
-                <div class="user-name">{{user.Email}}</div>
+                <div class="user-name">{{user.email}}</div>
 
             </div>
         </div>
@@ -39,8 +39,8 @@
                 <i class="fa fa-dashboard"></i> <span>Dashboard</span>
             </a>
 
-            <a routerLink="/library" routerLinkActive="active" class="nav-item"
-                *ngIf="userService.can('library_view')">
+            <a routerLink="/materials" routerLinkActive="active" class="nav-item"
+                *ngIf="userService.can('materials_view')">
                 <i class="fa fa-book"></i> <span>Materials Library</span>
             </a>
 
@@ -71,7 +71,9 @@
 <div class="left-bracket"></div>
 <div class="right-bracket"></div>
 
-<div class="curtain" (window:scroll)="onScroll($event)" [style.top]="(scrollpos * 0.75) + 'px'"><img src="/app/images/header-bg-graphic.png" /></div>
+<div class="curtain" (window:scroll)="onScroll($event)" [style.top]="(scrollpos * 0.75) + 'px'">
+    <!--<img src="/app/images/header-bg-graphic.png" />-->
+</div>
 
 <div class="background" *ngIf="backgroundVisible"></div>
 

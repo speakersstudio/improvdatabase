@@ -1,10 +1,11 @@
-var jwt = require('jwt-simple'),
-    userApi = require('./routes/api/user'),
-    roles = require('./roles'),
-    config  = require('./config')(),
-    url = require('url');
-    //redis   = require('redis'),
-    //client;
+const   jwt = require('jwt-simple'),
+        userApi = require('./routes/api/user.controller'),
+        roles = require('./roles'),
+        config  = require('./config')(),
+        url = require('url');
+        bcrypt = require('bcrypt-nodejs');
+        //redis   = require('redis'),
+        //client;
 
 /*
 if (config.redis.url) {
@@ -107,7 +108,7 @@ function genToken(user, callback) {
     var expires = expiresIn(7), // one week, as recommended by Auth0
         token = jwt.encode({
             exp: expires,
-            iss: user.UserID
+            iss: user.id
         }, config.token);
 
         // this is all redis stuff, which isn't really necessary
@@ -135,7 +136,8 @@ function genToken(user, callback) {
 
 function expiresIn(days) {
     var dateObj = new Date();
-    return dateObj.setDate(dateObj.getDate() + days);
+    dateObj.setDate(dateObj.getDate() + days);
+    return dateObj.getTime();
 }
 
 /**
@@ -192,18 +194,6 @@ function unauthorized (req, res) {
 }
 exports.unauthorized = unauthorized;
 
-// hasPermission = function (user, key) {
-//     if (!key) {
-//         return true;
-//     }
-//     var perms = user.actions;
-//     if (!perms) {
-//         return false;
-//     }
-//     return perms.indexOf(key) > -1;
-// };
-// exports.hasPermission = hasPermission;
-
 /**
  * Check the user's list of actions to see if they can do what they're trying to do
  */
@@ -212,15 +202,6 @@ exports.checkAuth = function (req, res, next) {
     const url = req.url;
 
     let perm = roles.canUserHave(url, req.method, req.user);
-    //     perm = true;
-
-    // if (typeof(action) === 'function') {
-    //     console.log('Action for ' + req.method + ':' + url + ' is a function');
-    //     perm = action(url, req.method, req.user);
-    // } else if (action) {
-    //     console.log('Action for ' + req.method + ':' + url + ' is ' + action);
-    //     perm = roles.doesUserHaveAction(req.user, action);
-    // }
 
     if (!perm) {
         console.log('Auth not permitted!');

@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Note = require('./note.model');
 
 const TagSchema = new mongoose.Schema({
+    legacyID: Number,
     name: String,
     description: String,
     games: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Game' }],

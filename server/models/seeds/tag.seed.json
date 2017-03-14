@@ -1,6 +1,6 @@
 [
   {
-    
+    "legacyID": 113,
     "name": "Unison",
     "description": null,
     "dateAdded": "2017-02-18T17:30:09.674Z",
@@ -8,7 +8,7 @@
     
   },
   {
-    
+    "legacyID": 114,
     "name": "Split Focus",
     "description": null,
     "dateAdded": "2017-02-18T17:32:42.689Z",
@@ -16,7 +16,7 @@
     
   },
   {
-    
+    "legacyID": 115,
     "name": "Chara",
     "description": null,
     "dateAdded": "2017-02-18T17:32:45.974Z",
@@ -24,7 +24,7 @@
     
   },
   {
-    
+    "legacyID": 116,
     "name": "Fundamentals",
     "description": null,
     "dateAdded": "2017-02-18T17:49:44.127Z",
@@ -32,7 +32,7 @@
     
   },
   {
-    
+    "legacyID": 117,
     "name": "Support",
     "description": null,
     "dateAdded": "2017-02-18T17:52:20.347Z",
@@ -40,7 +40,7 @@
     
   },
   {
-    
+    "legacyID": 4,
     "name": "Longform",
     "description": null,
     "dateAdded": "2013-11-11T17:44:23.000Z",
@@ -48,7 +48,7 @@
     
   },
   {
-    
+    "legacyID": 6,
     "name": "Scenic",
     "description": null,
     "dateAdded": "2013-11-11T18:08:18.000Z",
@@ -56,7 +56,7 @@
     
   },
   {
-    
+    "legacyID": 7,
     "name": "Audience",
     "description": null,
     "dateAdded": "2013-11-11T21:42:13.000Z",
@@ -64,7 +64,7 @@
     
   },
   {
-    
+    "legacyID": 8,
     "name": "Group",
     "description": null,
     "dateAdded": "2013-11-11T21:42:30.000Z",
@@ -72,7 +72,7 @@
     
   },
   {
-    
+    "legacyID": 9,
     "name": "Gibberish",
     "description": null,
     "dateAdded": "2013-11-11T21:44:12.000Z",
@@ -80,7 +80,7 @@
     
   },
   {
-    
+    "legacyID": 10,
     "name": "Guessing",
     "description": null,
     "dateAdded": "2013-11-11T21:46:40.000Z",
@@ -88,7 +88,7 @@
     
   },
   {
-    
+    "legacyID": 11,
     "name": "Teams",
     "description": null,
     "dateAdded": "2013-11-12T15:22:39.000Z",
@@ -96,7 +96,7 @@
     
   },
   {
-    
+    "legacyID": 12,
     "name": "Character",
     "description": null,
     "dateAdded": "2013-11-21T15:28:22.000Z",
@@ -104,7 +104,7 @@
     
   },
   {
-    
+    "legacyID": 13,
     "name": "Stand and Deliver",
     "description": null,
     "dateAdded": "2013-11-21T15:57:22.000Z",
@@ -112,7 +112,7 @@
     
   },
   {
-    
+    "legacyID": 14,
     "name": "Trust",
     "description": null,
     "dateAdded": "2013-11-21T16:08:09.000Z",
@@ -120,7 +120,7 @@
     
   },
   {
-    
+    "legacyID": 15,
     "name": "Conductor",
     "description": null,
     "dateAdded": "2013-11-22T09:54:28.000Z",
@@ -128,7 +128,7 @@
     
   },
   {
-    
+    "legacyID": 16,
     "name": "Timed",
     "description": null,
     "dateAdded": "2013-11-22T09:56:02.000Z",
@@ -136,7 +136,7 @@
     
   },
   {
-    
+    "legacyID": 17,
     "name": "Round",
     "description": null,
     "dateAdded": "2013-11-22T09:59:53.000Z",
@@ -144,7 +144,7 @@
     
   },
   {
-    
+    "legacyID": 18,
     "name": "Game Show",
     "description": null,
     "dateAdded": "2013-11-22T10:02:00.000Z",
@@ -152,7 +152,7 @@
     
   },
   {
-    
+    "legacyID": 19,
     "name": "Solo",
     "description": null,
     "dateAdded": "2013-11-22T10:05:57.000Z",
@@ -160,7 +160,7 @@
     
   },
   {
-    
+    "legacyID": 20,
     "name": "Mime",
     "description": null,
     "dateAdded": "2013-11-22T10:08:40.000Z",
@@ -168,7 +168,7 @@
     
   },
   {
-    
+    "legacyID": 21,
     "name": "Rhyming",
     "description": null,
     "dateAdded": "2013-11-22T10:32:31.000Z",
@@ -176,7 +176,7 @@
     
   },
   {
-    
+    "legacyID": 22,
     "name": "Replay",
     "description": null,
     "dateAdded": "2013-11-22T10:33:06.000Z",
@@ -184,7 +184,7 @@
     
   },
   {
-    
+    "legacyID": 23,
     "name": "Singing",
     "description": null,
     "dateAdded": "2013-11-22T10:53:13.000Z",
@@ -192,7 +192,7 @@
     
   },
   {
-    
+    "legacyID": 25,
     "name": "Opener",
     "description": null,
     "dateAdded": "2013-11-22T11:00:34.000Z",
@@ -200,7 +200,7 @@
     
   },
   {
-    
+    "legacyID": 26,
     "name": "Circle",
     "description": null,
     "dateAdded": "2014-12-01T21:40:35.286Z",
@@ -208,7 +208,7 @@
     
   },
   {
-    
+    "legacyID": 27,
     "name": "Energy",
     "description": null,
     "dateAdded": "2014-12-01T21:40:43.492Z",
@@ -216,7 +216,7 @@
     
   },
   {
-    
+    "legacyID": 28,
     "name": "Gifts",
     "description": null,
     "dateAdded": "2014-12-01T21:48:59.537Z",
@@ -224,7 +224,7 @@
     
   },
   {
-    
+    "legacyID": 29,
     "name": "Freeze",
     "description": null,
     "dateAdded": "2014-12-01T21:57:01.503Z",
@@ -232,7 +232,7 @@
     
   },
   {
-    
+    "legacyID": 30,
     "name": "Narration",
     "description": null,
     "dateAdded": "2014-12-01T22:03:01.800Z",
@@ -240,7 +240,7 @@
     
   },
   {
-    
+    "legacyID": 31,
     "name": "Story",
     "description": null,
     "dateAdded": "2014-12-01T22:25:37.040Z",
@@ -248,7 +248,7 @@
     
   },
   {
-    
+    "legacyID": 32,
     "name": "Relationship",
     "description": null,
     "dateAdded": "2014-12-01T22:25:47.455Z",
@@ -256,7 +256,7 @@
     
   },
   {
-    
+    "legacyID": 33,
     "name": "Debate",
     "description": null,
     "dateAdded": "2014-12-01T22:38:12.809Z",
@@ -264,7 +264,7 @@
     
   },
   {
-    
+    "legacyID": 34,
     "name": "Competition",
     "description": null,
     "dateAdded": "2014-12-01T22:38:25.450Z",
@@ -272,7 +272,7 @@
     
   },
   {
-    
+    "legacyID": 35,
     "name": "No Wrong Answers",
     "description": null,
     "dateAdded": "2014-12-01T22:55:58.888Z",
@@ -280,7 +280,7 @@
     
   },
   {
-    
+    "legacyID": 36,
     "name": "Be 100%",
     "description": null,
     "dateAdded": "2014-12-02T10:13:18.000Z",
@@ -288,7 +288,7 @@
     
   },
   {
-    
+    "legacyID": 37,
     "name": "Justify",
     "description": null,
     "dateAdded": "2014-12-02T10:25:09.553Z",
@@ -296,7 +296,7 @@
     
   },
   {
-    
+    "legacyID": 38,
     "name": "Give and Take",
     "description": null,
     "dateAdded": "2014-12-02T10:28:33.648Z",
@@ -304,7 +304,7 @@
     
   },
   {
-    
+    "legacyID": 39,
     "name": "Accents",
     "description": null,
     "dateAdded": "2014-12-02T10:37:10.896Z",
@@ -312,7 +312,7 @@
     
   },
   {
-    
+    "legacyID": 40,
     "name": "Talk Show",
     "description": null,
     "dateAdded": "2014-12-02T10:37:18.015Z",
@@ -320,7 +320,7 @@
     
   },
   {
-    
+    "legacyID": 41,
     "name": "Host",
     "description": null,
     "dateAdded": "2014-12-02T10:37:30.756Z",
@@ -328,7 +328,7 @@
     
   },
   {
-    
+    "legacyID": 42,
     "name": "Objects",
     "description": null,
     "dateAdded": "2014-12-02T10:37:40.491Z",
@@ -336,7 +336,7 @@
     
   },
   {
-    
+    "legacyID": 43,
     "name": "Yes And",
     "description": null,
     "dateAdded": "2014-12-02T11:28:02.695Z",
@@ -344,7 +344,7 @@
     
   },
   {
-    
+    "legacyID": 44,
     "name": "Caller",
     "description": null,
     "dateAdded": "2014-12-02T11:38:49.952Z",
@@ -352,7 +352,7 @@
     
   },
   {
-    
+    "legacyID": 45,
     "name": "Memory",
     "description": null,
     "dateAdded": "2014-12-02T11:45:06.598Z",
@@ -360,7 +360,7 @@
     
   },
   {
-    
+    "legacyID": 46,
     "name": "Slow-mo",
     "description": null,
     "dateAdded": "2014-12-02T14:30:36.296Z",
@@ -368,7 +368,7 @@
     
   },
   {
-    
+    "legacyID": 47,
     "name": "Commentators",
     "description": null,
     "dateAdded": "2014-12-02T14:30:49.707Z",
@@ -376,7 +376,7 @@
     
   },
   {
-    
+    "legacyID": 48,
     "name": "Props",
     "description": null,
     "dateAdded": "2014-12-14T18:08:59.154Z",
@@ -384,7 +384,7 @@
     
   },
   {
-    
+    "legacyID": 49,
     "name": "Icebreaker",
     "description": null,
     "dateAdded": "2014-12-14T18:36:23.162Z",
@@ -392,7 +392,7 @@
     
   },
   {
-    
+    "legacyID": 50,
     "name": "Limitations",
     "description": null,
     "dateAdded": "2014-12-15T17:48:40.944Z",
@@ -400,7 +400,7 @@
     
   },
   {
-    
+    "legacyID": 51,
     "name": "Alphabet",
     "description": null,
     "dateAdded": "2014-12-16T09:56:42.426Z",
@@ -408,7 +408,7 @@
     
   },
   {
-    
+    "legacyID": 52,
     "name": "Pointing and Passing",
     "description": null,
     "dateAdded": "2014-12-16T09:56:53.604Z",
@@ -416,7 +416,7 @@
     
   },
   {
-    
+    "legacyID": 53,
     "name": "Walk About",
     "description": null,
     "dateAdded": "2014-12-16T10:04:20.279Z",
@@ -424,7 +424,7 @@
     
   },
   {
-    
+    "legacyID": 54,
     "name": "Emergence",
     "description": null,
     "dateAdded": "2014-12-16T10:04:39.262Z",
@@ -432,7 +432,7 @@
     
   },
   {
-    
+    "legacyID": 55,
     "name": "Tableaus",
     "description": null,
     "dateAdded": "2014-12-16T10:11:13.552Z",
@@ -440,7 +440,7 @@
     
   },
   {
-    
+    "legacyID": 56,
     "name": "Be Trustworthy",
     "description": null,
     "dateAdded": "2014-12-16T10:11:22.140Z",
@@ -448,7 +448,7 @@
     
   },
   {
-    
+    "legacyID": 57,
     "name": "Two Lines",
     "description": null,
     "dateAdded": "2014-12-16T10:19:07.460Z",
@@ -456,7 +456,7 @@
     
   },
   {
-    
+    "legacyID": 58,
     "name": "History",
     "description": null,
     "dateAdded": "2014-12-16T10:31:24.617Z",
@@ -464,7 +464,7 @@
     
   },
   {
-    
+    "legacyID": 59,
     "name": "Backwards",
     "description": null,
     "dateAdded": "2014-12-16T10:41:03.171Z",
@@ -472,7 +472,7 @@
     
   },
   {
-    
+    "legacyID": 60,
     "name": "Animals",
     "description": null,
     "dateAdded": "2014-12-17T11:30:45.377Z",
@@ -480,7 +480,7 @@
     
   },
   {
-    
+    "legacyID": 61,
     "name": "It",
     "description": null,
     "dateAdded": "2014-12-17T11:38:30.900Z",
@@ -488,7 +488,7 @@
     
   },
   {
-    
+    "legacyID": 62,
     "name": "Rap",
     "description": null,
     "dateAdded": "2014-12-17T12:10:07.054Z",
@@ -496,7 +496,7 @@
     
   },
   {
-    
+    "legacyID": 63,
     "name": "Rhythm",
     "description": null,
     "dateAdded": "2014-12-17T15:31:45.546Z",
@@ -504,7 +504,7 @@
     
   },
   {
-    
+    "legacyID": 64,
     "name": "Passing Energy",
     "description": null,
     "dateAdded": "2014-12-18T21:35:04.575Z",
@@ -512,7 +512,7 @@
     
   },
   {
-    
+    "legacyID": 65,
     "name": "Actions",
     "description": null,
     "dateAdded": "2014-12-18T21:45:52.472Z",
@@ -520,7 +520,7 @@
     
   },
   {
-    
+    "legacyID": 66,
     "name": "Initiation",
     "description": null,
     "dateAdded": "2014-12-18T21:45:58.059Z",
@@ -528,7 +528,7 @@
     
   },
   {
-    
+    "legacyID": 67,
     "name": "Drama",
     "description": null,
     "dateAdded": "2015-03-25T10:08:56.994Z",
@@ -536,7 +536,7 @@
     
   },
   {
-    
+    "legacyID": 68,
     "name": "Reverse",
     "description": null,
     "dateAdded": "2015-03-25T10:14:41.300Z",
@@ -544,7 +544,7 @@
     
   },
   {
-    
+    "legacyID": 69,
     "name": "Listening",
     "description": null,
     "dateAdded": "2016-01-08T16:28:07.513Z",
@@ -552,7 +552,7 @@
     
   },
   {
-    
+    "legacyID": 70,
     "name": "There is no Try",
     "description": null,
     "dateAdded": "2016-01-08T16:28:25.409Z",
@@ -560,7 +560,7 @@
     
   },
   {
-    
+    "legacyID": 71,
     "name": "Duo",
     "description": null,
     "dateAdded": "2016-01-08T17:43:37.057Z",
@@ -568,7 +568,7 @@
     
   },
   {
-    
+    "legacyID": 72,
     "name": "There are no Wrong Answers",
     "description": null,
     "dateAdded": "2016-02-01T20:31:53.625Z",
@@ -576,7 +576,7 @@
     
   },
   {
-    
+    "legacyID": 73,
     "name": "On the Spot",
     "description": null,
     "dateAdded": "2016-02-01T20:32:05.704Z",
@@ -584,7 +584,7 @@
     
   },
   {
-    
+    "legacyID": 74,
     "name": "Zombie",
     "description": null,
     "dateAdded": "2016-02-01T20:36:25.456Z",
@@ -592,7 +592,7 @@
     
   },
   {
-    
+    "legacyID": 75,
     "name": "Names",
     "description": null,
     "dateAdded": "2016-02-01T20:36:28.688Z",
@@ -600,7 +600,7 @@
     
   },
   {
-    
+    "legacyID": 76,
     "name": "Structures",
     "description": null,
     "dateAdded": "2016-02-01T20:51:18.757Z",
@@ -608,7 +608,7 @@
     
   },
   {
-    
+    "legacyID": 77,
     "name": "Acting",
     "description": null,
     "dateAdded": "2016-02-01T20:59:57.375Z",
@@ -616,7 +616,7 @@
     
   },
   {
-    
+    "legacyID": 78,
     "name": "Subtext",
     "description": null,
     "dateAdded": "2016-02-01T20:59:58.941Z",
@@ -624,7 +624,7 @@
     
   },
   {
-    
+    "legacyID": 79,
     "name": "Scripted",
     "description": null,
     "dateAdded": "2016-02-01T21:00:05.016Z",
@@ -632,7 +632,7 @@
     
   },
   {
-    
+    "legacyID": 80,
     "name": "Zones",
     "description": null,
     "dateAdded": "2016-02-01T21:48:13.400Z",
@@ -640,7 +640,7 @@
     
   },
   {
-    
+    "legacyID": 81,
     "name": "Emotion",
     "description": null,
     "dateAdded": "2016-02-01T21:48:16.872Z",
@@ -648,7 +648,7 @@
     
   },
   {
-    
+    "legacyID": 82,
     "name": "Changing",
     "description": null,
     "dateAdded": "2016-02-01T21:48:49.353Z",
@@ -656,7 +656,7 @@
     
   },
   {
-    
+    "legacyID": 83,
     "name": "Sound Effects",
     "description": null,
     "dateAdded": "2016-02-01T22:34:37.880Z",
@@ -664,7 +664,7 @@
     
   },
   {
-    
+    "legacyID": 84,
     "name": "Gimmick",
     "description": null,
     "dateAdded": "2016-02-01T23:03:31.468Z",
@@ -672,7 +672,7 @@
     
   },
   {
-    
+    "legacyID": 85,
     "name": "Elimination",
     "description": null,
     "dateAdded": "2016-02-01T23:06:53.803Z",
@@ -680,7 +680,7 @@
     
   },
   {
-    
+    "legacyID": 86,
     "name": "Observation",
     "description": null,
     "dateAdded": "2016-02-02T14:46:15.054Z",
@@ -688,7 +688,7 @@
     
   },
   {
-    
+    "legacyID": 87,
     "name": "Concentration",
     "description": null,
     "dateAdded": "2016-02-02T14:46:21.221Z",
@@ -696,7 +696,7 @@
     
   },
   {
-    
+    "legacyID": 88,
     "name": "Word Association",
     "description": null,
     "dateAdded": "2016-02-02T15:14:32.868Z",
@@ -704,7 +704,7 @@
     
   },
   {
-    
+    "legacyID": 89,
     "name": "Edit Style",
     "description": null,
     "dateAdded": "2016-02-04T19:53:16.004Z",
@@ -712,7 +712,7 @@
     
   },
   {
-    
+    "legacyID": 90,
     "name": "Modifier",
     "description": null,
     "dateAdded": "2016-02-04T19:53:57.490Z",
@@ -720,7 +720,7 @@
     
   },
   {
-    
+    "legacyID": 91,
     "name": "Eye Contact",
     "description": null,
     "dateAdded": "2016-02-04T20:08:04.809Z",
@@ -728,7 +728,7 @@
     
   },
   {
-    
+    "legacyID": 92,
     "name": "Status",
     "description": null,
     "dateAdded": "2016-02-04T21:15:24.798Z",
@@ -736,7 +736,7 @@
     
   },
   {
-    
+    "legacyID": 93,
     "name": "Patterns",
     "description": null,
     "dateAdded": "2016-09-12T17:18:47.960Z",
@@ -744,7 +744,7 @@
     
   },
   {
-    
+    "legacyID": 94,
     "name": "Movement",
     "description": null,
     "dateAdded": "2016-09-12T18:20:37.198Z",
@@ -752,7 +752,7 @@
     
   },
   {
-    
+    "legacyID": 95,
     "name": "Low-stakes",
     "description": null,
     "dateAdded": "2016-09-12T18:30:17.087Z",
@@ -760,7 +760,7 @@
     
   },
   {
-    
+    "legacyID": 96,
     "name": "Individual",
     "description": null,
     "dateAdded": "2016-09-12T18:30:28.095Z",
@@ -768,7 +768,7 @@
     
   },
   {
-    
+    "legacyID": 97,
     "name": "Focus",
     "description": null,
     "dateAdded": "2016-09-12T18:31:19.039Z",
@@ -776,7 +776,7 @@
     
   },
   {
-    
+    "legacyID": 98,
     "name": "Spidey-sense",
     "description": null,
     "dateAdded": "2016-09-12T18:33:35.970Z",
@@ -784,7 +784,7 @@
     
   },
   {
-    
+    "legacyID": 99,
     "name": "Awareness",
     "description": null,
     "dateAdded": "2016-09-12T18:33:54.826Z",
@@ -792,7 +792,7 @@
     
   },
   {
-    
+    "legacyID": 100,
     "name": "Group Mind",
     "description": null,
     "dateAdded": "2016-09-12T18:34:09.530Z",
@@ -800,7 +800,7 @@
     
   },
   {
-    
+    "legacyID": 101,
     "name": "Pay Attention",
     "description": null,
     "dateAdded": "2016-09-12T18:37:34.097Z",
@@ -808,7 +808,7 @@
     
   },
   {
-    
+    "legacyID": 102,
     "name": "Details",
     "description": null,
     "dateAdded": "2016-09-12T18:37:36.647Z",
@@ -816,7 +816,7 @@
     
   },
   {
-    
+    "legacyID": 103,
     "name": "Music",
     "description": null,
     "dateAdded": "2016-09-12T18:46:15.790Z",
@@ -824,7 +824,7 @@
     
   },
   {
-    
+    "legacyID": 104,
     "name": "Make an Offer",
     "description": null,
     "dateAdded": "2016-09-19T19:48:35.024Z",
@@ -832,7 +832,7 @@
     
   },
   {
-    
+    "legacyID": 105,
     "name": "Heighten",
     "description": null,
     "dateAdded": "2016-09-19T19:48:37.140Z",
@@ -840,7 +840,7 @@
     
   },
   {
-    
+    "legacyID": 106,
     "name": "Raise the Stakes",
     "description": null,
     "dateAdded": "2016-09-19T19:48:43.250Z",
@@ -848,7 +848,7 @@
     
   },
   {
-    
+    "legacyID": 107,
     "name": "Advanced",
     "description": null,
     "dateAdded": "2016-10-05T13:49:41.920Z",
@@ -856,7 +856,7 @@
     
   },
   {
-    
+    "legacyID": 108,
     "name": "Team Building",
     "description": null,
     "dateAdded": "2016-10-24T18:27:38.253Z",
@@ -864,7 +864,7 @@
     
   },
   {
-    
+    "legacyID": 109,
     "name": "Walk",
     "description": null,
     "dateAdded": "2016-11-28T16:37:17.928Z",
@@ -872,7 +872,7 @@
     
   },
   {
-    
+    "legacyID": 110,
     "name": "Word at a Time",
     "description": null,
     "dateAdded": "2017-01-07T22:44:00.558Z",
@@ -880,7 +880,7 @@
     
   },
   {
-    
+    "legacyID": 111,
     "name": "Commitment",
     "description": null,
     "dateAdded": "2017-01-25T16:46:41.840Z",
@@ -888,7 +888,7 @@
     
   },
   {
-    
+    "legacyID": 112,
     "name": "Ice",
     "description": null,
     "dateAdded": "2017-01-25T16:47:39.058Z",
@@ -896,7 +896,7 @@
     
   },
   {
-    
+    "legacyID": 3,
     "name": "Exercise",
     "description": "This game is an exercise, designed to practice specific skills.",
     "dateAdded": "2013-11-11T17:41:04.000Z",
@@ -904,7 +904,7 @@
     
   },
   {
-    
+    "legacyID": 1,
     "name": "Show",
     "description": "This game is suitable for a performance, and is great for practicing all of your Improv skills.",
     "dateAdded": "2013-11-04T21:58:24.000Z",
@@ -912,7 +912,7 @@
     
   },
   {
-    
+    "legacyID": 24,
     "name": "Warmup",
     "description": "This is a warmup, or \"circle game\" designed simply to get participants on their feet and interacting with each other.",
     "dateAdded": "2013-11-22T10:55:23.000Z",

@@ -4,10 +4,14 @@
   "description": "Powerful tool to help facilitate Improv for everyone.",
   "private": true,
   "scripts": {
-    "start": "npm run checkdb && node ./server",
+    "start": "npm run checkdb && npm run checkGames && node ./server",
+
     "cleardb": "node -e \"require('./server/reset').clear()\"",
     "checkdb": "node -e \"require('./server/reset').checkForSeed()\"",
     "reset": "node -e \"require('./server/reset').resetAll()\"",
+
+    "clearGames": "node -e \"require('./server/reset-games').clear()\"",
+    "checkGames": "node -e \"require('./server/reset-games').checkForSeed()\"",
     "resetGames": "node -e \"require('./server/reset-games').resetGames()\""
   },
   "dependencies": {

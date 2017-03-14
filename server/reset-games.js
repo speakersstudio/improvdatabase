@@ -10,12 +10,14 @@ const Game = require('./models/game.model'),
     Note = require('./models/note.model'),
     Tag = require('./models/tag.model');
 
+
 const ShauvonID = "58c6e5bcd036281f4ce07dff";
 
 mongoose.Promise = Promise;
 mongoose.connect(config.mongodb.uri);
 
 function fixUsers(arr) {
+    let ShauvonID = "58c6e5bcd036281f4ce07dff";
     arr.forEach((item) => {
         if (item.addedUser) {
             item.addedUser = ShauvonID;
@@ -26,6 +28,11 @@ function fixUsers(arr) {
     });
     return arr;
 }
+    
+const gameseed = fixUsers(require('./models/seeds/game.seed.json')),
+    nameseed = fixUsers(require('./models/seeds/name.seed.json')),
+    tagGameseed = fixUsers(require('./models/seeds/tag-game.seed.json')),
+    gameNoteseed = fixUsers(require('./models/seeds/note.seed.json'));
 
 function deleteMetadata() {
     console.log('Deleting metadata items');
@@ -46,10 +53,9 @@ function deleteTags() {
     return Tag.find({}).remove()
         .then(() => {
             return Note.find({})
-                .where('game').equals('')
-                .where('metadata').equals('')
+                .$where('this.game === "" && this.metadata === ""')
                 .remove();
-        }
+        });
 }
 
 function seedTags() {
@@ -96,26 +102,186 @@ function seedTags() {
 }
 
 function deleteGames() {
+    console.log('Deleting games');
     return Game.find({}).remove()
         .then(() => {
             return Name.find({}).remove();
         })
         .then(() => {
             return Note.find({})
-                .where('tag').equals('')
-                .where('metadata').equals('')
+                .$where('this.tag === "" && this.metadata === ""')
                 .remove();
         });
 }
 
 function seedGames() {
-    const games = fixUsers(require('./models/seeds/game.seed.json')),
-            names = fixUsers(require('./models/seeds/name.seed.json')),
-            tagGames = fixUsers(require('./models/seeds/tag-game.seed.json'));
+    return seedGame(0);
+}
 
-    games.forEach(game => {
-        
-    });
+function seedGame(gameIndex) {
+    let rawGame = gameseed[gameIndex];
+    let gameData = {
+            dateAdded: rawGame.dateAdded,
+            legacyID: rawGame.legacyID,
+            description: rawGame.description,
+            addedUser: rawGame.addedUser,
+            modifiedUser: rawGame.modifiedUser
+        };
+
+    return Game.create(gameData)
+        .then(game => {
+            // console.log('Created game ' + gameIndex);
+
+            return GameMetadata.findOne({})
+                .where('type').equals('duration')
+                .where('legacyID').equals(rawGame.DurationID)
+                .exec()
+                .then(dur => {
+                    dur.games.push(game._id);
+                    game.duration = dur._id;
+
+                    return dur.save()
+                        .then(() => {
+                            // console.log(' -- Added duration');
+                            return GameMetadata.findOne({})
+                                .where('type').equals('playerCount')
+                                .where('legacyID').equals(rawGame.PlayerCountID)
+                                .exec();
+                        });
+                })
+                .then(pc => {
+
+                    pc.games.push(game._id);
+                    game.playerCount = pc._id;
+                    return pc.save()
+                        .then(() => {
+                            // console.log(' -- Added Player Count');
+
+                            let tagData = [];
+                    
+                            // find all of the legacy tagGame objects for this game
+                            tagGameseed.forEach(tg => {
+                                if (tg.GameID == game.legacyID) {
+                                    tagData.push({
+                                        TagID: tg.TagID,
+                                        DateAdded: tg.DateAdded
+                                    });
+                                }
+                            });
+
+                            let findTag = (tagIndex) => {
+                                return Tag.findOne({})
+                                    .where('legacyID').equals(tagData[tagIndex].TagID)
+                                    .exec()
+                                    .then(t => {
+                                        game.tags.push({
+                                            tag: t._id,
+                                            dateAdded: tagData[tagIndex].DateAdded,
+                                            addedUser: ShauvonID
+                                        });
+                                        tagIndex++;
+                                        if (tagData[tagIndex]) {
+                                            return findTag(tagIndex);
+                                        } else {
+                                            // console.log(' -- Added ' + tagIndex + ' tags');
+                                        }
+                                    });
+                            }
+
+                            return findTag(0);
+                        });
+                    
+                })
+                .then(() => {
+                    // find all the notes for this game
+                    let notes = [];
+                    gameNoteseed.forEach(n => {
+                        if (n.GameID == game.legacyID) {
+                            notes.push(n);
+                        }
+                    });
+
+                    let addNote = (noteIndex) => {
+                        let n = notes[noteIndex];
+                        return game.addNote({
+                            "description": n.description,
+                            "public": n.public,
+                            "dateAdded": n.dateAdded,
+                            "addedUser": ShauvonID,
+                            "modifiedUser": ShauvonID
+                        }).then(() => {
+                            noteIndex++;
+                            if (notes[noteIndex]) {
+                                return addNote(noteIndex);
+                            } else {
+                                // console.log(' -- Added ' + noteIndex + ' note(s)');
+                            }
+                        });
+                    }
+
+                    if (notes.length > 0) {
+                        return addNote(0);
+                    }
+                })
+                .then(() => {
+                    // find all the names for this game
+                    let names = [];
+                    nameseed.forEach(n => {
+                        if (n.GameID == game.legacyID) {
+                            names.push(n);
+                        }
+                    });
+
+                    let addName = (nameIndex) => {
+                        let n = names[nameIndex];
+
+                        return Name.create({
+                            name: n.name,
+                            addedUser: ShauvonID,
+                            modifiedUser: ShauvonID,
+                            dateAdded: n.dateAdded,
+                            game: game._id
+                        })
+                            .then(nameModel => {
+                                let weight = n.Weight;
+
+                                if (weight > 1) {
+                                    return nameModel.addVote(ShauvonID)
+                                        .then(() => {
+                                            // console.log (' ---- Added Name Vote to ' + nameModel.name);
+                                            game.names.push(nameModel._id);
+                                            return game.save();
+                                        });
+                                } else {
+                                    game.names.push(nameModel._id);
+                                    return game.save();
+                                }
+                            })
+                            .then(() => {
+                                nameIndex++;
+                                if (names[nameIndex]) {
+                                    return addName(nameIndex);
+                                } else {
+                                    // console.log(' -- Added ' + nameIndex + ' name(s)');
+                                }
+                            });
+                    }
+                    return addName(0);
+                })
+                .then(() => {
+                    return game.save();
+                })
+                .then(() => {
+                    gameIndex++;
+                    if (gameseed[gameIndex]) {
+                        return seedGame(gameIndex);
+                    } else {
+                        console.log(gameIndex + ' games seeded to the database! Phew!');
+                        console.log(' -- ');
+                    }
+                });
+        });
+    
 }
 
 /**
@@ -159,5 +325,31 @@ module.exports = {
             .then(() => {
                 process.exit(0);
             });
+    },
+
+    clear: function() {
+        deleteMetadata()
+            .then(deleteTags)
+            .then(deleteGames)
+            .then(() => {
+                process.exit(0);
+            });
+    },
+
+    checkForSeed: function() {
+        Game.count({}, (err, count) => {
+            if (err) {
+                throw err;
+            }
+
+            if (count > 0) {
+                console.log('Game database already seeded, no need to re-seed them.');
+                process.exit(0);
+                return;
+            }
+
+            console.log('seeding the Game database!');
+            this.resetGames();
+        });
     }
 }

@@ -6,6 +6,7 @@ const GameMetadataSchema = new mongoose.Schema({
     type: String, // 'playercount' or 'duration'
     min: Number,
     max: Number,
+    legacyID: Number,
     games: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Game' }],
     notes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Note' }],
     addedUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

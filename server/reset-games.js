@@ -43,7 +43,13 @@ function seedMetadata() {
 
 function deleteTags() {
     console.log('Deleting tags');
-    return Tag.find({}).remove();
+    return Tag.find({}).remove()
+        .then(() => {
+            return Note.find({})
+                .where('game').equals('')
+                .where('metadata').equals('')
+                .remove();
+        }
 }
 
 function seedTags() {
@@ -89,6 +95,29 @@ function seedTags() {
             
 }
 
+function deleteGames() {
+    return Game.find({}).remove()
+        .then(() => {
+            return Name.find({}).remove();
+        })
+        .then(() => {
+            return Note.find({})
+                .where('tag').equals('')
+                .where('metadata').equals('')
+                .remove();
+        });
+}
+
+function seedGames() {
+    const games = fixUsers(require('./models/seeds/game.seed.json')),
+            names = fixUsers(require('./models/seeds/name.seed.json')),
+            tagGames = fixUsers(require('./models/seeds/tag-game.seed.json'));
+
+    games.forEach(game => {
+        
+    });
+}
+
 /**
  * 
  *  Create metadata items
@@ -125,6 +154,8 @@ module.exports = {
             .then(seedMetadata)
             .then(deleteTags)
             .then(seedTags)
+            .then(deleteGames)
+            .then(seedGames)
             .then(() => {
                 process.exit(0);
             });

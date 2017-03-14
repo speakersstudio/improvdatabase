@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const GameSchema = new mongoose.Schema({
+    legacyID: Number,
     names: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Name' }],
     description: String,
     duration: { type: mongoose.Schema.Types.ObjectId, ref: 'GameMetadata' },

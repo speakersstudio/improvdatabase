@@ -1,11 +1,11 @@
 var connection = require("../connection"),
 
     ops     = {
-        "user": require('./user'),
-        "game": require('./game'),
-        "duration": require('./duration'),
-        "playerCount": require('./playerCount'),
-        "name": require("./name"),
+        "user": require('./user.controller'),
+        "game": require('./game.controller'), //require('./game'),
+        "duration": require('./duration.controller'), //require('./duration'),
+        "playerCount": require('./player-count.controller'), //require('./playerCount'),
+        "name": require('./name.controller'), //require("./name"),
         "note": require("./note"),
         "tag": require("./tag"),
         // "suggestion": require("./suggestion"),

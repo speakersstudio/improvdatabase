@@ -1,3 +1,5 @@
+// DEPRECATED!
+
 var connection = require("../connection"),
     tagApi  = require("./tag"),
     auth        = require('../../auth'),
@@ -144,6 +146,7 @@ exports.get = function(req,res) {
         }
     });
 };
+
 exports.update = function(req,res) {
     let data = connection.getPostData(req.body, formProperties),
         UserID = req.user._id;

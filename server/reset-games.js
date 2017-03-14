@@ -179,6 +179,10 @@ function seedGame(gameIndex) {
                                             dateAdded: tagData[tagIndex].DateAdded,
                                             addedUser: ShauvonID
                                         });
+                                        t.games.push(game._id);
+                                        return t.save();
+                                    })
+                                    .then(t => {
                                         tagIndex++;
                                         if (tagData[tagIndex]) {
                                             return findTag(tagIndex);

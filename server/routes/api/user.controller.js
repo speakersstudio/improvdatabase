@@ -1,7 +1,6 @@
 const   mongoose = require('mongoose'),
         bcrypt = require('bcrypt-nodejs'),
         
-        auth = require('../../auth'),
         roles = require('../../roles'),
         util = require('../util'),
 
@@ -100,58 +99,57 @@ module.exports = {
                     res.send("User Deleted");
                 }
             });
-    }
+    },
 
-}
+    findUser: (id, email, callback) => {
+        let query = User.findOne({})
+            .select(WHITELIST.join(' ') + ' role dateAdded dateModified');
 
-const findUser = (id, email, callback) => {
-    let query = User.findOne({})
-        .select(WHITELIST.join(' ') + ' role dateAdded dateModified');
-
-    if (id) {
-        query.where('_id').equals(id);
-    } else if (email) {
-        // if we're using email, we should get the password to validate with
-        query.select('password');
-        query.where('email').equals(email);
-    }
-
-    query.exec()
-        .then(user => {
-
-            if (user) {
-                user = user.toObject();
-                let roleId = user.role;
-                user.actions = roles.getActionsForRole(roleId);
-
-                delete user.role;
-            }
-
-            callback(null, user);
-        })
-}
-module.exports.findUser = findUser;
-
-const validateUser = (email, password, callback) => {
-    findUser(null, email, (err, user) => {
-        if (err) {
-            callback(err, null);
-        } else {
-            if (user) {
-                bcrypt.compare(password, user.password, (crypterr, valid) => {
-                    if (err) {
-                        callback(crypterr, null);
-                    } else if (valid) {
-                        delete user.password;
-                        callback(null, user);
-                    } else {
-                        callback(null, false);
-                    }
-                })
-            } else {
-                callback(null, false);
-            }
+        if (id) {
+            query.where('_id').equals(id);
+        } else if (email) {
+            // if we're using email, we should get the password to validate with
+            query.select('password');
+            query.where('email').equals(email);
         }
-    })
+
+        query.exec()
+            .then(user => {
+
+                if (user) {
+                    user = user.toObject();
+                    let roleId = user.role;
+                    user.actions = roles.getActionsForRole(roleId);
+
+                    delete user.role;
+                }
+
+                callback(null, user);
+            })
+    },
+
+    
+    validateUser: (email, password, callback) => {
+        this.findUser(null, email, (err, user) => {
+            if (err) {
+                callback(err, null);
+            } else {
+                if (user) {
+                    bcrypt.compare(password, user.password, (crypterr, valid) => {
+                        if (err) {
+                            callback(crypterr, null);
+                        } else if (valid) {
+                            delete user.password;
+                            callback(null, user);
+                        } else {
+                            callback(null, false);
+                        }
+                    })
+                } else {
+                    callback(null, false);
+                }
+            }
+        })
+    }
+
 }
-module.exports.validateUser = validateUser;

@@ -8,9 +8,8 @@ exports.create = function(req,res) {
     var data = connection.getPostData(req.body, formProperties),
     UserID = req.user._id;
 
-    data.AddedUserID = UserID; //
-    data.ModifiedUserID = UserID;
-
+    data.ModifiedUserID = '0';
+    data.AddedUserID = '1';
     data.DateModified = 'NOW';
     data.DateAdded = 'NOW';
 
@@ -28,9 +27,7 @@ exports.create = function(req,res) {
                     DateAdded: 'NOW',
                     DateModified: 'NOW',
                     Name: req.body.Name,
-                    Weight: 1,
-                    AddedUserID: UserID,
-                    ModifiedUserID: UserID
+                    Weight: 1
                 };
 
                 var nameq = connection.getInsertQuery('name', nameData, 'NameID');
@@ -82,7 +79,7 @@ exports.getAllExpanded = function(req, res) {
 
     var handleQuery = function(err, response, resultType) {
         if (err) {
-            res.json('500', err);
+            res.status(500).json(err);
         } else {
             resultCount++;
             resultObject[resultType] = response;
@@ -121,16 +118,6 @@ exports.getAllExpanded = function(req, res) {
                         if (parseInt(duration.DurationID) === parseInt(game.DurationID)) {
                             game.Duration = duration;
                             break;
-                        }
-                    }
-
-                    for (var pci = 0; pci < resultObject.users.rows.length; pci++) {
-                        var user = resultObject.users.rows[pci];
-                        if (parseInt(user.UserID) === parseInt(game.AddedUserID)) {
-                            game.AddedUser = user;
-                        }
-                        if (parseInt(user.UserID) === parseInt(game.ModifiedUserID)) {
-                            game.ModifiedUser = user;
                         }
                     }
 
@@ -235,7 +222,7 @@ exports.addTag = function(req, res) {
             req.params.toId,
             1
         ],
-        query = 'INSERT INTO taggame ("GameID", "TagID", "AddedUserID") VALUES ($1, $2, $3);';
+        query = 'INSERT INTO taggame ("GameID", "TagID") VALUES ($1, $2);';
     connection.query(query, data, function(err) {
         if (err) {
             res.json("500", err);

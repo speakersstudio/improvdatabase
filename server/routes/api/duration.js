@@ -5,8 +5,6 @@ var connection = require('../connection'),
 exports.create = function(req,res) {
     var data = connection.getPostData(req.body, formProperties),
         UserID = req.user._id;
-    data.AddedUserID = UserID;
-    data.ModifiedUserID = UserID;
 
     data.DateAdded = 'NOW';
     data.DateModified = 'NOW';

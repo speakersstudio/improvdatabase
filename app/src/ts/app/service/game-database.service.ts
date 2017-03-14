@@ -430,6 +430,7 @@ export class GameDatabaseService {
                 this._sortGames();
                 return game;
             })
+            .catch(this.handleError);
     }
 
     private _addTagToGame(game: Game, taggame: TagGame): void {
@@ -493,6 +494,7 @@ export class GameDatabaseService {
 
     private handleError(error: any): Promise<any> {
         console.error('An error has occurred', error);
+        
         return Promise.reject(error.message || error);
     }
 

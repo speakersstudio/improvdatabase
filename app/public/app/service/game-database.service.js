@@ -400,7 +400,8 @@ var GameDatabaseService = (function () {
             _this.games.push(_this._setupGame(game));
             _this._sortGames();
             return game;
-        });
+        })
+            .catch(this.handleError);
     };
     GameDatabaseService.prototype._addTagToGame = function (game, taggame) {
         this.tagGames.push(taggame);

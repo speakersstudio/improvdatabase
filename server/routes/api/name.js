@@ -7,8 +7,6 @@ exports.create = function(req, res) {
     var nameObj = {
         Name: req.body.Name,
         Weight: 1,
-        AddedUserID: req.user._id,
-        ModifiedUserID: req.user._id,
         GameID: req.params.id || req.body.GameID,
         DateAdded: 'NOW',
         DateModified: 'NOW'
@@ -44,7 +42,6 @@ exports.get = function(req,res) {
 };
 exports.update = function(req,res) {
     var data = connection.getPostData(req.body, formProperties);
-    data.ModifiedUserID = req.user._id;
     data.DateModified = 'NOW';
 
     var q = connection.getUpdateQuery('name', data, {NameID: req.params.id});

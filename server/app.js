@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var exphbs = require('express-handlebars');
 var mongoose = require('mongoose');
+var Promise = require('bluebird');
 
 var indexRoute  = require('./routes/index'),
     api         = require('./routes/api'),
@@ -26,6 +27,7 @@ app.use(function(req, res, next) {
 });
 
 // connect to MongoDB
+mongoose.Promise = Promise;
 mongoose.connect(config.mongodb.uri);
 
 // view engine setup

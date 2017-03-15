@@ -18,12 +18,10 @@ import { AppComponent } from "./app.component";
 
 import { GameDatabaseService } from '../service/game-database.service';
 
-import { Game } from '../model/game';
+import { Game, TagGame } from '../model/game';
 import { Name } from '../model/name';
-import { PlayerCount } from '../model/player-count';
-import { Duration } from '../model/duration';
+import { GameMetadata } from '../model/game-metadata';
 import { Tag } from '../model/tag';
-import { TagGame } from '../model/tag-game';
 import { Note } from '../model/note';
 
 import { Tool } from '../view/toolbar.view';
@@ -55,10 +53,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
 
     dialog: boolean = false;
 
-    playerCount: PlayerCount;
-    duration: Duration;
-    tags: Tag[] = [];
-    tagMap: Object = {};
+    // tagMap: Object = {};
     notes: Note[] = [];
 
     namesOpen: boolean = false;
@@ -68,10 +63,10 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
 
     editName: string;
 
-    allPlayerCounts: PlayerCount[] = [];
+    allPlayerCounts: GameMetadata[] = [];
     editPlayerCountShown: boolean;
 
-    allDurations: Duration[] = [];
+    allDurations: GameMetadata[] = [];
     editDurationShown: boolean;
 
     addTagShown: boolean;
@@ -82,6 +77,9 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     newDescriptionText: string;
 
     createMetadataType: string;
+
+    playerCountID: string;
+    durationID: string;
 
     private tools: Tool[] = [
         {
@@ -111,7 +109,8 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
 
         if (!this.game) {
             this.route.params.forEach((params: Params) => {
-                let id = +params['id'];
+                let id = params['id'];
+                console.log(id);
                 this.gameDatabaseService.getGame(id)
                     .then(game => this.setGame(game));
             });
@@ -120,7 +119,6 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
             this.setGame(this.game);
         }
 
-        //console.log(this.userService.loggedInUser.Permissions);
     }
 
     ngOnDestroy(): void {
@@ -154,10 +152,10 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     showEditName(): void {
         this._closeAllEdits();
         if (this.can('name_edit')) {
-            if (!this.game.Names.length) {
+            if (!this.game.names.length) {
                 this.showAddName();
             } else {
-                this.editName = this.game.Names[0].Name;
+                this.editName = this.game.names[0].name;
                 this.editNameShown = true;
                 this._focusInput();
             }
@@ -177,15 +175,15 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         if (this.editName) {
             if (this.editNameShown) {
                 // update the existing name if it is different
-                if (this.editName != this.game.Names[0].Name) {
-                    this.game.Names[0].Name = this.editName;
-                    this.gameDatabaseService.saveName(this.game.Names[0]);
+                if (this.editName != this.game.names[0].name) {
+                    this.game.names[0].name = this.editName;
+                    this.gameDatabaseService.saveName(this.game.names[0]);
                 }
             } else if (this.addNameShown) {
                 // create a new name
-                this.gameDatabaseService.createName(this.game.GameID, this.editName)
+                this.gameDatabaseService.createName(this.game._id, this.editName)
                     .then(name => {
-                        this.game.Names.unshift(name);
+                        this.game.names.unshift(name);
                     });
             }
         }
@@ -229,8 +227,12 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     }
     savePlayerCount(): void {
         if (this.can('game_edit')) {
-            if (this.game.PlayerCountID > -1) {
-                this._saveGame();
+            if (this.playerCountID) {
+                this.gameDatabaseService.getPlayerCountById(this.playerCountID)
+                    .then(playerCount => {
+                        this.game.playerCount = playerCount;
+                        this._saveGame();
+                    });
             } else {
                 // show the create player count dialog
                 this.showCreateMetadataDialog("Player Count");
@@ -251,8 +253,12 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     }
     saveDuration(): void {
         if (this.can('game_edit')) {
-            if (this.game.DurationID > -1) {
-                this._saveGame();
+            if (this.durationID) {
+                this.gameDatabaseService.getDurationById(this.durationID)
+                    .then(duration => {
+                        this.game.duration = duration;
+                        this._saveGame();
+                    });
             } else {
                 this.showCreateMetadataDialog("Duration");
             }
@@ -264,19 +270,15 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
             this.createMetadataType = type;
         }
     }
-    onCreateMetadataDone(metadata: any): void {
+    onCreateMetadataDone(metadata: GameMetadata): void {
         this.createMetadataType = "";
 
-        console.log(metadata, metadata instanceof PlayerCount);
-
-        if (metadata.PlayerCountID) {
-            this.playerCount = metadata as PlayerCount;
+        if (metadata.type == 'playerCount') {
             this.allPlayerCounts.push(metadata);
-            this.game.PlayerCountID = metadata.PlayerCountID;
-        } else if (metadata.DurationID) {
-            this.duration = metadata as Duration;
+            this.game.playerCount = metadata;
+        } else if (metadata.type == 'duration') {
             this.allDurations.push(metadata);
-            this.game.DurationID = metadata.DurationID;
+            this.game.duration = metadata;
         }
 
         this._closeAllEdits();
@@ -325,7 +327,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
                     }
                 }
                 if (this.tagHints[this._selectedTagIndex]) {
-                    this.newTagText = this.tagHints[this._selectedTagIndex].Name;
+                    this.newTagText = this.tagHints[this._selectedTagIndex].name;
                     this._focusInput('addTag');
                 }
 
@@ -342,7 +344,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
                                     let tag = tags[cnt];
                                     // only hint tags that aren't already added to this game,
                                     // and only show the first 8 hints, why not
-                                    if (this.tags.indexOf(tag) == -1) {
+                                    if (!this.gameDatabaseService.gameHasTag(this.game, [tag._id])) {
                                         this.tagHints.push(tag);
                                     }
                                 }
@@ -353,29 +355,25 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         }
     }
 
-    removeTag(tag: Tag): void {
+    removeTag(taggame: TagGame): void {
         if (!this.can('game_tag_remove')) {
             return;
         }
-        let index = this.tags.indexOf(tag);
+        let index = this.game.tags.indexOf(taggame);
         if (index > -1) {
-            this.tags.splice(index, 1);
+            this.game.tags.splice(index, 1);
         }
-        let taggame: TagGame;
-        this.game.TagGames.forEach(tg => {
-            if (tg.TagID == tag.TagID) {
-                taggame = tg;
-            }
+        this.gameDatabaseService.deleteTagGame(this.game, taggame)
+        .then(game => {
+            this.setGame(game);  
         });
-        this.game.TagGames.splice(this.game.TagGames.indexOf(taggame), 1);
-        this.gameDatabaseService.deleteTagGame(taggame);
     }
 
     addTagByName(): void {
         let tag: Tag;
         // see if any of the hints match the input exactly
         this.tagHints.forEach(hint => {
-            if (hint.Name.toLocaleLowerCase() == this.newTagText.toLocaleLowerCase()) {
+            if (hint.name.toLocaleLowerCase() == this.newTagText.toLocaleLowerCase()) {
                 tag = hint;
             }
         });
@@ -385,8 +383,8 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         } else {
             // if there were no matches, we'll create a new tag
             this.gameDatabaseService.createTag(this.newTagText, this.game)
-                .then(tag => {
-                    this.tags.push(tag);
+                .then(game => {
+                    this.setGame(game);
                 });
         }
 
@@ -397,9 +395,10 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
 
     addTag(tag: Tag): void {
         if (this.can('game_tag_add')) {
-            this.tags.push(tag);
             this.gameDatabaseService.saveTagToGame(this.game, tag)
-                .then(taggame => {});
+                .then(game => {
+                    this.setGame(game);
+                });
             
             this.newTagText = "";
             this.tagHints = [];
@@ -407,34 +406,18 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     }
 
     showEditDescription(): void {
-        this.newDescriptionText = this.game.Description;
+        this.newDescriptionText = this.game.description;
         this.editDescriptionShown = true;
     }
 
     saveDescription(): void {
-        this.game.Description = this.newDescriptionText;
+        this.game.description = this.newDescriptionText;
         this.gameDatabaseService.saveGame(this.game);
         this._closeAllEdits();
     }
 
     setGame(game: Game): void {
         this.game = game;
-
-        this.gameDatabaseService.getPlayerCountById(this.game.PlayerCountID)
-            .then((playercount) => this.playerCount = playercount);
-
-        this.gameDatabaseService.getDurationById(this.game.DurationID)
-            .then((duration) => this.duration = duration);
-
-        this.tagMap = {};
-        this.tags = [];
-        this.game.TagGames.forEach((tagGame) => {
-            this.gameDatabaseService.getTagById(tagGame.TagID)
-                .then((tag) => {
-                    this.tagMap[tag.TagID] = tag.Name;
-                    this.tags.push(tag)
-                });
-        });
 
         this.gameDatabaseService.getNotesForGame(this.game)
             .then((notes) => this.notes = notes);

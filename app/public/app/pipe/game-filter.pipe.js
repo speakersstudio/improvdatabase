@@ -18,9 +18,10 @@ var GameFilterPipe = (function () {
     GameFilterPipe.prototype.transform = function (value, args) {
         if (args) {
             return value.filter(function (game) {
-                if (args.property == 'TagID') {
-                    for (var tagIDIndex = 0; tagIDIndex < game.TagGames.length; tagIDIndex++) {
-                        if (game.TagGames[tagIDIndex].TagID == args.value) {
+                if (args.property == 'tagId') {
+                    // this isn't a foreach because that won't handle the return properly
+                    for (var tagIDIndex = 0; tagIDIndex < game.tags.length; tagIDIndex++) {
+                        if (game.tags[tagIDIndex].tag._id == args.value) {
                             return true;
                         }
                     }

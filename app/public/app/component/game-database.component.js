@@ -58,7 +58,7 @@ var GameDatabaseComponent = (function () {
     };
     GameDatabaseComponent.prototype.getGames = function () {
         var _this = this;
-        this.gameDatabaseService.getGames('name').then(function (games) {
+        this.gameDatabaseService.getGames().then(function (games) {
             games = _this._filterGames(games);
             _this._loadGames(games);
         });
@@ -82,12 +82,12 @@ var GameDatabaseComponent = (function () {
             //this._setPath("/games;filter=" + this.filter.property + ",value=" + this.filter.value);
             return games.filter(function (game) {
                 // don't show things without names if we can't edit them
-                if (!game.Names.length && !_this.userService.can('game_edit')) {
+                if (!game.names.length && !_this.userService.can('game_edit')) {
                     return false;
                 }
                 if (_this.filter.property == 'TagID') {
-                    for (var tagIDIndex = 0; tagIDIndex < game.TagGames.length; tagIDIndex++) {
-                        if (game.TagGames[tagIDIndex].TagID == _this.filter.value) {
+                    for (var tagIDIndex = 0; tagIDIndex < game.tags.length; tagIDIndex++) {
+                        if (game.tags[tagIDIndex].tag._id == _this.filter.value) {
                             return true;
                         }
                     }
@@ -113,7 +113,7 @@ var GameDatabaseComponent = (function () {
         });
     };
     GameDatabaseComponent.prototype.trackByGames = function (index, game) {
-        return game.GameID;
+        return game._id;
     };
     GameDatabaseComponent.prototype.onSelect = function (game) {
         // remember the scroll position so we can return there when the user comes back
@@ -127,7 +127,7 @@ var GameDatabaseComponent = (function () {
         else {
             this.selectedGame = game;
         }
-        var newPath = "/game/" + this.selectedGame.GameID;
+        var newPath = "/game/" + this.selectedGame._id;
         this._app.setPath(newPath);
         window.scrollTo(0, 0);
     };
@@ -174,7 +174,7 @@ var GameDatabaseComponent = (function () {
                 if (result.text) {
                     this.filter = {
                         "property": "search",
-                        "value": 0
+                        "value": ""
                     };
                     this.searchTerm = result.text;
                     this.getGamesSearch(result.text);

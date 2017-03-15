@@ -101,7 +101,7 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
     }
 
     getGames(): void {
-        this.gameDatabaseService.getGames('name').then(games => {
+        this.gameDatabaseService.getGames().then(games => {
             games = this._filterGames(games);
             this._loadGames(games);
         });
@@ -125,12 +125,12 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
             //this._setPath("/games;filter=" + this.filter.property + ",value=" + this.filter.value);
             return games.filter((game) => {
                 // don't show things without names if we can't edit them
-                if (!game.Names.length && !this.userService.can('game_edit')) {
+                if (!game.names.length && !this.userService.can('game_edit')) {
                     return false;
                 }
                 if (this.filter.property == 'TagID') {
-                    for (var tagIDIndex = 0; tagIDIndex < game.TagGames.length; tagIDIndex++) {
-                        if (game.TagGames[tagIDIndex].TagID == this.filter.value) {
+                    for (var tagIDIndex = 0; tagIDIndex < game.tags.length; tagIDIndex++) {
+                        if (game.tags[tagIDIndex].tag._id == this.filter.value) {
                             return true;
                         }
                     }
@@ -155,7 +155,7 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
     }
 
     trackByGames(index: number, game: Game) {
-        return game.GameID;
+        return game._id;
     }
 
     onSelect(game: Game): void {
@@ -172,7 +172,7 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
             this.selectedGame = game;
         }
     
-        let newPath = "/game/" + this.selectedGame.GameID;
+        let newPath = "/game/" + this.selectedGame._id;
         this._app.setPath(newPath);
 
         window.scrollTo(0, 0);
@@ -224,7 +224,7 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
                 if (result.text) {
                     this.filter = {
                         "property": "search",
-                        "value" : 0
+                        "value" : ""
                     }
                     this.searchTerm = result.text;
                     this.getGamesSearch(result.text);

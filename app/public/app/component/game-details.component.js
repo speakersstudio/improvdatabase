@@ -14,7 +14,6 @@ var common_1 = require("@angular/common");
 var app_component_1 = require("./app.component");
 var game_database_service_1 = require("../service/game-database.service");
 var game_1 = require("../model/game");
-var player_count_1 = require("../model/player-count");
 var user_service_1 = require("../service/user.service");
 var GameDetailsComponent = (function () {
     function GameDetailsComponent(_app, gameDatabaseService, router, route, location, userService) {
@@ -26,8 +25,7 @@ var GameDetailsComponent = (function () {
         this.userService = userService;
         this.onClose = new core_1.EventEmitter();
         this.dialog = false;
-        this.tags = [];
-        this.tagMap = {};
+        // tagMap: Object = {};
         this.notes = [];
         this.namesOpen = false;
         this.allPlayerCounts = [];
@@ -52,7 +50,8 @@ var GameDetailsComponent = (function () {
         var _this = this;
         if (!this.game) {
             this.route.params.forEach(function (params) {
-                var id = +params['id'];
+                var id = params['id'];
+                console.log(id);
                 _this.gameDatabaseService.getGame(id)
                     .then(function (game) { return _this.setGame(game); });
             });
@@ -61,7 +60,6 @@ var GameDetailsComponent = (function () {
             this.dialog = true;
             this.setGame(this.game);
         }
-        //console.log(this.userService.loggedInUser.Permissions);
     };
     GameDetailsComponent.prototype.ngOnDestroy = function () {
     };
@@ -88,11 +86,11 @@ var GameDetailsComponent = (function () {
     GameDetailsComponent.prototype.showEditName = function () {
         this._closeAllEdits();
         if (this.can('name_edit')) {
-            if (!this.game.Names.length) {
+            if (!this.game.names.length) {
                 this.showAddName();
             }
             else {
-                this.editName = this.game.Names[0].Name;
+                this.editName = this.game.names[0].name;
                 this.editNameShown = true;
                 this._focusInput();
             }
@@ -111,16 +109,16 @@ var GameDetailsComponent = (function () {
         if (this.editName) {
             if (this.editNameShown) {
                 // update the existing name if it is different
-                if (this.editName != this.game.Names[0].Name) {
-                    this.game.Names[0].Name = this.editName;
-                    this.gameDatabaseService.saveName(this.game.Names[0]);
+                if (this.editName != this.game.names[0].name) {
+                    this.game.names[0].name = this.editName;
+                    this.gameDatabaseService.saveName(this.game.names[0]);
                 }
             }
             else if (this.addNameShown) {
                 // create a new name
-                this.gameDatabaseService.createName(this.game.GameID, this.editName)
+                this.gameDatabaseService.createName(this.game._id, this.editName)
                     .then(function (name) {
-                    _this.game.Names.unshift(name);
+                    _this.game.names.unshift(name);
                 });
             }
         }
@@ -159,9 +157,14 @@ var GameDetailsComponent = (function () {
         }
     };
     GameDetailsComponent.prototype.savePlayerCount = function () {
+        var _this = this;
         if (this.can('game_edit')) {
-            if (this.game.PlayerCountID > -1) {
-                this._saveGame();
+            if (this.playerCountID) {
+                this.gameDatabaseService.getPlayerCountById(this.playerCountID)
+                    .then(function (playerCount) {
+                    _this.game.playerCount = playerCount;
+                    _this._saveGame();
+                });
             }
             else {
                 // show the create player count dialog
@@ -182,9 +185,14 @@ var GameDetailsComponent = (function () {
         }
     };
     GameDetailsComponent.prototype.saveDuration = function () {
+        var _this = this;
         if (this.can('game_edit')) {
-            if (this.game.DurationID > -1) {
-                this._saveGame();
+            if (this.durationID) {
+                this.gameDatabaseService.getDurationById(this.durationID)
+                    .then(function (duration) {
+                    _this.game.duration = duration;
+                    _this._saveGame();
+                });
             }
             else {
                 this.showCreateMetadataDialog("Duration");
@@ -198,16 +206,13 @@ var GameDetailsComponent = (function () {
     };
     GameDetailsComponent.prototype.onCreateMetadataDone = function (metadata) {
         this.createMetadataType = "";
-        console.log(metadata, metadata instanceof player_count_1.PlayerCount);
-        if (metadata.PlayerCountID) {
-            this.playerCount = metadata;
+        if (metadata.type == 'playerCount') {
             this.allPlayerCounts.push(metadata);
-            this.game.PlayerCountID = metadata.PlayerCountID;
+            this.game.playerCount = metadata;
         }
-        else if (metadata.DurationID) {
-            this.duration = metadata;
+        else if (metadata.type == 'duration') {
             this.allDurations.push(metadata);
-            this.game.DurationID = metadata.DurationID;
+            this.game.duration = metadata;
         }
         this._closeAllEdits();
         this.gameDatabaseService.saveGame(this.game);
@@ -249,7 +254,7 @@ var GameDetailsComponent = (function () {
                     }
                 }
                 if (this.tagHints[this._selectedTagIndex]) {
-                    this.newTagText = this.tagHints[this._selectedTagIndex].Name;
+                    this.newTagText = this.tagHints[this._selectedTagIndex].name;
                     this._focusInput('addTag');
                 }
                 break;
@@ -265,7 +270,7 @@ var GameDetailsComponent = (function () {
                                 var tag = tags[cnt];
                                 // only hint tags that aren't already added to this game,
                                 // and only show the first 8 hints, why not
-                                if (_this.tags.indexOf(tag) == -1) {
+                                if (!_this.gameDatabaseService.gameHasTag(_this.game, [tag._id])) {
                                     _this.tagHints.push(tag);
                                 }
                             }
@@ -275,29 +280,26 @@ var GameDetailsComponent = (function () {
                 break;
         }
     };
-    GameDetailsComponent.prototype.removeTag = function (tag) {
+    GameDetailsComponent.prototype.removeTag = function (taggame) {
+        var _this = this;
         if (!this.can('game_tag_remove')) {
             return;
         }
-        var index = this.tags.indexOf(tag);
+        var index = this.game.tags.indexOf(taggame);
         if (index > -1) {
-            this.tags.splice(index, 1);
+            this.game.tags.splice(index, 1);
         }
-        var taggame;
-        this.game.TagGames.forEach(function (tg) {
-            if (tg.TagID == tag.TagID) {
-                taggame = tg;
-            }
+        this.gameDatabaseService.deleteTagGame(this.game, taggame)
+            .then(function (game) {
+            _this.setGame(game);
         });
-        this.game.TagGames.splice(this.game.TagGames.indexOf(taggame), 1);
-        this.gameDatabaseService.deleteTagGame(taggame);
     };
     GameDetailsComponent.prototype.addTagByName = function () {
         var _this = this;
         var tag;
         // see if any of the hints match the input exactly
         this.tagHints.forEach(function (hint) {
-            if (hint.Name.toLocaleLowerCase() == _this.newTagText.toLocaleLowerCase()) {
+            if (hint.name.toLocaleLowerCase() == _this.newTagText.toLocaleLowerCase()) {
                 tag = hint;
             }
         });
@@ -307,8 +309,8 @@ var GameDetailsComponent = (function () {
         else {
             // if there were no matches, we'll create a new tag
             this.gameDatabaseService.createTag(this.newTagText, this.game)
-                .then(function (tag) {
-                _this.tags.push(tag);
+                .then(function (game) {
+                _this.setGame(game);
             });
         }
         this.newTagText = "";
@@ -316,39 +318,28 @@ var GameDetailsComponent = (function () {
         this._selectedTagIndex = -1;
     };
     GameDetailsComponent.prototype.addTag = function (tag) {
+        var _this = this;
         if (this.can('game_tag_add')) {
-            this.tags.push(tag);
             this.gameDatabaseService.saveTagToGame(this.game, tag)
-                .then(function (taggame) { });
+                .then(function (game) {
+                _this.setGame(game);
+            });
             this.newTagText = "";
             this.tagHints = [];
         }
     };
     GameDetailsComponent.prototype.showEditDescription = function () {
-        this.newDescriptionText = this.game.Description;
+        this.newDescriptionText = this.game.description;
         this.editDescriptionShown = true;
     };
     GameDetailsComponent.prototype.saveDescription = function () {
-        this.game.Description = this.newDescriptionText;
+        this.game.description = this.newDescriptionText;
         this.gameDatabaseService.saveGame(this.game);
         this._closeAllEdits();
     };
     GameDetailsComponent.prototype.setGame = function (game) {
         var _this = this;
         this.game = game;
-        this.gameDatabaseService.getPlayerCountById(this.game.PlayerCountID)
-            .then(function (playercount) { return _this.playerCount = playercount; });
-        this.gameDatabaseService.getDurationById(this.game.DurationID)
-            .then(function (duration) { return _this.duration = duration; });
-        this.tagMap = {};
-        this.tags = [];
-        this.game.TagGames.forEach(function (tagGame) {
-            _this.gameDatabaseService.getTagById(tagGame.TagID)
-                .then(function (tag) {
-                _this.tagMap[tag.TagID] = tag.Name;
-                _this.tags.push(tag);
-            });
-        });
         this.gameDatabaseService.getNotesForGame(this.game)
             .then(function (notes) { return _this.notes = notes; });
     };

@@ -603,52 +603,53 @@ button,
     .metadata i.fa-sort-down.open {
       transform: rotateZ(180deg); }
 
+.tag, .taglist li {
+  display: inline-block;
+  margin: 2px;
+  padding: 2px 5px;
+  background: #d32f2f;
+  color: #FFFFFF;
+  border-radius: 4px;
+  position: relative;
+  font-size: 13px;
+  transition: all 200ms;
+  box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12); }
+  .tag .fa, .taglist li .fa {
+    font-size: 0.9em;
+    line-height: 14px; }
+  .tag.flat, .taglist li.flat {
+    background: none;
+    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
+    color: #d32f2f;
+    opacity: 0;
+    transition: opacity 200ms; }
+  .tag input, .taglist li input {
+    padding: 0;
+    border: 0;
+    margin: 0 2px;
+    width: 100px;
+    font-size: 13px;
+    display: inline-block;
+    color: #FFFFFF; }
+  .tag .tag-hints, .taglist li .tag-hints {
+    position: absolute;
+    top: 100%;
+    padding: 0; }
+    .tag .tag-hints li, .taglist li .tag-hints li {
+      display: block;
+      margin: 4px;
+      box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+      margin-left: 16px; }
+      .tag .tag-hints li.hover, .taglist li .tag-hints li.hover, .tag .tag-hints li:hover, .taglist li .tag-hints li:hover {
+        box-shadow: 0px 6px 7px -4px rgba(0, 0, 0, 0.2), 0px 11px 15px 1px rgba(0, 0, 0, 0.14), 0px 4px 20px 3px rgba(0, 0, 0, 0.12);
+        margin-right: 2px;
+        margin-left: 8px;
+        padding-left: 10px;
+        padding-right: 7px; }
+
 .taglist {
   padding: 0; }
-  .taglist li {
-    display: inline-block;
-    margin: 2px;
-    padding: 2px 5px;
-    background: #d32f2f;
-    color: #FFFFFF;
-    border-radius: 4px;
-    position: relative;
-    font-size: 13px;
-    transition: all 200ms;
-    box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12); }
-    .taglist li .fa {
-      font-size: 0.9em;
-      line-height: 14px; }
-    .taglist li.flat {
-      background: none;
-      box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
-      color: #d32f2f;
-      opacity: 0;
-      transition: opacity 200ms; }
-    .taglist li input {
-      padding: 0;
-      border: 0;
-      margin: 0 2px;
-      width: 100px;
-      font-size: 13px;
-      display: inline-block;
-      color: #FFFFFF; }
-    .taglist li .tag-hints {
-      position: absolute;
-      top: 100%;
-      padding: 0; }
-      .taglist li .tag-hints li {
-        display: block;
-        margin: 4px;
-        box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
-        margin-left: 16px; }
-        .taglist li .tag-hints li.hover, .taglist li .tag-hints li:hover {
-          box-shadow: 0px 6px 7px -4px rgba(0, 0, 0, 0.2), 0px 11px 15px 1px rgba(0, 0, 0, 0.14), 0px 4px 20px 3px rgba(0, 0, 0, 0.12);
-          margin-right: 2px;
-          margin-left: 8px;
-          padding-left: 10px;
-          padding-right: 7px; }
-  .taglist.grey li {
+  .taglist.grey .tag, .taglist.grey li {
     background-color: #606060; }
   .taglist:hover .flat {
     opacity: 1; }

@@ -1,10 +1,18 @@
+export class NameVote {
+    _id: string;
+    name: string;
+    addedUser: string;
+    dateAdded: Date;
+}
+
 export class Name {
-    NameID: number;
-    GameID: number;
-    Name: string;
-    Weight: number;
-    DateAdded: string;
-    DateModified: string;
-    AddedUserID: number;
-    ModifiedUserID: number;
+    _id: string;
+    name: string;
+    weight: number;
+    votes: NameVote[];
+    addedUser: string;
+    modifiedUser: string;
+    dateAdded: Date;
+    dateModified: Date;
+    game: string;
 }

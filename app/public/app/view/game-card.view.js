@@ -21,36 +21,29 @@ var GameCardView = (function () {
     }
     GameCardView.prototype.ngOnInit = function () {
         var _this = this;
+        // this will create a description string without any HTML tags in it
         var div = document.createElement("div");
-        div.innerHTML = this.game.Description;
-        this.descriptionText = div.textContent || div.innerText || this.game.Description;
-        this.gameDatabaseService.getPlayerCountById(this.game.PlayerCountID)
-            .then(function (playercount) { return _this.playerCount = playercount; });
-        this.gameDatabaseService.getDurationById(this.game.DurationID)
-            .then(function (duration) { return _this.duration = duration; });
-        this.loadTags();
-    };
-    GameCardView.prototype.loadTags = function () {
-        var _this = this;
-        this.game.TagGames.forEach(function (tagGame) {
-            _this.gameDatabaseService.getTagById(tagGame.TagID)
-                .then(function (tag) {
-                _this.tags.push(tag);
-                switch (tag.Name.toLowerCase()) {
-                    case 'show':
-                        _this.iconClass = 'ticket';
-                        _this.iconDescription = tag.Description;
-                        break;
-                    case 'exercise':
-                        _this.iconClass = 'lightbulb-o';
-                        _this.iconDescription = tag.Description;
-                        break;
-                    case 'warmup':
-                        _this.iconClass = 'fire';
-                        _this.iconDescription = tag.Description;
-                        break;
-                }
-            });
+        div.innerHTML = this.game.description;
+        this.descriptionText = div.textContent || div.innerText || this.game.description;
+        // this.gameDatabaseService.getPlayerCountById(this.game.PlayerCountID)
+        //     .then((playercount) => this.playerCount = playercount);
+        // this.gameDatabaseService.getDurationById(this.game.DurationID)
+        //     .then((duration) => this.duration = duration);
+        this.game.tags.forEach(function (taggame) {
+            switch (taggame.tag.name.toLowerCase()) {
+                case 'show':
+                    _this.iconClass = 'ticket';
+                    _this.iconDescription = taggame.tag.description;
+                    break;
+                case 'exercise':
+                    _this.iconClass = 'lightbulb-o';
+                    _this.iconDescription = taggame.tag.description;
+                    break;
+                case 'warmup':
+                    _this.iconClass = 'fire';
+                    _this.iconDescription = taggame.tag.description;
+                    break;
+            }
         });
     };
     /*

@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const   util = require('../util');
 
 const Game = require('../../models/game.model');
+const Tag = require('../../models/tag.model');
 
 module.exports = {
 
@@ -58,8 +59,49 @@ module.exports = {
             res.json(games[0]);
         })
 
-    }
+    },
 
+    addTag: (req, res) => {
+        let gameId = req.params.id,
+            tagId = req.params.toId;
+
+        return getGames(gameId).then(games => {
+            let game = games[0];
+            return game.addTagById(tagId, req.user._id);
+        }).then(game => {
+            res.json(game);
+        });
+    },
+
+    removeTag: (req, res) => {
+        let gameId = req.params.id,
+            tagId = req.params.toId;
+
+        return getGames(gameId).then(games => {
+            let game = games[0];
+            return game.removeTagById(tagId, req.user._id);
+        }).then(game => {
+            res.json(game);
+        })
+    },
+
+    createTag: (req, res) => {
+        let gameId = req.params.id,
+            tag = req.body.name;
+        
+        return getGames(gameId).then(games => {
+            let game = games[0];
+            return game.addTag(tag, req.user._id);
+        }).then(game => {
+            res.json(game);
+        });
+        
+        // }).then(game => {
+        //     return Tag.findOne({}).where('name').equals(tag).exec();
+        // }).then(tag => {
+        //     res.json(tag);        
+        // });
+    }
 
 }
 
@@ -111,7 +153,13 @@ function getGames(id) {
     let query = Game.find({})
         .populate({
             path: 'names',
-            select: 'name votes'
+            select: 'name votes weight dateAdded dateModified',
+            populate: {
+                path: 'votes'
+            },
+            options: {
+                sort: '-weight -dateAdded'
+            }
         })
         .populate({
             path: 'playerCount',
@@ -124,7 +172,7 @@ function getGames(id) {
         .populate({
             path: 'tags.tag',
             select: 'name description'
-        })
+        });
 
     if (id) {
         query.where('_id').equals(id);

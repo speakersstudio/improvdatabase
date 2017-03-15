@@ -1,8 +1,11 @@
-export class Tag {
+export class GameMetadata {
     _id: string;
-    legacyID: number;
     name: string;
     description: string;
+    type: string;
+    min: number;
+    max: number;
+    legacyID: number;
     games: string[];
     notes: string[];
     addedUser: string;

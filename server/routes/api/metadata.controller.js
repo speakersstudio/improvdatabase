@@ -14,7 +14,7 @@ module.exports = {
         GameMetadata.create({
             name: data.name,
             description: data.description,
-            type: 'playerCount',
+            type: data.type || 'duration',
             min: data.min,
             max: data.max,
             addedUser: userId
@@ -56,10 +56,11 @@ module.exports = {
         GameMetadata.findOne({})
             .where('_id').equals(durId)
             .remove()
+            .exec()
             .then(dur => {
                 res.json({
                     status: "Success",
-                    message: "Player Count deleted"
+                    message: "Metadata deleted"
                 });
             });
     },
@@ -67,7 +68,7 @@ module.exports = {
     getAll: (req, res) => {
 
         GameMetadata.find({})
-            .where('type').equals('playerCount')
+            // .where('type').equals('duration')
             .exec()
             .then(durs => {
                 res.json(durs);
@@ -77,13 +78,26 @@ module.exports = {
 
     get: (req, res) => {
 
-        GameMetadata.findOne({})
-            .where('type').equals('playerCount')
-            .where('_id').equals(req.params.id)
-            .exec()
-            .then(dur => {
-                res.json(dur);
-            });
+        let id = req.params.id;
+        if (id == 'duration' || id == 'playerCount') {
+
+            GameMetadata.find({})
+                .where('type').equals(id)
+                .exec()
+                .then(m => {
+                    res.json(m);
+                });
+
+        } else {
+
+            GameMetadata.findOne({})
+                .where('_id').equals(req.params.id)
+                .exec()
+                .then(dur => {
+                    res.json(dur);
+                });
+
+        }
 
     }
 

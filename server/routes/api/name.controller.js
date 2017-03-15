@@ -24,6 +24,8 @@ module.exports = {
 
     getAll: (req, res) => {
         Name.find({})
+            .populate('votes')
+            // .sort('-weight -dateAdded')
             .exec()
             .then(names => {
                 res.json(names);

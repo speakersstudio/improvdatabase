@@ -436,69 +436,73 @@ button,
     }
 } // end of .metadata
 
+.tag {
+    display: inline-block;
+    margin: $tag-spacing;
+    padding: $tag-padding-vertical $tag-padding-horizontal;
+    background: $color-primary;
+    color: $color-primary-text;
+    border-radius: $tag-border-radius;
+    position: relative;
+    font-size: 13px;
+    transition: all 200ms;
+
+    @include md-elevation(1);
+
+    .fa {
+        font-size: 0.9em;
+        line-height: 14px;
+    }
+
+    &.flat {
+        background: none;
+        @include md-elevation(0);
+        color: $color-primary;
+        opacity: 0;
+        transition: opacity 200ms;
+    }
+
+    input {
+        padding: 0;
+        border: 0;
+        margin: 0 2px;
+        width: 100px;
+        font-size: 13px;
+        display: inline-block;
+        color: $color-primary-text;
+    }
+
+    .tag-hints {
+        position: absolute;
+        top: 100%;
+        padding: 0;
+
+        li {
+            display: block;
+            margin: $tag-spacing * 2;
+            @include md-elevation(8);
+            margin-left: $std;
+
+            &.hover, &:hover {
+                @include md-elevation(11);
+                margin-right: $tag-spacing;
+                margin-left: $small;
+                padding-left: $tag-padding-vertical + $small;
+                padding-right: $tag-padding-horizontal + $tag-spacing;
+            }
+        }
+    }
+}
+
 .taglist {
     padding: 0;
 
     li {
-       display: inline-block;
-       margin: $tag-spacing;
-       padding: $tag-padding-vertical $tag-padding-horizontal;
-       background: $color-primary;
-       color: $color-primary-text;
-       border-radius: $tag-border-radius;
-       position: relative;
-       font-size: 13px;
-       transition: all 200ms;
-
-       @include md-elevation(1);
-
-       .fa {
-           font-size: 0.9em;
-           line-height: 14px;
-       }
-
-       &.flat {
-           background: none;
-           @include md-elevation(0);
-           color: $color-primary;
-           opacity: 0;
-           transition: opacity 200ms;
-       }
-
-       input {
-           padding: 0;
-           border: 0;
-           margin: 0 2px;
-           width: 100px;
-           font-size: 13px;
-           display: inline-block;
-           color: $color-primary-text;
-       }
-
-       .tag-hints {
-           position: absolute;
-           top: 100%;
-           padding: 0;
-
-           li {
-                display: block;
-                margin: $tag-spacing * 2;
-                @include md-elevation(8);
-                margin-left: $std;
-
-                &.hover, &:hover {
-                    @include md-elevation(11);
-                    margin-right: $tag-spacing;
-                    margin-left: $small;
-                    padding-left: $tag-padding-vertical + $small;
-                    padding-right: $tag-padding-horizontal + $tag-spacing;
-                }
-            }
-       }
+        @extend .tag;
     }
 
     &.grey {
-        li {
+        .tag {
             background-color: $color-text;
         }
     }

@@ -26,13 +26,14 @@ const GameSchema = new mongoose.Schema({
 
 GameSchema.methods.addNote = function(note, userId) {
     const game = this;
-    if (typeof note == string) {
+    if (typeof note == 'string') {
         note = {
             description: note,
             addedUser: userId
         }
     }
     note.game = game._id;
+    note.addedUser = userId;
     return Note.create(note).then(n => {
         game.notes.push(n._id);
         return game.save();
@@ -52,8 +53,15 @@ GameSchema.methods.addName = function(name, userId) {
     });
 }
 
-GameSchema.methods.addMetadata = function(metadataId) {
+GameSchema.methods.addMetadata = function(metadata) {
     const game = this;
+    let metadataId;
+
+    if (typeof metadata == 'object') {
+        metadataId = metadata._id;
+    } else {
+        metadataId = metadata;
+    }
 
     return GameMetadata.find({}).where('_id').equals(metadataId).exec()
         .then(m => {
@@ -69,7 +77,7 @@ GameSchema.methods.addMetadata = function(metadataId) {
         })
 }
 
-GameSchema.methods.removeTag = function(tagId, userId) {
+GameSchema.methods.removeTagById = function(tagId, userId) {
     let index,
         game = this;
     game.tags.forEach((t, i) => {
@@ -81,7 +89,11 @@ GameSchema.methods.removeTag = function(tagId, userId) {
     return Tag.findOne({}).where('_id').equals(tagId).exec()
         .then(tag => {
             tag.games = tag.games.splice(tag.games.indexOf(game._id), 1);
-            return tag.save();
+            if (tag.games.length == 0) {
+                return tag.remove();
+            } else {
+                return tag.save();
+            }
         })
         .then(() => {
             return game.save()
@@ -94,33 +106,49 @@ GameSchema.methods.addTag = function(tagName, userId) {
     return Tag.findOne({})
         .where('name').equals(tagName).exec()
         .then(tag => {
-            if (tag) {
-                // the tag exists, so we can just add it
-                game.tags.push({
-                    tag: tag._id,
-                    addedUser: userId
-                });
-                t.games.push(game._id);
-                return t.save();
-            } else {
-                // the tag doesn't exist, so we have to create it
-                return Tag.create({
-                    name: tagName,
-                    addedUser: userId
-                })
-                    .then(t => {
-                        game.tags.push({
-                            tag: t._id,
-                            addedUser: userId
-                        });
-                        t.games.push(game._id);
-                        return t.save();
-                    })
-            }
+            return addTag(tag, tagName, userId, game);
         })
         .then(t => {
             return game.save();
         });
+}
+
+GameSchema.methods.addTagById = function(tagId, userId) {
+    const game = this;
+
+    return Tag.findOne({})
+        .where('_id').equals(tagId).exec()
+        .then(tag => {
+            return addTag(tag, "", userId, game);
+        })
+        .then(t => {
+            return game.save();
+        });
+}
+
+function addTag(tag, name, userId, game) {
+    if (tag) {
+        // the tag exists, so we can just add it
+        game.tags.push({
+            tag: tag._id,
+            addedUser: userId
+        });
+        tag.games.push(game._id);
+        return tag.save();
+    } else if (name) {
+        // the tag doesn't exist, so we have to create it
+        return Tag.create({
+            name: name,
+            addedUser: userId
+        }).then(t => {
+            game.tags.push({
+                tag: t._id,
+                addedUser: userId
+            });
+            t.games.push(game._id);
+            return t.save();
+        });
+    }
 }
 
 const Game = mongoose.model('Game', GameSchema);

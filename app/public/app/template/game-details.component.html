@@ -6,8 +6,8 @@
     (goBack)="closePage()"></div>
 
 <!--<div class="curtain" [style.top]="(-(scrollpos * 0.5)) + 'px'">
-    <h2 *ngIf="game && game.Names && game.Names[0]">{{game.Names[0].Name}}</h2>
-    <h2 *ngIf="game && (!game.Names || !game.Names[0])">New Game</h2>
+    <h2 *ngIf="game && game.names && game.names[0]">{{game.names[0].name}}</h2>
+    <h2 *ngIf="game && (!game.names || !game.names[0])">New Game</h2>
 </div>-->
 
 <div class="page">
@@ -19,7 +19,7 @@
             <h4 class="right">
                 <span *ngIf="!addNameShown && !editNameShown"
                     [class.clickable]="can('name_edit')"
-                    (click)="showEditName()">{{game.Names[0] ? game.Names[0].Name : 'New Game'}}</span>
+                    (click)="showEditName()">{{game.names[0] ? game.names[0].name : 'New Game'}}</span>
 
                 <input name="editName"
                     *ngIf="addNameShown || editNameShown"
@@ -27,60 +27,60 @@
                     (keydown.enter)="saveEditName()"
                     (blur)="saveEditName()" />
 
-                <i *ngIf="can('name_create') && !addNameShown && !editNameShown && game.Names[0]" (click)="showAddName()" 
+                <i *ngIf="can('name_create') && !addNameShown && !editNameShown && game.names[0]" (click)="showAddName()" 
                     class="fa fa-plus-circle clickable" title="Add an alternate name."></i>
             </h4>
 
             <div class="metadata right">
 
-                <div *ngIf="game.Names.length === 2">
-                    <h5>AKA {{game.Names[1].Name}}</h5>
+                <div *ngIf="game.names.length === 2">
+                    <h5>AKA {{game.names[1].name}}</h5>
                 </div>
-                <div *ngIf="game.Names.length > 2">
+                <div *ngIf="game.names.length > 2">
                     <h5 (click)="toggleNames()" class="clickable"><i class="fa fa-sort-down"
-                        [class.open]="namesOpen"></i> {{game.Names.length - 1}} known aliases</h5>
+                        [class.open]="namesOpen"></i> {{game.names.length - 1}} known aliases</h5>
 
                     <ol *ngIf="namesOpen" [@expand]>
-                        <li *ngFor="let name of game.Names" [class.hide]="name.Name === game.Names[0].Name">{{name.Name}}</li>
+                        <li *ngFor="let name of game.names" [class.hide]="name.name === game.names[0].name">{{name.name}}</li>
                     </ol>
                 </div>
 
                 <span class="bullet"
-                    [title]="playerCount && !editPlayerCountShown ? playerCount.Description : ''">
+                    [title]="game.playerCount && !editPlayerCountShown ? game.playerCount.description : ''">
 
                     <i class="fa fa-group"></i> 
                     
                     <span *ngIf="!editPlayerCountShown"
                         [class.clickable]="can('game_edit')"
-                        (click)="showEditPlayerCount()">{{playerCount ? playerCount.Name : 'No Player Count'}}</span>
+                        (click)="showEditPlayerCount()">{{game.playerCount ? game.playerCount.name : 'No Player Count'}}</span>
 
                     <select name="playerCount" type="number"
                         *ngIf="editPlayerCountShown"
-                        [(ngModel)]="game.PlayerCountID"
+                        [(ngModel)]="playerCountID"
                         (ngModelChange)="savePlayerCount()">
 
-                        <option *ngFor="let pc of allPlayerCounts" [ngValue]="pc.PlayerCountID" [title]="pc.Description">{{pc.Name}}</option>
+                        <option *ngFor="let pc of allPlayerCounts" [ngValue]="pc._id" [title]="pc.description">{{pc.name}}</option>
 
                         <option *ngIf="can('metadata_create')" [ngValue]="-1">Other...</option>
                     </select>
 
                 </span>
                 
-                <span [title]="duration && !editDurationShown ? duration.Description : ''">
+                <span [title]="duration && !editDurationShown ? duration.description : ''">
                     
                     <i class="fa fa-clock-o"></i> 
                     
                     <span *ngIf="!editDurationShown"
                         [class.clickable]="can('game_edit')"
                         (click)="showEditDuration()">
-                        {{duration ? duration.Name : 'No Duration'}}</span>
+                        {{duration ? duration.name : 'No Duration'}}</span>
 
                     <select name="duration"
                         *ngIf="editDurationShown"
-                        [(ngModel)]="game.DurationID"
+                        [(ngModel)]="durationID"
                         (ngModelChange)="saveDuration()">
 
-                        <option *ngFor="let d of allDurations" [ngValue]="d.DurationID" [title]="d.Description">{{d.Name}}</option>
+                        <option *ngFor="let d of allDurations" [ngValue]="d._id" [title]="d.description">{{d.name}}</option>
 
                         <option *ngIf="can('metadata_create')" [ngValue]="-1">Other...</option>
                     </select>
@@ -89,29 +89,37 @@
 
                 <ul class="taglist">
                     <li *ngIf="can('game_tag_add') && !addTagShown"
-                        title="Add Tag" (click)="showAddTag()" class="clickable" [class.flat]="tags.length">
+                        title="Add Tag" (click)="showAddTag()" class="clickable" [class.flat]="game.tags.length">
                             <i class="fa fa-plus-circle"></i></li>
 
                     <li *ngIf="addTagShown">
-                        <i class="fa fa-hashtag"></i> <input type="text" name="addTag" [(ngModel)]="newTagText" (keydown)="newTagKeyDown($event)" />
+                        <i class="fa fa-hashtag"></i> 
+                        <input type="text" name="addTag" [(ngModel)]="newTagText" (keydown)="newTagKeyDown($event)" />
 
                         <ul class="tag-hints" *ngIf="tagHints && tagHints.length">
-                            <li *ngFor="let hint of tagHints" [class.hover]="hint.Name === newTagText" (click)="addTag(hint)" class="clickable">{{hint.Name}}</li>
+                            <li *ngFor="let hint of tagHints" 
+                                [class.hover]="hint.name === newTagText"
+                                (click)="addTag(hint)" class="clickable">{{hint.name}}</li>
                         </ul>
                     </li>
 
-                    <li *ngFor="let tag of tags" 
-                        [title]="tag.Description || ''"
-                        [class.clickable]="can('game_tag_remove')" (click)="removeTag(tag)">
-                        <i class="fa fa-hashtag"></i> {{tag.Name}}</li>
+                    <li *ngFor="let taggame of game.tags" 
+                        [title]="taggame.tag.description || ''"
+                        [class.clickable]="can('game_tag_remove')" (click)="removeTag(taggame)">
+                        <i class="fa fa-hashtag"></i> {{taggame.tag.name}}</li>
                 </ul>
             </div>
 
             <hr />
 
-            <div class="description" [innerHTML]="game.Description ? game.Description : 'No Description'" *ngIf="!editDescriptionShown"></div>
+            <div class="description" 
+                [innerHTML]="game.description ? game.description : 'No Description'"
+                *ngIf="!editDescriptionShown"></div>
 
-            <textarea name="description" class="description" [(ngModel)]="newDescriptionText" *ngIf="editDescriptionShown"></textarea>
+            <textarea name="description"
+                class="description"
+                [(ngModel)]="newDescriptionText" 
+                *ngIf="editDescriptionShown"></textarea>
 
             <div class="button-group" *ngIf="can('game_edit')">
                 <div class="button" *ngIf="!editDescriptionShown" (click)="showEditDescription()">EDIT</div>
@@ -131,7 +139,7 @@
         <!--<h4>Discussion</h4>-->
 
         <!--<div class="metadata right">
-            <span>The following has been said about <em>{{game.Names[0].Name}}</em>, or the tags associated with it.</span>
+            <span>The following has been said about <em>{{game.names[0].name}}</em>, or the tags associated with it.</span>
         </div>
 
         <hr />-->
@@ -139,21 +147,20 @@
         <div class="content">
 
             <div *ngFor="let note of notes" class="block">
-                <div class="description" [innerHTML]="note.Description"></div>
+                <div class="description" [innerHTML]="note.description"></div>
                 <div class="metadata right">
-                    <h5>{{note.AddedFirstName}} {{note.AddedLastName}}</h5>
+                    <h5>{{note.addedUser.firstName}} {{note.addedUser.lastName}}</h5>
                     
                     <span>Regarding
                         <i class="fa"
-                            [class.fa-soccer-ball-o]="note.GameID"
-                            [class.fa-hashtag]="note.TagID"
-                            [class.fa-group]="note.PlayerCountID"
-                            [class.fa-clock-o]="note.DurationID"
+                            [class.fa-soccer-ball-o]="note.game"
+                            [class.fa-hashtag]="note.tag"
+                            [class.fa-group]="note.metadata && note.metadata.type == 'playerCount'"
+                            [class.fa-clock-o]="note.metadata && note.metadata.type == 'duration'"
                             ></i>
-                        <em *ngIf="note.GameID">{{game.Names[0].Name}}</em>
-                        <em *ngIf="note.TagID && tagMap">{{tagMap[note.TagID]}}</em>
-                        <em *ngIf="note.PlayerCountID && playerCount">{{playerCount.Name}}</em>
-                        <em *ngIf="note.DurationID && duration">{{duration.Name}}</em>
+                        <em *ngIf="note.game">{{game.names[0].name}}</em>
+                        <em *ngIf="note.tag">{{note.tag.name}}</em>
+                        <em *ngIf="note.metadata">{{note.metadata.name}}</em>
                     </span>
                     
                 </div>

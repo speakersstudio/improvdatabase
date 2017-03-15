@@ -1,21 +1,27 @@
 import { Name } from './name';
-import { TagGame } from '../model/tag-game';
+import { GameMetadata } from './game-metadata';
+import { Note } from './note';
+import { Tag } from './tag';
+
+export class TagGame {
+    _id: string;
+    tag: Tag;
+    addedUser: string;
+    dateAdded: Date;
+}
 
 export class Game {
-    GameID: number;
-    DateModified: string;
-    DateAdded: string;
-    Description: string;
-    DurationID: number;
-    PlayerCountID: number;
-    AddedUserID: number;
-    ModifiedUserID: number;
-    ParentGameID: number;
-    AddedFirstName: string;
-    AddedLastName: string;
-    ModifiedFirstName: string;
-    ModifiedLastName: string;
-
-    Names: Name[];
-    TagGames: TagGame[];
+    _id: string;
+    legacyID: number;
+    names: Name[];
+    description: string;
+    duration: GameMetadata;
+    playerCount: GameMetadata;
+    notes: Note[];
+    tags: TagGame[];
+    parent: string;
+    addedUser: string;
+    modifiedUser: string;
+    dateAdded: Date;
+    dateModified: Date;
 }

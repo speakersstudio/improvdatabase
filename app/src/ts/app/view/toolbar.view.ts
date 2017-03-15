@@ -26,7 +26,7 @@ export class Tool {
 export class SearchResult {
     text: string;
     type: string;
-    id?: number;
+    id?: string;
 }
 
 @Component({

@@ -39,9 +39,23 @@ module.exports = {
             });
     },
 
-    // update: (req, res) => {
-    //     // TODO
-    // }
+    update: (req, res) => {
+        let data = req.body,
+            nameID = req.params.id || req.body._id,
+            userId = req.user._id;
+
+        Name.find({}).where('_id').equals(nameID).exec()
+            .then(name => {
+                name.name = data.name;
+                name.modifiedUser = userId;
+                name.dateModified = Date.now();
+
+                return name.save();
+            })
+            .then(name => {
+                res.json(name);
+            });
+    }
 
     // delete: (req, res) => {
     //     // TODO

@@ -109,8 +109,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
 
         if (!this.game) {
             this.route.params.forEach((params: Params) => {
-                let id = params['id'];
-                console.log(id);
+                let id = params['id']
                 this.gameDatabaseService.getGame(id)
                     .then(game => this.setGame(game));
             });
@@ -383,8 +382,8 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         } else {
             // if there were no matches, we'll create a new tag
             this.gameDatabaseService.createTag(this.newTagText, this.game)
-                .then(game => {
-                    this.setGame(game);
+                .then(taggame => {
+                    this.game.tags.unshift(taggame);
                 });
         }
 
@@ -396,8 +395,9 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     addTag(tag: Tag): void {
         if (this.can('game_tag_add')) {
             this.gameDatabaseService.saveTagToGame(this.game, tag)
-                .then(game => {
-                    this.setGame(game);
+                .then(taggame => {
+                    console.log(taggame);
+                    this.game.tags.unshift(taggame);
                 });
             
             this.newTagText = "";

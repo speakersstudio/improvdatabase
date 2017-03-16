@@ -421,25 +421,27 @@ export class GameDatabaseService {
             .catch(this.handleError);
     }
 
-    private _handleNewTagGame(game, response): TagGame {
+    private _handleNewTagGame(game: Game, response, tag: Tag|string): TagGame {
         let newGame = this._handleNewGame(game, response),
-            tag: TagGame;
+            taggame: TagGame;
 
-        newGame.tags.forEach(taggame => {
-            if (taggame.tag.name == name) {
-                tag = taggame;
+        newGame.tags.forEach(tg => {
+            if ((typeof(tag) != 'string' && tg.tag._id == tag._id) ||
+                (typeof(tag) == 'string' && tg.tag.name == tag)) {
+                taggame = tg;
+                return false;
             }
         });
 
-        return tag;
+        return taggame;
     }
 
-    saveTagToGame(game: Game, tag: Tag): Promise<Game> {
+    saveTagToGame(game: Game, tag: Tag): Promise<TagGame> {
         return this.http.post(this.gamesUrl + '/' + game._id + '/addTag/' + tag._id, {},
             this.userService.getAuthorizationHeader())
             .toPromise()
             .then(response => {
-                return this._handleNewGame(game, response);
+                return this._handleNewTagGame(game, response, tag);
             })
     }
 
@@ -452,13 +454,13 @@ export class GameDatabaseService {
             })
     }
 
-    createTag(name: string, game: Game): Promise<Game> {
+    createTag(name: string, game: Game): Promise<TagGame> {
         return this.http.post(this.gamesUrl + '/' + game._id + '/createTag/' + name, 
             { name: name },
             this.userService.getAuthorizationHeader())
             .toPromise()
             .then(response => {
-                return this._handleNewGame(game, response);
+                return this._handleNewTagGame(game, response, name);
             });
     }
 

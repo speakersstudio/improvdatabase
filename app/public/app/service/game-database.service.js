@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/http");
 require("rxjs/add/operator/toPromise");
@@ -371,21 +372,23 @@ var GameDatabaseService = (function () {
         })
             .catch(this.handleError);
     };
-    GameDatabaseService.prototype._handleNewTagGame = function (game, response) {
-        var newGame = this._handleNewGame(game, response), tag;
-        newGame.tags.forEach(function (taggame) {
-            if (taggame.tag.name == name) {
-                tag = taggame;
+    GameDatabaseService.prototype._handleNewTagGame = function (game, response, tag) {
+        var newGame = this._handleNewGame(game, response), taggame;
+        newGame.tags.forEach(function (tg) {
+            if ((typeof (tag) != 'string' && tg.tag._id == tag._id) ||
+                (typeof (tag) == 'string' && tg.tag.name == tag)) {
+                taggame = tg;
+                return false;
             }
         });
-        return tag;
+        return taggame;
     };
     GameDatabaseService.prototype.saveTagToGame = function (game, tag) {
         var _this = this;
         return this.http.post(this.gamesUrl + '/' + game._id + '/addTag/' + tag._id, {}, this.userService.getAuthorizationHeader())
             .toPromise()
             .then(function (response) {
-            return _this._handleNewGame(game, response);
+            return _this._handleNewTagGame(game, response, tag);
         });
     };
     GameDatabaseService.prototype.deleteTagGame = function (game, taggame) {
@@ -401,7 +404,7 @@ var GameDatabaseService = (function () {
         return this.http.post(this.gamesUrl + '/' + game._id + '/createTag/' + name, { name: name }, this.userService.getAuthorizationHeader())
             .toPromise()
             .then(function (response) {
-            return _this._handleNewGame(game, response);
+            return _this._handleNewTagGame(game, response, name);
         });
     };
     GameDatabaseService.prototype.handleError = function (error) {

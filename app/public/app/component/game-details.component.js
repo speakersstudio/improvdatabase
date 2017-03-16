@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var common_1 = require("@angular/common");
@@ -51,7 +52,6 @@ var GameDetailsComponent = (function () {
         if (!this.game) {
             this.route.params.forEach(function (params) {
                 var id = params['id'];
-                console.log(id);
                 _this.gameDatabaseService.getGame(id)
                     .then(function (game) { return _this.setGame(game); });
             });
@@ -309,8 +309,8 @@ var GameDetailsComponent = (function () {
         else {
             // if there were no matches, we'll create a new tag
             this.gameDatabaseService.createTag(this.newTagText, this.game)
-                .then(function (game) {
-                _this.setGame(game);
+                .then(function (taggame) {
+                _this.game.tags.unshift(taggame);
             });
         }
         this.newTagText = "";
@@ -321,8 +321,9 @@ var GameDetailsComponent = (function () {
         var _this = this;
         if (this.can('game_tag_add')) {
             this.gameDatabaseService.saveTagToGame(this.game, tag)
-                .then(function (game) {
-                _this.setGame(game);
+                .then(function (taggame) {
+                console.log(taggame);
+                _this.game.tags.unshift(taggame);
             });
             this.newTagText = "";
             this.tagHints = [];

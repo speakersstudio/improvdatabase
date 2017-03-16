@@ -9,7 +9,14 @@
         "removeComments": false,
         "noImplicitAny": false,
         "rootDir": "./app/src/ts/",
-        "outDir": "./app/public/"
+        "outDir": "./app/public/",
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+        "lib": [
+            "es2016",
+            "dom"
+        ]
     },
     "compileOnSave": false
 }

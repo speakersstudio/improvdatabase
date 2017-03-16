@@ -2,7 +2,7 @@ const   mongoose = require('mongoose'),
         bcrypt = require('bcrypt-nodejs'),
         
         roles = require('../../roles'),
-        util = require('../util'),
+        util = require('../../util'),
 
         User = require('../../models/user.model'),
 

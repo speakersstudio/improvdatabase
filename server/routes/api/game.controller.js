@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
         
-const   util = require('../util');
+const   util = require('../../util');
 
 const Game = require('../../models/game.model');
 const Tag = require('../../models/tag.model');
@@ -17,7 +17,7 @@ module.exports = {
             },
             gameModel;
         
-        updateGame(Game.create(gameData), data)
+        updateGame(Game.create(gameData), data, userId)
             .then(game => {
                 res.json(gameModel);
             });
@@ -30,10 +30,10 @@ module.exports = {
             userId = req.user._id,
             gameId = req.params.id || data._id;
         
-        updateGame(Game.find({}).where('_id').equals(gameid).exec(), data)
+        return updateGame(Game.findOne({}).where('_id').equals(gameId).exec(), data, userId)
             .then(game => {
-                if (body.description) {
-                    game.description = body.description;
+                if (data.description) {
+                    game.description = data.description;
                 }
                 game.modifiedUser = userId;
                 game.dateModified = Date.now();
@@ -47,18 +47,22 @@ module.exports = {
 
     getAll: (req, res) => {
 
-        getGames().then(games => {
-            res.json(games);
-        });
+        getGames()
+            .catch(err => {
+                util.handleError(req, res, err);
+            }).then(games => {
+                res.json(games);
+            });
 
     },
 
     get: (req, res) => {
-
-        getGames(req.params.id).then(games => {
-            res.json(games[0]);
-        })
-
+        getGames()
+            .catch(err => {
+                util.handleError(req, res, err);
+            }).then(games => {
+                res.json(games[0]);
+            });
     },
 
     addTag: (req, res) => {
@@ -67,7 +71,7 @@ module.exports = {
 
         return getGames(gameId).then(games => {
             let game = games[0];
-            return game.addTagById(tagId, req.user._id);
+            return game.addTag(null, tagId, req.user._id);
         }).then(game => {
             res.json(game);
         });
@@ -79,7 +83,7 @@ module.exports = {
 
         return getGames(gameId).then(games => {
             let game = games[0];
-            return game.removeTagById(tagId, req.user._id);
+            return game.removeTag(tagId, req.user._id);
         }).then(game => {
             res.json(game);
         })
@@ -91,7 +95,7 @@ module.exports = {
         
         return getGames(gameId).then(games => {
             let game = games[0];
-            return game.addTag(tag, req.user._id);
+            return game.addTag(tag, null, req.user._id);
         }).then(game => {
             res.json(game);
         });
@@ -105,17 +109,21 @@ module.exports = {
 
 }
 
-function updateGame(gamePromise, data) {
+function updateGame(gamePromise, data, userId) {
     return gamePromise
         .catch(err => { util.handleError(req,res,err) })
         .then(game => {
             if (data.duration && data.duration != game.duration) {
                 return game.addMetadata(data.duration);
+            } else {
+                return game;
             }
         })
         .then(game => {
             if (data.playerCount && data.playerCount != game.playerCount) {
                 return game.addMetadata(data.playerCount);
+            } else {
+                return game;
             }
         })
         // .then(game => {
@@ -133,20 +141,36 @@ function updateGame(gamePromise, data) {
         //         return handleTag(0);
         //     }
         // })
-        .then(game => {
-            if (data.names && data.names.length) {
-                let handleName = (nameIndex) => {
-                    return game.addName(data.names[nameIndex].name, userId)
-                        .then(game => {
-                            nameIndex++;
-                            if (data.names[nameIndex]) {
-                                return handleName(nameIndex);
-                            }
-                        })
-                }
-                return handleName(0);
-            }
-        });
+        // .then(game => {
+        //     if (data.names && data.names.length != game.names.length) {
+        //         let handleName = (nameIndex) => {
+        //             let name = data.names[nameIndex],
+        //                 newname = true;
+        //             game.names.forEach(n => {
+        //                 if (n.name == name) {
+        //                     newname = false;
+        //                     return false;
+        //                 }
+        //             });
+        //             let promise;
+        //             if (newname) {
+        //                 promise = game.addName(data.names[nameIndex].name, userId);
+        //             } else {
+        //                 promise = game;
+        //             }
+        //             return promise
+        //                     .then(game => {
+        //                         nameIndex++;
+        //                         if (data.names[nameIndex]) {
+        //                             return handleName(nameIndex);
+        //                         }
+        //                     });
+        //         }
+        //         return handleName(0);
+        //     } else {
+        //         return game;
+        //     }
+        // });
 }
 
 function getGames(id) {
@@ -172,14 +196,19 @@ function getGames(id) {
         .populate({
             path: 'tags.tag',
             select: 'name description'
-        });
+        })
+        .populate({
+            path: 'addedUser',
+            select: 'firstName lastName'
+        })
+        .populate({
+            path: 'modifiedUser',
+            select: 'firstName lastName'
+        })
 
     if (id) {
         query.where('_id').equals(id);
     }
 
-    return query.exec()
-        .catch(err => {
-            util.handleError(req, res, err);
-        })
+    return query.exec();
 }

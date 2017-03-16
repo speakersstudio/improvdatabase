@@ -1,4 +1,4 @@
-exports = {
+module.exports = {
 
     smartUpdate: (model, data, whitelist) => {
         whitelist.forEach(name => {
@@ -10,6 +10,7 @@ exports = {
     },
 
     handleError: (req, res, err) => {
+        console.error(err);
         res.status(500).json(err);
     }
 

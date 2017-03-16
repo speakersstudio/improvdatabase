@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
         
-const   util = require('../util');
+const   util = require('../../util');
 
 const Game = require('../../models/game.model');
 const Name = require('../../models/name.model');

@@ -426,7 +426,7 @@ export class GameDatabaseService {
             taggame: TagGame;
 
         newGame.tags.forEach(tg => {
-            if ((typeof(tag) != 'string' && tg.tag._id == tag._id) ||
+            if ((typeof(tag) == 'object' && tg.tag._id == tag._id) ||
                 (typeof(tag) == 'string' && tg.tag.name == tag)) {
                 taggame = tg;
                 return false;

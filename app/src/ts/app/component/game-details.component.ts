@@ -359,13 +359,14 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
             return;
         }
         let index = this.game.tags.indexOf(taggame);
+        console.log('removing tag', taggame, 'index: ', index);
         if (index > -1) {
             this.game.tags.splice(index, 1);
         }
         this.gameDatabaseService.deleteTagGame(this.game, taggame)
-        .then(game => {
-            this.setGame(game);  
-        });
+            // .then(game => {
+            //     this.setGame(game);  
+            // });
     }
 
     addTagByName(): void {
@@ -396,7 +397,6 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         if (this.can('game_tag_add')) {
             this.gameDatabaseService.saveTagToGame(this.game, tag)
                 .then(taggame => {
-                    console.log(taggame);
                     this.game.tags.unshift(taggame);
                 });
             
@@ -418,6 +418,9 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
 
     setGame(game: Game): void {
         this.game = game;
+
+        this.durationID = this.game.duration._id;
+        this.playerCountID = this.game.playerCount._id;
 
         this.gameDatabaseService.getNotesForGame(this.game)
             .then((notes) => this.notes = notes);

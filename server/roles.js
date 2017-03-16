@@ -123,7 +123,11 @@ const actionmap = {
                     return 'game_edit';
                     break;
                 case 'delete':
-                    return 'game_delete';
+                    if (url.indexOf('removeTag')) {
+                        return 'game_tag_remove';
+                    } else {
+                        return 'game_delete';
+                    }
                     break;
                 case 'post':
                     if (url.indexOf('addTag')) {

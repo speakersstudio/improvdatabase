@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
         
-const   util = require('../util');
+const   util = require('../../util');
 
 const Game = require('../../models/game.model');
 const Name = require('../../models/name.model');
@@ -12,12 +12,25 @@ module.exports = {
         let gameId = req.body.game,
             userId = req.user._id;
 
-        Game.find({}).where('_id').equals(gameId).exec()
+        Game.findOne({})
+            .where('_id').equals(gameId)
+            .populate('names')
+            .exec()
+            .catch(err => {
+                util.catchError(req, res, err);
+            })
             .then(game => {
                 return game.addName(req.body.name, userId);
             })
             .then(game => {
-                res.json(game);
+                let name = {};
+                game.names.forEach(n => {
+                    if (n.name && n.name == req.body.name) {
+                        name = n;
+                        return false;
+                    }
+                });
+                res.json(name);
             })
 
     },
@@ -29,7 +42,7 @@ module.exports = {
             .exec()
             .then(names => {
                 res.json(names);
-            })
+            });
     },
 
     get: (req, res) => {
@@ -46,7 +59,7 @@ module.exports = {
             nameID = req.params.id || req.body._id,
             userId = req.user._id;
 
-        Name.find({}).where('_id').equals(nameID).exec()
+        Name.findOne({}).where('_id').equals(nameID).exec()
             .then(name => {
                 name.name = data.name;
                 name.modifiedUser = userId;

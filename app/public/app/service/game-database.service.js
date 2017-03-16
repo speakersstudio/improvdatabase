@@ -375,7 +375,7 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype._handleNewTagGame = function (game, response, tag) {
         var newGame = this._handleNewGame(game, response), taggame;
         newGame.tags.forEach(function (tg) {
-            if ((typeof (tag) != 'string' && tg.tag._id == tag._id) ||
+            if ((typeof (tag) == 'object' && tg.tag._id == tag._id) ||
                 (typeof (tag) == 'string' && tg.tag.name == tag)) {
                 taggame = tg;
                 return false;

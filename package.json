@@ -44,7 +44,7 @@
   "author": "Shauvon McGill <smcgill@denyconformity.com>",
   "devDependencies": {
     "@types/core-js": "^0.9.37",
-    "@types/node": "^6.0.45",
+    "@types/node": "^7.0.8",
     "gulp": "~3.9.1",
     "gulp-compass": "~2.1.0",
     "gulp-copy": "0.0.2",

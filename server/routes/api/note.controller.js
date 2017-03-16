@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
         
-const   util = require('../util');
+const   util = require('../../util');
 
 const Note = require('../../models/note.model');
 

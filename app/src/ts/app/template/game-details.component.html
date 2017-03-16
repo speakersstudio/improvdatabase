@@ -73,7 +73,7 @@
                     <span *ngIf="!editDurationShown"
                         [class.clickable]="can('game_edit')"
                         (click)="showEditDuration()">
-                        {{duration ? duration.name : 'No Duration'}}</span>
+                            {{game.duration ? game.duration.name : 'No Duration'}}</span>
 
                     <select name="duration"
                         *ngIf="editDurationShown"

@@ -78,7 +78,7 @@ exports.delete = function(req,res) {
 };
 exports.method = function(req,res) {
     if (ops[req.params.op] && ops[req.params.op][req.params.method]) {
-        console.log(req.params.method + " " + req.params.op, req.params.id);
+        console.log("Method requested:", req.params.method + " ON " + req.params.op, req.params.id);
         ops[req.params.op][req.params.method](req,res);
     } else {
         res.send('404', 'Not Found');

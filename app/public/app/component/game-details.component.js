@@ -281,18 +281,18 @@ var GameDetailsComponent = (function () {
         }
     };
     GameDetailsComponent.prototype.removeTag = function (taggame) {
-        var _this = this;
         if (!this.can('game_tag_remove')) {
             return;
         }
         var index = this.game.tags.indexOf(taggame);
+        console.log('removing tag', taggame, 'index: ', index);
         if (index > -1) {
             this.game.tags.splice(index, 1);
         }
-        this.gameDatabaseService.deleteTagGame(this.game, taggame)
-            .then(function (game) {
-            _this.setGame(game);
-        });
+        this.gameDatabaseService.deleteTagGame(this.game, taggame);
+        // .then(game => {
+        //     this.setGame(game);  
+        // });
     };
     GameDetailsComponent.prototype.addTagByName = function () {
         var _this = this;
@@ -322,7 +322,6 @@ var GameDetailsComponent = (function () {
         if (this.can('game_tag_add')) {
             this.gameDatabaseService.saveTagToGame(this.game, tag)
                 .then(function (taggame) {
-                console.log(taggame);
                 _this.game.tags.unshift(taggame);
             });
             this.newTagText = "";
@@ -341,6 +340,8 @@ var GameDetailsComponent = (function () {
     GameDetailsComponent.prototype.setGame = function (game) {
         var _this = this;
         this.game = game;
+        this.durationID = this.game.duration._id;
+        this.playerCountID = this.game.playerCount._id;
         this.gameDatabaseService.getNotesForGame(this.game)
             .then(function (notes) { return _this.notes = notes; });
     };

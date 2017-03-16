@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/http");
 require("rxjs/add/operator/toPromise");
@@ -18,10 +19,10 @@ var GameDatabaseService = (function () {
         this.userService = userService;
         this.gamesUrl = '/api/game';
         this.namesUrl = '/api/name';
-        this.playerCountUrl = '/api/playerCount';
-        this.durationUrl = '/api/duration';
+        this.metadataUrl = '/api/metadata';
+        this.playerCountUrl = '/api/metadata/playerCount';
+        this.durationUrl = '/api/metadata/duration';
         this.tagUrl = '/api/tag';
-        this.tagGameUrl = '/api/tagGame';
         this.noteUrl = '/api/note';
         // cache all the things
         this.games = [];
@@ -29,54 +30,27 @@ var GameDatabaseService = (function () {
         this.playercounts = [];
         this.durations = [];
         this.tags = [];
-        this.tagGames = [];
         this.notes = [];
     }
-    // TODO: there's probably way too much in this file now
-    GameDatabaseService.prototype.getGames = function (sortProperty) {
-        var _this = this;
-        if (sortProperty === void 0) { sortProperty = 'name'; }
-        console.log('getting games, sorting by ', sortProperty);
-        return Promise.all([this._getGames(), this.getNames(), this.getTagGames()])
-            .then(function () {
-            // set it and forget it
-            _this.games.forEach(function (game) { return _this._setupGame(game); });
-            _this.sortProperty = sortProperty;
-            _this.games = _this._sortGames();
-            return _this.games;
-        });
-    };
-    GameDatabaseService.prototype._setupGame = function (game) {
-        game.Names = this.getNamesByGameID(game.GameID);
-        game.TagGames = this.getTagGamesByGameID(game.GameID);
-        return game;
-    };
-    GameDatabaseService.prototype.getGame = function (id) {
-        var _this = this;
-        return Promise.all([this._getGame(id), this.getNames(), this.getTagGames()])
-            .then(function (vals) {
-            var game = vals[0];
-            return _this._setupGame(game);
-        });
-    };
-    GameDatabaseService.prototype._getGames = function () {
+    GameDatabaseService.prototype.getGames = function () {
         var _this = this;
         if (!this._gamePromise) {
             this._gamePromise = this.http.get(this.gamesUrl, this.userService.getAuthorizationHeader())
                 .toPromise()
                 .then(function (response) {
                 _this.games = response.json();
+                _this._sortGames();
                 return _this.games;
             })
                 .catch(this.handleError);
         }
         return this._gamePromise;
     };
-    GameDatabaseService.prototype._getGame = function (id) {
+    GameDatabaseService.prototype.getGame = function (id) {
         var gameToReturn;
         if (this.games.length > 0) {
             this.games.forEach(function (game) {
-                if (game.GameID === id) {
+                if (game._id === id) {
                     gameToReturn = game;
                 }
             });
@@ -89,29 +63,21 @@ var GameDatabaseService = (function () {
             return this.http.get(this.gamesUrl + '/' + id, this.userService.getAuthorizationHeader())
                 .toPromise()
                 .then(function (response) {
-                return response.json()[0];
+                return response.json();
             })
                 .catch(this.handleError);
         }
     };
     GameDatabaseService.prototype._sortGames = function () {
-        if (this.sortProperty === 'name') {
-            this.games.sort(function (g1, g2) {
-                if (!g1.Names.length) {
-                    return -1;
-                }
-                if (!g2.Names.length) {
-                    return 1;
-                }
-                if (g1.Names[0].Name > g2.Names[0].Name) {
-                    return 1;
-                }
-                if (g1.Names[0].Name < g2.Names[0].Name) {
-                    return -1;
-                }
-                return 0;
-            });
-        }
+        this.games.sort(function (g1, g2) {
+            if (!g1.names.length) {
+                return -1;
+            }
+            if (!g2.names.length) {
+                return 1;
+            }
+            return g1.names[0].name.localeCompare(g2.names[0].name);
+        });
         return this.games;
     };
     GameDatabaseService.prototype.getNames = function () {
@@ -127,33 +93,44 @@ var GameDatabaseService = (function () {
         }
         return this._namePromise;
     };
+    /**
+     * A convenience method to search any array of items for any that are linked to a given game id
+     */
     GameDatabaseService.prototype._getItemsByGameID = function (items, id) {
         var returnItems = [];
         items.forEach(function (item) {
-            if (item.GameID && item.GameID == id) {
+            if (item.game && item.game == id) {
+                returnItems.push(item);
+            }
+            else if (item.games && item.games.indexOf(id) > -1) {
                 returnItems.push(item);
             }
         });
         return returnItems;
     };
-    GameDatabaseService.prototype.getNamesByGameID = function (id) {
-        var names = this._getItemsByGameID(this.names, id);
-        names.sort(function (n1, n2) {
-            var comp = n2.Weight - n1.Weight;
-            if (comp === 0) {
-                return n1.DateModified > n2.DateModified ? -1 : 1;
-            }
-            else {
-                return comp;
-            }
-        });
-        return names;
-    };
+    /**
+     * This method isn't necessary anymore because names are delivered with games now
+     */
+    // getNamesByGameID(id: number): Name[] {
+    //     let names: Name[] = this._getItemsByGameID(this.names, id);
+    //     names.sort((n1, n2) => {
+    //         let comp = n2.Weight - n1.Weight;
+    //         if (comp === 0) {
+    //             return n1.DateModified > n2.DateModified ? -1 : 1;
+    //         } else {
+    //             return comp;
+    //         }
+    //     });
+    //     return names;
+    // }
+    /**
+     * Creates a new name for the given gameID, making a post to /api/name
+     */
     GameDatabaseService.prototype.createName = function (gameID, name) {
         var _this = this;
         return this.http.post(this.namesUrl, {
-            GameID: gameID,
-            Name: name
+            game: gameID,
+            name: name
         }, this.userService.getAuthorizationHeader())
             .toPromise()
             .then(function (response) {
@@ -163,9 +140,12 @@ var GameDatabaseService = (function () {
         })
             .catch(this.handleError);
     };
+    /**
+     * Updates a name on the server, making a PUT call to /api/name/:_id
+     */
     GameDatabaseService.prototype.saveName = function (name) {
         var _this = this;
-        return this.http.put(this.namesUrl + '/' + name.NameID, name, this.userService.getAuthorizationHeader())
+        return this.http.put(this.namesUrl + '/' + name._id, name, this.userService.getAuthorizationHeader())
             .toPromise()
             .then(function (response) {
             var newName = response.json();
@@ -176,28 +156,9 @@ var GameDatabaseService = (function () {
             else {
                 _this.names.push(newName);
             }
-            if (_this.sortProperty == 'name') {
-                _this._sortGames();
-            }
+            _this._sortGames();
             return newName;
         });
-    };
-    GameDatabaseService.prototype.getTagGames = function () {
-        var _this = this;
-        if (!this._tagGamePromise) {
-            this._tagGamePromise = this.http.get(this.tagGameUrl, this.userService.getAuthorizationHeader())
-                .toPromise()
-                .then(function (response) {
-                _this.tagGames = response.json();
-                return _this.tagGames;
-            })
-                .catch(this.handleError);
-        }
-        return this._tagGamePromise;
-    };
-    GameDatabaseService.prototype.getTagGamesByGameID = function (id) {
-        var tagGames = this._getItemsByGameID(this.tagGames, id);
-        return tagGames;
     };
     GameDatabaseService.prototype.getPlayerCounts = function () {
         var _this = this;
@@ -217,7 +178,7 @@ var GameDatabaseService = (function () {
         return new Promise(function (resolve, reject) {
             _this.getPlayerCounts().then(function (playercounts) {
                 playercounts.forEach(function (playercount) {
-                    if (playercount.PlayerCountID == id) {
+                    if (playercount._id == id) {
                         resolve(playercount);
                     }
                 });
@@ -226,11 +187,12 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.createPlayerCount = function (name, min, max, description) {
         var _this = this;
-        return this.http.post(this.playerCountUrl, {
-            Name: name,
-            Min: min,
-            Max: max,
-            Description: description
+        return this.http.post(this.metadataUrl, {
+            name: name,
+            min: min,
+            max: max,
+            type: 'playerCount',
+            description: description
         }, this.userService.getAuthorizationHeader())
             .toPromise()
             .then(function (response) {
@@ -257,7 +219,7 @@ var GameDatabaseService = (function () {
         return new Promise(function (resolve, reject) {
             _this.getDurations().then(function (durations) {
                 durations.forEach(function (duration) {
-                    if (duration.DurationID == id) {
+                    if (duration._id == id) {
                         resolve(duration);
                     }
                 });
@@ -266,10 +228,11 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.createDuration = function (name, min, max, description) {
         var _this = this;
-        return this.http.post(this.durationUrl, {
+        return this.http.post(this.metadataUrl, {
             Name: name,
             Min: min,
             Max: max,
+            type: 'duration',
             Description: description
         }, this.userService.getAuthorizationHeader())
             .toPromise()
@@ -304,7 +267,7 @@ var GameDatabaseService = (function () {
         return new Promise(function (resolve, reject) {
             _this.getTags().then(function (tags) {
                 tags.forEach(function (tag) {
-                    if (tag.TagID == id) {
+                    if (tag._id == id) {
                         resolve(tag);
                     }
                 });
@@ -313,8 +276,8 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.gameHasTag = function (game, tagIDs) {
         var foundTagGame = false;
-        game.TagGames.forEach(function (taggame) {
-            if (tagIDs.indexOf(taggame.TagID) > -1) {
+        game.tags.forEach(function (taggame) {
+            if (tagIDs.includes(taggame.tag._id)) {
                 foundTagGame = true;
                 return false;
             }
@@ -345,12 +308,15 @@ var GameDatabaseService = (function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
             _this.getNotes().then(function (notes) {
+                // TODO: make this logic server-side
                 var notesForGame = [];
                 notes.forEach(function (note) {
-                    if (note.GameID == game.GameID
-                        || (game.PlayerCountID && note.PlayerCountID == game.PlayerCountID)
-                        || (game.DurationID && note.DurationID == game.DurationID)
-                        || (note.TagID && _this.gameHasTag(game, [note.TagID]))) {
+                    if (note.game == game._id
+                        || (game.playerCount._id && note.metadata &&
+                            note.metadata._id == game.playerCount._id)
+                        || (game.duration._id && note.metadata &&
+                            note.metadata._id == game.duration._id)
+                        || (note.tag && _this.gameHasTag(game, [note.tag._id]))) {
                         notesForGame.push(note);
                     }
                 });
@@ -360,7 +326,7 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.deleteGame = function (game) {
         var _this = this;
-        return this.http.delete(this.gamesUrl + '/' + game.GameID, this.userService.getAuthorizationHeader())
+        return this.http.delete(this.gamesUrl + '/' + game._id, this.userService.getAuthorizationHeader())
             .toPromise()
             .then(function (response) {
             _this._removeGameFromArray(game);
@@ -374,20 +340,23 @@ var GameDatabaseService = (function () {
         }
         return index;
     };
+    GameDatabaseService.prototype._handleNewGame = function (game, response) {
+        var index = this._removeGameFromArray(game);
+        var newGame = response.json();
+        if (index > -1) {
+            this.games.splice(index, 0, newGame);
+        }
+        else {
+            this.games.push(newGame);
+        }
+        return newGame;
+    };
     GameDatabaseService.prototype.saveGame = function (game) {
         var _this = this;
-        return this.http.put(this.gamesUrl + '/' + game.GameID, game, this.userService.getAuthorizationHeader())
+        return this.http.put(this.gamesUrl + '/' + game._id, game, this.userService.getAuthorizationHeader())
             .toPromise()
             .then(function (response) {
-            var index = _this._removeGameFromArray(game);
-            var newGame = _this._setupGame(response.json());
-            if (index > -1) {
-                _this.games.splice(index, 0, newGame);
-            }
-            else {
-                _this.games.push(newGame);
-            }
-            return newGame;
+            return _this._handleNewGame(game, response);
         })
             .catch(this.handleError);
     };
@@ -397,58 +366,45 @@ var GameDatabaseService = (function () {
             .toPromise()
             .then(function (response) {
             var game = response.json();
-            _this.games.push(_this._setupGame(game));
+            _this.games.push(game);
             _this._sortGames();
             return game;
-        });
+        })
+            .catch(this.handleError);
     };
-    GameDatabaseService.prototype._addTagToGame = function (game, taggame) {
-        this.tagGames.push(taggame);
-        game.TagGames.push(taggame);
+    GameDatabaseService.prototype._handleNewTagGame = function (game, response, tag) {
+        var newGame = this._handleNewGame(game, response), taggame;
+        newGame.tags.forEach(function (tg) {
+            if ((typeof (tag) == 'object' && tg.tag._id == tag._id) ||
+                (typeof (tag) == 'string' && tg.tag.name == tag)) {
+                taggame = tg;
+                return false;
+            }
+        });
+        return taggame;
     };
     GameDatabaseService.prototype.saveTagToGame = function (game, tag) {
         var _this = this;
-        return this.http.post(this.tagGameUrl, {
-            TagID: tag.TagID,
-            GameID: game.GameID
-        }, this.userService.getAuthorizationHeader())
+        return this.http.post(this.gamesUrl + '/' + game._id + '/addTag/' + tag._id, {}, this.userService.getAuthorizationHeader())
             .toPromise()
             .then(function (response) {
-            var taggame = response.json();
-            _this._addTagToGame(game, taggame);
-            return taggame;
+            return _this._handleNewTagGame(game, response, tag);
         });
     };
-    GameDatabaseService.prototype.deleteTagGame = function (taggame) {
+    GameDatabaseService.prototype.deleteTagGame = function (game, taggame) {
         var _this = this;
-        return this.http.delete(this.tagGameUrl + '/' + taggame.TagGameID, this.userService.getAuthorizationHeader())
+        return this.http.delete(this.gamesUrl + '/' + game._id + '/removeTag/' + taggame.tag._id, this.userService.getAuthorizationHeader())
             .toPromise()
-            .then(function () {
-            var index = _this.tagGames.indexOf(taggame);
-            if (index > -1) {
-                _this.tagGames.splice(index, 1);
-            }
-            _this.getGame(taggame.GameID)
-                .then(function (game) { return _this._setupGame(game); });
-            return true;
+            .then(function (response) {
+            return _this._handleNewGame(game, response);
         });
     };
     GameDatabaseService.prototype.createTag = function (name, game) {
         var _this = this;
-        var postObj = {
-            Name: name,
-            GameID: game.GameID
-        };
-        return this.http.post(this.tagUrl, postObj, this.userService.getAuthorizationHeader())
+        return this.http.post(this.gamesUrl + '/' + game._id + '/createTag/' + name, { name: name }, this.userService.getAuthorizationHeader())
             .toPromise()
             .then(function (response) {
-            console.log(response.json());
-            var resObj = response.json();
-            var tag = resObj['Tag'];
-            _this.tags.push(tag);
-            var taggame = resObj['TagGame'];
-            _this._addTagToGame(game, taggame);
-            return tag;
+            return _this._handleNewTagGame(game, response, name);
         });
     };
     GameDatabaseService.prototype.handleError = function (error) {
@@ -501,10 +457,10 @@ var GameDatabaseService = (function () {
                 ])
                     .then(function (items) {
                     searchResults = []
-                        .concat(_this._searchArray(items[0], 'name', 'GameID', term))
-                        .concat(_this._searchArray(items[1], 'tag', 'TagID', term))
-                        .concat(_this._searchArray(items[2], 'duration', 'DurationID', term))
-                        .concat(_this._searchArray(items[3], 'playercount', 'PlayerCountID', term));
+                        .concat(_this._searchArray(items[0], 'name', 'game', term))
+                        .concat(_this._searchArray(items[1], 'tag', '_id', term))
+                        .concat(_this._searchArray(items[2], 'duration', '_id', term))
+                        .concat(_this._searchArray(items[3], 'playercount', '_id', term));
                     // TODO: include player count and durations by actual values if the term is a number?
                     searchResults = _this._sortSearchResults(searchResults);
                     resolve(searchResults);
@@ -520,7 +476,7 @@ var GameDatabaseService = (function () {
             if (term) {
                 _this.getTags().then(function (tags) {
                     tags.forEach(function (tag) {
-                        if (tag.Name.toLocaleLowerCase().indexOf(term) > -1) {
+                        if (tag.name.toLocaleLowerCase().indexOf(term) > -1) {
                             matchingTags.push(tag);
                         }
                     });
@@ -545,36 +501,36 @@ var GameDatabaseService = (function () {
                     // search the tags
                     var tagResults = [];
                     items[1].forEach(function (tag) {
-                        if (tag.Name.toLowerCase().indexOf(term) > -1) {
-                            tagResults.push(tag.TagID);
+                        if (tag.name.toLowerCase().indexOf(term) > -1) {
+                            tagResults.push(tag._id);
                         }
                     });
                     // search the durations
                     var durationResults = [];
                     items[2].forEach(function (duration) {
-                        if (duration.Name.toLowerCase().indexOf(term) > -1) {
-                            durationResults.push(duration.DurationID);
+                        if (duration.name.toLowerCase().indexOf(term) > -1) {
+                            durationResults.push(duration._id);
                         }
                     });
                     // search the player counts
                     var playerCountResults = [];
                     items[3].forEach(function (playercount) {
-                        if (playercount.Name.toLowerCase().indexOf(term) > -1) {
-                            playerCountResults.push(playercount.PlayerCountID);
+                        if (playercount.name.toLowerCase().indexOf(term) > -1) {
+                            playerCountResults.push(playercount._id);
                         }
                     });
                     // loop through the games
                     items[0].forEach(function (game) {
                         // add it if a tag matches or if the playercount or duration matches
                         if (_this.gameHasTag(game, tagResults) ||
-                            durationResults.indexOf(game.DurationID) > -1 ||
-                            playerCountResults.indexOf(game.PlayerCountID) > -1) {
+                            durationResults.includes(game.duration._id) ||
+                            playerCountResults.includes(game.playerCount._id)) {
                             gameResults.push(game);
                         }
                         else {
                             // add it if a name matches
-                            game.Names.forEach(function (name) {
-                                if (name.Name.toLowerCase().indexOf(term) > -1 &&
+                            game.names.forEach(function (name) {
+                                if (name.name.toLowerCase().indexOf(term) > -1 &&
                                     gameResults.indexOf(game) == -1) {
                                     gameResults.push(game);
                                 }

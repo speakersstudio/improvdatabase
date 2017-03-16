@@ -107,11 +107,39 @@ const actionmap = {
      */
 
     // TODO: add name voting route here
-    tagGame: {
-        get: 'tag_view',
-        post: 'game_tag_add',
-        put: 'game_tag_add',
-        delete: 'game_tag_remove'
+    // tagGame: {
+    //     get: 'tag_view',
+    //     post: 'game_tag_add',
+    //     put: 'game_tag_add',
+    //     delete: 'game_tag_remove'
+    // },
+    game: {
+        default: function(url, method, user) {
+            switch(method) {
+                case 'get':
+                    return 'game_view';
+                    break;
+                case 'put':
+                    return 'game_edit';
+                    break;
+                case 'delete':
+                    if (url.indexOf('removeTag')) {
+                        return 'game_tag_remove';
+                    } else {
+                        return 'game_delete';
+                    }
+                    break;
+                case 'post':
+                    if (url.indexOf('addTag')) {
+                        return 'game_tag_add';
+                    } else if (url.indexOf('removeTag')) {
+                        return 'game_tag_remove';
+                    } else if (url.indexOf('createTag')) {
+                        return 'tag_create';
+                    }
+                    break;
+            }
+        }
     },
     duration: {
         base: 'metadata'
@@ -125,11 +153,11 @@ const actionmap = {
             switch(method) {
                 case 'post':
                     // TODO: allow POST for private notes, when those are a thing
-                    return doesUserHaveAction('note_public_create');
+                    return 'note_public_create';
                     break;
                 case 'put':
                     // TODO: allow PUT on a user's own notes
-                    return doesUserHaveAction('note_public_edit');
+                    return 'note_public_edit';
                     break;
             }
         }
@@ -216,12 +244,22 @@ findActionForUrl = function(url, method) {
 
 exports.canUserHave = function(url, method, user) {
     method = method.toLowerCase();
-    let action = findActionForUrl(url, method);
+    let action = findActionForUrl(url, method),
+        val;
 
     if (typeof(action) === 'function') {
-        console.log('Action for ' + method + ':' + url + ' is a function');
-        return action(url, method, user);
-    } else if (action) {
+        val = action(url, method, user);
+
+        if (typeof val !== 'string') {
+            console.log('Action for ' + method + ':' + url + ' is a function');
+            return val;
+        }
+    }
+    if (val) {
+        action = val;
+    }
+    
+    if (action) {
         console.log('Action for ' + method + ':' + url + ' is ' + action);
         return doesUserHaveAction(user, action);
     }

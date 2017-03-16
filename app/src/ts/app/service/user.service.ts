@@ -57,7 +57,7 @@ export class UserService {
         this.loggedInUser = responseData['user'];
 
         // don't save the password
-        this.loggedInUser.Password = "";
+        this.loggedInUser.password = "";
 
         this.announceLoginState();
 
@@ -100,7 +100,7 @@ export class UserService {
      */
     updateUser(password: string): Promise<User> {
         if (password) {
-            this.loggedInUser.Password = password;
+            this.loggedInUser.password = password;
         }
         return this.http.put(this.userUrl + this.loggedInUser._id, this.loggedInUser, 
             this.getAuthorizationHeader())

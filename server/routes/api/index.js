@@ -1,17 +1,12 @@
 var connection = require("../connection"),
 
     ops     = {
-        "user": require('./user'),
-        "game": require('./game'),
-        "duration": require('./duration'),
-        "playerCount": require('./playerCount'),
-        "name": require("./name"),
-        "note": require("./note"),
-        "tag": require("./tag"),
-        // "suggestion": require("./suggestion"),
-        // "suggestionType": require("./suggestionType"),
-        // "suggestionTypeGame": require("./suggestionTypeGame"),
-        "tagGame": require("./tagGame"),
+        "user": require('./user.controller'),
+        "game": require('./game.controller'),
+        "metadata": require('./metadata.controller'),
+        "name": require('./name.controller'), 
+        "note": require('./note.controller'),
+        "tag": require('./tag.controller'),
 
         "package": require('./package.controller'),
         "subscription": require('./subscription.controller'),
@@ -83,7 +78,7 @@ exports.delete = function(req,res) {
 };
 exports.method = function(req,res) {
     if (ops[req.params.op] && ops[req.params.op][req.params.method]) {
-        console.log(req.params.method + " " + req.params.op, req.params.id);
+        console.log("Method requested:", req.params.method + " ON " + req.params.op, req.params.id);
         ops[req.params.op][req.params.method](req,res);
     } else {
         res.send('404', 'Not Found');

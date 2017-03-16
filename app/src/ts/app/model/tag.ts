@@ -1,8 +1,12 @@
 export class Tag {
-    TagID: number;
-    Name: string;
-    Description: string;
-    DateAdded: string;
-    AddedUserID: number;
-    ModifiedUserID: number;
+    _id: string;
+    legacyID: number;
+    name: string;
+    description: string;
+    games: string[];
+    notes: string[];
+    addedUser: string;
+    modifiedUser: string;
+    dateAdded: Date;
+    dateModified: Date;
 }

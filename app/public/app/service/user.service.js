@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/http");
 require("rxjs/add/operator/toPromise");
@@ -48,7 +49,7 @@ var UserService = (function () {
         this.tokenExpires = responseData['expires'];
         this.loggedInUser = responseData['user'];
         // don't save the password
-        this.loggedInUser.Password = "";
+        this.loggedInUser.password = "";
         this.announceLoginState();
         return this.loggedInUser;
     };
@@ -83,9 +84,9 @@ var UserService = (function () {
     UserService.prototype.updateUser = function (password) {
         var _this = this;
         if (password) {
-            this.loggedInUser.Password = password;
+            this.loggedInUser.password = password;
         }
-        return this.http.put(this.userUrl + this.loggedInUser.UserID, this.loggedInUser, this.getAuthorizationHeader())
+        return this.http.put(this.userUrl + this.loggedInUser._id, this.loggedInUser, this.getAuthorizationHeader())
             .toPromise()
             .then(function (response) {
             _this.loggedInUser = response.json();

@@ -12,8 +12,7 @@ import { GameDatabaseService } from '../service/game-database.service';
 
 import { Game } from '../model/game';
 import { Name } from '../model/name';
-import { PlayerCount } from '../model/player-count';
-import { Duration } from '../model/duration';
+import { GameMetadata } from '../model/game-metadata';
 import { Tag } from '../model/tag';
 
 @Component({
@@ -23,8 +22,8 @@ import { Tag } from '../model/tag';
 })
 export class GameCardView implements OnInit, OnDestroy {
     @Input() game: Game;
-    playerCount: PlayerCount;
-    duration: Duration;
+    playerCount: GameMetadata;
+    duration: GameMetadata;
 
     iconClass:string = "rocket";
     iconDescription: string;
@@ -38,40 +37,33 @@ export class GameCardView implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
+        // this will create a description string without any HTML tags in it
         let div = document.createElement("div");
-        div.innerHTML = this.game.Description;
-        this.descriptionText = div.textContent || div.innerText || this.game.Description;
+        div.innerHTML = this.game.description;
+        this.descriptionText = div.textContent || div.innerText || this.game.description;
 
-        this.gameDatabaseService.getPlayerCountById(this.game.PlayerCountID)
-            .then((playercount) => this.playerCount = playercount);
+        // this.gameDatabaseService.getPlayerCountById(this.game.PlayerCountID)
+        //     .then((playercount) => this.playerCount = playercount);
 
-        this.gameDatabaseService.getDurationById(this.game.DurationID)
-            .then((duration) => this.duration = duration);
+        // this.gameDatabaseService.getDurationById(this.game.DurationID)
+        //     .then((duration) => this.duration = duration);
 
-        this.loadTags();
-    }
-
-    loadTags(): void {
-        this.game.TagGames.forEach((tagGame) => {
-            this.gameDatabaseService.getTagById(tagGame.TagID)
-                .then((tag) => {
-                    this.tags.push(tag);
-                    switch(tag.Name.toLowerCase()) {
-                        case 'show':
-                            this.iconClass = 'ticket';
-                            this.iconDescription = tag.Description;
-                            break;
-                        case 'exercise':
-                            this.iconClass = 'lightbulb-o';
-                            this.iconDescription = tag.Description;
-                            break;
-                        case 'warmup':
-                            this.iconClass = 'fire';
-                            this.iconDescription = tag.Description;
-                            break;
-                    }
-                });
-        });
+        this.game.tags.forEach(taggame => {
+            switch(taggame.tag.name.toLowerCase()) {
+                case 'show':
+                    this.iconClass = 'ticket';
+                    this.iconDescription = taggame.tag.description;
+                    break;
+                case 'exercise':
+                    this.iconClass = 'lightbulb-o';
+                    this.iconDescription = taggame.tag.description;
+                    break;
+                case 'warmup':
+                    this.iconClass = 'fire';
+                    this.iconDescription = taggame.tag.description;
+                    break;
+            }
+        })
     }
 
     /*

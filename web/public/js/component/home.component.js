@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var http_1 = require("@angular/http");
@@ -57,6 +58,13 @@ var HomeComponent = (function () {
             else {
                 this.resizeVideo();
             }
+        }
+        var heroes = document.querySelectorAll('.hero');
+        for (var i = 0; i < heroes.length; i++) {
+            var h = heroes[i];
+            var rect = h.getBoundingClientRect();
+            this._app.whiteBracketTop = rect.top;
+            this._app.whiteBracketBottom = rect.bottom;
         }
     };
     HomeComponent.prototype.resizeVideo = function () {
@@ -125,6 +133,8 @@ var HomeComponent = (function () {
                         if (newstate.data === _this.YT.PlayerState.BUFFERING
                             && 1 !== player.getVideoLoadedFraction()
                             && (0 === player.getCurrentTime() || player.getCurrentTime() > totalLength - -0.1)) {
+                            // this.logger("BUFFERING")
+                            // this.autoPlayTestTimeout();
                         }
                         else if (newstate.data === _this.YT.PlayerState.PLAYING) {
                             _this.player.getIframe().style.opacity = 1;
@@ -139,7 +149,7 @@ var HomeComponent = (function () {
         } // end of if YT is loaded yet
     }; // end of ngOnInit
     HomeComponent.prototype.scrollBelowLanding = function () {
-        this._scrollTo(this.bgheight, 500);
+        this._scrollTo(this._app.pageStart - 10, 800);
     };
     HomeComponent.prototype._scrollTo = function (to, duration) {
         var maxScroll = document.body.scrollHeight - window.innerHeight;
@@ -210,7 +220,8 @@ HomeComponent = __decorate([
         selector: "home",
         templateUrl: "../template/home.component.html",
         animations: [
-            anim_util_1.DialogAnim.dialog
+            anim_util_1.DialogAnim.dialog,
+            anim_util_1.FadeAnim.fade
         ]
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,

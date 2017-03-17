@@ -1,56 +1,234 @@
+<div class="toolbar" [class.on]="_app.pagepos <= 20">
+    <div class="toolbar-row">
+        <iplus class="white" [text]="'Log in'" (click)="login()" *ngIf="!_app.loaderVisible"></iplus>
+
+        <a href="#">Join</a>
+
+        <a href="/app">Log In <i class="fa fa-chevron-right"></i></a>
+    </div>
+</div>
+
 <div class="landing" (window:resize)="setupSize()">
 
-    <div class="background">
+    <div class="background" [style.opacity]="((_app.pagepos) / (_app.pageStart - 200))">
         <img [style.width]="bgwidth + 'px'" [style.height]="bgheight + 'px'" [style.left]="-bgleft + 'px'" [style.top]="-bgtop + 'px'" src="/images/home-background.png" />
         <div id="player"></div>
     </div>
 
-    <iplus class="white" [text]="'Log in'" (click)="login()" *ngIf="!_app.loaderVisible"></iplus>
+    <div class="content" [style.top]="-(_app.scrollpos * 0.4) + 'px'" 
+        [style.opacity]="((_app.pagepos + 75) / (_app.pageStart - 175))">
 
-    <div class="content">
         <h1><span class="light">improv</span><strong>plus</strong></h1>
         <h2>Adding new dimension to talent development.</h2>
 
-        <a class="button brackets" (click)="showGetNotified()">Get Notified</a>
+        <div class="block">
+            <p>Welcome to ImprovPlus - our most popular Improv workshops distilled into comprehensive guides for Facilitators and Trainers to use. We walk you through the activities, the agenda, the questions, and the discussion that will bring out the best in your team. Whether you are a new Trainer looking for accessible training guides or a seasoned Facilitator looking for a new approach we have a solution for you.</p>
+        </div>
     </div>
 
-    <i class="fa fa-chevron-down clickable" (click)="scrollBelowLanding()"></i>
+    <i class="fa fa-chevron-down clickable" [style.bottom]="(_app.scrollpos + 16) + 'px'" (click)="scrollBelowLanding()"></i>
 
 </div>
+
+<div class="landing-holder"></div>
 
 <div class="page">
 
     <div class="paper center">
 
-        <h4>IMPROV + TRAINING = <span class="light">improv</span><strong>plus</strong></h4>
+        <div class="block">
+            <h4>IMPROV + TRAINING = <span class="light">improv</span><strong>plus</strong></h4>
 
-        <p><em>ImprovPlus will be launched by The Speaker’s Studio in May of 2016.</em></p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla tempus sodales libero nec dignissim. Aliquam feugiat magna lectus, eu pulvinar neque pellentesque non. Donec vel porttitor sem, at porta eros. Morbi vestibulum ornare neque in aliquam. Integer sed lacus et urna condimentum elementum non a ipsum. Mauris eget congue erat, in ultrices erat. Sed non risus at nibh tristique gravida et eu quam. Curabitur elit lacus, elementum sit amet varius a, vehicula vel lectus. Praesent egestas libero dolor, eget viverra ipsum sodales et. Cras id nulla in est facilisis porttitor. Aliquam non arcu blandit, faucibus felis quis, maximus odio. Aenean sit amet diam a mi volutpat consectetur. Aliquam hendrerit eu ipsum ac auctor. Curabitur semper quam et metus euismod, vitae ultrices elit condimentum. </p>
+            <p>Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Cras iaculis nulla non lacus ornare blandit. Quisque consectetur, nibh sit amet convallis mattis, mauris dui viverra quam, et euismod elit mauris id mauris. Aenean nec dui quis quam elementum sollicitudin. Morbi ullamcorper, risus eu luctus rhoncus, est mi sodales lacus, a tincidunt tortor tortor at sapien. Aliquam imperdiet turpis tellus, a ultricies ex posuere ac. Vestibulum sed tortor tempor leo sollicitudin facilisis. Cras imperdiet semper rhoncus. Praesent cursus convallis eros non iaculis. Nunc sed justo sapien. Cras ullamcorper semper nunc, sed fermentum eros eleifend eu. Etiam magna ligula, ullamcorper nec dignissim sit amet, luctus vel ante. </p>
+        </div>
 
-        <p>Improv is an incredible flexible and dynamic tool. But how do you use it? How do you introduce it?</p>
+        <div class="block">
+            <h4>how i<sup class="primary">+</sup> works</h4>
 
-        <p>Welcome to ImprovPlus - our most popular Improv workshops distilled into comprehensive guides for Facilitators and Trainers to use.</p>
+            <div class="columns how-it-works">
+                <div>
+                    <img src="/images/how-it-works-1.png" />
+                    <p>Lorem ipsum dolor sit amet</p>
+                </div>
+                <div>
+                    <img src="/images/how-it-works-2.png" />
+                    <p>Nulla tempus sodales libero nec dignissim.</p>
+                </div>
+                <div>
+                    <img src="/images/how-it-works-3.png" />
+                    <p>Cras iaculis nulla non lacus ornare blandit.</p>
+                </div>
+            </div>
+        </div>
 
-        <p>We walk you through the activities, the agenda, the questions, and the discussion that will bring out the best in your team.</p>
+        <div class="block">
 
-        <p>Whether you are a new Trainer looking for accessible training guides or a seasoned Facilitator looking for a new approach we have a solution for you.
+            <h4>are you ready?</h4>
 
-        <!--<ol>
-            <li>You can hire us!  Bring us in to conduct a 90 minute or 3 hour ImprovPlus Training. Options include
-                <br />
-                ImprovPlus Networking<br />
-                ImprovPlus Business<br />
-                ImprovPlus Leadership
-            </li>
+            <div class="columns spaced">
+                <a href="#" class="button">Join the mailing list</a>
 
+                <a href="#" class="button raised large">Join <iplus></iplus></a>
+            </div>
 
-            <li>You can download our ImprovPlus Facilitator Guide<br />
-                You provide the Trainer/Facilitator we provide everything else. Our packages include  Handouts, Facilitator, Instructions,  Faciliator Tips, Discussion Guides, Agendas as well as access to our ImprovPlus Dashboard and Database. You can even sign-up for Facilitation support – 1:1 Coaching calls to support the success your trainings. 
-            </li>
-        </ol>-->
+        </div>
 
-        <p>
-            <a (click)="showGetNotified()" class="button brackets">Get Notified</a>
-        </p>
+    </div>
+
+    <div class="hero">
+
+        <div class="content">
+            
+            <h4>features</h4>
+
+            <p>Your one year subscription to the improvplus app provides access to all of our innovative program materials.</p>
+
+            <div class="card-list span3">
+
+                <div class="card red brackets clickable">
+                    <h4>Facilitator's Guides</h4>
+                    <p>Suspendisse egestas posuere ex, nec bibendum elit lacinia in. Pellentesque quis eros nunc.</p>
+                </div>
+
+                <div class="card red brackets clickable">
+                    <h4>Program Agendas</h4>
+                    <p>Nunc vitae eleifend felis. Praesent auctor, orci a tristique rhoncus, urna turpis elementum massa, sed faucibus lacus orci fermentum ex.</p>
+                </div>
+
+                <div class="card red brackets clickable">
+                    <h4>Participant Handouts</h4>
+                    <p>Vestibulum at mollis lectus, in eleifend justo. Donec dignissim vestibulum ex vel consequat.</p>
+                </div>
+
+            </div>
+
+            <h4><em>plus</em></h4>
+
+            <p>The improvplus app also contains a smorgasbord of additional content and features.</p>
+
+            <div class="card-list span3">
+
+                <div class="card blue brackets clickable">
+                    <h4>House Rules</h4>
+                    <p>Vestibulum at mollis lectus, in eleifend justo. Donec dignissim vestibulum ex vel consequat.</p>
+                </div>
+
+                <div class="card blue brackets clickable">
+                    <h4>Facilitation Tips</h4>
+                    <p>Suspendisse egestas posuere ex, nec bibendum elit lacinia in. Pellentesque quis eros nunc.</p>
+                </div>
+
+                <div class="card blue brackets clickable">
+                    <h4>Bonus Materials</h4>
+                    <p>Nunc vitae eleifend felis. Praesent auctor, orci a tristique rhoncus, urna turpis elementum massa, sed faucibus lacus orci fermentum ex.</p>
+                </div>
+
+                <div class="card blue brackets clickable">
+                    <h4>Game Database</h4>
+                    <p>Nunc vitae eleifend felis. Praesent auctor, orci a tristique rhoncus, urna turpis elementum massa, sed faucibus lacus orci fermentum ex.</p>
+                </div>
+
+                <div class="card blue brackets clickable">
+                    <h4>Blog Content</h4>
+                    <p>Nunc vitae eleifend felis. Praesent auctor, orci a tristique rhoncus, urna turpis elementum massa, sed faucibus lacus orci fermentum ex.</p>
+                </div>
+
+                <div class="card blue brackets clickable">
+                    <h4>Access to Updates</h4>
+                    <p>Nunc vitae eleifend felis. Praesent auctor, orci a tristique rhoncus, urna turpis elementum massa, sed faucibus lacus orci fermentum ex.</p>
+                </div>
+
+                <div class="card blue brackets clickable">
+                    <h4>Human Support</h4>
+                    <p>Nunc vitae eleifend felis. Praesent auctor, orci a tristique rhoncus, urna turpis elementum massa, sed faucibus lacus orci fermentum ex.</p>
+                </div>
+
+                <div class="card blue brackets clickable">
+                    <h4>Hands-on Coaching</h4>
+                    <p>Nunc vitae eleifend felis. Praesent auctor, orci a tristique rhoncus, urna turpis elementum massa, sed faucibus lacus orci fermentum ex.</p>
+                </div>
+
+            </div>
+
+            <div class="columns spaced block">
+
+                <div>
+                    <h4>1 Year</h4>
+                    <h5>Subscription</h5>
+                </div>
+
+                <div>
+                    <h4>24/7</h4>
+                    <h5>Access</h5>
+                </div>
+
+                <div>
+                    <h4>$1500</h4>
+                    <h5>Price</h5>
+                </div>
+
+            </div>
+
+            <div class="columns spaced">
+                <a href="#" class="button">Join the mailing list</a>
+
+                <a href="#" class="button raised large">Join <iplus></iplus></a>
+            </div>
+
+        </div>    
+
+    </div>
+
+    <div class="paper center">
+
+        <div class="block">
+            <h4>hire us</h4>
+
+            <p>Etiam dictum tellus fermentum tellus condimentum, non venenatis risus sodales. Aliquam egestas non dolor vitae blandit. Etiam nulla elit, blandit ac gravida sed, malesuada et nibh. Suspendisse aliquam consequat libero vitae sollicitudin. In a sagittis massa. Donec facilisis sapien ac leo auctor, vel fringilla metus posuere. Etiam suscipit felis a gravida tincidunt. Etiam sit amet interdum felis. Nunc vel laoreet leo. </p>
+        </div>
+
+        <div class="block card-list">
+            <div class="card brackets flat">
+                <h4>Innovation</h4>
+                <p>There are no wrong answers. Practice following ideas to see where they lead you.</p>
+            </div>
+            <div class="card brackets flat">
+                <h4>Confidence</h4>
+                <p>Face your fears. Confidence comes from being comfortable when out on a limb.</p>
+            </div>
+            <div class="card brackets flat">
+                <h4>Agility</h4>
+                <p>Improv develops the mindset of adapting to change, saying yes to knew ideas, and letting go of your assumptions.</p>
+            </div>
+            <div class="card brackets flat">
+                <h4>Team Building</h4>
+                <p>Communication skills are sharpened by listening and reacting in the moment. The shared experience brings teams together.</p>
+            </div>
+        </div>
+
+        <div class="block">
+
+            <p>Business around the world are discovering the power of Improv to make them more awesome. <br /> Absolutely everyone can do it. Absolutely everyone will benefit from it.</p>
+
+            <a href="#" class="button">Contact Us</a>
+
+        </div>
+
+    </div>
+
+    <div class="paper center">
+
+        <div class="block">
+            <h4>calling improvisers</h4>
+
+            <p>If you do Improv, we want to hear from you. Sign up for our improv mailing list, and you will get a chance to be the first to join the ever growing improvplus community.</p>
+        </div>
+
+        <div class="block">
+            <a href="#" class="button">Sign up as an improviser</a>
+        </div>
+
     </div>
 
 </div>

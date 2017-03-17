@@ -12,6 +12,7 @@
 iplus {
     display: inline-block;
     cursor: default;
+    vertical-align: middle;
 
     &.white .iplus {
         color: $color-white;
@@ -22,6 +23,7 @@ iplus {
     display: inline-block;
     min-width: 24px;
     height: 24px;
+    line-height: 24px;
     text-align: center;
     position: relative;
     font-size: 20px;
@@ -50,13 +52,14 @@ iplus {
         font-size: 83%;
         font-weight: bold;
         left: 6px;
-        top: 5px;
+        top: 3px;
         transition: color 300ms;
+        text-transform: lowercase;
     }
     .plus {
         font-size: 70%;
         font-weight: bold;
-        top: 2px;
+        top: -1px;
         left: 10px;
         transition: color 300ms;
     }
@@ -189,9 +192,18 @@ iplus {
     }
 }
 
+.primary {
+    color: $color-primary;
+}
+
 .columns {
     display: flex;
     flex-direction: row;
+
+    &.spaced {
+        justify-content: space-around;
+        align-items: center;
+    }
 
     & > * {
         margin-right: $std;
@@ -237,6 +249,32 @@ button,
     text-decoration: none;
 
     @include md-elevation-transition(opacity $anim-duration);
+
+    iplus {
+        margin-left: $small;
+        cursor: pointer;
+        .i {
+            top: 2px;
+        }
+        &:hover {
+            .plus {
+                color: $color-white;
+            }
+        }
+    }
+
+    $large-button-scale: 1.5;
+    &.large {
+        font-size: $large;
+        line-height: ($button-height * $large-button-scale);
+        height: ($button-height * $large-button-scale);
+        padding: 0 ($std * $large-button-scale);
+
+        iplus {
+            margin-left: $small * $large-button-scale;
+            transform: scale($large-button-scale);
+        }
+    }
 
     &.raised {
         background-color: $color-primary;

@@ -131,7 +131,7 @@ $md-elevation-transition-timing-function: $md-fast-out-slow-in-timing-function;
 
 // Applies the correct css rules to an element to give it the elevation specified by $zValue.
 // The $zValue must be between 0 and 24.
-@mixin md-elevation($zValue) {
+@mixin md-elevation($zValue, $inset:null) {
   @if type-of($zValue) != number or not unitless($zValue) {
     @error '$zValue must be a unitless number';
   }
@@ -139,9 +139,9 @@ $md-elevation-transition-timing-function: $md-fast-out-slow-in-timing-function;
     @error '$zValue must be between 0 and 24';
   }
 
-  #{$md-elevation-property}: #{map-get($_umbra-elevation-map, $zValue)},
-                             #{map-get($_penumbra-elevation-map, $zValue)},
-                             #{map-get($_ambient-elevation-map, $zValue)};
+  #{$md-elevation-property}: #{map-get($_umbra-elevation-map, $zValue)} $inset,
+                             #{map-get($_penumbra-elevation-map, $zValue)} $inset,
+                             #{map-get($_ambient-elevation-map, $zValue)} $inset;
 }
 
 // Returns a string that can be used as the value for a transition property for elevation.

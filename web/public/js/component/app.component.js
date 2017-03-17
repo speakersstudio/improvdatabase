@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 require("rxjs/Subject");
 var router_1 = require("@angular/router");
@@ -15,6 +16,9 @@ var AppComponent = (function () {
     function AppComponent(router) {
         this.router = router;
         this.scrollpos = 0;
+        this.toolbarheight = 48;
+        this.pageStart = window.innerHeight - (this.toolbarheight + 24);
+        this.pagepos = this.pageStart;
         this.loader = document.getElementById("siteLoader");
         this.loaderVisible = true;
     }
@@ -23,6 +27,7 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.onScroll = function ($event) {
         this.scrollpos = $event.target.scrollingElement.scrollTop;
+        this.pagepos = this.pageStart - this.scrollpos;
     };
     AppComponent.prototype.showLoader = function () {
         this.loader.style.display = "block";

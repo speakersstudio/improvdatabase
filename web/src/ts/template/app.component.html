@@ -1,5 +1,5 @@
-<div class="left-bracket" [class.white]="scrollpos < 300"></div>
-<div class="right-bracket" [class.white]="scrollpos < 300"></div>
+<div class="left-bracket" [class.white]="pagepos > 20 || (scrollpos > whiteBracketTop && scrollpos < whiteBracketBottom)"></div>
+<div class="right-bracket" [class.white]="pagepos > 20 || (scrollpos > whiteBracketTop && scrollpos < whiteBracketBottom)"></div>
 
 <router-outlet></router-outlet>
 

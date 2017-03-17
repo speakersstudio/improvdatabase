@@ -149,3 +149,12 @@ form {
         text-align: center;
     }
 }
+
+sup {
+    vertical-align: super;
+    font-size: 0.9em;
+    line-height: 0;
+    font-weight: bold;
+    position: relative;
+    top: 11px;
+}

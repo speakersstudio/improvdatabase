@@ -18,8 +18,15 @@ export class AppComponent implements OnInit {
 
     scrollpos: number = 0;
 
+    toolbarheight = 48;
+    pageStart = window.innerHeight - (this.toolbarheight + 24);
+    pagepos: number = this.pageStart;
+
     loader = document.getElementById("siteLoader");
     loaderVisible: boolean = true;
+
+    whiteBracketTop: number;
+    whiteBracketBottom: number;
 
     constructor(
         private router: Router
@@ -31,6 +38,7 @@ export class AppComponent implements OnInit {
     
     onScroll($event): void {
         this.scrollpos = $event.target.scrollingElement.scrollTop;
+        this.pagepos = this.pageStart - this.scrollpos;
     }
 
     showLoader(): void {

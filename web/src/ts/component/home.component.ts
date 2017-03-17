@@ -7,14 +7,15 @@ import 'rxjs/add/operator/toPromise';
 
 import { AppComponent } from './app.component';
 
-import { DialogAnim } from '../util/anim.util';
+import { DialogAnim, FadeAnim } from '../util/anim.util';
 
 @Component({
     moduleId: module.id,
     selector: "home",
     templateUrl: "../template/home.component.html",
     animations: [
-        DialogAnim.dialog
+        DialogAnim.dialog,
+        FadeAnim.fade
     ]
 })
 export class HomeComponent implements OnInit {
@@ -84,6 +85,14 @@ export class HomeComponent implements OnInit {
             } else {
                 this.resizeVideo();
             }
+        }
+
+        let heroes = document.querySelectorAll('.hero');
+        for (let i = 0; i < heroes.length; i++) {
+            let h = heroes[i];
+            let rect = h.getBoundingClientRect();
+            this._app.whiteBracketTop = rect.top;
+            this._app.whiteBracketBottom = rect.bottom;
         }
     }
 
@@ -192,7 +201,7 @@ export class HomeComponent implements OnInit {
     } // end of ngOnInit
 
     scrollBelowLanding(): void {
-        this._scrollTo(this.bgheight, 500);
+        this._scrollTo(this._app.pageStart - 10, 800);
     }
 
     private _scrollTo(to, duration) {

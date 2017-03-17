@@ -29,6 +29,16 @@ iplus {
     font-size: 20px;
     white-space: nowrap;
 
+    .large & {
+        transform: scale(1.5);
+    }
+
+    .huge & {
+        transform: scale(3);
+        font-weight: bold;
+        margin: 0 $std;
+    }
+
     &.white {
         // background-position: -24px 0;
         color: $color-white;
@@ -52,7 +62,7 @@ iplus {
         font-size: 83%;
         font-weight: bold;
         left: 6px;
-        top: 3px;
+        top: 1px;
         transition: color 300ms;
         text-transform: lowercase;
     }
@@ -202,6 +212,10 @@ iplus {
 
     &.spaced {
         justify-content: space-around;
+        align-items: center;
+    }
+
+    &.centered {
         align-items: center;
     }
 

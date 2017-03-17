@@ -289,6 +289,12 @@ iplus {
   position: relative;
   font-size: 20px;
   white-space: nowrap; }
+  .large .iplus {
+    transform: scale(1.5); }
+  .huge .iplus {
+    transform: scale(3);
+    font-weight: bold;
+    margin: 0 16px; }
   .iplus.white {
     color: #FFFFFF; }
   .iplus > * {
@@ -304,7 +310,7 @@ iplus {
     font-size: 83%;
     font-weight: bold;
     left: 6px;
-    top: 3px;
+    top: 1px;
     transition: color 300ms;
     text-transform: lowercase; }
   .iplus .plus {
@@ -430,6 +436,8 @@ iplus {
   flex-direction: row; }
   .columns.spaced {
     justify-content: space-around;
+    align-items: center; }
+  .columns.centered {
     align-items: center; }
   .columns > * {
     margin-right: 16px;

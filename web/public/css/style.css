@@ -290,6 +290,12 @@ iplus {
   position: relative;
   font-size: 20px;
   white-space: nowrap; }
+  .large .iplus {
+    transform: scale(1.5); }
+  .huge .iplus {
+    transform: scale(3);
+    font-weight: bold;
+    margin: 0 16px; }
   .iplus.white {
     color: #FFFFFF; }
   .iplus > * {
@@ -305,7 +311,7 @@ iplus {
     font-size: 83%;
     font-weight: bold;
     left: 6px;
-    top: 3px;
+    top: 1px;
     transition: color 300ms;
     text-transform: lowercase; }
   .iplus .plus {
@@ -431,6 +437,8 @@ iplus {
   flex-direction: row; }
   .columns.spaced {
     justify-content: space-around;
+    align-items: center; }
+  .columns.centered {
     align-items: center; }
   .columns > * {
     margin-right: 16px;
@@ -1637,16 +1645,21 @@ home .landing {
     justify-content: center;
     color: #FFFFFF; }
     home .landing .content h1 {
-      font-size: 110px; }
+      font-size: 110px;
+      margin-bottom: 24px; }
       @media only screen and (max-width: 500px) {
         home .landing .content h1 {
           font-size: 65px; } }
     home .landing .content h2 {
-      font-size: 20px;
-      margin-top: 24px; }
+      font-size: 30px; }
       @media only screen and (max-width: 500px) {
         home .landing .content h2 {
           font-size: 16px; } }
+    home .landing .content h3 {
+      font-size: 24px; }
+    home .landing .content hr {
+      margin: 0;
+      background: #FFFFFF; }
     home .landing .content p {
       line-height: 2; }
     home .landing .content .button {
@@ -1658,7 +1671,6 @@ home .landing {
         border-color: #d32f2f; }
     home .landing .content .block {
       margin: 24px 0;
-      width: 80%;
       max-width: 690px;
       text-align: center; }
   home .landing .fa-chevron-down {

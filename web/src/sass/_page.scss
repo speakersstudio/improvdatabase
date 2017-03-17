@@ -151,6 +151,7 @@ home {
 
             h1 {
                 font-size: 110px;
+                margin-bottom: $large;
 
                 @media #{$media-mobile} {
                     font-size: 65px;
@@ -158,12 +159,21 @@ home {
             }
 
             h2 {
-                font-size: 20px;
-                margin-top: $large;
+                font-size: 30px;
+                // margin-top: $large;
                 
                 @media #{$media-mobile} {
                     font-size: 16px;
                 }
+            }
+
+            h3 {
+                font-size: 24px;
+            }
+
+            hr {
+                margin: 0;
+                background: $color-white;
             }
 
             p {
@@ -189,7 +199,6 @@ home {
 
             .block {
                 margin: $large 0;
-                width: 80%;
                 max-width: 690px;
                 text-align: center;
             }

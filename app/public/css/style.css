@@ -274,11 +274,16 @@ sup {
     border-color: darkred; }
 
 iplus {
-  display: inline-block;
+  display: inline-flex;
   cursor: default;
-  vertical-align: middle; }
+  vertical-align: middle;
+  justify-content: center;
+  align-content: center;
+  align-items: center; }
   iplus.white .iplus {
     color: #FFFFFF; }
+  iplus.large, iplus.huge {
+    margin: 0 16px; }
 
 .iplus {
   display: inline-block;
@@ -291,17 +296,20 @@ iplus {
   white-space: nowrap; }
   .large .iplus {
     transform: scale(1.5); }
+    .large .iplus .i {
+      top: 0px; }
   .huge .iplus {
     transform: scale(3);
-    font-weight: bold;
-    margin: 0 16px; }
+    font-weight: bold; }
+    .huge .iplus .i {
+      top: 0px; }
   .iplus.white {
     color: #FFFFFF; }
   .iplus > * {
     position: absolute; }
   .iplus .bracket {
     font-size: 100%;
-    top: 0px;
+    top: -2px;
     left: 2px; }
     .iplus .bracket:last-child {
       left: auto;
@@ -316,9 +324,10 @@ iplus {
   .iplus .plus {
     font-size: 70%;
     font-weight: bold;
-    top: -1px;
+    top: -3px;
     left: 10px;
-    transition: color 300ms; }
+    opacity: 1;
+    transition: color 300ms, opacity 300ms; }
   .iplus .text {
     width: auto;
     max-width: 0px;
@@ -329,11 +338,17 @@ iplus {
     position: static;
     display: block;
     margin: 0 4px 0 19px; }
+    .iplus .text.noplus {
+      font-size: 83%; }
   .iplus:hover .plus {
     color: #d32f2f; }
+  .iplus:hover .plus.hideonopen {
+    opacity: 0; }
   .iplus:hover .text {
     max-width: 100px;
     margin: 0 7px 0 19px; }
+    .iplus:hover .text.noplus {
+      margin-left: 11px; }
 
 .loading-icon, .loading-icon-shadow {
   position: absolute;
@@ -492,8 +507,7 @@ button,
     padding: 0 24px; }
     button.large iplus,
     .button.large iplus {
-      margin-left: 12px;
-      transform: scale(1.5); }
+      margin-left: 12px; }
   button.raised,
   .button.raised {
     background-color: #d32f2f;

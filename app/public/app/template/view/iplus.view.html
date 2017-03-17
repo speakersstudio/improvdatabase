@@ -1,7 +1,7 @@
-<i class="iplus" [class.white]="white" [class.clickable]="text">
+<i class="iplus" [class.white]="white">
     <span class="bracket">[</span>
     <span class="i">i</span>
-    <span class="plus">+</span>
+    <span class="plus" [class.hideonopen]="text">+</span>
     <span class="text" *ngIf="text">{{text}}</span>
     <span class="bracket">]</span>
 </i>

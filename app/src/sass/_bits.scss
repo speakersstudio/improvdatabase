@@ -10,12 +10,19 @@
 }
 
 iplus {
-    display: inline-block;
+    display: inline-flex;
     cursor: default;
     vertical-align: middle;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
 
     &.white .iplus {
         color: $color-white;
+    }
+
+    &.large, &.huge {
+        margin: 0 $std;
     }
 }
 
@@ -31,12 +38,19 @@ iplus {
 
     .large & {
         transform: scale(1.5);
+
+        .i {
+            top: 0px;
+        }
     }
 
     .huge & {
         transform: scale(3);
         font-weight: bold;
-        margin: 0 $std;
+
+        .i {
+            top: 0px;
+        }
     }
 
     &.white {
@@ -50,7 +64,7 @@ iplus {
 
     .bracket {
         font-size: 100%;
-        top: 0px;
+        top: -2px;
         left: 2px;
 
         &:last-child {
@@ -69,9 +83,10 @@ iplus {
     .plus {
         font-size: 70%;
         font-weight: bold;
-        top: -1px;
+        top: -3px;
         left: 10px;
-        transition: color 300ms;
+        opacity: 1;
+        transition: color 300ms, opacity 300ms;
     }
 
     .text {
@@ -84,15 +99,26 @@ iplus {
         position: static;
         display: block;
         margin: 0 4px 0 19px;
+
+        &.noplus {
+            font-size: 83%;
+        }
     }
 
     &:hover {
         .plus {
             color: $color-primary;
         }
+        .plus.hideonopen {
+            opacity: 0;
+        }
         .text {
             max-width: 100px;
             margin: 0 7px 0 19px;
+
+            &.noplus {
+                margin-left: 11px;
+            }
         }
     }
 }
@@ -286,7 +312,6 @@ button,
 
         iplus {
             margin-left: $small * $large-button-scale;
-            transform: scale($large-button-scale);
         }
     }
 

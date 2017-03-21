@@ -7,12 +7,12 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { GameDatabaseService } from "../service/game-database.service";
-import { UserService } from "../service/user.service";
+import { GameDatabaseService } from "../../service/game-database.service";
+import { UserService } from "../../service/user.service";
 
-import { User } from "../model/user";
+import { User } from "../../model/user";
 
-import { DialogAnim, FadeAnim } from '../util/anim.util';
+import { DialogAnim, FadeAnim } from '../../util/anim.util';
 
 const MAX_ATTEMPTS = 5;
 

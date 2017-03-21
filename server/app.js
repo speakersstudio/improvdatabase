@@ -60,8 +60,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(express.static(path.join(__dirname, '../web/public')));
-app.use('/app', express.static(path.join(__dirname, '../app/public')));
+app.use(express.static(path.join(__dirname, '../app/public')));
 app.use('/node_modules', express.static(path.join(__dirname, '../node_modules')));
 
 

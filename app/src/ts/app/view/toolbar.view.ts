@@ -11,9 +11,9 @@ import 'rxjs/Subject';
 import { Subject } from 'rxjs/Subject';
 import { Router, RoutesRecognized } from '@angular/router';
 
-import { AppComponent } from '../component/app.component';
+import { AppComponent } from '../../component/app.component';
 
-import { UserService } from "../service/user.service";
+import { UserService } from "../../service/user.service";
 
 export class Tool {
     icon: string;

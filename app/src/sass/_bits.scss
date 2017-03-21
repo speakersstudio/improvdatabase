@@ -155,7 +155,18 @@ iplus {
 }
 
 #siteLoader {
+    background: $color-shade;
+    transition: opacity $swift-ease-out-duration $swift-ease-out-timing-function;
+}
+.loader {
     @include fixed(0, 0, 0, 0, 5000);
+
+    .iplus {
+        @include abs(($toolbar-height / 2), null, null, 50%, 5);
+        margin-top: -12px;
+        margin-left: -3px;
+        animation: spin 1000ms 1000ms infinite;
+    }
 }
 
 #cornerLogo {
@@ -600,6 +611,10 @@ button,
     &.show {
         z-index: 500;
     }
+
+    .dialog-dismiss {
+        @include abs(0,0,0,0,1);
+    }
 }
 
 .dialog {
@@ -608,6 +623,8 @@ button,
     background: $color-white;
     padding: $std 0;
     border-radius: $border-radius;
+    position: relative;
+    z-index: 2;
     // @include fixed(50%, null, null, 50%, 5000);
     // transform: translate(-50%, -50%);
 

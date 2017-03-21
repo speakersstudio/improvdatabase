@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Headers, Http } from '@angular/http';
 
-import { AppComponent } from './app.component';
+import { AppComponent } from '../../component/app.component';
 import { Tool } from '../view/toolbar.view';
 import { FormsModule } from '@angular/forms';
 

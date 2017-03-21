@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import {AppComponent    } from './app.component';
+import { AppComponent } from '../../component/app.component';
 import { Tool } from '../view/toolbar.view';
 
-import { UserService } from '../service/user.service';
+import { UserService } from '../../service/user.service';
 
 @Component({
     moduleId: module.id,

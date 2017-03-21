@@ -182,7 +182,12 @@ strong {
 .light {
   font-weight: 300; }
 
-my-app {
+improvplus {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
   z-index: 2;
   overflow: hidden;
   position: relative;
@@ -375,12 +380,24 @@ iplus {
     stroke: none; }
 
 #siteLoader {
+  background: rgba(0, 0, 0, 0.2);
+  transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); }
+
+.loader {
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 5000; }
+  .loader .iplus {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    z-index: 5;
+    margin-top: -12px;
+    margin-left: -3px;
+    animation: spin 1000ms 1000ms infinite; }
 
 #cornerLogo {
   position: fixed;
@@ -725,6 +742,13 @@ button,
   z-index: 0; }
   .dialog-container.show {
     z-index: 500; }
+  .dialog-container .dialog-dismiss {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1; }
 
 .dialog {
   width: 90%;
@@ -732,6 +756,8 @@ button,
   background: #FFFFFF;
   padding: 16px 0;
   border-radius: 2px;
+  position: relative;
+  z-index: 2;
   box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12); }
   .dialog .dialog-content {
     padding: 0 16px; }
@@ -1544,13 +1570,17 @@ user .user-form {
   bottom: 24px;
   z-index: 5;
   border: 1px solid #606060;
-  width: 8.7%; }
+  width: 8.7%;
+  transition: border-color 200ms; }
   .left-bracket h1,
   .right-bracket h1 {
     font-size: 18px;
     padding: 0 16px;
     background: #FFFFFF;
     transform: translateY(-55%); }
+  .left-bracket.white,
+  .right-bracket.white {
+    border-color: #FFFFFF; }
 
 .left-bracket {
   left: 24px;
@@ -1582,8 +1612,8 @@ user .user-form {
         right: 24px; } }
 
 @media only screen and (max-width: 500px) {
-  my-app > .left-bracket,
-  my-app > .right-bracket {
+  improvplus > .left-bracket,
+  improvplus > .right-bracket {
     display: none; } }
 
 .curtain {
@@ -1642,6 +1672,10 @@ user .user-form {
       padding: 48px 16px;
       font-size: 32px;
       text-align: center; }
+  .page h4 {
+    font-size: 28px; }
+  .page h5 {
+    font-size: 18px; }
   .page .paper {
     border-radius: 2px;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
@@ -1668,10 +1702,6 @@ user .user-form {
     .page .paper .metadata {
       position: relative;
       z-index: 7; }
-    .page .paper h4 {
-      font-size: 28px; }
-    .page .paper h5 {
-      font-size: 18px; }
     .page .paper .description, .page .paper .description p {
       line-height: 1.25; }
   .page.fullbg .paper:first-child {
@@ -1693,5 +1723,181 @@ game-details h4:hover .fa-plus-circle {
 
 game-details textarea {
   height: 15em; }
+
+welcome .toolbar .toolbar-row {
+  justify-content: space-around; }
+  welcome .toolbar .toolbar-row a {
+    text-decoration: none;
+    text-transform: uppercase;
+    cursor: pointer; }
+    welcome .toolbar .toolbar-row a i {
+      margin-left: 8px; }
+
+welcome .toolbar iplus {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 7;
+  margin-left: -15px;
+  padding: 11px; }
+
+welcome .toolbar.on a {
+  color: #FFFFFF; }
+
+welcome .landing {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  z-index: 3;
+  box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2) inset, 0px 8px 10px 1px rgba(0, 0, 0, 0.14) inset, 0px 3px 14px 2px rgba(0, 0, 0, 0.12) inset; }
+  welcome .landing .background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    filter: saturate(2%);
+    overflow: hidden;
+    background: #f5f5f5; }
+    welcome .landing .background img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      max-width: none; }
+    welcome .landing .background iframe {
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      position: relative;
+      z-index: 2;
+      transition: opacity 600ms; }
+  welcome .landing .content {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 16px 0;
+    position: relative;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF; }
+    welcome .landing .content h1 {
+      font-size: 110px;
+      margin-bottom: 24px; }
+      @media only screen and (max-width: 500px) {
+        welcome .landing .content h1 {
+          font-size: 65px; } }
+    welcome .landing .content h2 {
+      font-size: 30px;
+      margin: 0 16px; }
+      @media only screen and (max-width: 500px) {
+        welcome .landing .content h2 {
+          font-size: 16px; } }
+    welcome .landing .content h3 {
+      font-size: 24px;
+      margin: 8px 16px; }
+    welcome .landing .content hr {
+      margin: 0 16px;
+      background: #FFFFFF; }
+    welcome .landing .content p {
+      line-height: 2; }
+    welcome .landing .content .button {
+      margin-top: 24px;
+      color: #FFFFFF; }
+      welcome .landing .content .button:before, welcome .landing .content .button:after {
+        border-color: #FFFFFF; }
+      welcome .landing .content .button:hover:before, welcome .landing .content .button:hover:after {
+        border-color: #d32f2f; }
+    welcome .landing .content .block {
+      margin: 24px 0;
+      max-width: 690px;
+      text-align: center; }
+  welcome .landing .fa-chevron-down {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    z-index: 10;
+    font-size: 50px;
+    color: #FFFFFF;
+    margin-left: -25px;
+    opacity: 1;
+    transition: opacity 300ms;
+    color: #d32f2f; }
+    welcome .landing .fa-chevron-down.hide {
+      opacity: 0; }
+
+welcome .landing-holder {
+  display: block;
+  width: 100vw;
+  height: 100vh; }
+
+welcome .page {
+  box-sizing: border-box;
+  position: relative;
+  z-index: 4;
+  padding: 0 8.7% 8.7%; }
+  welcome .page h4 {
+    font-size: 4em;
+    margin-bottom: 72px; }
+  welcome .page h5 {
+    font-size: 2em; }
+  welcome .page p {
+    margin-bottom: 24px;
+    line-height: 2; }
+  welcome .page .block {
+    margin-bottom: 72px; }
+    welcome .page .block:last-child {
+      margin-bottom: 0; }
+  welcome .page .card-list h4 {
+    margin-bottom: 0; }
+  welcome .page .card-list p {
+    line-height: 1.5; }
+  welcome .page .paper {
+    border-radius: 0 0 2px 2px;
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    background: #FFFFFF;
+    padding: 72px;
+    position: relative;
+    z-index: 2;
+    margin: 0 26px 16px; }
+    @media only screen and (max-width: 500px) {
+      welcome .page .paper {
+        margin: 0 0 16px; } }
+    welcome .page .paper.list {
+      padding: 0; }
+    welcome .page .paper.has-brackets {
+      padding: 48px 64px; }
+      @media only screen and (max-width: 500px) {
+        welcome .page .paper.has-brackets {
+          padding: 48px 52px; } }
+    welcome .page .paper > :not(.left-bracket):not(.right-bracket) {
+      position: relative;
+      z-index: 6; }
+    welcome .page .paper .description, welcome .page .paper .description p {
+      line-height: 1.25; }
+    welcome .page .paper .how-it-works > div {
+      margin: 16px; }
+      welcome .page .paper .how-it-works > div img {
+        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+        border-radius: 2px;
+        border: 2px solid #606060; }
+  welcome .page .hero {
+    margin: 72px -8.7vw;
+    padding: 24px 4.35vw;
+    box-sizing: border-box;
+    background: #606060;
+    min-height: 80vh;
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2) inset, 0px 2px 2px 0px rgba(0, 0, 0, 0.14) inset, 0px 1px 5px 0px rgba(0, 0, 0, 0.12) inset;
+    text-align: center;
+    color: #FFFFFF; }
+    welcome .page .hero h4 {
+      margin: 72px 0 24px 0; }
+    welcome .page .hero .content {
+      padding: 0 0 72px 0; }
 
 /*# sourceMappingURL=style.css.map */

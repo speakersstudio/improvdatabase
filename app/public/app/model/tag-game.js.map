@@ -1,1 +1,0 @@
-{"version":3,"sources":["../src/ts/app/model/tag-game.ts"],"names":[],"mappings":";AAAA;IAAA;IAOA,CAAC;IAAD,cAAC;AAAD,CAPA,AAOC,IAAA;AAPY,0BAAO","file":"tag-game.js","sourcesContent":["export class TagGame {\r\n    TagGameID: number;\r\n    TagID: number;\r\n    GameID: number;\r\n    DateAdded: string;\r\n    AddedUserID: number;\r\n    ModifiedUserID: number;\r\n}"]}

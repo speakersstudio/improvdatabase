@@ -130,7 +130,7 @@ module.exports = {
 
     
     validateUser: (email, password, callback) => {
-        this.findUser(null, email, (err, user) => {
+        module.exports.findUser(null, email, (err, user) => {
             if (err) {
                 callback(err, null);
             } else {

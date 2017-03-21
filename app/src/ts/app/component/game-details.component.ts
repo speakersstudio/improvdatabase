@@ -14,19 +14,19 @@ import {
 import { Router, ActivatedRoute, Params }   from '@angular/router';
 import { Location }   from '@angular/common';
 
-import { AppComponent } from "./app.component";
+import { AppComponent } from "../../component/app.component";
 
-import { GameDatabaseService } from '../service/game-database.service';
+import { GameDatabaseService } from '../../service/game-database.service';
 
-import { Game, TagGame } from '../model/game';
-import { Name } from '../model/name';
-import { GameMetadata } from '../model/game-metadata';
-import { Tag } from '../model/tag';
-import { Note } from '../model/note';
+import { Game, TagGame } from '../../model/game';
+import { Name } from '../../model/name';
+import { GameMetadata } from '../../model/game-metadata';
+import { Tag } from '../../model/tag';
+import { Note } from '../../model/note';
 
 import { Tool } from '../view/toolbar.view';
 
-import { UserService } from "../service/user.service";
+import { UserService } from "../../service/user.service";
 
 @Component({
     moduleId: module.id,

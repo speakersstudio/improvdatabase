@@ -427,6 +427,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     }
 
     closePage(): void {
+        console.log('dialog?', this.dialog);
         if (this.dialog) {
             this.onClose.emit();
         } else {

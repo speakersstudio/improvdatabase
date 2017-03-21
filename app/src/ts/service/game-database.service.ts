@@ -328,6 +328,7 @@ export class GameDatabaseService {
 
     private _notePromise: Promise<Note[]>;
     getNotes(): Promise<Note[]> {
+        console.log('get notes!', this._notePromise);
         if (!this._notePromise) {
             if (this.userService.can('note_public_view')) {
                 this._notePromise = this.http.get(this.noteUrl, this.userService.getAuthorizationHeader())

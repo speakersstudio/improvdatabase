@@ -286,7 +286,6 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.getNotes = function () {
         var _this = this;
-        console.log('get notes!', this._notePromise);
         if (!this._notePromise) {
             if (this.userService.can('note_public_view')) {
                 this._notePromise = this.http.get(this.noteUrl, this.userService.getAuthorizationHeader())
@@ -307,7 +306,6 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.getNotesForGame = function (game) {
         var _this = this;
-        console.log('get notes for game', this.notes);
         return new Promise(function (resolve, reject) {
             _this.getNotes().then(function (notes) {
                 // TODO: make this logic server-side

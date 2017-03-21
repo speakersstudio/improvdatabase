@@ -347,6 +347,7 @@ export class GameDatabaseService {
     }
 
     getNotesForGame(game: Game): Promise<Note[]> {
+        console.log('get notes for game', this.notes);
         return new Promise<Note[]>((resolve, reject) => {
             this.getNotes().then((notes) => {
                 // TODO: make this logic server-side

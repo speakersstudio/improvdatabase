@@ -7,12 +7,12 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 
-import { AppComponent } from './app.component';
+import { AppComponent } from '../../component/app.component';
 
 import { Tool } from '../view/toolbar.view';
-import { UserService } from "../service/user.service";
+import { UserService } from "../../service/user.service";
 
-import { User } from "../model/user";
+import { User } from "../../model/user";
 
 const MAX_ATTEMPTS = 5;
 

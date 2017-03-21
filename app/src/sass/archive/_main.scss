@@ -42,12 +42,6 @@ strong {
     font-weight: 300;
 }
 
-my-app {
-    @include abs(0px, 0px, 0px, 0px);
-    z-index: 2;
-    overflow: hidden;
-}
-
 input, textarea {
     display: block;
     background: none;

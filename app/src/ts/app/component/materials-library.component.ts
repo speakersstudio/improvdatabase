@@ -2,16 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { PathLocationStrategy } from '@angular/common';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
-import {AppComponent    } from './app.component';
+import {AppComponent    } from '../../component/app.component';
 import { Tool, SearchResult } from '../view/toolbar.view';
 
-import { LibraryService } from '../service/library.service';
+import { LibraryService } from '../../service/library.service';
 
-import { Subscription } from '../model/subscription';
-import { Package, PackageMaterial } from '../model/package';
-import { MaterialItem } from '../model/material-item';
+import { Subscription } from '../../model/subscription';
+import { Package, PackageMaterial } from '../../model/package';
+import { MaterialItem } from '../../model/material-item';
 
-import { UserService } from '../service/user.service';
+import { UserService } from '../../service/user.service';
 
 @Component({
     moduleId: module.id,

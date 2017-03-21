@@ -55,8 +55,8 @@ strong {
     font-weight: 300;
 }
 
-my-app {
-    z-index: 2;
+improvplus {
+    @include abs(0px, 0px, 0px, 0px, 2);
     overflow: hidden;
     position: relative;
     display: block;

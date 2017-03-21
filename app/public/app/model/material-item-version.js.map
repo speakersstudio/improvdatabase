@@ -1,1 +1,0 @@
-{"version":3,"sources":["../src/ts/app/model/material-item-version.ts"],"names":[],"mappings":";AAAA;IAAA;IAKA,CAAC;IAAD,0BAAC;AAAD,CALA,AAKC,IAAA;AALY,kDAAmB","file":"material-item-version.js","sourcesContent":["export class MaterialItemVersion {\r\n    \"_id\": string;\r\n    \"ver\": number;\r\n    \"description\": string;\r\n    \"dateAdded\": Date;\r\n}"]}

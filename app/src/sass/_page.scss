@@ -10,12 +10,17 @@ $paper-bg: $color-white;
     @include abs(($toolbar-height / 2), null, ($toolbar-height / 2), null, 5);
     border: 1px solid $color-text;
     width: $page-bracket-width;
+    transition: border-color 200ms;
 
     h1 {
         font-size: 18px;
         padding: 0 $std;
         background: $paper-bg;
         transform: translateY(-55%);
+    }
+
+    &.white {
+        border-color: $color-white;
     }
 }
 
@@ -57,8 +62,8 @@ $paper-bg: $color-white;
 }
 
 @media #{$media-mobile} {
-    my-app > .left-bracket,
-    my-app > .right-bracket {
+    improvplus > .left-bracket,
+    improvplus > .right-bracket {
         display: none;
     }
 }
@@ -115,6 +120,14 @@ $paper-bg: $color-white;
         }
     }
 
+    h4 {
+        font-size: 28px;
+    }
+
+    h5 {
+        font-size: 18px;
+    }
+
     .paper {
         border-radius: $border-radius;
         @include md-elevation($card-elevation-default);
@@ -152,14 +165,6 @@ $paper-bg: $color-white;
         & .metadata {
             position: relative;
             z-index: 7;
-        }
-
-        h4 {
-            font-size: 28px;
-        }
-
-        h5 {
-            font-size: 18px;
         }
 
         .description, .description p {

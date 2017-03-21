@@ -8,12 +8,12 @@ import {
 import 'rxjs/Subscription';
 import { Subscription } from 'rxjs/Subscription';
 
-import { GameDatabaseService } from '../service/game-database.service';
+import { GameDatabaseService } from '../../service/game-database.service';
 
-import { Game } from '../model/game';
-import { Name } from '../model/name';
-import { GameMetadata } from '../model/game-metadata';
-import { Tag } from '../model/tag';
+import { Game } from '../../model/game';
+import { Name } from '../../model/name';
+import { GameMetadata } from '../../model/game-metadata';
+import { Tag } from '../../model/tag';
 
 @Component({
     moduleId: module.id,

@@ -14,16 +14,16 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import 'rxjs/Subscription';
 import { Subscription } from 'rxjs/Subscription';
 
-import { AppComponent } from './app.component';
+import { AppComponent } from '../../component/app.component';
 import { Tool, SearchResult } from '../view/toolbar.view';
 
-import { GameDatabaseService } from '../service/game-database.service';
-import { UserService } from "../service/user.service";
+import { GameDatabaseService } from '../../service/game-database.service';
+import { UserService } from "../../service/user.service";
 
-import { Game } from '../model/game';
-import { Name } from '../model/name';
+import { Game } from '../../model/game';
+import { Name } from '../../model/name';
 
-import { GameFilter } from '../pipe/game-filter.pipe';
+import { GameFilter } from '../../pipe/game-filter.pipe';
 
 @Component({
     moduleId: module.id,

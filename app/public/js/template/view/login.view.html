@@ -1,0 +1,33 @@
+<div class="dialog-dismiss" (click)="cancel()"></div>
+
+<div class="dialog login-form" *ngIf="show" 
+    [class.shake]="loginError" [class.runaway]="runaway" [@dialog]>
+
+    <form class="block" name="login" (ngSubmit)="submitLogin()" #loginForm="ngForm">
+        <div class="dialog-content">
+            <h3>Login</h3>
+
+            <input name="email" [(ngModel)]="email" required type="text" placeholder="Email" />
+
+            <input name="password" [(ngModel)]="password" required type="password" placeholder="Password" />
+
+            <div class="error" *ngIf="loginError" [innerHTML]="loginError"></div>
+        </div>
+
+        <div class="button-group" *ngIf="!isPosting">
+            <a (click)="cancel()" class="button">Cancel</a>
+            <input type="submit" class="button raised" value="LOGIN" [disabled]="!loginForm.form.valid" />
+        </div>
+
+        <div class="button-group" *ngIf="isPosting">
+            <div class="button"><i class="loading"></i></div>
+        </div>
+    </form>
+
+    <div class="dialog-content right">
+        <a routerLink="/">Sign up!</a>
+    </div>
+
+</div>
+
+<i class="fa fa-star starburst" *ngIf="runaway"></i>

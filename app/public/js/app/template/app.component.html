@@ -1,0 +1,102 @@
+<nav [class.show] = "showMenu">
+    <div class="brackets">
+        
+        <h1><span class="light">improv</span><strong>plus</strong></h1>
+        
+        <div class="nav-top">
+            <!--<button (click)="toggleNav()">
+                <i class="fa fa-bars" [class.active]="showMenu"></i>
+            </button>
+            <button (click)="fullscreen()">
+                <i class="fa"
+                    [class.fa-expand]="!showFullscreen"
+                    [class.fa-compress]="showFullscreen"></i>
+            </button>-->
+
+            <!--<div class="content">
+
+                <a routerLink="/user" (click)="toggleNav()" *ngIf="user"><i class="fa fa-user"></i> {{user.Email}}</a>
+                
+                <div class="login" *ngIf="!user">
+                    <a (click)="login()"><i class="fa fa-user"></i> Log In</a>
+                </div>
+            </div>-->
+
+            <div class="content clickable" *ngIf="user && userService.can('account_edit')" routerLink="/user">
+
+                <div class="user-picture">
+                    <i class="fa fa-user"></i>
+                </div>
+                <div class="user-name">{{user.email}}</div>
+
+            </div>
+        </div>
+        
+        <div class="scroll">
+
+            <a routerLink="/dashboard" routerLinkActive="active" class="nav-item"
+                *ngIf="userService.can('dashboard_view')">
+                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+            </a>
+
+            <a routerLink="/materials" routerLinkActive="active" class="nav-item"
+                *ngIf="userService.can('materials_view')">
+                <i class="fa fa-book"></i> <span>Materials Library</span>
+            </a>
+
+            <a routerLink="/games" routerLinkActive="active" class="nav-item"
+                *ngIf="userService.can('game_view')">
+                <i class="fa fa-rocket"></i> <span>Game Database</span>
+            </a>
+
+            <hr />
+
+            <a routerLink="/contact" routerLinkActive="active" class="nav-item">
+                <i class="fa fa-envelope"></i> <span>Contact</span>
+            </a>
+
+            <a routerLink="/help" routerLinkActive="active" class="nav-item">
+                <i class="fa fa-question"></i> <span>Help</span>
+            </a>
+        </div>
+
+        <footer>
+            <a routerLink="/about">version <strong>{{version}}</strong></a>
+        </footer>
+    </div>
+</nav>
+
+<div (click)="user ? closeOverlays() : false" class="backdrop nav-backdrop" [class.show]="showBackdrop"></div>
+
+<div class="left-bracket"></div>
+<div class="right-bracket"></div>
+
+<div class="curtain" (window:scroll)="onScroll($event)" [style.top]="(scrollpos * 0.75) + 'px'">
+    <!--<img src="/app/images/header-bg-graphic.png" />-->
+</div>
+
+<div class="background" *ngIf="backgroundVisible"></div>
+
+<router-outlet></router-outlet>
+
+<div class="dialog-container" [class.show]="showDialog">
+    <div class="dialog" [@dialog] *ngIf="showDialog">
+        <div class="dialog-content">
+            <h2>{{dialogTitle}}</h2>
+            <p>{{dialogMessage}}</p>
+        </div>
+        <div class="button-group">
+            <button (click)="onDialogDismiss()">Cancel</button>
+            <button (click)="onDialogConfirm()">{{dialogConfirm}}</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+
+    <span>&copy;2017 improvplus</span>
+    <a routerLink="/legal" *ngIf="user">Legal stuff</a>
+    <img src="/images/comodo_secure_seal_76x26_transp.png" />
+    <a *ngIf="user" (click)="logout()">Log Out</a>
+
+</footer>

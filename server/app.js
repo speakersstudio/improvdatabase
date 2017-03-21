@@ -39,7 +39,7 @@ app.engine('handlebars', hbs.engine);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'handlebars');
 
-app.use(favicon(path.join(__dirname, '../web/public', 'favicon/favicon.ico')));
+app.use(favicon(path.join(__dirname, '../app/public', 'favicon/favicon.ico')));
 
 app.use(logger('dev'));
 

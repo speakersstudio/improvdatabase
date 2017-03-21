@@ -430,7 +430,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         if (this.dialog) {
             this.onClose.emit();
         } else {
-            this.router.navigate(['/games']);
+            this.router.navigate(['/app/games']);
         }
     }
 

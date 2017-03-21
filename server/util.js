@@ -10,7 +10,7 @@ module.exports = {
     },
 
     handleError: (req, res, err) => {
-        console.error(err);
+        console.error("Handle error:", err);
         res.status(500).json(err);
     }
 

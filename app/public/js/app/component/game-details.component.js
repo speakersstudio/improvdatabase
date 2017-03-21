@@ -350,7 +350,7 @@ var GameDetailsComponent = (function () {
             this.onClose.emit();
         }
         else {
-            this.router.navigate(['/games']);
+            this.router.navigate(['/app/games']);
         }
     };
     GameDetailsComponent.prototype.toggleNames = function () {

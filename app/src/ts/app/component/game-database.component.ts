@@ -148,7 +148,7 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
         // navigate to games;random=random to load a random game
         this.route.params.forEach((params: Params) => {
             if (params['random']) {
-                this.pathLocationStrategy.replaceState({}, "", "/games", "");
+                this.pathLocationStrategy.replaceState({}, "", "/app/games", "");
                 this.selectRandomGame();
             }
         })
@@ -172,7 +172,7 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
             this.selectedGame = game;
         }
     
-        let newPath = "/game/" + this.selectedGame._id;
+        let newPath = "/app/game/" + this.selectedGame._id;
         this._app.setPath(newPath);
 
         window.scrollTo(0, 0);

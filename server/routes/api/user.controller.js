@@ -102,6 +102,11 @@ module.exports = {
     },
 
     findUser: (id, email, callback) => {
+        if (!id && !email) {
+            callback('no id or email', null);
+            return;
+        }
+
         let query = User.findOne({})
             .select(WHITELIST.join(' ') + ' role dateAdded dateModified');
 

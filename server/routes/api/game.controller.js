@@ -46,7 +46,6 @@ module.exports = {
     },
 
     getAll: (req, res) => {
-
         getGames()
             .catch(err => {
                 util.handleError(req, res, err);
@@ -57,7 +56,7 @@ module.exports = {
     },
 
     get: (req, res) => {
-        getGames()
+        getGames(req.params.id)
             .catch(err => {
                 util.handleError(req, res, err);
             }).then(games => {

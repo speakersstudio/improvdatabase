@@ -108,7 +108,7 @@ var GameDatabaseComponent = (function () {
         // navigate to games;random=random to load a random game
         this.route.params.forEach(function (params) {
             if (params['random']) {
-                _this.pathLocationStrategy.replaceState({}, "", "/games", "");
+                _this.pathLocationStrategy.replaceState({}, "", "/app/games", "");
                 _this.selectRandomGame();
             }
         });
@@ -128,7 +128,7 @@ var GameDatabaseComponent = (function () {
         else {
             this.selectedGame = game;
         }
-        var newPath = "/game/" + this.selectedGame._id;
+        var newPath = "/app/game/" + this.selectedGame._id;
         this._app.setPath(newPath);
         window.scrollTo(0, 0);
     };

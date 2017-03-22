@@ -108,7 +108,7 @@ function genToken(user, callback) {
     var expires = expiresIn(7), // one week, as recommended by Auth0
         token = jwt.encode({
             exp: expires,
-            iss: user.id
+            iss: user._id
         }, config.token);
 
         // this is all redis stuff, which isn't really necessary
@@ -147,7 +147,10 @@ exports.checkToken = function (req, res, next) {
     var token = (req.body && req.body.access_token) ||
         (req.query && req.query.access_token) || req.headers['x-access-token'];
 
-    req.user = false;
+    req.user = {
+        actions: roles.getActionsForRole(0)
+    };
+
     if (token) {
         try {
             var decoded = jwt.decode(token, config.token);
@@ -169,8 +172,10 @@ exports.checkToken = function (req, res, next) {
                         });
                         */
                         req.user = user;
+                        next();
+                    } else {
+                        next();
                     }
-                    next();
                 });
             } else {
                 next();
@@ -180,9 +185,6 @@ exports.checkToken = function (req, res, next) {
             next();
         }
     } else {
-        req.user = {
-            actions: roles.getActionsForRole(0)
-        }
         next();
     }
 };

@@ -150,7 +150,7 @@ function addTag(tag, name, userId, game) {
             addedUser: userId
         }).then(t => {
             game.tags.push({
-                tag: t._id,
+                tag: t,
                 addedUser: userId
             });
             t.games.push(game._id);

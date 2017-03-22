@@ -192,7 +192,7 @@ var AppComponent = (function () {
         this.userService.logout();
     };
     AppComponent.prototype.setPath = function (path) {
-        var pathRoot = path.split('/')[1];
+        var pathWithoutApp = path.replace('/app', ''), pathRoot = pathWithoutApp.split('/')[1];
         if (this.pathLocationStrategy.path().indexOf('/' + pathRoot + '/') > -1) {
             this.pathLocationStrategy.replaceState({}, '', path, '');
         }

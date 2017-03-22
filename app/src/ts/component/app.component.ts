@@ -244,7 +244,9 @@ export class AppComponent implements OnInit {
     }
 
     setPath(path: string): void {
-        let pathRoot = path.split('/')[1]
+        let pathWithoutApp = path.replace('/app', ''),
+            pathRoot = pathWithoutApp.split('/')[1];
+
         if (this.pathLocationStrategy.path().indexOf('/' + pathRoot + '/') > -1) {
             this.pathLocationStrategy.replaceState({}, '', path, '');
         } else {

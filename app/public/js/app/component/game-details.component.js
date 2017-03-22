@@ -346,11 +346,12 @@ var GameDetailsComponent = (function () {
             .then(function (notes) { return _this.notes = notes; });
     };
     GameDetailsComponent.prototype.closePage = function () {
+        console.log('dialog?', this.dialog);
         if (this.dialog) {
             this.onClose.emit();
         }
         else {
-            this.router.navigate(['/games']);
+            this.router.navigate(['/app/games']);
         }
     };
     GameDetailsComponent.prototype.toggleNames = function () {

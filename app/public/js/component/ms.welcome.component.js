@@ -43,12 +43,7 @@ var WelcomeComponent = (function () {
         this._app.showWhiteBrackets(true);
     };
     WelcomeComponent.prototype.login = function () {
-        if (this._app.user) {
-            this.router.navigate(['/app']);
-        }
-        else {
-            this._app.login();
-        }
+        this._app.login();
     };
     WelcomeComponent.prototype.setupSize = function () {
         var targetRatio = 1920 / 1080, screenRatio = window.innerWidth / window.innerHeight;

@@ -6,6 +6,7 @@ import { AuthGuard } from '../service/auth-guard.service';
 import { WelcomeComponent } from '../component/ms.welcome.component';
 
 import { LoginScreenComponent } from '../component/login-screen.component';
+import { SignupComponent } from '../component/signup.component';
 
 const routes: Routes = [
     {
@@ -20,6 +21,10 @@ const routes: Routes = [
     {
         path: 'login',
         component: LoginScreenComponent
+    },
+    {
+        path: 'signup',
+        component: SignupComponent
     }
 ];
 

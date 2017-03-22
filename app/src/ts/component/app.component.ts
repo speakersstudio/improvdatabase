@@ -223,9 +223,13 @@ export class AppComponent implements OnInit {
     }
 
     login(): void {
-        this.closeOverlays();
-        this.showLogin = true;
-        this.showBackdrop = true;
+        if (this.user) {
+            this.router.navigate(['/app']);
+        } else {
+            this.closeOverlays();
+            this.showLogin = true;
+            this.showBackdrop = true;
+        }
     }
 
     handleLogin(user: User): void {

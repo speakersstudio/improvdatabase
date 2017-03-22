@@ -174,9 +174,14 @@ var AppComponent = (function () {
         }
     };
     AppComponent.prototype.login = function () {
-        this.closeOverlays();
-        this.showLogin = true;
-        this.showBackdrop = true;
+        if (this.user) {
+            this.router.navigate(['/app']);
+        }
+        else {
+            this.closeOverlays();
+            this.showLogin = true;
+            this.showBackdrop = true;
+        }
     };
     AppComponent.prototype.handleLogin = function (user) {
         this.closeOverlays();

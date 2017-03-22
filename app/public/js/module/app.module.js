@@ -20,6 +20,7 @@ var app_routing_module_1 = require("./app-routing.module");
 var shared_module_1 = require("./shared.module");
 var improvplus_module_1 = require("../app/module/improvplus.module");
 var login_screen_component_1 = require("../component/login-screen.component");
+var signup_component_1 = require("../component/signup.component");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -38,7 +39,8 @@ AppModule = __decorate([
         declarations: [
             login_screen_component_1.LoginScreenComponent,
             app_component_1.AppComponent,
-            ms_welcome_component_1.WelcomeComponent
+            ms_welcome_component_1.WelcomeComponent,
+            signup_component_1.SignupComponent
         ],
         bootstrap: [app_component_1.AppComponent],
         providers: [

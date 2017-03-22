@@ -1,0 +1,21 @@
+<div class="toolbar" [class.on]="pagepos <= 20">
+    <div class="toolbar-row">
+        <iplus class="" (click)="_app.login()" *ngIf="!_app.loaderVisible"></iplus>
+
+        <a routerLink="/welcome">Welcome</a>
+
+        <a (click)="_app.login()" [innerHTML]="_app.user ? 'To the App <i class=\'fa fa-chevron-right\'></i>' : 'Log In'"></a>
+    </div>
+</div>
+
+<div class="page">
+
+    <div class="paper center">
+
+        <div class="block">
+
+        </div>
+
+    </div>
+
+</div>

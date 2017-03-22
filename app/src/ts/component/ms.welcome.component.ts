@@ -76,11 +76,7 @@ export class WelcomeComponent implements OnInit {
     }
 
     login(): void {
-        if (this._app.user) {
-            this.router.navigate(['/app']);
-        } else {
-            this._app.login();
-        }
+        this._app.login();
     }
 
     setupSize(): void {

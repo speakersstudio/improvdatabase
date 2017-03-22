@@ -17,6 +17,7 @@ import { SharedModule } from './shared.module';
 import { ImprovPlusModule } from '../app/module/improvplus.module';
 
 import { LoginScreenComponent } from '../component/login-screen.component';
+import { SignupComponent } from '../component/signup.component';
 
 @NgModule({
     imports: [
@@ -30,7 +31,8 @@ import { LoginScreenComponent } from '../component/login-screen.component';
     declarations: [
         LoginScreenComponent,
         AppComponent,
-        WelcomeComponent
+        WelcomeComponent,
+        SignupComponent
     ],
     bootstrap: [ AppComponent ],
     providers: [

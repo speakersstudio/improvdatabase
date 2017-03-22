@@ -1724,16 +1724,16 @@ game-details h4:hover .fa-plus-circle {
 game-details textarea {
   height: 15em; }
 
-welcome .toolbar .toolbar-row {
+welcome .toolbar .toolbar-row, signup .toolbar .toolbar-row {
   justify-content: space-around; }
-  welcome .toolbar .toolbar-row a {
+  welcome .toolbar .toolbar-row a, signup .toolbar .toolbar-row a {
     text-decoration: none;
     text-transform: uppercase;
     cursor: pointer; }
-    welcome .toolbar .toolbar-row a i {
+    welcome .toolbar .toolbar-row a i, signup .toolbar .toolbar-row a i {
       margin-left: 8px; }
 
-welcome .toolbar iplus {
+welcome .toolbar iplus, signup .toolbar iplus {
   position: absolute;
   top: 0;
   left: 50%;
@@ -1741,10 +1741,10 @@ welcome .toolbar iplus {
   margin-left: -15px;
   padding: 11px; }
 
-welcome .toolbar.on a {
+welcome .toolbar.on a, signup .toolbar.on a {
   color: #FFFFFF; }
 
-welcome .landing {
+welcome .landing, signup .landing {
   position: fixed;
   display: flex;
   align-items: center;
@@ -1752,7 +1752,7 @@ welcome .landing {
   height: 100vh;
   z-index: 3;
   box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2) inset, 0px 8px 10px 1px rgba(0, 0, 0, 0.14) inset, 0px 3px 14px 2px rgba(0, 0, 0, 0.12) inset; }
-  welcome .landing .background {
+  welcome .landing .background, signup .landing .background {
     position: absolute;
     top: 0;
     left: 0;
@@ -1762,20 +1762,20 @@ welcome .landing {
     filter: saturate(2%);
     overflow: hidden;
     background: #f5f5f5; }
-    welcome .landing .background img {
+    welcome .landing .background img, signup .landing .background img {
       position: absolute;
       top: 0;
       left: 0;
       z-index: 1;
       max-width: none; }
-    welcome .landing .background iframe {
+    welcome .landing .background iframe, signup .landing .background iframe {
       width: 100%;
       height: 100%;
       opacity: 0;
       position: relative;
       z-index: 2;
       transition: opacity 600ms; }
-  welcome .landing .content {
+  welcome .landing .content, signup .landing .content {
     width: 100%;
     background: rgba(0, 0, 0, 0.3);
     padding: 16px 0;
@@ -1786,38 +1786,38 @@ welcome .landing {
     align-items: center;
     justify-content: center;
     color: #FFFFFF; }
-    welcome .landing .content h1 {
+    welcome .landing .content h1, signup .landing .content h1 {
       font-size: 110px;
       margin-bottom: 24px; }
       @media only screen and (max-width: 500px) {
-        welcome .landing .content h1 {
+        welcome .landing .content h1, signup .landing .content h1 {
           font-size: 65px; } }
-    welcome .landing .content h2 {
+    welcome .landing .content h2, signup .landing .content h2 {
       font-size: 30px;
       margin: 0 16px; }
       @media only screen and (max-width: 500px) {
-        welcome .landing .content h2 {
+        welcome .landing .content h2, signup .landing .content h2 {
           font-size: 16px; } }
-    welcome .landing .content h3 {
+    welcome .landing .content h3, signup .landing .content h3 {
       font-size: 24px;
       margin: 8px 16px; }
-    welcome .landing .content hr {
+    welcome .landing .content hr, signup .landing .content hr {
       margin: 0 16px;
       background: #FFFFFF; }
-    welcome .landing .content p {
+    welcome .landing .content p, signup .landing .content p {
       line-height: 2; }
-    welcome .landing .content .button {
+    welcome .landing .content .button, signup .landing .content .button {
       margin-top: 24px;
       color: #FFFFFF; }
-      welcome .landing .content .button:before, welcome .landing .content .button:after {
+      welcome .landing .content .button:before, welcome .landing .content .button:after, signup .landing .content .button:before, signup .landing .content .button:after {
         border-color: #FFFFFF; }
-      welcome .landing .content .button:hover:before, welcome .landing .content .button:hover:after {
+      welcome .landing .content .button:hover:before, welcome .landing .content .button:hover:after, signup .landing .content .button:hover:before, signup .landing .content .button:hover:after {
         border-color: #d32f2f; }
-    welcome .landing .content .block {
+    welcome .landing .content .block, signup .landing .content .block {
       margin: 24px 0;
       max-width: 690px;
       text-align: center; }
-  welcome .landing .fa-chevron-down {
+  welcome .landing .fa-chevron-down, signup .landing .fa-chevron-down {
     position: absolute;
     bottom: 16px;
     left: 50%;
@@ -1828,36 +1828,36 @@ welcome .landing {
     opacity: 1;
     transition: opacity 300ms;
     color: #d32f2f; }
-    welcome .landing .fa-chevron-down.hide {
+    welcome .landing .fa-chevron-down.hide, signup .landing .fa-chevron-down.hide {
       opacity: 0; }
 
-welcome .landing-holder {
+welcome .landing-holder, signup .landing-holder {
   display: block;
   width: 100vw;
   height: 100vh; }
 
-welcome .page {
+welcome .page, signup .page {
   box-sizing: border-box;
   position: relative;
   z-index: 4;
   padding: 0 8.7% 8.7%; }
-  welcome .page h4 {
+  welcome .page h4, signup .page h4 {
     font-size: 4em;
     margin-bottom: 72px; }
-  welcome .page h5 {
+  welcome .page h5, signup .page h5 {
     font-size: 2em; }
-  welcome .page p {
+  welcome .page p, signup .page p {
     margin-bottom: 24px;
     line-height: 2; }
-  welcome .page .block {
+  welcome .page .block, signup .page .block {
     margin-bottom: 72px; }
-    welcome .page .block:last-child {
+    welcome .page .block:last-child, signup .page .block:last-child {
       margin-bottom: 0; }
-  welcome .page .card-list h4 {
+  welcome .page .card-list h4, signup .page .card-list h4 {
     margin-bottom: 0; }
-  welcome .page .card-list p {
+  welcome .page .card-list p, signup .page .card-list p {
     line-height: 1.5; }
-  welcome .page .paper {
+  welcome .page .paper, signup .page .paper {
     border-radius: 0 0 2px 2px;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
     background: #FFFFFF;
@@ -1866,27 +1866,27 @@ welcome .page {
     z-index: 2;
     margin: 0 26px 16px; }
     @media only screen and (max-width: 500px) {
-      welcome .page .paper {
+      welcome .page .paper, signup .page .paper {
         margin: 0 0 16px; } }
-    welcome .page .paper.list {
+    welcome .page .paper.list, signup .page .paper.list {
       padding: 0; }
-    welcome .page .paper.has-brackets {
+    welcome .page .paper.has-brackets, signup .page .paper.has-brackets {
       padding: 48px 64px; }
       @media only screen and (max-width: 500px) {
-        welcome .page .paper.has-brackets {
+        welcome .page .paper.has-brackets, signup .page .paper.has-brackets {
           padding: 48px 52px; } }
-    welcome .page .paper > :not(.left-bracket):not(.right-bracket) {
+    welcome .page .paper > :not(.left-bracket):not(.right-bracket), signup .page .paper > :not(.left-bracket):not(.right-bracket) {
       position: relative;
       z-index: 6; }
-    welcome .page .paper .description, welcome .page .paper .description p {
+    welcome .page .paper .description, welcome .page .paper .description p, signup .page .paper .description, signup .page .paper .description p {
       line-height: 1.25; }
-    welcome .page .paper .how-it-works > div {
+    welcome .page .paper .how-it-works > div, signup .page .paper .how-it-works > div {
       margin: 16px; }
-      welcome .page .paper .how-it-works > div img {
+      welcome .page .paper .how-it-works > div img, signup .page .paper .how-it-works > div img {
         box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
         border-radius: 2px;
         border: 2px solid #606060; }
-  welcome .page .hero {
+  welcome .page .hero, signup .page .hero {
     margin: 72px -8.7vw;
     padding: 24px 4.35vw;
     box-sizing: border-box;
@@ -1895,9 +1895,9 @@ welcome .page {
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2) inset, 0px 2px 2px 0px rgba(0, 0, 0, 0.14) inset, 0px 1px 5px 0px rgba(0, 0, 0, 0.12) inset;
     text-align: center;
     color: #FFFFFF; }
-    welcome .page .hero h4 {
+    welcome .page .hero h4, signup .page .hero h4 {
       margin: 72px 0 24px 0; }
-    welcome .page .hero .content {
+    welcome .page .hero .content, signup .page .hero .content {
       padding: 0 0 72px 0; }
 
 /*# sourceMappingURL=style.css.map */

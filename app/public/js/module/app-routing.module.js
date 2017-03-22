@@ -10,6 +10,7 @@ var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var ms_welcome_component_1 = require("../component/ms.welcome.component");
 var login_screen_component_1 = require("../component/login-screen.component");
+var signup_component_1 = require("../component/signup.component");
 var routes = [
     {
         path: '',
@@ -23,6 +24,10 @@ var routes = [
     {
         path: 'login',
         component: login_screen_component_1.LoginScreenComponent
+    },
+    {
+        path: 'signup',
+        component: signup_component_1.SignupComponent
     }
 ];
 var AppRoutingModule = (function () {

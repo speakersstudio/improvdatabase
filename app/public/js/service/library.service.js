@@ -19,55 +19,35 @@ var LibraryService = (function () {
         this.userService = userService;
         this.subscriptionUrl = '/api/subscription';
         this.materialsUrl = '/api/material/';
+        this.ownedMaterialsUrl = '/api/user/:_id/materials';
     }
-    LibraryService.prototype.getSubscriptions = function () {
-        var _this = this;
-        if (!this._subscriptionPromise) {
-            this._subscriptionPromise = this.http.get(this.subscriptionUrl, this.userService.getAuthorizationHeader())
-                .toPromise()
-                .then(function (response) {
-                _this.subscriptions = response.json();
-                _this.subscriptions.forEach(function (sub) {
-                    _this._sortMaterials(sub);
+    LibraryService.prototype.getOwnedMaterials = function () {
+        var user = this.userService.getLoggedInUser();
+        if (user) {
+            if (user.materials && user.materials.length) {
+                this._materialPromise = new Promise(function (res, rej) {
+                    res(user.materials);
                 });
-                return _this.subscriptions;
-            })
-                .catch(this.handleError);
-        }
-        return this._subscriptionPromise;
-    };
-    LibraryService.prototype.getSubscription = function (slug) {
-        var _this = this;
-        if (this._subscriptionPromise) {
-            return new Promise(function (resolve, reject) {
-                _this.getSubscriptions().then(function (subscriptions) {
-                    subscriptions.forEach(function (s) {
-                        if (s.package.slug === slug) {
-                            resolve(_this._sortMaterials(s));
-                        }
-                    });
-                });
-            });
+            }
+            else {
+                this._materialPromise = this._getOwnedMaterials();
+            }
         }
         else {
-            return this.http.get(this.subscriptionUrl + '/' + slug, this.userService.getAuthorizationHeader())
-                .toPromise()
-                .then(function (response) {
-                return _this._sortMaterials(response.json());
-            })
-                .catch(this.handleError);
+            this._materialPromise = new Promise(function (res, rej) {
+                rej("No user");
+            });
         }
+        return this._materialPromise;
     };
-    LibraryService.prototype._sortMaterials = function (sub) {
-        sub.package.materials.sort(function (a, b) {
-            if (a.addon) {
-                return 1;
-            }
-            else if (b.addon) {
-                return -1;
-            }
-        });
-        return sub;
+    LibraryService.prototype._getOwnedMaterials = function () {
+        var url = this.ownedMaterialsUrl.replace(':_id', this.userService.getLoggedInUser()._id);
+        return this.http.get(url, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then(function (response) {
+            return response.json();
+        })
+            .catch(this.handleError);
     };
     LibraryService.prototype.downloadMaterial = function (id) {
         this.http.get(this.materialsUrl + id, this.userService.getAuthorizationHeader())

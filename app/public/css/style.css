@@ -439,7 +439,7 @@ iplus {
   cursor: pointer; }
 
 .dull {
-  opacity: 0.5; }
+  opacity: 0.25; }
 
 .block {
   margin-bottom: 24px; }
@@ -683,7 +683,7 @@ button,
   display: inline-block;
   margin: 2px;
   padding: 2px 5px;
-  background: #d32f2f;
+  background-color: #d32f2f;
   color: #FFFFFF;
   border-radius: 4px;
   position: relative;
@@ -1189,13 +1189,12 @@ nav {
     margin-bottom: 0;
     position: relative;
     color: #FFFFFF;
-    background: #606060;
-    box-shadow: 0px 5px 15px -3px rgba(0, 0, 0, 0.2) inset, 0px 8px 20px 1px rgba(0, 0, 0, 0.14) inset, 0px 3px 24px 2px rgba(0, 0, 0, 0.12) inset; }
+    background: #606060; }
     .card .top:before {
       content: "";
       display: block;
       width: 100%;
-      padding-top: 60%; }
+      padding-top: 50%; }
     .card .top h3 {
       position: absolute;
       bottom: 0;

@@ -269,9 +269,12 @@ const actionmap = {
             // admins can view and edit anybody
             if (doesUserHaveAction(user, admin)) {
                 return true;
+            } else if (url.indexOf('materials') > -1) {
+                return url.indexOf('/user/' + user._id) > -1 &&
+                        doesUserHaveAction(user, 'materials_view');
             } else {
                 // users can view and edit themselves
-                return url.indexOf('/user/' + user.UserID) > -1 &&
+                return url.indexOf('/user/' + user._id) > -1 &&
                         doesUserHaveAction(user, 'account_edit');
             }
         }

@@ -70,15 +70,12 @@
         position: relative;
         color: $color-white;
         background: $color-text;
-        box-shadow: 0px 5px 15px -3px rgba(0, 0, 0, 0.2) inset,
-                    0px 8px 20px 1px rgba(0, 0, 0, 0.14) inset,
-                    0px 3px 24px 2px rgba(0, 0, 0, 0.12) inset;
         
         &:before {
             content: "";
             display: block;
             width: 100%;
-            padding-top: 60%;
+            padding-top: 50%;
         }
 
         h3 {

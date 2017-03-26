@@ -114,10 +114,16 @@ module.exports = {
             query.where('_id').equals(key);
         }
 
+        query.populate('subscription purchases')
+            .populate({
+                path: 'materials',
+                options: {
+                    sort: 'name'
+                }
+            });
+
         if (populate) {
             query.populate(populate);
-        } else {
-            query.populate('subscription')
         }
 
         return query.exec()
@@ -171,6 +177,15 @@ module.exports = {
                 userData.password = hash;
                 return User.create(userData);
             });
+    },
+
+    // fetched with a GET call to /api/user/:_id/materials
+    materials: (req, res) => {
+        if (req.user && req.user.materials && req.user.materials.length) {
+            res.json(req.user.materials);
+        } else {
+            res.json([]);
+        }
     }
 
 }

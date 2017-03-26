@@ -8,7 +8,7 @@ import { Tool, SearchResult } from '../view/toolbar.view';
 import { LibraryService } from '../../service/library.service';
 
 import { Subscription } from '../../model/subscription';
-import { Package, PackageMaterial } from '../../model/package';
+import { Package } from '../../model/package';
 import { MaterialItem } from '../../model/material-item';
 
 import { UserService } from '../../service/user.service';
@@ -25,11 +25,7 @@ export class MaterialsLibraryComponent implements OnInit {
     filter: boolean; // TODO
     searchResults: SearchResult[] = [];
 
-    subscriptions: Subscription[];
-    // packages: Package[];
-    // materials: MaterialItem[];
-
-    selectedSubscription: Subscription;
+    ownedMaterials: MaterialItem[];
 
     constructor(
         private _app: AppComponent,
@@ -43,71 +39,25 @@ export class MaterialsLibraryComponent implements OnInit {
     ]
 
     ngOnInit(): void {
-
-        let slug;
-
-        this.route.params.forEach((params: Params) => {
-            slug = params['packageSlug'];
-        });
-
-        this.getLibrary(slug);
-
-        this.pathLocationStrategy.onPopState(() => {
-            this.selectedSubscription = null;
-            this.getLibrary('');
-        });
+        this.getLibrary();
     }
 
     onToolClicked(tool: Tool): void {
         
     }
 
-    getLibrary(slug: string): void {
-        // Promise.all([
-        //         this.libraryService.getLibrary()
-        //     ]).then((items) => {
-        //         setTimeout(() => {
-        //             this._app.hideLoader();
-        //             this.materials = items[0];
-        //             this.packages = items[1];
-        //         }, 150);
-        //     });
+    getLibrary(): void {
         this._app.showLoader();
 
-        if (slug) {
-
-            this.libraryService.getSubscription(slug)
-                .then(sub => {
-                    this.selectSubscription(sub);
-                })
-
-        } else {
-            this._app.showBackground(true);
-
-            this.libraryService.getSubscriptions()
-                .then(subs => {
-                    this.subscriptions = subs;
-                    this._app.hideLoader();
-                });
-
-        }
-    }
-
-    selectSubscription(sub: Subscription): void {
-        this.selectedSubscription = sub;
-        this._app.showBackground(false);
-        this._app.hideLoader();
-
-        let newPath = '/materials/' + sub.package.slug;
-        this._app.setPath(newPath);
-
-        window.scrollTo(0,0);
+        this.libraryService.getOwnedMaterials()
+            .then(materials => {
+                this._app.hideLoader();
+                this.ownedMaterials = materials;
+            });
     }
 
     clearFilter(): void {
-        if (this.selectedSubscription) {
-            this.pathLocationStrategy.back();
-        }
+
     }
 
     selectMaterial(material: MaterialItem): void {

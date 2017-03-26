@@ -91,7 +91,7 @@ function seedPackages() {
 }
 
 function deleteSubscriptions() {
-    console.log('deleting subscriptions');
+    console.log('deleting subscriptions and purchases');
     return Subscription.find({}).remove().exec()
         .then(() => {
             return Purchase.find({}).remove().exec();
@@ -117,7 +117,7 @@ function deleteSubscriptions() {
         });
 }
 
-function seedSubscriptions(callback) {
+function seedPurchases(callback) {
     const expires = "2018-03-08T14:26:29.214Z";
     const expired = "2016-03-08T14:26:29.214Z";
 
@@ -182,7 +182,7 @@ module.exports = {
             .then(deletePackages)
             .then(seedPackages)
             .then(deleteSubscriptions)
-            .then(seedSubscriptions)
+            .then(seedPurchases)
             .then(() => {
                 process.exit(0);
             });

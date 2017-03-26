@@ -4,6 +4,7 @@ const MaterialItemSchema = new mongoose.Schema({
     name: String,
     description: String,
     price: Number,
+    color: String,
     fileslug: String,
     extension: String,
     versions: [{

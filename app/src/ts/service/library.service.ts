@@ -7,12 +7,14 @@ import { Package } from '../model/package';
 import { MaterialItem, MaterialItemVersion } from '../model/material-item';
 import { Subscription } from '../model/subscription';
 
+import { User } from '../model/user';
 import { UserService } from './user.service';
 
 @Injectable()
 export class LibraryService {
     private subscriptionUrl = '/api/subscription';
     private materialsUrl = '/api/material/';
+    private ownedMaterialsUrl = '/api/user/:_id/materials';
 
     private subscriptions: Subscription[];
     private materials: MaterialItem[];
@@ -23,62 +25,72 @@ export class LibraryService {
         private userService: UserService
         ) { }
 
-    // getLibrary(): Promise<Subscription[]> {
-    //     // TODO: add videos?
-    //     return Promise.all([this.getSubscriptions()])
-    //         .then(() => {
-    //             // TODO: sort?
-    //             return this.subscriptions;
-    //         });
+    // private _subscriptionPromise: Promise<Subscription[]>;
+    // getSubscriptions(): Promise<Subscription[]> {
+    //     if (!this._subscriptionPromise) {
+    //         this._subscriptionPromise = this.http.get(this.subscriptionUrl, this.userService.getAuthorizationHeader())
+    //             .toPromise()
+    //             .then(response => {
+    //                 this.subscriptions = response.json() as Subscription[];
+    //                 this.subscriptions.forEach(sub => {
+    //                     this._sortMaterials(sub);
+    //                 });
+    //                 return this.subscriptions;
+    //             })
+    //             .catch(this.handleError);
+    //     }
+    //     return this._subscriptionPromise;
     // }
 
-    private _subscriptionPromise: Promise<Subscription[]>;
-    getSubscriptions(): Promise<Subscription[]> {
-        if (!this._subscriptionPromise) {
-            this._subscriptionPromise = this.http.get(this.subscriptionUrl, this.userService.getAuthorizationHeader())
-                .toPromise()
-                .then(response => {
-                    this.subscriptions = response.json() as Subscription[];
-                    this.subscriptions.forEach(sub => {
-                        this._sortMaterials(sub);
-                    });
-                    return this.subscriptions;
-                })
-                .catch(this.handleError);
-        }
-        return this._subscriptionPromise;
-    }
+    // getSubscription(slug: string): Promise<Subscription> {
+    //     if (this._subscriptionPromise) {
+    //         return new Promise<Subscription>((resolve, reject) => {
+    //             this.getSubscriptions().then(subscriptions => {
+    //                 subscriptions.forEach(s => {
+    //                     if (s.package.slug === slug) {
+    //                         resolve(this._sortMaterials(s));
+    //                     }
+    //                 });
+    //             });
+    //         });
+    //     } else {
+    //         return this.http.get(this.subscriptionUrl + '/' + slug, this.userService.getAuthorizationHeader())
+    //             .toPromise()
+    //             .then(response => {
+    //                 return this._sortMaterials(response.json() as Subscription);
+    //             })
+    //             .catch(this.handleError);
+    //     }
+    // }
 
-    getSubscription(slug: string): Promise<Subscription> {
-        if (this._subscriptionPromise) {
-            return new Promise<Subscription>((resolve, reject) => {
-                this.getSubscriptions().then(subscriptions => {
-                    subscriptions.forEach(s => {
-                        if (s.package.slug === slug) {
-                            resolve(this._sortMaterials(s));
-                        }
-                    });
+    private _materialPromise: Promise<MaterialItem[]>;
+    getOwnedMaterials(): Promise<MaterialItem[]> {
+        let user = this.userService.getLoggedInUser();
+        if (user) {
+            if (user.materials && user.materials.length) {
+                this._materialPromise = new Promise<MaterialItem[]>((res, rej) => {
+                    res(user.materials);
                 });
-            });
+            } else {
+                this._materialPromise = this._getOwnedMaterials();
+            }
         } else {
-            return this.http.get(this.subscriptionUrl + '/' + slug, this.userService.getAuthorizationHeader())
-                .toPromise()
-                .then(response => {
-                    return this._sortMaterials(response.json() as Subscription);
-                })
-                .catch(this.handleError);
+            this._materialPromise = new Promise<MaterialItem[]>((res, rej) => {
+                rej("No user");
+            });
         }
+
+        return this._materialPromise;
     }
 
-    _sortMaterials(sub: Subscription): Subscription {
-        sub.package.materials.sort((a, b) => {
-            if (a.addon) {
-                return 1;
-            } else if (b.addon) {
-                return -1;
-            }
-        });
-        return sub;
+    private _getOwnedMaterials(): Promise<MaterialItem[]> {
+        let url = this.ownedMaterialsUrl.replace(':_id', this.userService.getLoggedInUser()._id);
+        return this.http.get(url, this.userService.getAuthorizationHeader())
+            .toPromise()
+            .then(response => {
+                return response.json() as MaterialItem[];
+            })
+            .catch(this.handleError);
     }
 
     downloadMaterial(id: string): void {

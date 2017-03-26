@@ -11,8 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/http");
+var Rx_1 = require("rxjs/Rx");
 require("rxjs/add/operator/toPromise");
-var Subject_1 = require("rxjs/Subject");
 var user_1 = require("../model/user");
 var webstorage_util_1 = require("../util/webstorage.util");
 var UserService = (function () {
@@ -22,7 +22,7 @@ var UserService = (function () {
         this.logoutUrl = '/logout';
         this.refreshUrl = '/refreshToken';
         this.userUrl = '/api/user/';
-        this.logginStateSource = new Subject_1.Subject();
+        this.logginStateSource = new Rx_1.Subject();
         this.loginState$ = this.logginStateSource.asObservable();
     }
     // TODO: onInit, check the token expiration against Date.now() and clear the session if necessary
@@ -81,12 +81,9 @@ var UserService = (function () {
     /**
      * Change information on the current user
      */
-    UserService.prototype.updateUser = function (password) {
+    UserService.prototype.updateUser = function (user) {
         var _this = this;
-        if (password) {
-            this.loggedInUser.password = password;
-        }
-        return this.http.put(this.userUrl + this.loggedInUser._id, this.loggedInUser, this.getAuthorizationHeader())
+        return this.http.put(this.userUrl + this.loggedInUser._id, user, this.getAuthorizationHeader())
             .toPromise()
             .then(function (response) {
             _this.loggedInUser = response.json();

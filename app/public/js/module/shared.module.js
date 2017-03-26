@@ -11,6 +11,7 @@ var platform_browser_1 = require("@angular/platform-browser");
 var forms_1 = require("@angular/forms");
 var iplus_view_1 = require("../view/iplus.view");
 var login_view_1 = require("../view/login.view");
+var user_form_view_1 = require("../view/user-form.view");
 // services
 var game_database_service_1 = require("../service/game-database.service");
 var library_service_1 = require("../service/library.service");
@@ -29,11 +30,13 @@ SharedModule = __decorate([
         ],
         declarations: [
             iplus_view_1.IPlusView,
-            login_view_1.LoginView
+            login_view_1.LoginView,
+            user_form_view_1.UserFormView
         ],
         exports: [
             iplus_view_1.IPlusView,
-            login_view_1.LoginView
+            login_view_1.LoginView,
+            user_form_view_1.UserFormView
         ],
         providers: [
             game_database_service_1.GameDatabaseService,

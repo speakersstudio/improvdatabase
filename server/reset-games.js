@@ -19,10 +19,10 @@ mongoose.connect(config.mongodb.uri);
 function fixUsers(arr) {
     let ShauvonID = "58c6e5bcd036281f4ce07dff";
     arr.forEach((item) => {
-        if (item.addedUser) {
+        if (item.addedUser == 1) {
             item.addedUser = ShauvonID;
         }
-        if (item.modifiedUser) {
+        if (item.modifiedUser == 1) {
             item.modifiedUser = ShauvonID;
         }
     });

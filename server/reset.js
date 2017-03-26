@@ -1,235 +1,219 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose'),
+    Promise = require('bluebird'),
+    bcrypt = require('bcrypt');
 
 var config = require('./config')();
 
+const charge = require('./routes/charge'),
+    roles = require('./roles');
+
+const Subscription = require('./models/subscription.model');
+const Purchase = require('./models/purchase.model');
 const User = require('./models/user.model');
 const MaterialItem = require('./models/material-item.model');
-const Subscription = require('./models/subscription.model');
 const Package = require('./models/package.model');
 
+mongoose.Promise = Promise;
 mongoose.connect(config.mongodb.uri);
 
-function deleteUsers(callback) {
+function deleteUsers() {
     console.log('deleting users');
-    User.find({}).remove(() => {
-        if (typeof callback == 'function') {
-            callback();
-        }
-    });
+    return User.find({}).remove().exec();
 }
 
-function seedUsers(callback) {
+function seedUsers() {
     const users = require('./models/seeds/user.seed.json');
-    User.create(users)
+
+    users.forEach(user => {
+        let salt = bcrypt.genSaltSync(config.saltRounds),
+            password = user.password;
+        user.password = bcrypt.hashSync(password, salt);
+    });
+
+    return User.create(users)
         .then(() => {
             console.log('users seeded');
             console.log(' -- ');
-            if (typeof callback == 'function') {
-                callback();
-            }
         });
 }
 
-function deleteItems(callback) {
+function deleteItems() {
     console.log('deleting material items');
-    MaterialItem.find({}).remove(() => {
-        if (typeof callback == 'function') {
-            callback();
-        }
-    });
+    return MaterialItem.find({}).remove().exec();
 }
 
-function seedItems(callback) {
+function seedItems() {
     const materialItems = require('./models/seeds/material-item.seed.json');
-    MaterialItem.create(materialItems)
+    return MaterialItem.create(materialItems)
         .then(() => {
             console.log('items seeded');
             console.log(' -- ');
-
-            if (typeof callback == 'function') {
-                callback();
-            }
         });
 }
 
-function deletePackages(callback) {
+function deletePackages() {
     console.log('deleting packages');
-    Package.find({}).remove((err) => {
-        if (err) {
-            throw err;
-        }
-
-        if (typeof callback == 'function') {
-            callback();
-        }
-    });
+    return Package.find({}).remove().exec();
 }
 
-function seedPackages(callback) {
+function seedPackages() {
+    // manually create packages
 
-    Package.create({
-        "slug": "leadership",
-        "name": "Improv+Leadership",
-        "description": "Our most powerful Improv program.",
-        "color": "orange",
-        "price": 225
-    }).then(improvLeadership => {
-        console.log('Created Improv+Leadership');
-        improvLeadership.addMaterial([
-            { name: "Improv+Leadership Facilitator's Guide", addon: false },
-            { name: "Improv+Leadership Handouts", addon: false },
-            { name: "Facilitation Tips", addon: true },
-            { name: "Your Improv+Leadership ROI", addon: true }
-        ]);
-    });
-
-    Package.create({
-        "slug": "networking",
-        "name": "Improv+Networking",
-        "description": "Run a program to help your team network better.",
+    return Package.create({
+        "slug": "ultimate",
+        "name": "Improv+Ultimate",
+        "description": "Gain access to all of our materials as well as our unbeatable hands-on support and coaching. The Ultimate package comes with your first year of access to the app for free.",
         "color": "red",
-        "price": 125
-    })
-    .then((improvNetworking) => {
+        "price": 1500
+    }).then((improvNetworking) => {
         console.log('Created Improv+Networking');
-        improvNetworking.addMaterial([
-            { name: "Improv+Networking Facilitator's Guide", addon: false },
-            { name: "Improv+Networking Handouts", addon: false },
-            { name: "Facilitation Tips", addon: true },
-            { name: "Handshake Academy", addon: true }
+        return improvNetworking.addMaterial([
+            { name: "Improv+Leadership Facilitator's Guide" },
+            { name: "Improv+Leadership Handouts" },
+            { name: "Improv+Networking Facilitator's Guide" },
+            { name: "Improv+Networking Handouts" },
+            { name: "Facilitation Tips" },
+            { name: "Handshake Academy" },
+            { name: "Your Improv+Leadership ROI" }
         ]);
-    });
-
-    Package.create({
-        "slug": "basics",
-        "name": "Basics",
-        "description": "Gain access to our selection of facilitation tips.",
-        "price": 45
-    })
-    .then((basics) => {
-        console.log('Created Basics package');
+    }).then(() => {
+        return Package.create({
+            "slug": "subscription",
+            "name": "App Subscription",
+            "description": 'Gain access to the the app for one year',
+            "price": 99
+        });
+    }).then((sub) => {
+        console.log('Created Subscription package');
         console.log(' -- ');
-
-        basics.addMaterial([
-            { name: "Facilitation Tips", addon: true }
-        ]);
-
-        if (typeof callback === 'function') {
-            callback();
-        }
     });
 
 }
 
-function deleteSubscriptions(callback) {
+function deleteSubscriptions() {
     console.log('deleting subscriptions');
-    Subscription.find({}).remove((err) => {
-        if (err) {
-            throw err;
-        }
-
-        if (typeof callback === 'function') {
-            callback();
-        }
-    });
+    return Subscription.find({}).remove().exec()
+        .then(() => {
+            return Purchase.find({}).remove().exec();
+        }).then(() => {
+            return User.find({}).exec();
+        }).then(users => {
+            let doUser = (userIndex) => {
+                let u = users[userIndex];
+                u.subscription = null;
+                u.materials = [];
+                u.purchases = [];
+                return u.save()
+                    .then(() => {
+                        userIndex++;
+                        if (userIndex < users.length) {
+                            return doUser(userIndex);
+                        } else {
+                            console.log('user purchase data deleted');
+                        }
+                    })
+            }
+            return doUser(0);
+        });
 }
 
 function seedSubscriptions(callback) {
-    // const shauvonId = "c83dfaf0-ceb1-46cf-9c8f-6a2fe771c9f4";
-    // const kateId = "3a36cfff-d4d9-4e79-855d-652f3b0cbb6d";
-
     const expires = "2018-03-08T14:26:29.214Z";
     const expired = "2016-03-08T14:26:29.214Z";
 
-    Package.find({})
-        .where('slug').in(['leadership', 'networking', 'basics'])
-        .exec((err, packages) => {
-            User.find({})
+    return Package.find({})
+        .where('slug').equals('ultimate')
+        .exec()
+        .then(packages => {
+            return User.find({})
                 .where('email').in(['smcgill@denyconformity.com', 'kate@katebringardner.com'])
-                .exec((err, users) => {
-                    let total = packages.length * users.length,
-                        count = 0;
-                    
-                    users.forEach((user) => {
-
-                        packages.forEach((package) => {
-
-                            Subscription.create({
-                                user: user._id,
-                                package: package._id,
-                                expires: package.name == 'Basics' &&
-                                         user.email == 'smcgill@denyconformity.com' ? expired : expires
-                            }).then(() => {
-                                count++;
-                                console.log(count + ' subscriptions');
-                                if (count >= total) {
-                                    console.log('ah ah ah');
-                                    console.log(' -- ');
-
-                                    if (typeof callback === 'function') {
-                                        callback();
-                                    }
-                                }
-                            });
-
+                .exec()
+                .then(users => {
+                    let purchaseArray = [];
+                    packages.forEach((pack, i) => {
+                        purchaseArray.push({
+                            type: 'package',
+                            total: 0,
+                            package: packages[i]._id
                         });
-
                     });
 
-            });
+                    let createSub = (userIndex) => {
+                        return charge.createPurchase(users[userIndex], purchaseArray)
+                            .then(() => {
+                                userIndex++;
+                                if (userIndex < users.length) {
+                                    return createSub(userIndex);
+                                } else {
+                                    console.log('Purchases made for Shauvon and Kate');
+                                    console.log(' -- ');
+                                }
+                            })
+                    }
+
+                    return createSub(0);
+
+                });
+        }).then(() => {
+            // the expired user gets an expired subscription for testing!
+            return User.findOne({})
+                .where('email').equals('expireduser@improvpl.us')
+                .exec();
+        }).then(expiredUser => {
+            let expiredDate = new Date();
+            expiredDate.setFullYear(expiredDate.getFullYear() - 1);
+            return expiredUser.addSubscription(roles.ROLE_SUBSCRIBER, expiredDate);
         });
 }
 
 module.exports = {
+
+    resetUsers: function () {
+        console.log("Re-seeding users. Hopefully you know what you're doing!");
+        return deleteUsers()
+            .then(seedUsers)
+            .then(module.exports.resetPackages);
+    },
     
-    resetAll: function () {
-        console.log('Re-seeding everything');
-        deleteUsers(() => {
-            seedUsers(() => {
-                deleteItems(() => {
-                    seedItems(() => {
-                        deletePackages(() => {
-                            seedPackages(() => {
-                                deleteSubscriptions(() => {
-                                    seedSubscriptions(() => {
-                                        process.exit(0);
-                                    });
-                                });
-                            });
-                        });
-                    });
-                });
+    resetPackages: function () {
+        console.log('Re-seeding packages and stuff');
+        return deleteItems()
+            .then(seedItems)
+            .then(deletePackages)
+            .then(seedPackages)
+            .then(deleteSubscriptions)
+            .then(seedSubscriptions)
+            .then(() => {
+                process.exit(0);
             });
-        });
     },
 
     clear: function() {
-        deleteUsers(() => {
-            deleteItems(() => {
-                deletePackages(() => {
-                    deleteSubscriptions(() => {
-                        process.exit(0);
-                    })
-                })
-            })
-        });
+        return deleteItems()
+            .then(deletePackages)
+            .then(deleteSubscriptions)
+            .then(() => {
+                process.exit(0);
+            });
     },
 
     checkForSeed: function() {
-        MaterialItem.count({}, (err, count) => {
-            if (err) {
-                throw err;
-            }
-
-            if (count > 0) {
-                console.log('Material Items already seeded, no need to re-seed them.');
-                process.exit(0);
-                return;
-            }
-
-            console.log('seeding the Material Item database!');
-            this.resetAll();
-        });
+        return User.count({}).exec()
+            .then(count => {
+                if (count < 3) {
+                    return this.resetUsers(true);
+                }
+            })
+            .then(() => {
+                return Package.count({}).exec()
+            })
+            .then(count => {
+                if (count == 0) {
+                    return this.resetPackages();
+                } else {
+                    process.exit(0);
+                }
+            });
     }
 
 }

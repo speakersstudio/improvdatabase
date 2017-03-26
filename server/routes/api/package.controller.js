@@ -9,7 +9,7 @@ module.exports = {
 
         Package.find({})
             // .populate('materials.materialItem')
-            .select('name description price dateModified dateAdded')
+            // .select('name description price dateModified dateAdded')
             .exec((err, packages) => {
                 if (err) {
                     console.log(err);

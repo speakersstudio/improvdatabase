@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var config = require('../config')();
 
 // /* GET App */
 // router.get('/app/*', function(req, res, next) {
@@ -15,7 +16,8 @@ router.get('/*', function(req, res, next) {
   res.render('index', {
        title: 'improvplus',
        baseHref: '/',
-       prod: process.env.NODE_ENV === 'production'
+       prod: process.env.NODE_ENV === 'production',
+       stripeKey: config.stripe.publishable
    });
 });
 

@@ -29,7 +29,7 @@ exports.create = function(req,res) {
     }
 };
 exports.getAll = function(req,res) {
-    if (ops[req.params.op]) {
+    if (ops[req.params.op] && ops[req.params.op].getAll) {
         console.log("GET ALL " + req.params.op);
         ops[req.params.op].getAll(req,res);
     } else {
@@ -45,7 +45,7 @@ exports.getAllExpanded = function(req, res) {
     }
 }
 exports.get = function(req,res) {
-    if (ops[req.params.op]) {
+    if (ops[req.params.op] && ops[req.params.op].get) {
         console.log("GET " + req.params.op, req.params.id);
         ops[req.params.op].get(req,res);
     } else {

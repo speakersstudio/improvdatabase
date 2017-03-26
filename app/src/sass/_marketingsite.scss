@@ -71,6 +71,10 @@ welcome, signup {
             }
         }
 
+        .background-shield {
+            @include abs(0, 0, 0, 0, 2);
+        }
+
         .content {
             width: 100%;
             background: $color-home-bg-black;
@@ -264,6 +268,30 @@ welcome, signup {
             .content {
                 padding: 0 0 $home-page-spacing 0;
             }
+        }
+    }
+
+    .payment-info {
+        width: 90%;
+        max-width: 500px;
+        text-align: left;
+        border: 1px solid $color-hr;
+
+        .StripeElement {
+            background-color: white;
+            padding: $std 0;
+            border: 1px solid transparent;
+        }
+
+        .StripeElement--focus {
+        }
+
+        .StripeElement--invalid {
+            border-color: $color-red;
+        }
+
+        .StripeElement--webkit-autofill {
+            background-color: #fefde5 !important;
         }
     }
 }

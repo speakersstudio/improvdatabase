@@ -1,9 +1,12 @@
 const   mongoose = require('mongoose'),
-        bcrypt = require('bcrypt-nodejs'),
+        bcrypt = require('bcrypt'),
+        Promise = require('bluebird'),
         
+        config = require('../../config')(),
         roles = require('../../roles'),
         util = require('../../util'),
 
+        Subscription = require('../../models/subscription.model'),
         User = require('../../models/user.model'),
 
         WHITELIST = [
@@ -28,7 +31,7 @@ const   mongoose = require('mongoose'),
 module.exports = {
 
     create: (req, res) => {
-        // TODO
+        
     },
 
     getAll: (req, res) => {
@@ -39,54 +42,50 @@ module.exports = {
     },
 
     get: (req, res) => {
-        findUser(req.params.id, null, function(err, user) {
-            if (err) {
+        return findUser(req.params.id)
+            .catch(err => {
                 util.handleError(req, res, err);
-            } else {
+            })
+            .then(user => {
                 res.json(user);
-            }
-        })
+            });
     },
 
     update: (req, res) => {
         let formData = req.body,
-            password = req.body.password;
-        
-        callback = (err, hash) => {
-            if (err) {
-                util.handleError(req, res, err);
-            } else {
-
-                User.find({}).where('_id').equals(req.params.id)
-                    .then(user => {
-                        user = util.smartUpdate(user, formData, WHITELIST);
-
-                        if (hash) {
-                            user.password = hash;
-                        }
-
-                        user.save((err, saved) => {
-                            if (err) {
-                                util.handleError(req, res, err);
-                            } else {
-                                saved = saved.toObject();
-                                delete saved.password;
-                                saved.actions = roles.getActionsForRole(saved.role);
-
-                                res.json(saved);
-                            }
-                        })
-                    });
-
-            }
-
-        }
+            password = req.body.password,
+            promise;
 
         if (password) {
-            bcrypt.hash(password, null, null, callback);
+            promise = bcrypt.hash(password, config.saltRounds);
         } else {
-            callback(null, null);
+            promise = Promise.resolve();
         }
+        
+        promise.then(hash => {
+             return User.findOne({}).where('_id').equals(req.params.id).exec()
+                .then(user => {
+                    user = util.smartUpdate(user, formData, WHITELIST);
+
+                    if (hash) {
+                        user.password = hash;
+                    }
+
+                    return user.save((err, saved) => {
+                        if (err) {
+                            util.handleError(req, res, err);
+                        } else {
+                            saved = saved.toObject();
+                            delete saved.password;
+                            saved.actions = roles.getActionsForRole(saved.role);
+
+                            if (res) {
+                                res.json(saved);
+                            }
+                        }
+                    });
+                });
+        });
     },
 
     delete: (req, res) => {
@@ -101,60 +100,77 @@ module.exports = {
             });
     },
 
-    findUser: (id, email, callback) => {
-        if (!id && !email) {
-            callback('no id or email', null);
-            return;
+    findUser: (key, select, populate) => {
+        if (!key) {
+            return Promise.reject('no id or email');
         }
 
         let query = User.findOne({})
-            .select(WHITELIST.join(' ') + ' role dateAdded dateModified');
+            .select(WHITELIST.join(' ') + ' purchases materials subscription role dateAdded dateModified ' + select);
 
-        if (id) {
-            query.where('_id').equals(id);
-        } else if (email) {
-            // if we're using email, we should get the password to validate with
-            query.select('password');
-            query.where('email').equals(email);
+        if (key.indexOf('@') > -1) {
+            query.where('email').equals(key);
+        } else {
+            query.where('_id').equals(key);
         }
 
-        query.exec()
-            .then(user => {
+        if (populate) {
+            query.populate(populate);
+        } else {
+            query.populate('subscription')
+        }
 
+        return query.exec()
+            .then(user => {
                 if (user) {
                     user = user.toObject();
-                    let roleId = user.role;
-                    user.actions = roles.getActionsForRole(roleId);
+                    
+                    // make sure the user has an active subscription
+                    if (user.subscription &&
+                         typeof(user.subscription) == 'object' &&
+                            (
+                                // user.subscription.role == roles.ROLE_SUPER_ADMIN ||
+                                user.subscription.expiration > Date.now()
+                            )) {
 
-                    delete user.role;
+                        user.actions = roles.getActionsForRole(user.subscription.role);
+                    } else {
+                        user.actions = roles.getActionsForRole(roles.ROLE_EXPIRED);
+                    }
                 }
 
-                callback(null, user);
-            })
+                return Promise.resolve(user);
+            });
     },
 
-    
     validateUser: (email, password, callback) => {
-        module.exports.findUser(null, email, (err, user) => {
-            if (err) {
-                callback(err, null);
-            } else {
+        return module.exports.findUser(email, 'password')
+            .then(user => {
                 if (user) {
-                    bcrypt.compare(password, user.password, (crypterr, valid) => {
-                        if (err) {
-                            callback(crypterr, null);
-                        } else if (valid) {
-                            delete user.password;
-                            callback(null, user);
-                        } else {
-                            callback(null, false);
-                        }
-                    })
+                    return bcrypt.compare(password, user.password)
+                        .then(res => {
+                            if (res) {
+                                delete user.password;
+                                return Promise.resolve(user);
+                            } else {
+                                return Promise.resolve(false);
+                            }
+                        });
                 } else {
-                    callback(null, false);
+                    return Promise.reject('no user found');
                 }
-            }
-        })
+            });
+    },
+
+    createUser: (data) => {
+        let password = data.password,
+            userData = util.smartUpdate({}, data, WHITELIST);
+
+        return bcrypt.hash(password, config.saltRounds)
+            .then(hash => {
+                userData.password = hash;
+                return User.create(userData);
+            });
     }
 
 }

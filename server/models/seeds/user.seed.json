@@ -2,7 +2,7 @@
     {
         "_id": "58c6e5bcd036281f4ce07dff",
         "email": "smcgill@denyconformity.com",
-        "password": "$2a$10$YIQg2q3vy53qRSjzO8jI5ODNE2DJ2WuHmiXgWPBdTQOsuMJ0rRNue",
+        "password": "password",
         "firstName": "Shauvon",
         "lastName": "McGill",
         "title": "Founder",
@@ -19,33 +19,13 @@
         "url": "http://www.denyconformity.com",
         "dateAdded": "2014-12-01T12:06:35.098Z",
         "role": 19,
-        "description": "A super cool dude."
-    },
-    {
-        "_id": "58c6e5bcd036281f4ce07e00",
-        "email": "testly@mctestingtons.com",
-        "password": "$2a$10$37vIrt2vF83XCFEtNiOGueyI.x/B5kfdC/TnMx.n1SYFmM1s3A0WO",
-        "firstName": "Testly",
-        "lastName": "McTestington",
-        "title": "Tester",
-        "company": "McTestingtons",
-        "address": "1234 Fake St.",
-        "city": "Chicago",
-        "state": "IL",
-        "zip": "60606",
-        "country": "United States",
-        "improvExp": 1,
-        "facilitationExp": 1,
-        "trainingInterest": false,
-        "url": "http://www.denyconformity.com",
-        "dateAdded": "2017-02-07T14:38:00.000Z",
-        "role": 1,
-        "description": "An enigma."
+        "description": "A super cool dude.",
+        "superAdmin": true
     },
     {
         "_id": "58c6e5bcd036281f4ce07e01",
         "email": "kate@katebringardner.com",
-        "password": "$2a$10$37vIrt2vF83XCFEtNiOGueyI.x/B5kfdC/TnMx.n1SYFmM1s3A0WO",
+        "password": "password",
         "firstName": "Kate",
         "lastName": "Bringardner",
         "title": "Founder",
@@ -60,6 +40,14 @@
         "trainingInterest": false,
         "url": "http://www.katebringardner.com",
         "dateAdded": "2017-02-07T14:38:00.000Z",
-        "role": 19
+        "superAdmin": true
+    },
+    {
+        "email": "expireduser@improvpl.us",
+        "password": "password",
+        "firstName": "Expired",
+        "lastName": "User",
+        "title": "Tester",
+        "company": "ImprovPlus"
     }
 ]

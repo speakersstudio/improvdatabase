@@ -73,23 +73,15 @@ export class UserComponent implements OnInit, OnDestroy {
         this._app.logout();
     }
 
-    submitEditUser(): void {
-        this.passwordMatchError = false;
-
-        if (this.password === this.passwordConfirm) {
-            this.isPosting = true;
-
-            this.userService.updateUser(this.password)
+    submitEditUser(user: User): void {
+        if (user && user._id) {
+            this.userService.updateUser(user)
                 .then(() => {
                     this.isPosting = false;
-                    this.password = "";
-                    this.passwordConfirm = "";
                 })
                 .catch(() => {
                     this.isPosting = false;
-                })
-        } else {
-            this.passwordMatchError = true;
+                });
         }
     }
 
@@ -98,7 +90,7 @@ export class UserComponent implements OnInit, OnDestroy {
         
         switch (tool.name) {
             case "logout":
-                this.logout();
+                this._app.logout();
                 break;
         }
     }

@@ -14,6 +14,15 @@ const auth = require('../../auth');
 
 module.exports = {
 
+    getAll: (req, res) => {
+        MaterialItem.find({})
+            .where("visible").equals(true)
+            .exec()
+            .then(ms => {
+                res.json(ms);
+            });
+    },
+
     get: (req, res) => {
 
         let userId = req.user._id,

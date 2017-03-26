@@ -10,13 +10,62 @@
 
 <div class="page">
 
-    <div class="paper center">
+    <div class="paper">
 
-        <div class="block">
+        <div class="content">
 
-            
+            <h5 class="center">join <span class="light">improv</span><strong>plus</strong></h5>
 
+            <div class="block" *ngIf="step == 1">
+
+                <div class="card-list">
+
+                    <div routerLink="/app/materials" class="card red brackets clickable"
+                            *ngIf="userService.can('materials_view')">
+                        <h4>Materials</h4>
+                        <p>Browse and download your ImprovPlus content.</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="block" *ngIf="step == 2">
+                <p>Enter your information below to create an account. You will be able to enter your billing information on the next step.</p>
+
+                <user-form
+                    [user]="user" 
+                    [isPosting]="isPosting"
+                    [saveText]="'Next'"
+                    (submit)="saveUser($event)"></user-form>
+            </div>
+
+            <div class="block center" *ngIf="step == 3">
+                <div class="card payment-info">
+                    <form id="payment-form" (ngSubmit)="submitPayment()" #paymentForm="ngForm">
+                        <div class="form-row">
+                            <label for="card-element">
+                                Credit or debit card
+                            </label>
+                            <div id="card-element">
+                            <!-- a Stripe Element will be inserted here. -->
+                            </div>
+
+                            <!-- Used to display form errors -->
+                            <div id="card-errors"></div>
+                        </div>
+
+                        <div class="action right">
+                            <span class="button" (click)="back()">Back</span>
+                            <button class="button raised">Submit Payment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
+
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>join</h1></div>
 
     </div>
 

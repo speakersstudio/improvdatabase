@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IPlusView } from '../view/iplus.view';
 import { LoginView } from '../view/login.view';
+import { UserFormView } from '../view/user-form.view';
 
 // services
 import { GameDatabaseService } from "../service/game-database.service";
@@ -18,11 +19,13 @@ import { AuthGuard } from "../service/auth-guard.service";
     ],
     declarations: [
         IPlusView,
-        LoginView
+        LoginView,
+        UserFormView
     ],
     exports: [
         IPlusView,
-        LoginView
+        LoginView,
+        UserFormView
     ],
     providers: [
         GameDatabaseService,

@@ -13,7 +13,10 @@ import { WelcomeComponent } from '../component/ms.welcome.component';
 
 import { AppRoutingModule } from './app-routing.module';
 
+// the shared module is where all of the views and services live
 import { SharedModule } from './shared.module';
+
+// the improvplus module is the app
 import { ImprovPlusModule } from '../app/module/improvplus.module';
 
 import { LoginScreenComponent } from '../component/login-screen.component';

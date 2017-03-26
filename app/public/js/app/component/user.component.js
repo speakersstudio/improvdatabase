@@ -43,30 +43,23 @@ var UserComponent = (function () {
     UserComponent.prototype.logout = function () {
         this._app.logout();
     };
-    UserComponent.prototype.submitEditUser = function () {
+    UserComponent.prototype.submitEditUser = function (user) {
         var _this = this;
-        this.passwordMatchError = false;
-        if (this.password === this.passwordConfirm) {
-            this.isPosting = true;
-            this.userService.updateUser(this.password)
+        if (user && user._id) {
+            this.userService.updateUser(user)
                 .then(function () {
                 _this.isPosting = false;
-                _this.password = "";
-                _this.passwordConfirm = "";
             })
                 .catch(function () {
                 _this.isPosting = false;
             });
-        }
-        else {
-            this.passwordMatchError = true;
         }
     };
     UserComponent.prototype.onToolClicked = function (tool) {
         this._app.showLoader();
         switch (tool.name) {
             case "logout":
-                this.logout();
+                this._app.logout();
                 break;
         }
     };

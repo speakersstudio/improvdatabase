@@ -9,6 +9,12 @@
     }
 }
 
+.text- {
+    &red {
+        color: $color-red;
+    }
+}
+
 iplus {
     display: inline-flex;
     cursor: default;
@@ -260,6 +266,10 @@ iplus {
         margin-right: $std;
         width: 100%;
 
+        &.fit {
+            width: auto;
+        }
+
         &:last-child {
             margin-right: 0;
         }
@@ -272,6 +282,10 @@ iplus {
     & > input[name="state"] {
         width: 3em;
         text-align: center;
+    }
+
+    & > input[name="zip"] {
+        width: 5em;
     }
 }
 

@@ -83,7 +83,7 @@ export class UserService {
     }
 
     isLoggedIn(): boolean {
-        return this.token != "";
+        return this.token !== "" && this.token !== null;
     }
 
     private getToken(): string {

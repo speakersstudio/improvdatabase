@@ -63,14 +63,16 @@ var AppComponent = (function () {
                 // we just logged in
                 var path_1 = [];
                 if (_this.authGuard.redirect) {
+                    console.log(_this.authGuard.redirect);
+                    path_1.push('app');
                     _this.authGuard.redirect.forEach(function (segment) {
-                        path_1.push('/' + segment.path);
+                        path_1.push(segment.path);
                     });
                 }
                 else {
-                    path_1.push('/app/dashboard');
+                    path_1.push('app/dashboard');
                 }
-                _this.router.navigate(path_1);
+                _this.router.navigate(path_1, { replaceUrl: true });
             }
             if (!user) {
                 // we just logged out

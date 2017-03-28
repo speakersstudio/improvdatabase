@@ -5,12 +5,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IPlusView } from '../view/iplus.view';
 import { LoginView } from '../view/login.view';
 import { UserFormView } from '../view/user-form.view';
+import { LandingHeroView } from '../view/landing-hero.view';
 
 // services
 import { GameDatabaseService } from "../service/game-database.service";
 import { LibraryService } from "../service/library.service";
 import { UserService } from "../service/user.service";
 import { AuthGuard } from "../service/auth-guard.service";
+import { CartService } from '../service/cart.service';
 
 @NgModule({
     imports: [
@@ -20,18 +22,21 @@ import { AuthGuard } from "../service/auth-guard.service";
     declarations: [
         IPlusView,
         LoginView,
-        UserFormView
+        UserFormView,
+        LandingHeroView
     ],
     exports: [
         IPlusView,
         LoginView,
-        UserFormView
+        UserFormView,
+        LandingHeroView
     ],
     providers: [
         GameDatabaseService,
         LibraryService,
         UserService,
-        AuthGuard
+        AuthGuard,
+        CartService
     ]
 })
 

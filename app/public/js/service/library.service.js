@@ -17,10 +17,23 @@ var LibraryService = (function () {
     function LibraryService(http, userService) {
         this.http = http;
         this.userService = userService;
-        this.subscriptionUrl = '/api/subscription';
+        this.packageUrl = '/api/package';
         this.materialsUrl = '/api/material/';
         this.ownedMaterialsUrl = '/api/user/:_id/materials';
     }
+    LibraryService.prototype.getPackages = function () {
+        var _this = this;
+        if (!this._packagePromise) {
+            this._packagePromise = this.http.get(this.packageUrl)
+                .toPromise()
+                .then(function (response) {
+                _this.packages = response.json();
+                return _this.packages;
+            })
+                .catch(this.handleError);
+        }
+        return this._packagePromise;
+    };
     LibraryService.prototype.getOwnedMaterials = function () {
         var user = this.userService.getLoggedInUser();
         if (user) {

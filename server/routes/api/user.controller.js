@@ -156,7 +156,6 @@ module.exports = {
                     return bcrypt.compare(password, user.password)
                         .then(res => {
                             if (res) {
-                                delete user.password;
                                 return Promise.resolve(user);
                             } else {
                                 return Promise.resolve(false);

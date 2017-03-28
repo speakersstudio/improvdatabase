@@ -35,7 +35,7 @@ module.exports = {
             })
             .then(user => {
                 if (user) {
-                    genToken(user).then(token => {
+                    module.exports.genToken(user).then(token => {
                         res.status(200).json(token);
                     });
                 } else {
@@ -96,7 +96,7 @@ module.exports = {
         });
         */
 
-        genToken(req.user).then(token => {
+        module.exports.genToken(req.user).then(token => {
             res.status(200).json(token);
         });
     },
@@ -120,7 +120,7 @@ module.exports = {
                 if (decoded.exp > Date.now()) {
                     // now make sure the user exists
                     // The iss parameter would be the logged in user's UserID
-                    userApi.findUser(decoded.iss)
+                    userApi.findUser(decoded.iss, 'stripeCustomerId')
                         .then(user => {
                             req.user = user;
                             next();
@@ -158,38 +158,42 @@ module.exports = {
         } else {
             next();
         }
-    }
+    },
 
-}
+    genToken: (user) => {
+        var expires = expiresIn(7), // one week, as recommended by Auth0
+            token = jwt.encode({
+                exp: expires,
+                iss: user._id
+            }, config.token);
 
-function genToken(user) {
-    var expires = expiresIn(7), // one week, as recommended by Auth0
-        token = jwt.encode({
-            exp: expires,
-            iss: user._id
-        }, config.token);
+            // this is all redis stuff, which isn't really necessary
+            //multi = client.multi();
 
-        // this is all redis stuff, which isn't really necessary
-        //multi = client.multi();
+        //multi.set(token, user.UserID);
+        //multi.expire(token, 60 * 60 * 24 * 7); // one week in seconds
 
-    //multi.set(token, user.UserID);
-    //multi.expire(token, 60 * 60 * 24 * 7); // one week in seconds
+        /*
+        multi.exec(function (err) {
+            callback(err, {
+                token: token,
+                expires: expires,
+                user: user
+            });
+        });
+        */
 
-    /*
-    multi.exec(function (err) {
-        callback(err, {
+        // just to be safe...
+        delete user.password;
+        delete user.stripeCustomerId;
+
+        return Promise.resolve({
             token: token,
             expires: expires,
             user: user
         });
-    });
-    */
+    }
 
-    return Promise.resolve({
-        token: token,
-        expires: expires,
-        user: user
-    });
 }
 
 function expiresIn(days) {

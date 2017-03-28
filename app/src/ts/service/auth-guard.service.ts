@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivateChild {
             if (!data.action || this.userService.can(data.action)) {
                 return true;
             } else {
-                this.router.navigate(['/app/unauthorized']);
+                this.router.navigate(['/app/unauthorized'], { replaceUrl: true });
                 // TODO: show dialog?
             }
         } else {

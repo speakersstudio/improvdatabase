@@ -166,6 +166,10 @@
             font-size: 34px;
             transition: color 200ms;
             margin-top: $large;
+
+            &:last-child {
+                margin-bottom: $large;
+            }
         }
         p {
             font-size: 19px;

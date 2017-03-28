@@ -12,11 +12,13 @@ var forms_1 = require("@angular/forms");
 var iplus_view_1 = require("../view/iplus.view");
 var login_view_1 = require("../view/login.view");
 var user_form_view_1 = require("../view/user-form.view");
+var landing_hero_view_1 = require("../view/landing-hero.view");
 // services
 var game_database_service_1 = require("../service/game-database.service");
 var library_service_1 = require("../service/library.service");
 var user_service_1 = require("../service/user.service");
 var auth_guard_service_1 = require("../service/auth-guard.service");
+var cart_service_1 = require("../service/cart.service");
 var SharedModule = (function () {
     function SharedModule() {
     }
@@ -31,18 +33,21 @@ SharedModule = __decorate([
         declarations: [
             iplus_view_1.IPlusView,
             login_view_1.LoginView,
-            user_form_view_1.UserFormView
+            user_form_view_1.UserFormView,
+            landing_hero_view_1.LandingHeroView
         ],
         exports: [
             iplus_view_1.IPlusView,
             login_view_1.LoginView,
-            user_form_view_1.UserFormView
+            user_form_view_1.UserFormView,
+            landing_hero_view_1.LandingHeroView
         ],
         providers: [
             game_database_service_1.GameDatabaseService,
             library_service_1.LibraryService,
             user_service_1.UserService,
-            auth_guard_service_1.AuthGuard
+            auth_guard_service_1.AuthGuard,
+            cart_service_1.CartService
         ]
     })
 ], SharedModule);

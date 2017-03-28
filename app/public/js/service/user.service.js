@@ -70,7 +70,7 @@ var UserService = (function () {
         });
     };
     UserService.prototype.isLoggedIn = function () {
-        return this.token != "";
+        return this.token !== "" && this.token !== null;
     };
     UserService.prototype.getToken = function () {
         return this.token;

@@ -3,10 +3,13 @@ import { Router } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { UserService } from '../service/user.service';
+import { LibraryService } from '../service/library.service';
+import { CartService } from '../service/cart.service';
 
 import { Config } from '../config';
 
 import { User } from '../model/user';
+import { Package } from '../model/package';
 
 declare var Stripe: any;
 
@@ -18,8 +21,13 @@ declare var Stripe: any;
 export class SignupComponent implements OnInit {
 
     user: User;
+    packages: Package[];
 
-    isPostion: boolean = false;
+    selectedPackage: Package;
+
+    isLoadingPackages: boolean = false;
+
+    isPosting: boolean = false;
 
     step: number = 1;
 
@@ -30,7 +38,9 @@ export class SignupComponent implements OnInit {
     constructor(
         private _app: AppComponent,
         private router: Router,
-        private userService: UserService
+        private userService: UserService,
+        private libraryService: LibraryService,
+        private cartService: CartService
     ) { }
 
     ngOnInit(): void {
@@ -39,17 +49,47 @@ export class SignupComponent implements OnInit {
         this.user.improvExp = 1;
         this.user.facilitationExp = 1;
 
+        this.isLoadingPackages = true;
+        this.libraryService.getPackages().then(packages => {
+            this.packages = packages;
+            this.isLoadingPackages = false;
+        });
+
+        this.step1();
+
+    }
+
+    step1(): void {
+        this.step = 1;
+        this.cartService.reset();
+    }
+
+    selectPackage(pack: Package): void {
+        this.selectedPackage = pack;
+        this.cartService.addPackage(pack);
+        this.showUser();
+    }
+
+    showUser(): void {
+        this.step = 2;
     }
 
     saveUser(user: User): void {
 
         this.user = user;
+        this.cartService.setUser(this.user);
+
         this.step = 3;
 
+        let button = document.querySelector('.button.raised'),
+            color = document.defaultView.getComputedStyle(button)['background-color'];
+
+        // setup the stripe credit card input
         setTimeout(() => {
             this.stripe = Stripe(Config.STRIPE_KEY);
             let elements = this.stripe.elements();
-            this. card = elements.create('card', {
+            this.card = elements.create('card', {
+                value: {postalCode: this.user.zip},
                 style: {
                     base: {
                         color: '#32325d',
@@ -77,22 +117,22 @@ export class SignupComponent implements OnInit {
                     this.cardError = '';
                 }
             });
+
         }, 100)
 
     }
 
-    back(): void {
-        this.step = 1;
-    }
-
     submitPayment(): void {
 
+        this.isPosting = true;
         this.stripe.createToken(this.card).then(result => {
             if (result.error) {
                 this.cardError = result.error.message;
             } else {
-                let token = result.token;
-                console.log('token!', this.user, token);
+                this.cartService.charge(result.token)
+                    .then(user => {
+                        return this.userService.login(this.user.email, this.user.password);
+                    });
             }
         });
 

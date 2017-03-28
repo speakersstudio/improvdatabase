@@ -95,13 +95,15 @@ export class AppComponent implements OnInit {
                 // we just logged in
                 let path:string[] = [];
                 if (this.authGuard.redirect) {
+                    console.log(this.authGuard.redirect);
+                    path.push('app');
                     this.authGuard.redirect.forEach(segment => {
-                        path.push('/' + segment.path);
+                        path.push(segment.path);
                     });
                 } else {
-                    path.push('/app/dashboard');
+                    path.push('app/dashboard');
                 }
-                this.router.navigate(path);
+                this.router.navigate(path, { replaceUrl: true });
             }
             if (!user) {
                 // we just logged out

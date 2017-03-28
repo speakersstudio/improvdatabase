@@ -1,6 +1,9 @@
 let Promise = require('bluebird');
 
+let config = require('../config')();
+
 let userController = require('./api/user.controller'),
+    auth = require('../auth');
     roles = require('../roles');
 
 let Purchase = require('../models/purchase.model'),
@@ -10,39 +13,85 @@ module.exports = {
 
     doCharge: (req, res) => {
 
-        let cc = req.body.cc, // credit card info object
+        let token = req.body.stripeToken, // stripe charge token
             cart = req.body.cart, // array of Purchase objects (see the Purchase model)
-            requestUser = req.user, // logged in user (if adding something to their account)
-            newUser = req.body.user; // user data (if we're creating a new user)
+            user = req.user && req.user._id ? req.user : req.body.user, // the user who made this charge (if no user is logged in, hopefully we're creating one)
+            isUserNew = !user._id;
 
-        // TODO: process the credit card, break on error
-        return Promise.resolve()
-            .then(() => {
+        if (!user || !user.email) {
+            console.log('No user!')
+            res.status(500).json({error: "No user"});
+            return;
+        }
+        if (!token) {
+            console.log('no stripe token!');
+            res.status(500).json({error: "No stripe token"});
+            return;
+        }
+
+        if (typeof token == 'object') {
+            token = token.id;
+        }
+
+        let stripe = require('stripe')(config.stripe.secret),
+            total = 0,
+            desc = isUserNew ? "New purchase - " : "Purchase - ";
+
+        cart.forEach((cartItem, i) => {
+            total += cartItem.total;
+            if (cartItem.package) {
+                desc += ' - ' + cartItem.package.name;
+            }
+        });
+
+        // stripe expects the price in cents
+        total *= 100;
+
+        if (!user.stripeCustomerId) {
+            stripePromise = stripe.customers.create({
+                email: user.email,
+                source: token
+            });
+        } else {
+            stripePromise = Promise.resolve(false);
+        }
+
+
+        return stripePromise
+            .then(customer => {
+                if (customer) {
+                    user.stripeCustomerId = customer.id;
+                }
+
+                return stripe.charges.create({
+                    amount: total,
+                    currency: "usd",
+                    description: desc,
+                    customer: user.stripeCustomerId
+                });
+            })
+            .then(charge => {
                 // if we have a newUser object, create that new user
                 // otherwise just pass along the logged in user
-                if (newUser) {
-                    return userController.createUser(newUser);
+                if (isUserNew) {
+                    return userController.createUser(user);
                 } else {
-                    return Promise.resolve(requestUser);
+                    return Promise.resolve(user);
                 }
             })
-            .then(user => {
-                // we should have a user here, so if we don't we have a problem
-                if (!user) {
-                    res.status(500).send('No User Found!');
-                    // TODO: do we have to refund the credit card here?
-                    return false;
+            .then(u => {
+                if (isUserNew && user.stripeCustomerId) {
+                    u.stripeCustomerId = user.stripeCustomerId;
+                    return u.save();
                 }
-
+            })
+            .then(u => {
                 // save the purchase item in the database
-                return this.createPurchase(u, cart);
+                return module.exports.createPurchase(u, cart);
             })
-            .then(user => {
-                // TODO: generate a token why not
-                if (res) {
-                    res.json(user);
-                }
-            });
+            .then(u => {
+                res.json(u);
+            })
 
     },
 

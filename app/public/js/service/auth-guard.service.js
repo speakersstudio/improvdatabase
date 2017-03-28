@@ -26,7 +26,7 @@ var AuthGuard = (function () {
                 return true;
             }
             else {
-                this.router.navigate(['/app/unauthorized']);
+                this.router.navigate(['/app/unauthorized'], { replaceUrl: true });
                 // TODO: show dialog?
             }
         }

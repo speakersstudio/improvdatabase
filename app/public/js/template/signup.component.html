@@ -1,6 +1,6 @@
-<div class="toolbar" [class.on]="pagepos <= 20">
+<div class="toolbar" [class.on]="_app.scrollpos > 20">
     <div class="toolbar-row">
-        <iplus class="" (click)="_app.login()" *ngIf="!_app.loaderVisible"></iplus>
+        <iplus class="white" (click)="_app.login()" *ngIf="!_app.loaderVisible"></iplus>
 
         <a routerLink="/welcome">Welcome</a>
 
@@ -8,44 +8,87 @@
     </div>
 </div>
 
+<landing-hero [showContent]="false" [video]="false"></landing-hero>
+
 <div class="page">
 
-    <div class="paper">
+    <div class="paper" *ngIf="step == 1">
 
-        <div class="content">
+        <div class="content center" *ngIf="isLoadingPackages">
+            <h5>loading options<i class="loading"></i></h5>
+        </div>
 
-            <h5 class="center">join <span class="light">improv</span><strong>plus</strong></h5>
+        <div class="content" *ngIf="!isLoadingPackages && packages">
 
-            <div class="block" *ngIf="step == 1">
+            <h5 class="center">select your path to <strong>plus</strong></h5>
+
+            <div class="block">
 
                 <div class="card-list">
 
-                    <div routerLink="/app/materials" class="card red brackets clickable"
-                            *ngIf="userService.can('materials_view')">
-                        <h4>Materials</h4>
-                        <p>Browse and download your ImprovPlus content.</p>
+                    <div class="card {{package.color}} brackets clickable"
+                         *ngFor="let package of packages"
+                         (click)="selectPackage(package)">
+
+                        <h4>{{package.name}}</h4>
+                        <p>{{package.description}}</p>
+                        <h4 class="center text-{{package.color}}">${{package.price}}</h4>
                     </div>
 
                 </div>
 
             </div>
+        </div>
 
-            <div class="block" *ngIf="step == 2">
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>step 1 of 3</h1></div>
+    </div>
+
+    <div class="paper" *ngIf="step == 2">
+        <div class="content">
+            <div class="block">
+                <!--<div class="card-list center">
+
+                    <div class="card {{selectedPackage.color}} brackets clickable" (click)="step1()">
+                        <h4>{{selectedPackage.name}}</h4>
+                        <h4 class="center text-{{selectedPackage.color}}">${{selectedPackage.price}}</h4>
+                    </div>
+
+                </div>-->
+
                 <p>Enter your information below to create an account. You will be able to enter your billing information on the next step.</p>
 
                 <user-form
                     [user]="user" 
                     [isPosting]="isPosting"
                     [saveText]="'Next'"
+                    [backText]="'Back'"
+                    (back)="step1()"
                     (submit)="saveUser($event)"></user-form>
             </div>
+        </div>
 
-            <div class="block center" *ngIf="step == 3">
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>step 2 of 3</h1></div>
+    </div>
+
+    <div class="paper" *ngIf="step == 3">
+        <div class="content">
+            <div class="block center">
                 <div class="card payment-info">
                     <form id="payment-form" (ngSubmit)="submitPayment()" #paymentForm="ngForm">
                         <div class="form-row">
+                            <div class="section">
+                                <h3>{{user.firstName}} {{user.lastName}}</h3>
+
+                                <div class="columns">
+                                    <span>{{selectedPackage.name}}</span>
+                                    <span class="fit">${{selectedPackage.price}}</span>
+                                </div>
+                            </div>
+
                             <label for="card-element">
-                                Credit or debit card
+                                Credit or debit card number
                             </label>
                             <div id="card-element">
                             <!-- a Stripe Element will be inserted here. -->
@@ -55,9 +98,13 @@
                             <div id="card-errors"></div>
                         </div>
 
-                        <div class="action right">
-                            <span class="button" (click)="back()">Back</span>
+                        <div class="action right" *ngIf="!isPosting">
+                            <span class="button" (click)="showUser()">Back</span>
                             <button class="button raised">Submit Payment</button>
+                        </div>
+
+                        <div class="action right" *ngIf="isPosting">
+                            <div class="button"><i class="loading"></i></div>
                         </div>
                     </form>
                 </div>
@@ -65,7 +112,7 @@
         </div>
 
         <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
-        <div class="right-bracket"><h1>join</h1></div>
+        <div class="right-bracket"><h1>step 3 of 3</h1></div>
 
     </div>
 

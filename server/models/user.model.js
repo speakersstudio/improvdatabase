@@ -25,6 +25,7 @@ const UserSchema = new mongoose.Schema({
     description: String,
     permissions: String, // in case we want to grant or revoke specific permissions
     superAdmin: { type: Boolean, default: false },
+    stripeCustomerId: String,
 
     purchases: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Purchase' }],
     materials: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MaterialItem' }],

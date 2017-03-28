@@ -1,4 +1,4 @@
-<div class="toolbar" [class.on]="pagepos <= 20">
+<div class="toolbar" [class.on]="(pageStart - _app.scrollpos) <= 20">
     <div class="toolbar-row">
         <iplus class="white" (click)="login()" *ngIf="!_app.loaderVisible"></iplus>
 
@@ -8,35 +8,9 @@
     </div>
 </div>
 
-<div class="landing" (window:resize)="setupSize()">
+<landing-hero></landing-hero>
 
-    <div class="background" [style.opacity]="((pagepos) / (pageStart - 200))">
-        <img [style.width]="bgwidth + 'px'" [style.height]="bgheight + 'px'" [style.left]="-bgleft + 'px'" [style.top]="-bgtop + 'px'" src="/images/home-background.png" />
-        <div id="player"></div>
-    </div>
-
-    <div class="background-shield"></div>
-
-    <div class="content" [style.top]="-(_app.scrollpos * 0.4) + 'px'" 
-        [style.opacity]="((pagepos + 75) / (pageStart - 175))">
-
-        <h1><span class="light">improv</span><strong>plus</strong></h1>
-
-        <div class="columns centered block">
-            <h2>[i]mprov</h2>
-            <h2 class="primary">+</h2>
-            <div><h3>Develop</h3> <hr /> <h3>Talent</h3></div>
-            <h2>=</h2>
-            <iplus class="large" [text]="'mprovplus'"></iplus>
-        </div>
-
-    </div>
-
-    <i class="fa fa-chevron-down clickable" [style.bottom]="(_app.scrollpos + 16) + 'px'" (click)="scrollBelowLanding()"></i>
-
-</div>
-
-<div class="landing-holder"></div>
+<div (window:resize)="setupSize()" class="landing-holder"></div>
 
 <div class="page">
 

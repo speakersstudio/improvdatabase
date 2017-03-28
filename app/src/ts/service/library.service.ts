@@ -12,7 +12,7 @@ import { UserService } from './user.service';
 
 @Injectable()
 export class LibraryService {
-    private subscriptionUrl = '/api/subscription';
+    private packageUrl = '/api/package';
     private materialsUrl = '/api/material/';
     private ownedMaterialsUrl = '/api/user/:_id/materials';
 
@@ -62,6 +62,20 @@ export class LibraryService {
     //             .catch(this.handleError);
     //     }
     // }
+
+    private _packagePromise: Promise<Package[]>;
+    getPackages(): Promise<Package[]> {
+        if (!this._packagePromise) {
+            this._packagePromise = this.http.get(this.packageUrl)
+                .toPromise()
+                .then(response => {
+                    this.packages = response.json() as Package[];
+                    return this.packages;
+                })
+                .catch(this.handleError);
+        }
+        return this._packagePromise;
+    }
 
     private _materialPromise: Promise<MaterialItem[]>;
     getOwnedMaterials(): Promise<MaterialItem[]> {

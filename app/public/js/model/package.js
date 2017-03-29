@@ -1,11 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var PackageMaterial = (function () {
-    function PackageMaterial() {
-    }
-    return PackageMaterial;
-}());
-exports.PackageMaterial = PackageMaterial;
+// export class PackageMaterial {
+//     "_id": string;
+//     "materialItem": MaterialItem;
+//     "addon": boolean;
+// }
 var Package = (function () {
     function Package() {
     }

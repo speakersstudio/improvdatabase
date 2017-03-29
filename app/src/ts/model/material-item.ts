@@ -9,9 +9,9 @@ export class MaterialItem {
     "_id": string;
     "name": string;
     "description": string;
+    "price": number;
+    "fileslug": string;
+    "extension": string;
     "versions": MaterialItemVersion[];
-
-    test(): string {
-        return "test";
-    }
+    "visible": boolean;
 }

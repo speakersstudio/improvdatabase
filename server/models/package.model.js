@@ -10,12 +10,11 @@ const PackageSchema = new mongoose.Schema({
     price: Number, // decimal
     dateAdded: { type: Date, default: Date.now },
     dateModified: { type: Date, default: Date.now },
-    materials: [
-        {
-            materialItem: { type: mongoose.Schema.Types.ObjectId, ref: 'MaterialItem' },
-            addon: { type: Boolean, default: false }
-        }
-    ]
+    materials: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MaterialItem' }],
+    includeSubscription: { type: Boolean, default: true }, // this might not be necessary, but just in case!
+
+    coachingSessions: Number, // I'm not sure how these will work!
+    supportCalls: Number // I'm not sure how these will work!
 });
 
 PackageSchema.query.byName = function(name) {
@@ -29,21 +28,28 @@ PackageSchema.methods.addMaterial = function(items) {
 
     items = [].concat(items);
 
-    items.forEach(item => {
+    let addItem = (itemIndex) => {
+        let item = items[itemIndex],
+            query = MaterialItem.findOne({});
+        
+        if (item.name) {
+            query.where('name').equals(item.name);
+        } else if (item._id) {
+            query.where('_id').equals(item._id);
+        }
 
-        MaterialItem.findOne({ name: item.name }).exec((err, materialItem) => {
-            materialItems.push({
-                materialItem: materialItem._id,
-                addon: item.addon
-            });
-            readyCount++;
-            if (readyCount == items.length) {
-                package.materials = package.materials.concat(materialItems);
-                package.save();
-            }
-        });
-
-    });
+        return query.exec()
+            .then(i => {
+                package.materials.push(i);
+                itemIndex++;
+                if (items.length > itemIndex) {
+                    return addItem(itemIndex);
+                } else {
+                    return package.save();
+                }
+            })
+    }
+    return addItem(0);
 };
 
 const Package = mongoose.model('Package', PackageSchema);

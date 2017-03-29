@@ -1,82 +1,168 @@
-const   ROLE_FACILITATOR = 1,
-        ROLE_SUPER_ADMIN = 19;
+const 
+    ROLE_NOBODY = 0,
+    ROLE_EXPIRED = 13,
+    ROLE_SUBSCRIBER = 1,
+    ROLE_ULTIMATE = 2,
+    ROLE_SUPER_ADMIN = 19; // DUDE DON'T CHANGE THESE NUMBERS DUDE
 
-const roles = [
-    {
-        id: 0,
-        name: 'none',
-        actions: [
-            'game_view',
-            'name_view',
-            'package_view',
-            'subscription_create'
-        ]
+module.exports = {
+    ROLE_EXPIRED: ROLE_EXPIRED,
+    ROLE_NOBODY: ROLE_NOBODY,
+    ROLE_SUBSCRIBER: ROLE_SUBSCRIBER,
+    ROLE_ULTIMATE: ROLE_ULTIMATE,
+    ROLE_SUPER_ADMIN: ROLE_SUPER_ADMIN,
+
+    _actionCache: {},
+
+    roles: [
+        {
+            id: ROLE_NOBODY,
+            name: 'none',
+            actions: [
+                'game_view',
+                'name_view',
+                'package_view',
+                'subscription_create'
+            ]
+        },
+        {
+            id: ROLE_EXPIRED,
+            name: 'expired',
+            inherits: [ROLE_NOBODY],
+            actions: [
+                'subscription_renew'
+            ]
+        },
+        {
+            id: ROLE_SUBSCRIBER,
+            name: "Subscriber",
+            inherits: [ROLE_NOBODY],
+            actions: [
+                'tag_view',
+
+                'metadata_view',
+
+                'game_filter',
+
+                'dashboard_view',
+                'materials_view',
+                'videos_view',
+                'glossary_view',
+                'blog_view',
+
+                'subscription_view',
+
+                'note_public_view',
+                'note_private_create',
+
+                'name_vote',
+
+                'account_edit',
+                'messages',
+
+                'material_view' // downloading material items
+            ]
+        },
+        {
+            id: ROLE_ULTIMATE,
+            name: "Ultimate",
+            inherits: [ROLE_NOBODY, ROLE_SUBSCRIBER],
+            actions: [
+
+            ]
+        },
+        {
+            id: ROLE_SUPER_ADMIN,
+            name: "Super Admin",
+            inherits: [ROLE_ULTIMATE],
+            actions: [
+                'users_view',
+                'users_lock',
+                'users_edit',
+                'users_delete',
+
+                'note_public_create',
+                'note_public_edit',
+
+                'game_create',
+                'game_edit',
+                'game_delete',
+
+                'game_tag_add',
+                'game_tag_remove',
+
+                'name_create',
+                'name_edit',
+                'name_delete',
+
+                'metadata_create',
+                'metadata_edit',
+                'metadata_delete',
+
+                'tag_create',
+                'tag_edit',
+                'tag_delete'
+            ]
+        }
+    ],
+
+    canUserHave: (url, method, user) => {
+        method = method.toLowerCase();
+        let action = findActionForUrl(url, method),
+            val;
+
+        if (typeof(action) === 'function') {
+            val = action(url, method, user);
+
+            if (typeof val !== 'string') {
+                console.log('Action for ' + method + ':' + url + ' is a function');
+                return val;
+            }
+        }
+        if (val) {
+            action = val;
+        }
+        
+        if (action) {
+            console.log('Action for ' + method + ':' + url + ' is ' + action);
+            return module.exports.doesUserHaveAction(user, action);
+        }
     },
-    {
-        id: ROLE_FACILITATOR,
-        name: "Facilitator",
-        inherits: [0],
-        actions: [
-            'tag_view',
 
-            'metadata_view',
+    getActionsForRole: (roleId) => {
+        if (!module.exports._actionCache['role_' + roleId]) {
+            let actions = [];
+            module.exports.roles.forEach(role => {
+                if (role.id === parseInt(roleId, 10)) {
+                    actions = union_arrays(actions, role.actions);
+                    if (role.inherits && role.inherits.length) {
+                        role.inherits.forEach(id => {
+                            actions = union_arrays(actions, module.exports.getActionsForRole(id));
+                        });
+                    }
+                }
+            });
+            module.exports._actionCache['role_' + roleId] = actions;
+        }
 
-            'game_filter',
-
-            'dashboard_view',
-            'materials_view',
-            'videos_view',
-            'glossary_view',
-            'blog_view',
-
-            'subscription_view',
-
-            'note_public_view',
-            'note_private_create',
-
-            'name_vote',
-
-            'account_edit',
-            'messages',
-
-            'material_view' // downloading material items
-        ]
+        return module.exports._actionCache['role_' + roleId];
     },
-    {
-        id: ROLE_SUPER_ADMIN,
-        name: "Super Admin",
-        inherits: [0,1],
-        actions: [
-            'users_view',
-            'users_lock',
-            'users_edit',
-            'users_delete',
 
-            'note_public_create',
-            'note_public_edit',
-
-            'game_create',
-            'game_edit',
-            'game_delete',
-
-            'game_tag_add',
-            'game_tag_remove',
-
-            'name_create',
-            'name_edit',
-            'name_delete',
-
-            'metadata_create',
-            'metadata_edit',
-            'metadata_delete',
-
-            'tag_create',
-            'tag_edit',
-            'tag_delete'
-        ]
+    doesUserHaveAction: (user, action) => {
+        if (!user) {
+            return false;
+        }
+        let actions = user.actions;
+        if (!actions) {
+            actions = module.exports.getActionsForRole(user.RoleID);
+        }
+        if (!actions) {
+            return false;
+        }
+        return actions.indexOf(action) > -1;
     }
-];
-exports.roles = roles;
+
+}
 
 const actionmap = {
     /**
@@ -183,9 +269,12 @@ const actionmap = {
             // admins can view and edit anybody
             if (doesUserHaveAction(user, admin)) {
                 return true;
+            } else if (url.indexOf('materials') > -1) {
+                return url.indexOf('/user/' + user._id) > -1 &&
+                        doesUserHaveAction(user, 'materials_view');
             } else {
                 // users can view and edit themselves
-                return url.indexOf('/user/' + user.UserID) > -1 &&
+                return url.indexOf('/user/' + user._id) > -1 &&
                         doesUserHaveAction(user, 'account_edit');
             }
         }
@@ -199,7 +288,7 @@ const actionmap = {
         get: '',
         default: function(url, method, user) {
             // by default only allow non GET requests for super admins
-            return user.RoleID === ROLE_SUPER_ADMIN;
+            return user.superAdmin;
         }
     }
 }
@@ -213,6 +302,12 @@ findActionForUrl = function(url, method) {
         action,
         fallback = actionmap.default[method] || actionmap.default.default;
 
+    // /backup requests are restricted to super admins
+    if (url.indexOf('/backup') > -1) {
+        return function(url, method, user) {
+            return user.superAdmin;
+        }
+    } else 
     // see if an action is specified for the given group and method
     if (group && (group[method] || group.default)) {
         return group[method] || group.default;
@@ -242,29 +337,6 @@ findActionForUrl = function(url, method) {
     return fallback;
 }
 
-exports.canUserHave = function(url, method, user) {
-    method = method.toLowerCase();
-    let action = findActionForUrl(url, method),
-        val;
-
-    if (typeof(action) === 'function') {
-        val = action(url, method, user);
-
-        if (typeof val !== 'string') {
-            console.log('Action for ' + method + ':' + url + ' is a function');
-            return val;
-        }
-    }
-    if (val) {
-        action = val;
-    }
-    
-    if (action) {
-        console.log('Action for ' + method + ':' + url + ' is ' + action);
-        return doesUserHaveAction(user, action);
-    }
-}
-
 function union_arrays (x, y) {
     var obj = {};
     for (var i = x.length-1; i >= 0; -- i) {
@@ -281,34 +353,3 @@ function union_arrays (x, y) {
     }
     return res;
 }
-
-let getActionsForRole = function(roleId) {
-    let actions = [];
-    roles.forEach(role => {
-        if (role.id === parseInt(roleId, 10)) {
-            actions = union_arrays(actions, role.actions);
-            if (role.inherits && role.inherits.length) {
-                role.inherits.forEach(id => {
-                    actions = union_arrays(actions, getActionsForRole(id));
-                });
-            }
-        }
-    });
-    return actions;
-}
-exports.getActionsForRole = getActionsForRole;
-
-doesUserHaveAction = function (user, action) {
-    if (!user) {
-        return false;
-    }
-    let actions = user.actions;
-    if (!actions) {
-        actions = getActionsForRole(user.RoleID);
-    }
-    if (!actions) {
-        return false;
-    }
-    return actions.indexOf(action) > -1;
-}
-exports.doesUserHaveAction = doesUserHaveAction;

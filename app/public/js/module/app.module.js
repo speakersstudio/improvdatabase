@@ -17,9 +17,12 @@ var webstorage_util_1 = require("../util/webstorage.util");
 var app_component_1 = require("../component/app.component");
 var ms_welcome_component_1 = require("../component/ms.welcome.component");
 var app_routing_module_1 = require("./app-routing.module");
+// the shared module is where all of the views and services live
 var shared_module_1 = require("./shared.module");
+// the improvplus module is the app
 var improvplus_module_1 = require("../app/module/improvplus.module");
 var login_screen_component_1 = require("../component/login-screen.component");
+var signup_component_1 = require("../component/signup.component");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -38,7 +41,8 @@ AppModule = __decorate([
         declarations: [
             login_screen_component_1.LoginScreenComponent,
             app_component_1.AppComponent,
-            ms_welcome_component_1.WelcomeComponent
+            ms_welcome_component_1.WelcomeComponent,
+            signup_component_1.SignupComponent
         ],
         bootstrap: [app_component_1.AppComponent],
         providers: [

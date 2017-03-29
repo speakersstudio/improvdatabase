@@ -10,7 +10,8 @@ var connection = require("../connection"),
 
         "package": require('./package.controller'),
         "subscription": require('./subscription.controller'),
-        "material": require('./material-item.controller')
+        "material": require('./material-item.controller'),
+        "purchase": require('./purchase.controller')
     };
 exports.ops = ops;
 
@@ -29,7 +30,7 @@ exports.create = function(req,res) {
     }
 };
 exports.getAll = function(req,res) {
-    if (ops[req.params.op]) {
+    if (ops[req.params.op] && ops[req.params.op].getAll) {
         console.log("GET ALL " + req.params.op);
         ops[req.params.op].getAll(req,res);
     } else {
@@ -45,7 +46,7 @@ exports.getAllExpanded = function(req, res) {
     }
 }
 exports.get = function(req,res) {
-    if (ops[req.params.op]) {
+    if (ops[req.params.op] && ops[req.params.op].get) {
         console.log("GET " + req.params.op, req.params.id);
         ops[req.params.op].get(req,res);
     } else {
@@ -84,3 +85,12 @@ exports.method = function(req,res) {
         res.send('404', 'Not Found');
     }
 };
+
+exports.backup = function (req, res) {
+    if (ops[req.params.op] && ops[req.params.op].backup) {
+        console.log('Backup data for ' + req.params.op);
+        ops[req.params.op].backup(req, res);
+    } else {
+        res.send('404', 'Not found');
+    }
+}

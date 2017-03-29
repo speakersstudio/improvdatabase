@@ -1,9 +1,13 @@
+import {Purchase} from './purchase';
+import {MaterialItem} from './material-item';
+import {Subscription} from './subscription';
+
 export class User {
     _id: string;
     email: string;
+    password: string;
     firstName: string;
     lastName: string;
-    password: string;
     company: string;
     phone: string;
     address: string;
@@ -15,11 +19,14 @@ export class User {
     facilitationExp: number;
     trainingInterest: boolean;
     url: string;
-    dateAdded: string;
-    dateModified: string;
+    dateAdded: Date;
+    dateModified: Date;
     locked: boolean;
-    roleID: number;
     description: string;
     permissions: Object;
     actions: string[];
+
+    purchases: Purchase[];
+    materials: MaterialItem[];
+    subscription: Subscription;
 }

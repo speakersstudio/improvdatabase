@@ -9,9 +9,6 @@ exports.MaterialItemVersion = MaterialItemVersion;
 var MaterialItem = (function () {
     function MaterialItem() {
     }
-    MaterialItem.prototype.test = function () {
-        return "test";
-    };
     return MaterialItem;
 }());
 exports.MaterialItem = MaterialItem;

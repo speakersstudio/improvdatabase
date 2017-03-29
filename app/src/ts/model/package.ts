@@ -1,10 +1,10 @@
 import { MaterialItem } from './material-item';
 
-export class PackageMaterial {
-    "_id": string;
-    "materialItem": MaterialItem;
-    "addon": boolean;
-}
+// export class PackageMaterial {
+//     "_id": string;
+//     "materialItem": MaterialItem;
+//     "addon": boolean;
+// }
 
 export class Package {
     "_id": string;
@@ -15,5 +15,10 @@ export class Package {
     "price": number;
     "dateAdded": Date;
     "dateModified": Date;
-    "materials": PackageMaterial[];
+    "materials": MaterialItem[];
+    "includeSubscription": boolean;
+
+    // not sure how these work
+    "coachingSessions": number;
+    "supportCalls": number;
 }

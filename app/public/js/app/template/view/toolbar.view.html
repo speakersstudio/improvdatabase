@@ -19,7 +19,7 @@
             <ul>
                 <li *ngFor="let result of searchResults" (click)="clickResult(result)">
                     <i class="fa"
-                        [class.fa-soccer-ball-o]="result.type == 'name'"
+                        [class.fa-rocket]="result.type == 'name'"
                         [class.fa-hashtag]="result.type == 'tag'"
                         [class.fa-clock-o]="result.type == 'duration'"
                         [class.fa-group]="result.type == 'playercount'"

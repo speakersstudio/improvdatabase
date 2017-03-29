@@ -26,58 +26,20 @@ var MaterialsLibraryComponent = (function () {
         this._tools = [];
     }
     MaterialsLibraryComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        var slug;
-        this.route.params.forEach(function (params) {
-            slug = params['packageSlug'];
-        });
-        this.getLibrary(slug);
-        this.pathLocationStrategy.onPopState(function () {
-            _this.selectedSubscription = null;
-            _this.getLibrary('');
-        });
+        this.getLibrary();
     };
     MaterialsLibraryComponent.prototype.onToolClicked = function (tool) {
     };
-    MaterialsLibraryComponent.prototype.getLibrary = function (slug) {
+    MaterialsLibraryComponent.prototype.getLibrary = function () {
         var _this = this;
-        // Promise.all([
-        //         this.libraryService.getLibrary()
-        //     ]).then((items) => {
-        //         setTimeout(() => {
-        //             this._app.hideLoader();
-        //             this.materials = items[0];
-        //             this.packages = items[1];
-        //         }, 150);
-        //     });
         this._app.showLoader();
-        if (slug) {
-            this.libraryService.getSubscription(slug)
-                .then(function (sub) {
-                _this.selectSubscription(sub);
-            });
-        }
-        else {
-            this._app.showBackground(true);
-            this.libraryService.getSubscriptions()
-                .then(function (subs) {
-                _this.subscriptions = subs;
-                _this._app.hideLoader();
-            });
-        }
-    };
-    MaterialsLibraryComponent.prototype.selectSubscription = function (sub) {
-        this.selectedSubscription = sub;
-        this._app.showBackground(false);
-        this._app.hideLoader();
-        var newPath = '/materials/' + sub.package.slug;
-        this._app.setPath(newPath);
-        window.scrollTo(0, 0);
+        this.libraryService.getOwnedMaterials()
+            .then(function (materials) {
+            _this._app.hideLoader();
+            _this.ownedMaterials = materials;
+        });
     };
     MaterialsLibraryComponent.prototype.clearFilter = function () {
-        if (this.selectedSubscription) {
-            this.pathLocationStrategy.back();
-        }
     };
     MaterialsLibraryComponent.prototype.selectMaterial = function (material) {
         this.libraryService.downloadMaterial(material._id);

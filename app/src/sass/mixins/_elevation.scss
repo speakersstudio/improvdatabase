@@ -144,6 +144,10 @@ $md-elevation-transition-timing-function: $md-fast-out-slow-in-timing-function;
                              #{map-get($_ambient-elevation-map, $zValue)} $inset;
 }
 
+@mixin md-elevation-inset($zValue) {
+  @include md-elevation($zValue, inset);
+}
+
 // Returns a string that can be used as the value for a transition property for elevation.
 // Calling this function directly is useful in situations where a component needs to transition
 // more than one property.

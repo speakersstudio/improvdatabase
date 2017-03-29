@@ -415,7 +415,7 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype._searchArray = function (arr, type, idProperty, term) {
         var results = [];
         arr.forEach(function (item) {
-            var str = item.Name;
+            var str = item.name;
             if (str.toLowerCase().indexOf(term) > -1) {
                 var regex = new RegExp('(' + term + ')', 'gi');
                 str = str.replace(regex, '<strong>$1</strong>');

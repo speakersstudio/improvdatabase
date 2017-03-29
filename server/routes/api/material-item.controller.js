@@ -14,32 +14,37 @@ const auth = require('../../auth');
 
 module.exports = {
 
+    getAll: (req, res) => {
+        MaterialItem.find({})
+            .where("visible").equals(true)
+            .exec()
+            .then(ms => {
+                res.json(ms);
+            });
+    },
+
     get: (req, res) => {
 
         let userId = req.user._id,
             materialId = req.params.id,
-            materialItem,
             access = false;
 
         MaterialItem.findOne({})
             .where("_id").equals(materialId)
             .exec()
             .then(m => {
-                if (m) {
-                    materialItem = m;
-                    return subCtrl.getSubs(userId, 1);
-                } else {
+                if (!m) {
                     res.status(404).end();
+                    return;
                 }
-            })
-            .then(subs => {
-                subs.forEach(sub => {
-                    sub.package.materials.forEach(material => {
-                        if (material.materialItem.toString().trim() ===
-                            materialId) {
-                                access = true;
-                            }
-                    })
+
+                let materialItem = m,
+                    access = false;
+
+                req.user.materials.forEach(thismat => {
+                    if (thismat._id.equals(materialItem._id)) {
+                        access = true;
+                    }
                 });
 
                 if (access && materialItem) {

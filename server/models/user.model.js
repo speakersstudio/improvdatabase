@@ -1,4 +1,6 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose'),
+
+    Subscription = require('./subscription.model');
 
 const UserSchema = new mongoose.Schema({
     email: { type: String, unique: true },
@@ -20,10 +22,58 @@ const UserSchema = new mongoose.Schema({
     dateAdded: { type: Date, default: Date.now },
     dateModified: { type: Date, default: Date.now },
     locked: { type: Boolean, default: false },
-    role: Number,
     description: String,
-    permissions: String
+    permissions: String, // in case we want to grant or revoke specific permissions
+    superAdmin: { type: Boolean, default: false },
+    stripeCustomerId: String,
+
+    purchases: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Purchase' }],
+    materials: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MaterialItem' }],
+    subscription: { type: mongoose.Schema.Types.ObjectId, ref: 'Subscription' }
 });
+
+UserSchema.methods.addSubscription = function(role, expires) {
+    if (!expires) {
+        expires = new Date();
+        expires.setFullYear(expires.getFullYear() + 1);
+    }
+    let expiration = Date.now();
+    if (typeof(expires) == 'object' && expires.getTime) {
+        expiration = expires.getTime();
+    }
+    return Subscription.create({
+        user: this._id,
+        role: role,
+        expiration: expiration
+    }).then(sub => {
+        this.subscription = sub;
+
+        return this.save();
+    });
+}
+
+// TODO: create a renewSubscription method?
+
+UserSchema.methods.addMaterial = function(materials) {
+    materials = [].concat(materials);
+    materials.forEach(mat => {
+        let id = typeof(mat) == 'object' ? mat._id : mat,
+            exists = false;
+        
+        this.materials.forEach(thismat => {
+            if (thismat == id || thismat._id == id) {
+                exists = true;
+                return false;
+            }
+        });
+
+        if (!exists) {
+            this.materials.push(mat);
+        }
+    });
+
+    return this.save();
+}
 
 UserSchema.virtual('fullName')
     .get(function() {

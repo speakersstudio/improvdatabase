@@ -91,6 +91,13 @@ module.exports = {
 
     },
 
-    getSubs: getSubs
+    getSubs: getSubs,
+
+    backup: (req, res) => {
+        Subscription.find({}).exec()
+            .then(s => {
+                res.json(s);
+            })
+    }
 
 }

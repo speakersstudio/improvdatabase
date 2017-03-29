@@ -99,6 +99,13 @@ module.exports = {
 
         }
 
+    },
+
+    backup: (req, res) => {
+        GameMetadata.find({})
+            .then(m => {
+                res.json(m);
+            });
     }
 
 }

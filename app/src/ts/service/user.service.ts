@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http } from '@angular/http';
 
+import { Observable, Subject } from 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
-
-import { Subject } from 'rxjs/Subject';
 
 import { User } from "../model/user";
 
@@ -84,7 +83,7 @@ export class UserService {
     }
 
     isLoggedIn(): boolean {
-        return this.token != "";
+        return this.token !== "" && this.token !== null;
     }
 
     private getToken(): string {
@@ -98,11 +97,8 @@ export class UserService {
     /**
      * Change information on the current user
      */
-    updateUser(password: string): Promise<User> {
-        if (password) {
-            this.loggedInUser.password = password;
-        }
-        return this.http.put(this.userUrl + this.loggedInUser._id, this.loggedInUser, 
+    updateUser(user: User): Promise<User> {
+        return this.http.put(this.userUrl + this.loggedInUser._id, user, 
             this.getAuthorizationHeader())
             .toPromise()
             .then((response) => {

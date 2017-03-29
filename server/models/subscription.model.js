@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
-const Package = require('./package.model');
 
+// track a user's account status in the app
 const SubscriptionSchema = new mongoose.Schema({
-    dateAdded: { type: Date, default: Date.now },
-    package: { type: mongoose.Schema.Types.ObjectId, ref: 'Package' },
-    expires: Date,
+    start: { type: Date, default: Date.now },
+    role: Number,
+    expiration: Date,
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 });
 

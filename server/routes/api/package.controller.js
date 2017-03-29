@@ -9,7 +9,7 @@ module.exports = {
 
         Package.find({})
             // .populate('materials.materialItem')
-            .select('name description price dateModified dateAdded')
+            // .select('name description price dateModified dateAdded')
             .exec((err, packages) => {
                 if (err) {
                     console.log(err);
@@ -19,6 +19,13 @@ module.exports = {
                 res.json(packages);
             });
 
+    },
+
+    backup: (req, res) => {
+        Package.find({}).exec()
+            .then(p => {
+                res.json(p);
+            });
     }
 
 }

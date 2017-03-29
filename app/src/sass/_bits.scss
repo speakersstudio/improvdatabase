@@ -9,6 +9,12 @@
     }
 }
 
+.text- {
+    &red {
+        color: $color-red;
+    }
+}
+
 iplus {
     display: inline-flex;
     cursor: default;
@@ -215,7 +221,7 @@ iplus {
 }
 
 .dull {
-    opacity: 0.5;
+    opacity: 0.25;
 }
 
 .block {
@@ -260,6 +266,10 @@ iplus {
         margin-right: $std;
         width: 100%;
 
+        &.fit {
+            width: auto;
+        }
+
         &:last-child {
             margin-right: 0;
         }
@@ -270,8 +280,12 @@ iplus {
     }
 
     & > input[name="state"] {
-        width: 2em;
+        width: 3em;
         text-align: center;
+    }
+
+    & > input[name="zip"] {
+        width: 5em;
     }
 }
 
@@ -528,7 +542,7 @@ button,
     display: inline-block;
     margin: $tag-spacing;
     padding: $tag-padding-vertical $tag-padding-horizontal;
-    background: $color-primary;
+    background-color: $color-primary;
     color: $color-primary-text;
     border-radius: $tag-border-radius;
     position: relative;

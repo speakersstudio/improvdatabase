@@ -8,128 +8,14 @@
 
     <div class="paper has-brackets" *ngIf="user">
 
-        <form name="edit-user" class="content" (ngSubmit)="submitEditUser()" #userForm="ngForm">
-            
-            <div class="section">
-                <label>
-                    Email*
-                    <input name="email" [(ngModel)]="user.email" required type="text" placeholder="Email" />
-                </label>
-
-                <div class="columns">
-                    <label>Name*
-                        <input name="first-name" [(ngModel)]="user.firstName" required type="text" placeholder="First Name" />
-                    </label>
-                    <label>&nbsp;
-                        <input name="last-name" [(ngModel)]="user.lastName" required type="text" placeholder="Last Name" />
-                    </label>
-                </div>
-
-                <div class="columns">
-                    <div>
-                        <label>Title
-                            <input name="title" [(ngModel)]="user.title" type="text" placeholder="Title" />
-                        </label>
-                    </div>
-                    <div>
-                        <label>Company (if applicable)
-                            <input name="company" [(ngModel)]="user.company" type="text" placeholder="Company" />
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section">
-                <!--<div class="columns">
-                    <label>
-                        <input type="radio" name="gender" value="M" [(ngModel)]="user.Gender" />
-                        Male
-                    </label>
-                    <label>
-                        <input type="radio" name="gender" value="F" [(ngModel)]="user.Gender" />
-                        Female
-                    </label>
-                    <label>
-                        <input type="radio" name="gender" value="O" [(ngModel)]="user.Gender" />
-                        None of your business
-                    </label>
-                </div>-->
-                <div class="columns">
-                    <label>Address*
-                        <input name="address" [(ngModel)]="user.address" required type="text" placeholder="Address" />
-                        <div class="columns">
-                            <input name="city" [(ngModel)]="user.city" required type="text" placeholder="City" />
-                            <input name="state" [(ngModel)]="user.state" maxlength="2" required type="text" placeholder="State" />
-                        </div>
-                        <input name="country" [(ngModel)]="user.country" type="text" placeholder="Country" />
-                    </label>
-                    <div>
-                        <label>Phone
-                            <input name="phone" [(ngModel)]="user.phone" type="text" placeholder="Phone" />
-                        </label>
-                        <label>Website
-                            <input name="URL" [(ngModel)]="user.url" type="text" placeholder="URL" />
-                        </label>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="section">
-                <div class="columns">
-                    <label>Description
-                        <textarea name="description" [(ngModel)]="user.description" rows="4"></textarea>
-                    </label>
-                </div>
-            </div>
-
-            <div class="section">
-                <div class="columns">
-                    <label>Improv Experience
-                        <select name="improv-experience" [(ngModel)]="user.improvExp">
-                            <option value="1">1 (none)</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5 (ton)</option>
-                        </select>
-                    </label>
-                    <label>Facilitation Experience
-                        <select name="facilitation-experience" [(ngModel)]="user.facilitationExp">
-                            <option value="1">1 (none)</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5 (ton)</option>
-                        </select>
-                    </label>
-                </div>
-
-                <label class="checkbox center">
-                    <input type="checkbox" class="inline-block" name="training-interest" value="true" [(ngModel)]="user.trainingInterest" />
-                    Interested in Facilitation or Improv Training (for yourself)?
-                </label>
-            </div>
-
-            <div class="section">
-                <div class="columns">
-                    <input name="change-password" [(ngModel)]="password" type="password" placeholder="Password" />
-                    <input name="change-password-confirm" [(ngModel)]="passwordConfirm" type="password" placeholder="Confirm Password" />
-                </div>
-                <label>(Leave the password blank if you don't want to change it)</label>
-                <label class="error" *ngIf="passwordMatchError">The two passwords you entered do not match.</label>
-            </div>
-            
-            <div class="button-group" *ngIf="!isPosting">
-                <input type="button" class="button" value="LOG OUT" (click)="logout()" />
-
-                <input type="submit" class="button raised" value="SAVE" [disabled]="!userForm.form.valid" />
-            </div>
-
-            <div class="button-group" *ngIf="isPosting">
-                <div class="button"><i class="loading"></i></div>
-            </div>
-        </form>
+        <div class="content">
+            <user-form 
+                [user]="user"
+                [isPosting]="isPosting"
+                [backText]="'Log Out'"
+                (back)="_app.logout()"
+                (submit)="submitEditUser($event)"></user-form>
+        </div>
 
         <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
         <div class="right-bracket"><h1>you</h1></div>

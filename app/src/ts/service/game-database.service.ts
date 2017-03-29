@@ -475,7 +475,7 @@ export class GameDatabaseService {
     private _searchArray(arr: any[], type: string, idProperty: string, term: string): SearchResult[] {
         let results: SearchResult[] = [];
         arr.forEach((item) => {
-            let str = item.Name;
+            let str = item.name;
 
             if (str.toLowerCase().indexOf(term) > -1) {
                 var regex = new RegExp('(' + term + ')', 'gi');

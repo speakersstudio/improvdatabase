@@ -278,6 +278,9 @@ sup {
   .errorselect {
     border-color: darkred; }
 
+.text-red {
+  color: #d32f2f; }
+
 iplus {
   display: inline-flex;
   cursor: default;
@@ -439,7 +442,7 @@ iplus {
   cursor: pointer; }
 
 .dull {
-  opacity: 0.5; }
+  opacity: 0.25; }
 
 .block {
   margin-bottom: 24px; }
@@ -474,13 +477,17 @@ iplus {
   .columns > * {
     margin-right: 16px;
     width: 100%; }
+    .columns > *.fit {
+      width: auto; }
     .columns > *:last-child {
       margin-right: 0; }
   .columns > input {
     margin-top: 0px; }
   .columns > input[name="state"] {
-    width: 2em;
+    width: 3em;
     text-align: center; }
+  .columns > input[name="zip"] {
+    width: 5em; }
 
 .button-group {
   margin-top: 16px;
@@ -683,7 +690,7 @@ button,
   display: inline-block;
   margin: 2px;
   padding: 2px 5px;
-  background: #d32f2f;
+  background-color: #d32f2f;
   color: #FFFFFF;
   border-radius: 4px;
   position: relative;
@@ -1155,126 +1162,129 @@ nav {
   z-index: 3; }
   .card-list .card {
     flex-grow: 1;
-    display: inline-block;
-    padding: 16px;
-    background: #FFFFFF;
-    margin: 16px;
-    border-radius: 2px;
-    position: relative;
-    max-width: 46%;
-    box-sizing: border-box;
-    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-    transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: box-shadow;
-    color: #606060;
-    text-decoration: none; }
-    .card-list .card.flat {
-      box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12); }
-    @media only screen and (max-width: 500px) {
-      .card-list .card {
-        display: block;
-        width: 90%;
-        max-width: 90%;
-        box-sizing: border-box; } }
-    .card-list .card.clickable:hover {
-      box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12); }
-    .card-list .card.small {
-      max-width: 275px; }
-    .card-list .card .top {
-      margin: -16px;
-      margin-bottom: 0;
-      position: relative;
-      color: #FFFFFF;
-      background: #606060;
-      box-shadow: 0px 5px 15px -3px rgba(0, 0, 0, 0.2) inset, 0px 8px 20px 1px rgba(0, 0, 0, 0.14) inset, 0px 3px 24px 2px rgba(0, 0, 0, 0.12) inset; }
-      .card-list .card .top:before {
-        content: "";
-        display: block;
-        width: 100%;
-        padding-top: 60%; }
-      .card-list .card .top h3 {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        padding: 24px;
-        font-size: 1.5em; }
-      .card-list .card .top em {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        font-size: 0.7em;
-        opacity: 0.5; }
-      .card-list .card .top .fa {
-        position: absolute;
-        top: 24px;
-        right: 24px;
-        font-size: 24px; }
-    .card-list .card .body {
-      margin: 0 -16px;
-      padding: 24px; }
-    .card-list .card .action {
-      margin: 0 -16px -16px;
-      padding: 8px 0;
-      border-top: 1px solid rgba(96, 96, 96, 0.5); }
-      .card-list .card .action .button:first-child {
-        margin-left: 8px; }
-    .card-list .card.red .top {
-      background-color: #d32f2f; }
-    .card-list .card.blue .top {
-      background-color: #64b5f6; }
-    .card-list .card.orange .top {
-      background-color: #ffa70f; }
-    .card-list .card.yellow .top {
-      background-color: #F9D423; }
-    .card-list .card.brackets {
-      text-align: center;
-      padding: 24px 32px; }
-      .card-list .card.brackets:before {
-        content: "";
-        position: absolute;
-        top: 10px;
-        bottom: 10px;
-        left: 10px;
-        z-index: 1;
-        border-width: 10px 0 10px 10px;
-        border-color: #606060;
-        border-style: solid;
-        width: 26px;
-        transition: width 200ms; }
-      .card-list .card.brackets:after {
-        content: "";
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        bottom: 10px;
-        z-index: 1;
-        border-width: 10px 10px 10px 0;
-        border-color: #606060;
-        border-style: solid;
-        width: 26px;
-        transition: width 200ms; }
-      .card-list .card.brackets h4 {
-        font-size: 34px;
-        transition: color 200ms;
-        margin-top: 24px; }
-      .card-list .card.brackets p {
-        font-size: 19px;
-        margin: 24px 0;
-        font-weight: 300; }
-      .card-list .card.brackets:hover:before {
-        width: 34px; }
-      .card-list .card.brackets:hover:after {
-        width: 34px; }
-      .card-list .card.brackets.red:after, .card-list .card.brackets.red:before {
-        border-color: #d32f2f; }
-      .card-list .card.brackets.blue:after, .card-list .card.brackets.blue:before {
-        border-color: #64b5f6; }
-      .card-list .card.brackets.orange:after, .card-list .card.brackets.orange:before {
-        border-color: #ffa70f; }
-      .card-list .card.brackets.yellow:after, .card-list .card.brackets.yellow:before {
-        border-color: #F9D423; }
+    max-width: 46%; }
   .card-list.span3 .card {
     max-width: 30%; }
+
+.card {
+  display: inline-block;
+  padding: 16px;
+  background: #FFFFFF;
+  margin: 16px;
+  border-radius: 2px;
+  position: relative;
+  box-sizing: border-box;
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: box-shadow;
+  color: #606060;
+  text-decoration: none; }
+  .card.flat {
+    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12); }
+  @media only screen and (max-width: 500px) {
+    .card {
+      display: block;
+      width: 90%;
+      max-width: 90%;
+      box-sizing: border-box; } }
+  .card.clickable:hover {
+    box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12); }
+  .card.small {
+    max-width: 275px; }
+  .card .top {
+    margin: -16px;
+    margin-bottom: 0;
+    position: relative;
+    color: #FFFFFF;
+    background: #606060; }
+    .card .top:before {
+      content: "";
+      display: block;
+      width: 100%;
+      padding-top: 50%; }
+    .card .top h3 {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      padding: 24px;
+      font-size: 1.5em; }
+    .card .top em {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 0.7em;
+      opacity: 0.5; }
+    .card .top .fa {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      font-size: 24px; }
+  .card .body {
+    margin: 0 -16px;
+    padding: 24px; }
+  .card .action {
+    margin: 0 -16px -16px;
+    padding: 8px 0;
+    border-top: 1px solid rgba(96, 96, 96, 0.5); }
+    .card .action .button:first-child {
+      margin-left: 8px; }
+  .card.red .top {
+    background-color: #d32f2f; }
+  .card.blue .top {
+    background-color: #64b5f6; }
+  .card.orange .top {
+    background-color: #ffa70f; }
+  .card.yellow .top {
+    background-color: #F9D423; }
+  .card.brackets {
+    text-align: center;
+    padding: 24px 32px; }
+    .card.brackets:before {
+      content: "";
+      position: absolute;
+      top: 10px;
+      bottom: 10px;
+      left: 10px;
+      z-index: 1;
+      border-width: 10px 0 10px 10px;
+      border-color: #606060;
+      border-style: solid;
+      width: 26px;
+      transition: width 200ms; }
+    .card.brackets:after {
+      content: "";
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      bottom: 10px;
+      z-index: 1;
+      border-width: 10px 10px 10px 0;
+      border-color: #606060;
+      border-style: solid;
+      width: 26px;
+      transition: width 200ms; }
+    .card.brackets h4 {
+      font-size: 34px;
+      transition: color 200ms;
+      margin-top: 24px; }
+      .card.brackets h4:last-child {
+        margin-bottom: 24px; }
+    .card.brackets p {
+      font-size: 19px;
+      margin: 24px 0;
+      font-weight: 300; }
+    .card.brackets:hover:before {
+      width: 34px; }
+    .card.brackets:hover:after {
+      width: 34px; }
+    .card.brackets.red:after, .card.brackets.red:before {
+      border-color: #d32f2f; }
+    .card.brackets.blue:after, .card.brackets.blue:before {
+      border-color: #64b5f6; }
+    .card.brackets.orange:after, .card.brackets.orange:before {
+      border-color: #ffa70f; }
+    .card.brackets.yellow:after, .card.brackets.yellow:before {
+      border-color: #F9D423; }
 
 footer {
   display: flex;
@@ -1724,27 +1734,7 @@ game-details h4:hover .fa-plus-circle {
 game-details textarea {
   height: 15em; }
 
-welcome .toolbar .toolbar-row {
-  justify-content: space-around; }
-  welcome .toolbar .toolbar-row a {
-    text-decoration: none;
-    text-transform: uppercase;
-    cursor: pointer; }
-    welcome .toolbar .toolbar-row a i {
-      margin-left: 8px; }
-
-welcome .toolbar iplus {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  z-index: 7;
-  margin-left: -15px;
-  padding: 11px; }
-
-welcome .toolbar.on a {
-  color: #FFFFFF; }
-
-welcome .landing {
+landing-hero {
   position: fixed;
   display: flex;
   align-items: center;
@@ -1752,7 +1742,7 @@ welcome .landing {
   height: 100vh;
   z-index: 3;
   box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2) inset, 0px 8px 10px 1px rgba(0, 0, 0, 0.14) inset, 0px 3px 14px 2px rgba(0, 0, 0, 0.12) inset; }
-  welcome .landing .background {
+  landing-hero .background {
     position: absolute;
     top: 0;
     left: 0;
@@ -1762,20 +1752,27 @@ welcome .landing {
     filter: saturate(2%);
     overflow: hidden;
     background: #f5f5f5; }
-    welcome .landing .background img {
+    landing-hero .background img {
       position: absolute;
       top: 0;
       left: 0;
       z-index: 1;
       max-width: none; }
-    welcome .landing .background iframe {
+    landing-hero .background iframe {
       width: 100%;
       height: 100%;
       opacity: 0;
       position: relative;
       z-index: 2;
       transition: opacity 600ms; }
-  welcome .landing .content {
+  landing-hero .background-shield {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2; }
+  landing-hero .content {
     width: 100%;
     background: rgba(0, 0, 0, 0.3);
     padding: 16px 0;
@@ -1786,38 +1783,38 @@ welcome .landing {
     align-items: center;
     justify-content: center;
     color: #FFFFFF; }
-    welcome .landing .content h1 {
+    landing-hero .content h1 {
       font-size: 110px;
       margin-bottom: 24px; }
       @media only screen and (max-width: 500px) {
-        welcome .landing .content h1 {
+        landing-hero .content h1 {
           font-size: 65px; } }
-    welcome .landing .content h2 {
+    landing-hero .content h2 {
       font-size: 30px;
       margin: 0 16px; }
       @media only screen and (max-width: 500px) {
-        welcome .landing .content h2 {
+        landing-hero .content h2 {
           font-size: 16px; } }
-    welcome .landing .content h3 {
+    landing-hero .content h3 {
       font-size: 24px;
       margin: 8px 16px; }
-    welcome .landing .content hr {
+    landing-hero .content hr {
       margin: 0 16px;
       background: #FFFFFF; }
-    welcome .landing .content p {
+    landing-hero .content p {
       line-height: 2; }
-    welcome .landing .content .button {
+    landing-hero .content .button {
       margin-top: 24px;
       color: #FFFFFF; }
-      welcome .landing .content .button:before, welcome .landing .content .button:after {
+      landing-hero .content .button:before, landing-hero .content .button:after {
         border-color: #FFFFFF; }
-      welcome .landing .content .button:hover:before, welcome .landing .content .button:hover:after {
+      landing-hero .content .button:hover:before, landing-hero .content .button:hover:after {
         border-color: #d32f2f; }
-    welcome .landing .content .block {
+    landing-hero .content .block {
       margin: 24px 0;
       max-width: 690px;
       text-align: center; }
-  welcome .landing .fa-chevron-down {
+  landing-hero .fa-chevron-down {
     position: absolute;
     bottom: 16px;
     left: 50%;
@@ -1828,36 +1825,56 @@ welcome .landing {
     opacity: 1;
     transition: opacity 300ms;
     color: #d32f2f; }
-    welcome .landing .fa-chevron-down.hide {
+    landing-hero .fa-chevron-down.hide {
       opacity: 0; }
 
-welcome .landing-holder {
+welcome .toolbar .toolbar-row, signup .toolbar .toolbar-row {
+  justify-content: space-around; }
+  welcome .toolbar .toolbar-row a, signup .toolbar .toolbar-row a {
+    text-decoration: none;
+    text-transform: uppercase;
+    cursor: pointer; }
+    welcome .toolbar .toolbar-row a i, signup .toolbar .toolbar-row a i {
+      margin-left: 8px; }
+
+welcome .toolbar iplus, signup .toolbar iplus {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 7;
+  margin-left: -15px;
+  padding: 11px; }
+
+welcome .toolbar.on a, signup .toolbar.on a {
+  color: #FFFFFF; }
+
+welcome .landing-holder, signup .landing-holder {
   display: block;
   width: 100vw;
   height: 100vh; }
 
-welcome .page {
+welcome .page, signup .page {
   box-sizing: border-box;
   position: relative;
   z-index: 4;
   padding: 0 8.7% 8.7%; }
-  welcome .page h4 {
+  welcome .page h4, signup .page h4 {
     font-size: 4em;
     margin-bottom: 72px; }
-  welcome .page h5 {
+  welcome .page h5, signup .page h5 {
     font-size: 2em; }
-  welcome .page p {
+  welcome .page p, signup .page p {
     margin-bottom: 24px;
     line-height: 2; }
-  welcome .page .block {
+  welcome .page .block, signup .page .block {
     margin-bottom: 72px; }
-    welcome .page .block:last-child {
+    welcome .page .block:last-child, signup .page .block:last-child {
       margin-bottom: 0; }
-  welcome .page .card-list h4 {
+  welcome .page .card-list h4, signup .page .card-list h4 {
     margin-bottom: 0; }
-  welcome .page .card-list p {
+  welcome .page .card-list p, signup .page .card-list p {
     line-height: 1.5; }
-  welcome .page .paper {
+  welcome .page .paper, signup .page .paper {
     border-radius: 0 0 2px 2px;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
     background: #FFFFFF;
@@ -1866,27 +1883,27 @@ welcome .page {
     z-index: 2;
     margin: 0 26px 16px; }
     @media only screen and (max-width: 500px) {
-      welcome .page .paper {
+      welcome .page .paper, signup .page .paper {
         margin: 0 0 16px; } }
-    welcome .page .paper.list {
+    welcome .page .paper.list, signup .page .paper.list {
       padding: 0; }
-    welcome .page .paper.has-brackets {
+    welcome .page .paper.has-brackets, signup .page .paper.has-brackets {
       padding: 48px 64px; }
       @media only screen and (max-width: 500px) {
-        welcome .page .paper.has-brackets {
+        welcome .page .paper.has-brackets, signup .page .paper.has-brackets {
           padding: 48px 52px; } }
-    welcome .page .paper > :not(.left-bracket):not(.right-bracket) {
+    welcome .page .paper > :not(.left-bracket):not(.right-bracket), signup .page .paper > :not(.left-bracket):not(.right-bracket) {
       position: relative;
       z-index: 6; }
-    welcome .page .paper .description, welcome .page .paper .description p {
+    welcome .page .paper .description, welcome .page .paper .description p, signup .page .paper .description, signup .page .paper .description p {
       line-height: 1.25; }
-    welcome .page .paper .how-it-works > div {
+    welcome .page .paper .how-it-works > div, signup .page .paper .how-it-works > div {
       margin: 16px; }
-      welcome .page .paper .how-it-works > div img {
+      welcome .page .paper .how-it-works > div img, signup .page .paper .how-it-works > div img {
         box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
         border-radius: 2px;
         border: 2px solid #606060; }
-  welcome .page .hero {
+  welcome .page .hero, signup .page .hero {
     margin: 72px -8.7vw;
     padding: 24px 4.35vw;
     box-sizing: border-box;
@@ -1895,9 +1912,25 @@ welcome .page {
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2) inset, 0px 2px 2px 0px rgba(0, 0, 0, 0.14) inset, 0px 1px 5px 0px rgba(0, 0, 0, 0.12) inset;
     text-align: center;
     color: #FFFFFF; }
-    welcome .page .hero h4 {
+    welcome .page .hero h4, signup .page .hero h4 {
       margin: 72px 0 24px 0; }
-    welcome .page .hero .content {
+    welcome .page .hero .content, signup .page .hero .content {
       padding: 0 0 72px 0; }
+
+welcome .payment-info, signup .payment-info {
+  width: 90%;
+  max-width: 500px;
+  text-align: left;
+  border: 1px solid rgba(96, 96, 96, 0.5); }
+  welcome .payment-info .StripeElement, signup .payment-info .StripeElement {
+    background-color: white;
+    padding: 16px 0 8px;
+    margin-bottom: 24px;
+    border: 1px solid transparent;
+    border-bottom: 1px solid #d32f2f; }
+  welcome .payment-info .StripeElement--invalid, signup .payment-info .StripeElement--invalid {
+    border-color: #d32f2f; }
+  welcome .payment-info .StripeElement--webkit-autofill, signup .payment-info .StripeElement--webkit-autofill {
+    background-color: #fefde5 !important; }
 
 /*# sourceMappingURL=style.css.map */

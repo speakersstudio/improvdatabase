@@ -41,6 +41,12 @@ module.exports = {
                 res.send(notes);
             })
 
+    },
+
+    backup: (req, res) => {
+        Note.find({}).exec().then(n => {
+            res.json(n);
+        })
     }
 
 }

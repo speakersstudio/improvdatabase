@@ -19,6 +19,13 @@ module.exports = {
                 res.json(packages);
             });
 
+    },
+
+    backup: (req, res) => {
+        Package.find({}).exec()
+            .then(p => {
+                res.json(p);
+            });
     }
 
 }

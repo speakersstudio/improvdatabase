@@ -84,6 +84,7 @@ app.post('/charge', auth.checkToken, charge.doCharge);
 //CRUD
 app.post('/api/:op', api.create);
 app.get('/api/:op', api.getAll);
+app.get('/api/:op/backup', api.backup);
 app.get('/api/:op/expand', api.getAllExpanded);
 app.get('/api/:op/:id', api.get);
 app.get('/api/:op/:id/expand', api.getExpanded);

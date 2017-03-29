@@ -26,39 +26,26 @@ var GameCardView = (function () {
         var div = document.createElement("div");
         div.innerHTML = this.game.description;
         this.descriptionText = div.textContent || div.innerText || this.game.description;
-        // this.gameDatabaseService.getPlayerCountById(this.game.PlayerCountID)
-        //     .then((playercount) => this.playerCount = playercount);
-        // this.gameDatabaseService.getDurationById(this.game.DurationID)
-        //     .then((duration) => this.duration = duration);
         this.game.tags.forEach(function (taggame) {
-            switch (taggame.tag.name.toLowerCase()) {
-                case 'show':
-                    _this.iconClass = 'ticket';
-                    _this.iconDescription = taggame.tag.description;
-                    break;
-                case 'exercise':
-                    _this.iconClass = 'lightbulb-o';
-                    _this.iconDescription = taggame.tag.description;
-                    break;
-                case 'warmup':
-                    _this.iconClass = 'fire';
-                    _this.iconDescription = taggame.tag.description;
-                    break;
+            // let's just make sure the tag actually exists
+            if (taggame.tag) {
+                switch (taggame.tag.name.toLowerCase()) {
+                    case 'show':
+                        _this.iconClass = 'ticket';
+                        _this.iconDescription = taggame.tag.description;
+                        break;
+                    case 'exercise':
+                        _this.iconClass = 'lightbulb-o';
+                        _this.iconDescription = taggame.tag.description;
+                        break;
+                    case 'warmup':
+                        _this.iconClass = 'fire';
+                        _this.iconDescription = taggame.tag.description;
+                        break;
+                }
             }
         });
     };
-    /*
-    onToolClicked(tool: Tool): void {
-        switch (tool.name) {
-            case "showTags":
-                this.showTags = tool.active;
-                if (tool.active && this.tags.length === 0) {
-                    this.loadTags();
-                }
-                break;
-        }
-    }
-    */
     GameCardView.prototype.ngOnDestroy = function () {
     };
     return GameCardView;

@@ -70,6 +70,12 @@ module.exports = {
             .then(name => {
                 res.json(name);
             });
+    },
+
+    backup: (req, res) => {
+        Name.find({}).then(n => {
+            res.json(n);
+        });
     }
 
     // delete: (req, res) => {

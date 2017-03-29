@@ -10,7 +10,8 @@ var connection = require("../connection"),
 
         "package": require('./package.controller'),
         "subscription": require('./subscription.controller'),
-        "material": require('./material-item.controller')
+        "material": require('./material-item.controller'),
+        "purchase": require('./purchase.controller')
     };
 exports.ops = ops;
 
@@ -84,3 +85,12 @@ exports.method = function(req,res) {
         res.send('404', 'Not Found');
     }
 };
+
+exports.backup = function (req, res) {
+    if (ops[req.params.op] && ops[req.params.op].backup) {
+        console.log('Backup data for ' + req.params.op);
+        ops[req.params.op].backup(req, res);
+    } else {
+        res.send('404', 'Not found');
+    }
+}

@@ -106,7 +106,7 @@ module.exports = {
         }
 
         let query = User.findOne({})
-            .select(WHITELIST.join(' ') + ' purchases materials subscription role dateAdded dateModified ' + select);
+            .select(WHITELIST.join(' ') + ' purchases materials subscription role dateAdded dateModified superAdmin ' + select);
 
         if (key.indexOf('@') > -1) {
             query.where('email').equals(key);
@@ -130,6 +130,10 @@ module.exports = {
             .then(user => {
                 if (user) {
                     user = user.toObject();
+
+                    if (!user.superAdmin) {
+                        delete user.superAdmin;
+                    }
                     
                     // make sure the user has an active subscription
                     if (user.subscription &&
@@ -185,6 +189,12 @@ module.exports = {
         } else {
             res.json([]);
         }
+    },
+
+    backup: (req, res) => {
+        User.find({}).exec().then(u => {
+            res.json(u);
+        });
     }
 
 }

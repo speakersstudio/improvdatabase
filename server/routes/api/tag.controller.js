@@ -56,6 +56,12 @@ module.exports = {
             .then(() => {
                 res.send('Success');
             });
+    },
+
+    backup: (req, res) => {
+        Tag.find({}).exec().then(t => {
+            res.json(t);
+        });
     }
 
 }

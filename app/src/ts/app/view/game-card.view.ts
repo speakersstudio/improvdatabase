@@ -42,42 +42,26 @@ export class GameCardView implements OnInit, OnDestroy {
         div.innerHTML = this.game.description;
         this.descriptionText = div.textContent || div.innerText || this.game.description;
 
-        // this.gameDatabaseService.getPlayerCountById(this.game.PlayerCountID)
-        //     .then((playercount) => this.playerCount = playercount);
-
-        // this.gameDatabaseService.getDurationById(this.game.DurationID)
-        //     .then((duration) => this.duration = duration);
-
         this.game.tags.forEach(taggame => {
-            switch(taggame.tag.name.toLowerCase()) {
-                case 'show':
-                    this.iconClass = 'ticket';
-                    this.iconDescription = taggame.tag.description;
-                    break;
-                case 'exercise':
-                    this.iconClass = 'lightbulb-o';
-                    this.iconDescription = taggame.tag.description;
-                    break;
-                case 'warmup':
-                    this.iconClass = 'fire';
-                    this.iconDescription = taggame.tag.description;
-                    break;
+            // let's just make sure the tag actually exists
+            if (taggame.tag) {
+                switch(taggame.tag.name.toLowerCase()) {
+                    case 'show':
+                        this.iconClass = 'ticket';
+                        this.iconDescription = taggame.tag.description;
+                        break;
+                    case 'exercise':
+                        this.iconClass = 'lightbulb-o';
+                        this.iconDescription = taggame.tag.description;
+                        break;
+                    case 'warmup':
+                        this.iconClass = 'fire';
+                        this.iconDescription = taggame.tag.description;
+                        break;
+                }
             }
         })
     }
-
-    /*
-    onToolClicked(tool: Tool): void {
-        switch (tool.name) {
-            case "showTags":
-                this.showTags = tool.active;
-                if (tool.active && this.tags.length === 0) {
-                    this.loadTags();
-                }
-                break;
-        }
-    }
-    */
 
     ngOnDestroy(): void {
         

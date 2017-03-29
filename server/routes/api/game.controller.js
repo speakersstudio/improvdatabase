@@ -104,6 +104,13 @@ module.exports = {
         // }).then(tag => {
         //     res.json(tag);        
         // });
+    },
+
+    backup: (req, res) => {
+        return Game.find({})
+            .then(games => {
+                res.json(games);
+            })
     }
 
 }

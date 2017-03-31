@@ -7,6 +7,7 @@ const MaterialItemSchema = new mongoose.Schema({
     color: String,
     fileslug: String,
     extension: String,
+    tags: [String],
     versions: [{
         ver: Number,
         dateAdded: { type: Date, default: Date.now },

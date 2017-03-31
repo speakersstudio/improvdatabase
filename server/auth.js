@@ -154,14 +154,14 @@ module.exports = {
 
         if (!perm) {
             console.log('Auth not permitted!');
-            this.unauthorized(req, res);
+            module.exports.unauthorized(req, res);
         } else {
             next();
         }
     },
 
     genToken: (user) => {
-        var expires = expiresIn(7), // one week, as recommended by Auth0
+        var expires = expiresInDays(7), // one week, as recommended by Auth0
             token = jwt.encode({
                 exp: expires,
                 iss: user._id
@@ -196,7 +196,7 @@ module.exports = {
 
 }
 
-function expiresIn(days) {
+function expiresInDays(days) {
     var dateObj = new Date();
     dateObj.setDate(dateObj.getDate() + days);
     return dateObj.getTime();

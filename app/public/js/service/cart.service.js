@@ -10,8 +10,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var http_1 = require("@angular/http");
 require("rxjs/add/operator/toPromise");
+var app_http_1 = require("../data/app-http");
 var purchase_1 = require("../model/purchase");
 var user_service_1 = require("./user.service");
 var CartService = (function () {
@@ -52,7 +52,7 @@ var CartService = (function () {
 }());
 CartService = __decorate([
     core_1.Injectable(),
-    __metadata("design:paramtypes", [http_1.Http,
+    __metadata("design:paramtypes", [app_http_1.AppHttp,
         user_service_1.UserService])
 ], CartService);
 exports.CartService = CartService;

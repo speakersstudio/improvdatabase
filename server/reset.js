@@ -249,6 +249,7 @@ module.exports = {
 
     checkForSeed: function() {
         let userBackupTime = new Date(fs.statSync(path.join(__dirname, './models/seeds/user.seed.json')).mtime),
+            materialsBackupTime = new Date(fs.statSync(path.join(__dirname, './models/seeds/material-item.seed.json')).mtime),
             packageBackupTime = new Date(fs.statSync(path.join(__dirname, './models/seeds/package.seed.json')).mtime),
             purchaseBackupTime = new Date(fs.statSync(path.join(__dirname, './models/seeds/purchase.seed.json')).mtime),
             subscriptionBackupTime = new Date(fs.statSync(path.join(__dirname, './models/seeds/subscription.seed.json')).mtime),
@@ -266,14 +267,14 @@ module.exports = {
             })
             .then(dbi => {
 
-                dbUserTime = dbi.user;
-                dbPackageTime = dbi.package;
+                dbUserTime = dbi.user.getTime();
+                dbPackageTime = dbi.package.getTime();
 
                 if (!dbUserTime || 
                         dbUserTime < userBackupTime.getTime() ||
                         dbUserTime < purchaseBackupTime.getTime() ||
                         dbUserTime < subscriptionBackupTime.getTime()) {
-                    console.log("User backup is more recent than user database!");
+                    console.log("User backup is more recent than user database!", dbUserTime, userBackupTime.getTime());
                     return this.resetUsers(false);
                 } else {
                     console.log('No need to reset user database...');
@@ -282,6 +283,7 @@ module.exports = {
             })
             .then(() => {
                 if (!dbPackageTime || 
+                    dbPackageTime < materialsBackupTime.getTime() ||
                     dbPackageTime < packageBackupTime.getTime()) {
                         console.log("Package backup is more recent than package database!");
                         return this.resetPackages(false);
@@ -293,24 +295,6 @@ module.exports = {
             .then(() => {
                 process.exit(0);
             })
-        
-
-        // return User.count({}).exec()
-        //     .then(count => {
-        //         if (count < 3) {
-        //             return this.resetUsers(true);
-        //         }
-        //     })
-        //     .then(() => {
-        //         return Package.count({}).exec()
-        //     })
-        //     .then(count => {
-        //         if (count == 0) {
-        //             return this.resetPackages();
-        //         } else {
-        //             process.exit(0);
-        //         }
-        //     });
     }
 
 }

@@ -4,6 +4,8 @@
         <label>
             Email*
             <input name="email" [(ngModel)]="user.email" required type="text" placeholder="Email" />
+            
+            <label class="error" *ngIf="emailConflict">It seems this email address already exists!</label>
         </label>
 
         <div class="columns">
@@ -111,13 +113,13 @@
         <label class="error" *ngIf="passwordMatchError">The two passwords you entered do not match.</label>
     </div>
     
-    <div class="button-group" *ngIf="!isPosting">
+    <div class="button-group" *ngIf="!isPosting && !isValidating">
         <input type="button" class="button" [value]="backText" (click)="goBack()" *ngIf="backText" />
 
-        <input type="submit" class="button raised" [value]="saveText" [disabled]="!userForm.form.valid" />
+        <input type="submit" class="button raised" [value]="saveText" [disabled]="!userForm.form.valid || emailConflict || password != passwordConfirm" />
     </div>
 
-    <div class="button-group" *ngIf="isPosting">
+    <div class="button-group" *ngIf="isPosting || isValidating">
         <div class="button"><i class="loading"></i></div>
     </div>
 </form>

@@ -10,8 +10,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var http_1 = require("@angular/http");
 require("rxjs/add/operator/toPromise");
+var app_http_1 = require("../data/app-http");
 var user_service_1 = require("./user.service");
 var LibraryService = (function () {
     function LibraryService(http, userService) {
@@ -55,7 +55,7 @@ var LibraryService = (function () {
     };
     LibraryService.prototype._getOwnedMaterials = function () {
         var url = this.ownedMaterialsUrl.replace(':_id', this.userService.getLoggedInUser()._id);
-        return this.http.get(url, this.userService.getAuthorizationHeader())
+        return this.http.get(url)
             .toPromise()
             .then(function (response) {
             return response.json();
@@ -63,7 +63,7 @@ var LibraryService = (function () {
             .catch(this.handleError);
     };
     LibraryService.prototype.downloadMaterial = function (id) {
-        this.http.get(this.materialsUrl + id, this.userService.getAuthorizationHeader())
+        this.http.get(this.materialsUrl + id)
             .toPromise()
             .then(function (response) {
             var url = response.json().url;
@@ -76,45 +76,6 @@ var LibraryService = (function () {
         });
         return m.versions[0];
     };
-    // private _packagePromise: Promise<Package[]>;
-    // getPackages(): Promise<Package[]> {
-    //     if (!this._packagePromise) {
-    //         this._packagePromise = this.http.get(this.packageUrl, this.userService.getAuthorizationHeader())
-    //             .toPromise()
-    //             .then(response => {
-    //                 this.packages = response.json() as Package[];
-    //                 return this.packages;
-    //             })
-    //             .catch(this.handleError);
-    //     } 
-    //     return this._packagePromise;
-    // }
-    // getOwnedPackages(): Promise<Package[]> {
-    //     return new Promise<Package[]>((resolve, reject) => {
-    //         this.getPackages().then(packages => {
-    //             let owned: Package[] = [];
-    //             packages.forEach(p => {
-    //                 if (p.Owned) {
-    //                     owned.push(p);
-    //                 }
-    //                 resolve(owned);
-    //             })
-    //         })
-    //     });
-    // }
-    // private _materialsPromise: Promise<MaterialItem[]>;
-    // getMaterials(): Promise<MaterialItem[]> {
-    //     if (!this._materialsPromise) {
-    //         this._materialsPromise = this.http.get(this.materialsUrl, this.userService.getAuthorizationHeader())
-    //             .toPromise()
-    //             .then(response => {
-    //                 this.materials = response.json() as MaterialItem[];
-    //                 return this.materials;
-    //             })
-    //             .catch(this.handleError);
-    //     } 
-    //     return this._materialsPromise;
-    // }
     LibraryService.prototype.handleError = function (error) {
         console.error('An error has occurred', error);
         return Promise.reject(error.message || error);
@@ -123,7 +84,7 @@ var LibraryService = (function () {
 }());
 LibraryService = __decorate([
     core_1.Injectable(),
-    __metadata("design:paramtypes", [http_1.Http,
+    __metadata("design:paramtypes", [app_http_1.AppHttp,
         user_service_1.UserService])
 ], LibraryService);
 exports.LibraryService = LibraryService;

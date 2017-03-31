@@ -25,9 +25,12 @@ var AuthGuard = (function () {
             if (!data.action || this.userService.can(data.action)) {
                 return true;
             }
+            else if (this.userService.can('subscription_renew')) {
+                // their subscription is expired
+                this.router.navigate(['/app/unauthorized'], { replaceUrl: true });
+            }
             else {
                 this.router.navigate(['/app/unauthorized'], { replaceUrl: true });
-                // TODO: show dialog?
             }
         }
         else {

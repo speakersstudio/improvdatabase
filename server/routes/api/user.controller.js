@@ -195,6 +195,28 @@ module.exports = {
         User.find({}).exec().then(u => {
             res.json(u);
         });
+    },
+
+    validate: (req, res) => {
+        let email = req.body.email,
+            loggedInUser = req.user._id;
+
+        let promise = User.findOne({}).where('email').equals(email);
+
+        if (loggedInUser) {
+            promise.where('_id').ne(loggedInUser);
+        }
+        
+        return promise.exec()
+            .then(u => {
+                if (u) {
+                    res.json({
+                        conflict: 'email'
+                    });
+                } else {
+                    res.json({});
+                }
+            });
     }
 
 }

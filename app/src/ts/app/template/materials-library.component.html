@@ -33,6 +33,7 @@
                     <div class="body">
                         <p>{{material.description}}</p>
                         <ul class="taglist grey">
+                            <li *ngFor="let tag of material.tags">{{tag}}</li>
                             <li class="dull">{{versionTag(material)}}</li>
                         </ul>
                     </div>

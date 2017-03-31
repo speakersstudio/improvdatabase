@@ -35,6 +35,8 @@ export class SignupComponent implements OnInit {
     card: any;
     cardError: string;
 
+    cardComplete: boolean = false;
+
     constructor(
         private _app: AppComponent,
         private router: Router,
@@ -76,13 +78,17 @@ export class SignupComponent implements OnInit {
 
     saveUser(user: User): void {
 
+        if (!user || !user.email) {
+            return;
+        }
+
         this.user = user;
         this.cartService.setUser(this.user);
 
         this.step = 3;
 
-        let button = document.querySelector('.button.raised'),
-            color = document.defaultView.getComputedStyle(button)['background-color'];
+        // let button = document.querySelector('.button.raised'),
+        //     color = document.defaultView.getComputedStyle(button)['background-color'];
 
         // setup the stripe credit card input
         setTimeout(() => {
@@ -111,6 +117,9 @@ export class SignupComponent implements OnInit {
             this.card.mount('#card-element');
 
             this.card.addEventListener('change', e => {
+                
+                this.cardComplete = e.complete;
+
                 if (e.error) {
                     this.cardError = e.error.message;
                 } else {
@@ -123,6 +132,9 @@ export class SignupComponent implements OnInit {
     }
 
     submitPayment(): void {
+        if (this.cardError || !this.cardComplete) {
+            return;
+        }
 
         this.isPosting = true;
         this.stripe.createToken(this.card).then(result => {
@@ -130,8 +142,17 @@ export class SignupComponent implements OnInit {
                 this.cardError = result.error.message;
             } else {
                 this.cartService.charge(result.token)
+                    .catch(response => {
+                        this.isPosting = false;
+                        let msg = response.json();
+                        if (msg.error && msg.error == 'email already exists') {
+                            this.showUser();
+                        }
+                    })
                     .then(user => {
-                        return this.userService.login(this.user.email, this.user.password);
+                        if (user) {
+                            return this.userService.login(this.user.email, this.user.password);
+                        }
                     });
             }
         });

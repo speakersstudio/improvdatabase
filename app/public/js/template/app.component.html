@@ -36,12 +36,12 @@
         <div class="scroll">
 
             <a routerLink="/app/dashboard" routerLinkActive="active" class="nav-item"
-                *ngIf="userService.can('dashboard_view')">
+                *ngIf="userService.can('dashboard_page_view')">
                 <i class="fa fa-dashboard"></i> <span>Dashboard</span>
             </a>
 
             <a routerLink="/app/materials" routerLinkActive="active" class="nav-item"
-                *ngIf="userService.can('materials_view')">
+                *ngIf="userService.can('materials_page_view')">
                 <i class="fa fa-book"></i> <span>Materials Library</span>
             </a>
 

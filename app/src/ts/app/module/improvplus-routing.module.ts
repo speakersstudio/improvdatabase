@@ -34,21 +34,21 @@ const routes: Routes = [
                         path: 'dashboard',
                         component: DashboardComponent,
                         data: {
-                            action: 'dashboard_view'
+                            action: 'dashboard_page_view'
                         }
                     },
                     {
                         path: 'materials',
                         component: MaterialsLibraryComponent,
                         data: {
-                            action: 'materials_view'
+                            action: 'materials_page_view'
                         }
                     },
                     {
                         path: 'materials/:packageSlug',
                         component: MaterialsLibraryComponent,
                         data: {
-                            action: 'materials_view'
+                            action: 'materials_page_view'
                         }
                     },
                     {

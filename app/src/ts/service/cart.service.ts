@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http } from '@angular/http';
 
 import 'rxjs/add/operator/toPromise';
+
+import { AppHttp } from '../data/app-http';
 
 import { Package } from '../model/package';
 import { Purchase } from '../model/purchase';
@@ -19,7 +20,7 @@ export class CartService {
     private user: User;
 
     constructor(
-        private http: Http,
+        private http: AppHttp,
         private userService: UserService
         ) { }
 

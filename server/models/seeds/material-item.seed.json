@@ -33,6 +33,7 @@
     "price": 100,
     "color": "blue",
     "visible": true,
+    "tags": ["Improv+Networking", "Breakout Activity"],
     "versions": [
       {
         "ver": 1,
@@ -49,6 +50,7 @@
     "price": 100,
     "color": "orange",
     "visible": true,
+    "tags": ["Improv+Leadership", "Participant Handouts"],
     "versions": [
       {
         "ver": 1,
@@ -65,6 +67,7 @@
     "price": 100,
     "color": "orange",
     "visible": true,
+    "tags": ["Improv+Leadership", "Program Guide"],
     "versions": [
       {
         "ver": 1,
@@ -81,6 +84,7 @@
     "price": 100,
     "color": "orange",
     "visible": true,
+    "tags": ["Improv+Leadership"],
     "versions": [
       {
         "ver": 1,
@@ -97,6 +101,7 @@
     "price": 100,
     "color": "blue",
     "visible": true,
+    "tags": ["Improv+Networking", "Participant Handouts"],
     "versions": [
       {
         "ver": 1,
@@ -113,6 +118,7 @@
     "price": 100,
     "color": "blue",
     "visible": true,
+    "tags": ["Improv+Networking", "Program Guide"],
     "versions": [
       {
         "ver": 1,

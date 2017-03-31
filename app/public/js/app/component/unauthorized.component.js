@@ -12,14 +12,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var app_component_1 = require("../../component/app.component");
+var user_service_1 = require("../../service/user.service");
 var UnauthorizedComponent = (function () {
-    function UnauthorizedComponent(_app, router) {
+    function UnauthorizedComponent(_app, router, userService) {
         this._app = _app;
         this.router = router;
+        this.userService = userService;
         this.title = '';
         this._tools = [];
     }
     UnauthorizedComponent.prototype.ngOnInit = function () {
+    };
+    UnauthorizedComponent.prototype.can = function (permission) {
+        return this.userService.can(permission);
     };
     return UnauthorizedComponent;
 }());
@@ -30,7 +35,8 @@ UnauthorizedComponent = __decorate([
         templateUrl: "../template/unauthorized.component.html"
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,
-        router_1.Router])
+        router_1.Router,
+        user_service_1.UserService])
 ], UnauthorizedComponent);
 exports.UnauthorizedComponent = UnauthorizedComponent;
 

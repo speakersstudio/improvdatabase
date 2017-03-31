@@ -64,7 +64,7 @@
                     [saveText]="'Next'"
                     [backText]="'Back'"
                     (back)="step1()"
-                    (submit)="saveUser($event)"></user-form>
+                    (onValidated)="saveUser($event)"></user-form>
             </div>
         </div>
 
@@ -95,12 +95,12 @@
                             </div>
 
                             <!-- Used to display form errors -->
-                            <div id="card-errors"></div>
+                            <div class="StripeCardErrors" *ngIf="cardError">{{cardError}}</div>
                         </div>
 
                         <div class="action right" *ngIf="!isPosting">
                             <span class="button" (click)="showUser()">Back</span>
-                            <button class="button raised">Submit Payment</button>
+                            <button class="button raised" [class.disabled]="!cardComplete || cardError">Submit Payment</button>
                         </div>
 
                         <div class="action right" *ngIf="isPosting">

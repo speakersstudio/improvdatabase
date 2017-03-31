@@ -10,9 +10,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var http_1 = require("@angular/http");
 var Rx_1 = require("rxjs/Rx");
 require("rxjs/add/operator/toPromise");
+var app_http_1 = require("../data/app-http");
 var user_1 = require("../model/user");
 var webstorage_util_1 = require("../util/webstorage.util");
 var UserService = (function () {
@@ -22,10 +22,19 @@ var UserService = (function () {
         this.logoutUrl = '/logout';
         this.refreshUrl = '/refreshToken';
         this.userUrl = '/api/user/';
+        this.validateUrl = this.userUrl + 'validate';
         this.logginStateSource = new Rx_1.Subject();
         this.loginState$ = this.logginStateSource.asObservable();
     }
-    // TODO: onInit, check the token expiration against Date.now() and clear the session if necessary
+    UserService.prototype.checkTokenExpiration = function () {
+        if (!this.http.checkTokenExpiration()) {
+            this.loggedInUser = null;
+            return false;
+        }
+        else {
+            return true;
+        }
+    };
     UserService.prototype.announceLoginState = function () {
         this.logginStateSource.next(this.loggedInUser);
     };
@@ -39,74 +48,71 @@ var UserService = (function () {
     };
     UserService.prototype.refreshToken = function () {
         var _this = this;
-        return this.http.post(this.refreshUrl, {}, this.getAuthorizationHeader())
-            .toPromise()
-            .then(function (response) { return _this._handleLoginRequest(response); });
+        if (this.checkTokenExpiration()) {
+            return this.http.post(this.refreshUrl, {})
+                .toPromise()
+                .then(function (response) { return _this._handleLoginRequest(response); });
+        }
     };
     UserService.prototype._handleLoginRequest = function (response) {
         var responseData = response.json();
-        this.token = responseData['token'];
-        this.tokenExpires = responseData['expires'];
+        this.http.setToken(responseData['token'], responseData['expires']);
+        // this.token = responseData['token'];
+        // this.tokenExpires = responseData['expires'];
         this.loggedInUser = responseData['user'];
         // don't save the password
         this.loggedInUser.password = "";
         this.announceLoginState();
         return this.loggedInUser;
     };
-    UserService.prototype.getAuthorizationHeader = function () {
-        var headers = new http_1.Headers();
-        headers.append('x-access-token', this.getToken());
-        return { headers: headers };
-    };
+    // appendAuthorizationHeader(headers: Headers): Headers {
+    //     // TODO: somehow make this asynchronous so we can refresh the token if necessary?
+    //     if (this.checkTokenExpiration()) {
+    //         headers.append('x-access-token', this.getToken());
+    //     }
+    //     return headers;
+    // }
+    // getAuthorizationHeader (): Object {
+    //     return { headers: this.appendAuthorizationHeader(new Headers()) };
+    // }
     UserService.prototype.logout = function () {
         var _this = this;
-        return this.http.post(this.logoutUrl, {}, this.getAuthorizationHeader())
+        return this.http.post(this.logoutUrl, {})
             .toPromise()
             .then(function () {
-            _this.token = null;
+            _this.http.setToken(null, 0);
+            // this.token = null;
             _this.loggedInUser = null;
             _this.announceLoginState();
             return true;
         });
     };
     UserService.prototype.isLoggedIn = function () {
-        return this.token !== "" && this.token !== null;
+        return this.loggedInUser && true;
     };
-    UserService.prototype.getToken = function () {
-        return this.token;
-    };
+    // private getToken(): string {
+    //     return this.token;
+    // }
     UserService.prototype.getLoggedInUser = function () {
-        return this.loggedInUser;
+        if (this.checkTokenExpiration()) {
+            return this.loggedInUser;
+        }
+        else {
+            return null;
+        }
     };
     /**
      * Change information on the current user
      */
     UserService.prototype.updateUser = function (user) {
         var _this = this;
-        return this.http.put(this.userUrl + this.loggedInUser._id, user, this.getAuthorizationHeader())
+        return this.http.put(this.userUrl + this.loggedInUser._id, user)
             .toPromise()
             .then(function (response) {
             _this.loggedInUser = response.json();
             return _this.loggedInUser;
         });
     };
-    // getPermissions (): Object {
-    //     let permObject = {};
-    //     // let perms = this.loggedInUser && this.loggedInUser.Permissions ? this.loggedInUser.Permissions : [];
-    //     // perms.forEach((perm) => {
-    //     //     /*
-    //     //     let parts = perm.split('_');
-    //     //     let cat = parts[0];
-    //     //     let act = parts[1];
-    //     //     if (!permObject[cat]) {
-    //     //         permObject[cat] = {};
-    //     //     }
-    //     //     permObject[cat][act] = true;
-    //     //     */
-    //     //     permObject[perm] = true;
-    //     // });
-    //     return permObject;
-    // }
     UserService.prototype.can = function (key) {
         if (!this.loggedInUser || !this.loggedInUser.actions.length) {
             return false;
@@ -115,23 +121,28 @@ var UserService = (function () {
             return this.loggedInUser.actions.indexOf(key) > -1;
         }
     };
+    UserService.prototype.validate = function (user) {
+        return this.http.post(this.validateUrl, user)
+            .toPromise()
+            .then(function (response) {
+            var data = response.json();
+            if (data.conflict) {
+                return data.conflict;
+            }
+            else {
+                return '';
+            }
+        });
+    };
     return UserService;
 }());
-__decorate([
-    webstorage_util_1.LocalStorage(),
-    __metadata("design:type", String)
-], UserService.prototype, "token", void 0);
-__decorate([
-    webstorage_util_1.LocalStorage(),
-    __metadata("design:type", Number)
-], UserService.prototype, "tokenExpires", void 0);
 __decorate([
     webstorage_util_1.LocalStorage(),
     __metadata("design:type", user_1.User)
 ], UserService.prototype, "loggedInUser", void 0);
 UserService = __decorate([
     core_1.Injectable(),
-    __metadata("design:paramtypes", [http_1.Http])
+    __metadata("design:paramtypes", [app_http_1.AppHttp])
 ], UserService);
 exports.UserService = UserService;
 

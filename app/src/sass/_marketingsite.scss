@@ -280,17 +280,23 @@ welcome, signup {
 
         .StripeElement {
             background-color: white;
-            padding: $std 0 $small;
-            margin-bottom: $large;
+            padding: $small $small $small;
+            margin: $small (-$small) $large;
             border: 1px solid transparent;
             border-bottom: 1px solid $color-primary;
+            border-radius: $border-radius;
+        }
+
+        .StripeCardErrors {
+            margin: -$large 0 $large 0;
+            color: darkred;
         }
 
         .StripeElement--focus {
         }
 
         .StripeElement--invalid {
-            border-color: $color-red;
+            border-color: darkred;
         }
 
         .StripeElement--webkit-autofill {

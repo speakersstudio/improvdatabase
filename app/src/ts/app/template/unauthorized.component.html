@@ -8,13 +8,23 @@
 
     <div class="paper has-brackets">
 
-        <div class="content">
+        <div class="content" *ngIf="can('subscription_view')">
             <h4 class="right">Access Denied</h4>
 
             <p>We are terribly sorry, but you do not have permission to view whatever it was you were trying to view.</p>
 
             <div class="button-group center">
-                <button class="button brackets" routerLink="/dashboard">Return to your Dashboard</button>
+                <button class="button brackets" routerLink="/app/dashboard" *ngIf="can('dashboard_page_view')">Return to your Dashboard</button>
+            </div>
+        </div>
+
+        <div class="content" *ngIf="!can('subscription_view')">
+            <h4 class="right">join <span class="light">improv</span><strong>plus</strong></h4>
+
+            <p>Purchase a subscription to the ImprovPlus app and gain access to a wealth of incredible features.</p>
+
+            <div class="button-group center">
+                <button class="button brackets" routerLink="/signup">Sign Up</button>
             </div>
         </div>
 

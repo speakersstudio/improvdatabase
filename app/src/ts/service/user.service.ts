@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http } from '@angular/http';
+import { Headers } from '@angular/http';
 
 import { Observable, Subject } from 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
+
+import { AppHttp } from '../data/app-http';
 
 import { User } from "../model/user";
 
@@ -15,9 +17,10 @@ export class UserService {
     private logoutUrl = '/logout';
     private refreshUrl = '/refreshToken';
     private userUrl = '/api/user/';
+    private validateUrl = this.userUrl + 'validate';
 
-    @LocalStorage() token: string;
-    @LocalStorage() tokenExpires: number;
+    // @LocalStorage() token: string;
+    // @LocalStorage() tokenExpires: number;
     @LocalStorage() loggedInUser: User;
 
     private logginStateSource = new Subject<User>();
@@ -25,10 +28,18 @@ export class UserService {
     loginState$ = this.logginStateSource.asObservable();
 
     constructor(
-        private http: Http
-    ) { }
+        private http: AppHttp
+    ) {
+    }
 
-    // TODO: onInit, check the token expiration against Date.now() and clear the session if necessary
+    checkTokenExpiration(): boolean {
+        if (!this.http.checkTokenExpiration()) {
+            this.loggedInUser = null;
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     announceLoginState() {
         this.logginStateSource.next(this.loggedInUser);
@@ -43,16 +54,20 @@ export class UserService {
     }
 
     refreshToken(): Promise<User> {
-        return this.http.post(this.refreshUrl, {}, this.getAuthorizationHeader())
-            .toPromise()
-            .then(response => this._handleLoginRequest(response));
+        if (this.checkTokenExpiration()) {
+            return this.http.post(this.refreshUrl, {})
+                .toPromise()
+                .then(response => this._handleLoginRequest(response));
+        }
     }
 
     _handleLoginRequest(response): User {
         let responseData = response.json();
 
-        this.token = responseData['token'];
-        this.tokenExpires = responseData['expires'];
+        this.http.setToken(responseData['token'], responseData['expires']);
+
+        // this.token = responseData['token'];
+        // this.tokenExpires = responseData['expires'];
         this.loggedInUser = responseData['user'];
 
         // don't save the password
@@ -63,18 +78,24 @@ export class UserService {
         return this.loggedInUser;
     }
 
-    getAuthorizationHeader (): Object {
-        let headers = new Headers();
-        headers.append('x-access-token', this.getToken());
-        return { headers: headers };
-    }
+    // appendAuthorizationHeader(headers: Headers): Headers {
+    //     // TODO: somehow make this asynchronous so we can refresh the token if necessary?
+    //     if (this.checkTokenExpiration()) {
+    //         headers.append('x-access-token', this.getToken());
+    //     }
+    //     return headers;
+    // }
+
+    // getAuthorizationHeader (): Object {
+    //     return { headers: this.appendAuthorizationHeader(new Headers()) };
+    // }
 
     logout(): Promise<boolean> {
-        return this.http.post(this.logoutUrl, {},
-            this.getAuthorizationHeader())
+        return this.http.post(this.logoutUrl, {})
             .toPromise()
             .then(() => {
-                this.token = null;
+                this.http.setToken(null, 0);
+                // this.token = null;
                 this.loggedInUser = null;
 
                 this.announceLoginState();
@@ -83,23 +104,26 @@ export class UserService {
     }
 
     isLoggedIn(): boolean {
-        return this.token !== "" && this.token !== null;
+        return this.loggedInUser && true;
     }
 
-    private getToken(): string {
-        return this.token;
-    }
+    // private getToken(): string {
+    //     return this.token;
+    // }
 
     getLoggedInUser(): User {
-        return this.loggedInUser;
+        if (this.checkTokenExpiration()) {
+            return this.loggedInUser;
+        } else {
+            return null;
+        }
     }
 
     /**
      * Change information on the current user
      */
     updateUser(user: User): Promise<User> {
-        return this.http.put(this.userUrl + this.loggedInUser._id, user, 
-            this.getAuthorizationHeader())
+        return this.http.put(this.userUrl + this.loggedInUser._id, user)
             .toPromise()
             .then((response) => {
                 this.loggedInUser = response.json() as User;
@@ -107,30 +131,25 @@ export class UserService {
             });
     }
 
-    // getPermissions (): Object {
-    //     let permObject = {};
-    //     // let perms = this.loggedInUser && this.loggedInUser.Permissions ? this.loggedInUser.Permissions : [];
-    //     // perms.forEach((perm) => {
-    //     //     /*
-    //     //     let parts = perm.split('_');
-    //     //     let cat = parts[0];
-    //     //     let act = parts[1];
-    //     //     if (!permObject[cat]) {
-    //     //         permObject[cat] = {};
-    //     //     }
-    //     //     permObject[cat][act] = true;
-    //     //     */
-    //     //     permObject[perm] = true;
-    //     // });
-    //     return permObject;
-    // }
-
     can (key: string): boolean {
         if (!this.loggedInUser || !this.loggedInUser.actions.length) {
             return false;
         } else {
             return this.loggedInUser.actions.indexOf(key) > -1;
         }
+    }
+
+    validate (user: User): Promise<String> {
+        return this.http.post(this.validateUrl, user)
+            .toPromise()
+            .then((response) => {
+                let data = response.json();
+                if (data.conflict) {
+                    return data.conflict;
+                } else {
+                    return '';
+                }
+            })
     }
 
 }

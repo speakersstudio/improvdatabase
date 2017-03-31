@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http } from '@angular/http';
 
 import 'rxjs/add/operator/toPromise';
+
+import { AppHttp } from '../data/app-http';
 
 import { Name } from '../model/name';
 import { Game, TagGame } from '../model/game';
@@ -37,14 +38,14 @@ export class GameDatabaseService {
     private sortProperty: string;
 
     constructor(
-        private http: Http,
+        private http: AppHttp,
         private userService: UserService
         ) { }
 
     private _gamePromise: Promise<Game[]>;
     getGames(): Promise<Game[]> {
         if (!this._gamePromise) {
-            this._gamePromise = this.http.get(this.gamesUrl, this.userService.getAuthorizationHeader())
+            this._gamePromise = this.http.get(this.gamesUrl)
                 .toPromise()
                 .then(response => {
                     this.games = response.json() as Game[];
@@ -70,7 +71,7 @@ export class GameDatabaseService {
             return Promise.resolve(gameToReturn);
         } else {
             // either no games are loaded or we couldn't find the specified one
-            return this.http.get(this.gamesUrl + '/' + id, this.userService.getAuthorizationHeader())
+            return this.http.get(this.gamesUrl + '/' + id)
                 .toPromise()
                 .then(response => {
                     return response.json() as Game;
@@ -96,7 +97,7 @@ export class GameDatabaseService {
     private _namePromise: Promise<Name[]>;
     getNames(): Promise<Name[]> {
         if (!this._namePromise) {
-            this._namePromise = this.http.get(this.namesUrl, this.userService.getAuthorizationHeader())
+            this._namePromise = this.http.get(this.namesUrl)
                 .toPromise()
                 .then(response => {
                     this.names = response.json() as Name[];
@@ -145,7 +146,7 @@ export class GameDatabaseService {
         return this.http.post(this.namesUrl, {
             game: gameID,
             name: name
-        }, this.userService.getAuthorizationHeader())
+        })
             .toPromise()
             .then(response => {
                 let name = response.json() as Name;
@@ -159,8 +160,7 @@ export class GameDatabaseService {
      * Updates a name on the server, making a PUT call to /api/name/:_id
      */
     saveName(name: Name): Promise<Name> {
-        return this.http.put(this.namesUrl + '/' + name._id,
-            name, this.userService.getAuthorizationHeader())
+        return this.http.put(this.namesUrl + '/' + name._id, name)
             .toPromise()
             .then(response => {
                 let newName = response.json() as Name;
@@ -175,32 +175,10 @@ export class GameDatabaseService {
             })
     }
 
-    /**
-     * With the magic of Mongo, we don't need to fetch these anymore!
-     */
-    // private _tagGamePromise: Promise<TagGame[]>;
-    // private getTagGames(): Promise<TagGame[]> {
-    //     if (!this._tagGamePromise) {
-    //         this._tagGamePromise = this.http.get(this.tagGameUrl, this.userService.getAuthorizationHeader())
-    //             .toPromise()
-    //             .then(response => {
-    //                 this.tagGames = response.json() as TagGame[];
-    //                 return this.tagGames;
-    //             })
-    //             .catch(this.handleError);
-    //     }
-    //     return this._tagGamePromise;
-    // }
-
-    // getTagGamesByGameID(id: number): TagGame[] {
-    //     let tagGames: TagGame[] = this._getItemsByGameID(this.tagGames, id);
-    //     return tagGames;
-    // }
-
     private _playerCountPromise: Promise<GameMetadata[]>;
     getPlayerCounts(): Promise<GameMetadata[]> {
         if (!this._playerCountPromise) {
-            this._playerCountPromise = this.http.get(this.playerCountUrl, this.userService.getAuthorizationHeader())
+            this._playerCountPromise = this.http.get(this.playerCountUrl)
                 .toPromise()
                 .then(response => {
                     this.playercounts = response.json() as GameMetadata[];
@@ -231,7 +209,7 @@ export class GameDatabaseService {
                 max: max,
                 type: 'playerCount',
                 description: description
-            }, this.userService.getAuthorizationHeader())
+            })
             .toPromise()
             .then((response) => {
                 let playercount = response.json() as GameMetadata;
@@ -243,7 +221,7 @@ export class GameDatabaseService {
     private _durationPromise: Promise<GameMetadata[]>;
     getDurations(): Promise<GameMetadata[]> {
         if (!this._durationPromise) {
-            this._durationPromise = this.http.get(this.durationUrl, this.userService.getAuthorizationHeader())
+            this._durationPromise = this.http.get(this.durationUrl)
                 .toPromise()
                 .then(response => {
                     this.durations = response.json() as GameMetadata[];
@@ -274,7 +252,7 @@ export class GameDatabaseService {
                 Max: max,
                 type: 'duration',
                 Description: description
-            }, this.userService.getAuthorizationHeader())
+            })
             .toPromise()
             .then((response) => {
                 let duration = response.json() as GameMetadata;
@@ -287,7 +265,7 @@ export class GameDatabaseService {
     getTags(): Promise<Tag[]> {
         if (!this._tagPromise) {
             if (this.userService.can('tag_view')) {
-                this._tagPromise = this.http.get(this.tagUrl, this.userService.getAuthorizationHeader())
+                this._tagPromise = this.http.get(this.tagUrl)
                     .toPromise()
                     .then(response => {
                         this.tags = response.json() as Tag[];
@@ -330,7 +308,7 @@ export class GameDatabaseService {
     getNotes(): Promise<Note[]> {
         if (!this._notePromise) {
             if (this.userService.can('note_public_view')) {
-                this._notePromise = this.http.get(this.noteUrl, this.userService.getAuthorizationHeader())
+                this._notePromise = this.http.get(this.noteUrl)
                     .toPromise()
                     .then(response => {
                         this.notes = response.json() as Note[];
@@ -369,8 +347,7 @@ export class GameDatabaseService {
     }
 
     deleteGame(game: Game): Promise<boolean> {
-        return this.http.delete(this.gamesUrl + '/' + game._id,
-            this.userService.getAuthorizationHeader())
+        return this.http.delete(this.gamesUrl + '/' + game._id)
             .toPromise()
             .then((response) => {
                 this._removeGameFromArray(game);
@@ -398,9 +375,7 @@ export class GameDatabaseService {
     }
 
     saveGame(game: Game): Promise<Game> {
-        return this.http.put(this.gamesUrl + '/' + game._id,
-            game,
-            this.userService.getAuthorizationHeader())
+        return this.http.put(this.gamesUrl + '/' + game._id, game)
             .toPromise()
             .then((response) => {
                 return this._handleNewGame(game, response);
@@ -409,8 +384,7 @@ export class GameDatabaseService {
     }
 
     createGame(): Promise<Game> {
-        return this.http.post(this.gamesUrl,
-            {}, this.userService.getAuthorizationHeader())
+        return this.http.post(this.gamesUrl, {})
             .toPromise()
             .then((response) => {
                 let game = response.json() as Game;
@@ -437,8 +411,7 @@ export class GameDatabaseService {
     }
 
     saveTagToGame(game: Game, tag: Tag): Promise<TagGame> {
-        return this.http.post(this.gamesUrl + '/' + game._id + '/addTag/' + tag._id, {},
-            this.userService.getAuthorizationHeader())
+        return this.http.post(this.gamesUrl + '/' + game._id + '/addTag/' + tag._id, {})
             .toPromise()
             .then(response => {
                 return this._handleNewTagGame(game, response, tag);
@@ -446,8 +419,7 @@ export class GameDatabaseService {
     }
 
     deleteTagGame(game: Game, taggame: TagGame): Promise<Game> {
-        return this.http.delete(this.gamesUrl + '/' + game._id + '/removeTag/' + taggame.tag._id,
-            this.userService.getAuthorizationHeader())
+        return this.http.delete(this.gamesUrl + '/' + game._id + '/removeTag/' + taggame.tag._id)
             .toPromise()
             .then(response => {
                 return this._handleNewGame(game, response);
@@ -455,9 +427,7 @@ export class GameDatabaseService {
     }
 
     createTag(name: string, game: Game): Promise<TagGame> {
-        return this.http.post(this.gamesUrl + '/' + game._id + '/createTag/' + name, 
-            { name: name },
-            this.userService.getAuthorizationHeader())
+        return this.http.post(this.gamesUrl + '/' + game._id + '/createTag/' + name, { name: name })
             .toPromise()
             .then(response => {
                 return this._handleNewTagGame(game, response, name);

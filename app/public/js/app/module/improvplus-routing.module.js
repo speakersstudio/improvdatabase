@@ -40,21 +40,21 @@ var routes = [
                         path: 'dashboard',
                         component: dashboard_component_1.DashboardComponent,
                         data: {
-                            action: 'dashboard_view'
+                            action: 'dashboard_page_view'
                         }
                     },
                     {
                         path: 'materials',
                         component: materials_library_component_1.MaterialsLibraryComponent,
                         data: {
-                            action: 'materials_view'
+                            action: 'materials_page_view'
                         }
                     },
                     {
                         path: 'materials/:packageSlug',
                         component: materials_library_component_1.MaterialsLibraryComponent,
                         data: {
-                            action: 'materials_view'
+                            action: 'materials_page_view'
                         }
                     },
                     {

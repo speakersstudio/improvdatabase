@@ -10,8 +10,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var http_1 = require("@angular/http");
 require("rxjs/add/operator/toPromise");
+var app_http_1 = require("../data/app-http");
 var user_service_1 = require("./user.service");
 var GameDatabaseService = (function () {
     function GameDatabaseService(http, userService) {
@@ -35,7 +35,7 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype.getGames = function () {
         var _this = this;
         if (!this._gamePromise) {
-            this._gamePromise = this.http.get(this.gamesUrl, this.userService.getAuthorizationHeader())
+            this._gamePromise = this.http.get(this.gamesUrl)
                 .toPromise()
                 .then(function (response) {
                 _this.games = response.json();
@@ -60,7 +60,7 @@ var GameDatabaseService = (function () {
         }
         else {
             // either no games are loaded or we couldn't find the specified one
-            return this.http.get(this.gamesUrl + '/' + id, this.userService.getAuthorizationHeader())
+            return this.http.get(this.gamesUrl + '/' + id)
                 .toPromise()
                 .then(function (response) {
                 return response.json();
@@ -83,7 +83,7 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype.getNames = function () {
         var _this = this;
         if (!this._namePromise) {
-            this._namePromise = this.http.get(this.namesUrl, this.userService.getAuthorizationHeader())
+            this._namePromise = this.http.get(this.namesUrl)
                 .toPromise()
                 .then(function (response) {
                 _this.names = response.json();
@@ -131,7 +131,7 @@ var GameDatabaseService = (function () {
         return this.http.post(this.namesUrl, {
             game: gameID,
             name: name
-        }, this.userService.getAuthorizationHeader())
+        })
             .toPromise()
             .then(function (response) {
             var name = response.json();
@@ -145,7 +145,7 @@ var GameDatabaseService = (function () {
      */
     GameDatabaseService.prototype.saveName = function (name) {
         var _this = this;
-        return this.http.put(this.namesUrl + '/' + name._id, name, this.userService.getAuthorizationHeader())
+        return this.http.put(this.namesUrl + '/' + name._id, name)
             .toPromise()
             .then(function (response) {
             var newName = response.json();
@@ -163,7 +163,7 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype.getPlayerCounts = function () {
         var _this = this;
         if (!this._playerCountPromise) {
-            this._playerCountPromise = this.http.get(this.playerCountUrl, this.userService.getAuthorizationHeader())
+            this._playerCountPromise = this.http.get(this.playerCountUrl)
                 .toPromise()
                 .then(function (response) {
                 _this.playercounts = response.json();
@@ -193,7 +193,7 @@ var GameDatabaseService = (function () {
             max: max,
             type: 'playerCount',
             description: description
-        }, this.userService.getAuthorizationHeader())
+        })
             .toPromise()
             .then(function (response) {
             var playercount = response.json();
@@ -204,7 +204,7 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype.getDurations = function () {
         var _this = this;
         if (!this._durationPromise) {
-            this._durationPromise = this.http.get(this.durationUrl, this.userService.getAuthorizationHeader())
+            this._durationPromise = this.http.get(this.durationUrl)
                 .toPromise()
                 .then(function (response) {
                 _this.durations = response.json();
@@ -234,7 +234,7 @@ var GameDatabaseService = (function () {
             Max: max,
             type: 'duration',
             Description: description
-        }, this.userService.getAuthorizationHeader())
+        })
             .toPromise()
             .then(function (response) {
             var duration = response.json();
@@ -246,7 +246,7 @@ var GameDatabaseService = (function () {
         var _this = this;
         if (!this._tagPromise) {
             if (this.userService.can('tag_view')) {
-                this._tagPromise = this.http.get(this.tagUrl, this.userService.getAuthorizationHeader())
+                this._tagPromise = this.http.get(this.tagUrl)
                     .toPromise()
                     .then(function (response) {
                     _this.tags = response.json();
@@ -288,7 +288,7 @@ var GameDatabaseService = (function () {
         var _this = this;
         if (!this._notePromise) {
             if (this.userService.can('note_public_view')) {
-                this._notePromise = this.http.get(this.noteUrl, this.userService.getAuthorizationHeader())
+                this._notePromise = this.http.get(this.noteUrl)
                     .toPromise()
                     .then(function (response) {
                     _this.notes = response.json();
@@ -326,7 +326,7 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.deleteGame = function (game) {
         var _this = this;
-        return this.http.delete(this.gamesUrl + '/' + game._id, this.userService.getAuthorizationHeader())
+        return this.http.delete(this.gamesUrl + '/' + game._id)
             .toPromise()
             .then(function (response) {
             _this._removeGameFromArray(game);
@@ -353,7 +353,7 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.saveGame = function (game) {
         var _this = this;
-        return this.http.put(this.gamesUrl + '/' + game._id, game, this.userService.getAuthorizationHeader())
+        return this.http.put(this.gamesUrl + '/' + game._id, game)
             .toPromise()
             .then(function (response) {
             return _this._handleNewGame(game, response);
@@ -362,7 +362,7 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.createGame = function () {
         var _this = this;
-        return this.http.post(this.gamesUrl, {}, this.userService.getAuthorizationHeader())
+        return this.http.post(this.gamesUrl, {})
             .toPromise()
             .then(function (response) {
             var game = response.json();
@@ -385,7 +385,7 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.saveTagToGame = function (game, tag) {
         var _this = this;
-        return this.http.post(this.gamesUrl + '/' + game._id + '/addTag/' + tag._id, {}, this.userService.getAuthorizationHeader())
+        return this.http.post(this.gamesUrl + '/' + game._id + '/addTag/' + tag._id, {})
             .toPromise()
             .then(function (response) {
             return _this._handleNewTagGame(game, response, tag);
@@ -393,7 +393,7 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.deleteTagGame = function (game, taggame) {
         var _this = this;
-        return this.http.delete(this.gamesUrl + '/' + game._id + '/removeTag/' + taggame.tag._id, this.userService.getAuthorizationHeader())
+        return this.http.delete(this.gamesUrl + '/' + game._id + '/removeTag/' + taggame.tag._id)
             .toPromise()
             .then(function (response) {
             return _this._handleNewGame(game, response);
@@ -401,7 +401,7 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.createTag = function (name, game) {
         var _this = this;
-        return this.http.post(this.gamesUrl + '/' + game._id + '/createTag/' + name, { name: name }, this.userService.getAuthorizationHeader())
+        return this.http.post(this.gamesUrl + '/' + game._id + '/createTag/' + name, { name: name })
             .toPromise()
             .then(function (response) {
             return _this._handleNewTagGame(game, response, name);
@@ -546,7 +546,7 @@ var GameDatabaseService = (function () {
 }());
 GameDatabaseService = __decorate([
     core_1.Injectable(),
-    __metadata("design:paramtypes", [http_1.Http,
+    __metadata("design:paramtypes", [app_http_1.AppHttp,
         user_service_1.UserService])
 ], GameDatabaseService);
 exports.GameDatabaseService = GameDatabaseService;

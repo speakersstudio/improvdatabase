@@ -6,6 +6,8 @@ import { PathLocationStrategy } from '@angular/common';
 
 import { WebStorageService, WebStorageSubscriber } from "../util/webstorage.util";
 
+import { AppHttp } from '../data/app-http';
+
 // main components
 // import { MarketingSiteComponent } from '../component/ms.component';
 import { AppComponent } from '../component/app.component';
@@ -40,7 +42,8 @@ import { SignupComponent } from '../component/signup.component';
     bootstrap: [ AppComponent ],
     providers: [
         PathLocationStrategy,
-        WebStorageService
+        WebStorageService,
+        AppHttp
     ]
 })
 

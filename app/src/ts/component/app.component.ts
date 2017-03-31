@@ -95,7 +95,6 @@ export class AppComponent implements OnInit {
                 // we just logged in
                 let path:string[] = [];
                 if (this.authGuard.redirect) {
-                    console.log(this.authGuard.redirect);
                     path.push('app');
                     this.authGuard.redirect.forEach(segment => {
                         path.push(segment.path);
@@ -236,8 +235,6 @@ export class AppComponent implements OnInit {
 
     handleLogin(user: User): void {
         this.closeOverlays();
-
-        console.log(this.redirectUrl);
     }
 
     logout(): void {

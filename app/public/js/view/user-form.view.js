@@ -12,13 +12,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var app_component_1 = require("../component/app.component");
 var user_1 = require("../model/user");
+var user_service_1 = require("../service/user.service");
 var UserFormView = (function () {
-    function UserFormView(_app) {
+    function UserFormView(_app, userService) {
         this._app = _app;
+        this.userService = userService;
         this.isPosting = false;
         this.saveText = "Save";
         this.back = new core_1.EventEmitter();
-        this.submit = new core_1.EventEmitter();
+        this.onValidated = new core_1.EventEmitter();
     }
     UserFormView.prototype.ngOnInit = function () {
         this.newUser = this.user._id == undefined;
@@ -30,12 +32,26 @@ var UserFormView = (function () {
         this.back.emit(true);
     };
     UserFormView.prototype.submitForm = function () {
+        var _this = this;
         this.passwordMatchError = false;
+        this.emailConflict = false;
         if (this.password === this.passwordConfirm) {
             this.user.password = this.password;
-            this.submit.emit(this.user);
-            this.password = "";
-            this.passwordConfirm = "";
+            this.isValidating = true;
+            this.userService.validate(this.user)
+                .then(function (conflict) {
+                _this.isValidating = false;
+                if (conflict) {
+                    if (conflict == 'email') {
+                        _this.emailConflict = true;
+                    }
+                }
+                else {
+                    _this.onValidated.emit(_this.user);
+                    _this.password = "";
+                    _this.passwordConfirm = "";
+                }
+            });
         }
         else {
             this.passwordMatchError = true;
@@ -66,14 +82,15 @@ __decorate([
 __decorate([
     core_1.Output(),
     __metadata("design:type", core_1.EventEmitter)
-], UserFormView.prototype, "submit", void 0);
+], UserFormView.prototype, "onValidated", void 0);
 UserFormView = __decorate([
     core_1.Component({
         moduleId: module.id,
         selector: 'user-form',
         templateUrl: '../template/view/user-form.view.html'
     }),
-    __metadata("design:paramtypes", [app_component_1.AppComponent])
+    __metadata("design:paramtypes", [app_component_1.AppComponent,
+        user_service_1.UserService])
 ], UserFormView);
 exports.UserFormView = UserFormView;
 

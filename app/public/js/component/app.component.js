@@ -63,7 +63,6 @@ var AppComponent = (function () {
                 // we just logged in
                 var path_1 = [];
                 if (_this.authGuard.redirect) {
-                    console.log(_this.authGuard.redirect);
                     path_1.push('app');
                     _this.authGuard.redirect.forEach(function (segment) {
                         path_1.push(segment.path);
@@ -187,7 +186,6 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.handleLogin = function (user) {
         this.closeOverlays();
-        console.log(this.redirectUrl);
     };
     AppComponent.prototype.logout = function () {
         this.showLoader();

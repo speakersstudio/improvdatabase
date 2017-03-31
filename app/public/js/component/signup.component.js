@@ -27,6 +27,7 @@ var SignupComponent = (function () {
         this.isLoadingPackages = false;
         this.isPosting = false;
         this.step = 1;
+        this.cardComplete = false;
     }
     SignupComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -54,10 +55,14 @@ var SignupComponent = (function () {
     };
     SignupComponent.prototype.saveUser = function (user) {
         var _this = this;
+        if (!user || !user.email) {
+            return;
+        }
         this.user = user;
         this.cartService.setUser(this.user);
         this.step = 3;
-        var button = document.querySelector('.button.raised'), color = document.defaultView.getComputedStyle(button)['background-color'];
+        // let button = document.querySelector('.button.raised'),
+        //     color = document.defaultView.getComputedStyle(button)['background-color'];
         // setup the stripe credit card input
         setTimeout(function () {
             _this.stripe = Stripe(config_1.Config.STRIPE_KEY);
@@ -83,6 +88,7 @@ var SignupComponent = (function () {
             });
             _this.card.mount('#card-element');
             _this.card.addEventListener('change', function (e) {
+                _this.cardComplete = e.complete;
                 if (e.error) {
                     _this.cardError = e.error.message;
                 }
@@ -94,6 +100,9 @@ var SignupComponent = (function () {
     };
     SignupComponent.prototype.submitPayment = function () {
         var _this = this;
+        if (this.cardError || !this.cardComplete) {
+            return;
+        }
         this.isPosting = true;
         this.stripe.createToken(this.card).then(function (result) {
             if (result.error) {
@@ -101,8 +110,17 @@ var SignupComponent = (function () {
             }
             else {
                 _this.cartService.charge(result.token)
+                    .catch(function (response) {
+                    _this.isPosting = false;
+                    var msg = response.json();
+                    if (msg.error && msg.error == 'email already exists') {
+                        _this.showUser();
+                    }
+                })
                     .then(function (user) {
-                    return _this.userService.login(_this.user.email, _this.user.password);
+                    if (user) {
+                        return _this.userService.login(_this.user.email, _this.user.password);
+                    }
                 });
             }
         });

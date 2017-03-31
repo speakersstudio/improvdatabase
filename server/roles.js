@@ -22,7 +22,8 @@ module.exports = {
                 'game_view',
                 'name_view',
                 'package_view',
-                'subscription_create'
+                'subscription_create',
+                'users_validate'
             ]
         },
         {
@@ -44,11 +45,13 @@ module.exports = {
 
                 'game_filter',
 
-                'dashboard_view',
-                'materials_view',
-                'videos_view',
-                'glossary_view',
-                'blog_view',
+                // these are for viewing these specific pages in the app
+                'dashboard_page_view',
+                'materials_page_view',
+                'videos_page_view',
+                'glossary_page_view',
+                'blog_page_view',
+                //
 
                 'subscription_view',
 
@@ -60,7 +63,7 @@ module.exports = {
                 'account_edit',
                 'messages',
 
-                'material_view' // downloading material items
+                'material_view' // downloading material items (that they own)
             ]
         },
         {
@@ -261,21 +264,31 @@ const actionmap = {
                 case "delete":
                     admin = 'users_delete';
                     break;
+                case "post":
+                    console.log('post', url.indexOf('user/validate'));
+                    if (url.indexOf('user/validate') > -1) {
+                        admin = 'users_validate';
+                    } else {
+                        admin = 'users_create';
+                    }
+                    break;
                 default:
                     admin = "nothing";
                     break;
             }
 
+            console.log(url, method, admin);
+
             // admins can view and edit anybody
-            if (doesUserHaveAction(user, admin)) {
+            if (module.exports.doesUserHaveAction(user, admin)) {
                 return true;
             } else if (url.indexOf('materials') > -1) {
                 return url.indexOf('/user/' + user._id) > -1 &&
-                        doesUserHaveAction(user, 'materials_view');
+                        module.exports.doesUserHaveAction(user, 'material_view');
             } else {
                 // users can view and edit themselves
                 return url.indexOf('/user/' + user._id) > -1 &&
-                        doesUserHaveAction(user, 'account_edit');
+                        module.exports.doesUserHaveAction(user, 'account_edit');
             }
         }
     },

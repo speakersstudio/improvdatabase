@@ -1,6 +1,4 @@
-var connection = require("../connection"),
-
-    ops     = {
+var ops     = {
         "user": require('./user.controller'),
         "game": require('./game.controller'),
         "metadata": require('./metadata.controller'),
@@ -14,12 +12,6 @@ var connection = require("../connection"),
         "purchase": require('./purchase.controller')
     };
 exports.ops = ops;
-
-exports.testDb = function(req,res) {
-    connection.query("SHOW TABLES", function(err, rows, fields) {
-        res.json("200", {rows: rows, fields: fields});
-    });
-};
 
 exports.create = function(req,res) {
     if (ops[req.params.op]) {
@@ -90,6 +82,15 @@ exports.backup = function (req, res) {
     if (ops[req.params.op] && ops[req.params.op].backup) {
         console.log('Backup data for ' + req.params.op);
         ops[req.params.op].backup(req, res);
+    } else {
+        res.send('404', 'Not found');
+    }
+};
+
+exports.validate = function(req, res) {
+    if (ops[req.params.op] && ops[req.params.op].validate) {
+        console.log('Validate data for ' + req.params.op);
+        ops[req.params.op].validate(req, res);
     } else {
         res.send('404', 'Not found');
     }

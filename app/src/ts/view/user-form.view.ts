@@ -11,6 +11,7 @@ import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { AppComponent } from '../component/app.component';
 
 import { User } from '../model/user';
+import { UserService } from '../service/user.service';
 
 @Component({
     moduleId: module.id,
@@ -25,9 +26,12 @@ export class UserFormView implements OnInit, OnDestroy {
     @Input() saveText: string = "Save";
 
     @Output() back: EventEmitter<boolean> = new EventEmitter();
-    @Output() submit: EventEmitter<User> = new EventEmitter();
+    @Output() onValidated: EventEmitter<User> = new EventEmitter();
 
     newUser: boolean;
+
+    isValidating: boolean;
+    emailConflict: boolean;
 
     email: string;
     password: string;
@@ -35,7 +39,8 @@ export class UserFormView implements OnInit, OnDestroy {
     passwordMatchError: boolean;
 
     constructor(
-        private _app: AppComponent
+        private _app: AppComponent,
+        private userService: UserService
     ) { }
 
     ngOnInit(): void {
@@ -53,13 +58,28 @@ export class UserFormView implements OnInit, OnDestroy {
 
     submitForm(): void {
         this.passwordMatchError = false;
+        this.emailConflict = false;
 
         if (this.password === this.passwordConfirm) {
             this.user.password = this.password;
-            this.submit.emit(this.user);
 
-            this.password = "";
-            this.passwordConfirm = "";
+            this.isValidating = true;
+
+            this.userService.validate(this.user)
+                .then(conflict => {
+                    this.isValidating = false;
+
+                    if (conflict) {
+                        if (conflict == 'email') {
+                            this.emailConflict = true;
+                        }
+                    } else {
+                        this.onValidated.emit(this.user);
+
+                        this.password = "";
+                        this.passwordConfirm = "";
+                    }
+            });
         } else {
             this.passwordMatchError = true;
         }

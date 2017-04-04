@@ -6,18 +6,30 @@
 
 <div class="page">
 
-    <div class="paper-label big">
+    <!--<div class="paper-label big">
         welcome to <span class="light">improv</span><strong>plus</strong>
-    </div>
+    </div>-->
 
     <div class="card-list">
 
-        <div routerLink="/app/materials" class="card red brackets clickable">
+        <div class="card full brackets center" *ngIf="welcomeMessageVisible">
+
+            <h4>welcome to <span class="light">improv</span><strong>plus</strong></h4>
+
+            <p>Click the <iplus></iplus> logo in the top left corner to open the main menu.</p>
+
+            <div class="action right">
+                <span class="button" (click)="hideWelcomeMessage()">Dismiss</span>
+            </div>
+
+        </div>
+
+        <div routerLink="/app/materials" class="card red brackets clickable" *ngIf="userService.can('materials_page_view')">
             <h4>Materials</h4>
             <p>Browse and download your ImprovPlus content.</p>
         </div>
 
-        <div routerLink="/app/games" class="card yellow brackets clickable" *ngIf="userService.can('game_view')">
+        <div routerLink="/app/games" class="card yellow brackets clickable" *ngIf="userService.can('game_page_view')">
             <h4>Game Database</h4>
             <p>View our collection of over 200 Improv exercises.</p>
         </div>

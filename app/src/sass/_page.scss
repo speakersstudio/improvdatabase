@@ -72,7 +72,7 @@ $paper-bg: $color-white;
     @include abs(0, 0, null, 0, 1);
     height: $curtain-height;
 
-    @include background-linear-gradient-down($color-secondary-fade, 12px, $color-secondary, ($toolbar-height * 1.8), $color-secondary);
+    @include background-linear-gradient-down($color-curtain-fade, 12px, $color-curtain, ($toolbar-height * 1.8), $color-curtain);
 
     img {
         width: 100%;
@@ -81,7 +81,7 @@ $paper-bg: $color-white;
 
 .background {
     @include abs(0,0,0,0,0);
-    background: $color-secondary;
+    background: $color-curtain;
 }
 
 .page {
@@ -99,7 +99,7 @@ $paper-bg: $color-white;
         @include abs(0, 0, null, 0, 1);
         height: $curtain-height;
 
-        @include background-linear-gradient-down($color-secondary-fade, 12px, $color-secondary, ($toolbar-height * 1.8), $color-secondary); 
+        @include background-linear-gradient-down($color-curtain-fade, 12px, $color-curtain, ($toolbar-height * 1.8), $color-curtain); 
     }
 
     .paper-label {

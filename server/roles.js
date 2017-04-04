@@ -19,8 +19,6 @@ module.exports = {
             id: ROLE_NOBODY,
             name: 'none',
             actions: [
-                'game_view',
-                'name_view',
                 'package_view',
                 'subscription_create',
                 'users_validate'
@@ -39,6 +37,8 @@ module.exports = {
             name: "Subscriber",
             inherits: [ROLE_NOBODY],
             actions: [
+                'game_view',
+                'name_view',
                 'tag_view',
 
                 'metadata_view',
@@ -46,6 +46,7 @@ module.exports = {
                 'game_filter',
 
                 // these are for viewing these specific pages in the app
+                'game_page_view',
                 'dashboard_page_view',
                 'materials_page_view',
                 'videos_page_view',
@@ -265,7 +266,6 @@ const actionmap = {
                     admin = 'users_delete';
                     break;
                 case "post":
-                    console.log('post', url.indexOf('user/validate'));
                     if (url.indexOf('user/validate') > -1) {
                         admin = 'users_validate';
                     } else {
@@ -276,8 +276,6 @@ const actionmap = {
                     admin = "nothing";
                     break;
             }
-
-            console.log(url, method, admin);
 
             // admins can view and edit anybody
             if (module.exports.doesUserHaveAction(user, admin)) {

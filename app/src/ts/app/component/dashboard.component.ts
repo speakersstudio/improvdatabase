@@ -6,6 +6,8 @@ import { Tool } from '../view/toolbar.view';
 
 import { UserService } from '../../service/user.service';
 
+import { PreferenceUtil } from '../../util/preference.util';
+
 @Component({
     moduleId: module.id,
     selector: "dashboard",
@@ -14,6 +16,8 @@ import { UserService } from '../../service/user.service';
 export class DashboardComponent implements OnInit {
 
     title: string = '<span class="light">dash</span><strong>board</strong>';
+
+    welcomeMessageVisible: boolean;
 
     constructor(
         private _app: AppComponent,
@@ -26,6 +30,13 @@ export class DashboardComponent implements OnInit {
 
     ngOnInit(): void {
         this._app.showBackground(true);
+
+        this.welcomeMessageVisible = this.userService.getPreference(PreferenceUtil.hide_welcome_message) != 'true';
+    }
+
+    hideWelcomeMessage(): void {
+        this.userService.setPreference(PreferenceUtil.hide_welcome_message, 'true');
+        this.welcomeMessageVisible = false;
     }
 
 }

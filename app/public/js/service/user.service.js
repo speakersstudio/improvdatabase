@@ -113,6 +113,28 @@ var UserService = (function () {
             return _this.loggedInUser;
         });
     };
+    UserService.prototype.setPreference = function (key, val) {
+        var _this = this;
+        return this.http.post(this.userUrl + this.loggedInUser._id + '/preference', {
+            key: key,
+            val: val
+        }).toPromise()
+            .then(function (response) {
+            _this.loggedInUser = response.json();
+            return _this.loggedInUser;
+        });
+    };
+    UserService.prototype.getPreference = function (key) {
+        var value = '';
+        if (this.loggedInUser.preferences) {
+            this.loggedInUser.preferences.forEach(function (pref) {
+                if (pref.key == key) {
+                    value = pref.value;
+                }
+            });
+        }
+        return value;
+    };
     UserService.prototype.can = function (key) {
         if (!this.loggedInUser || !this.loggedInUser.actions.length) {
             return false;

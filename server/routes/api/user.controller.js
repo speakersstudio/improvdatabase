@@ -42,7 +42,7 @@ module.exports = {
     },
 
     get: (req, res) => {
-        return findUser(req.params.id)
+        return module.exports.findUser(req.params.id)
             .catch(err => {
                 util.handleError(req, res, err);
             })
@@ -100,21 +100,26 @@ module.exports = {
             });
     },
 
-    findUser: (key, select, populate) => {
+    findUser: (key, select, populate, raw) => {
         if (!key) {
             return Promise.reject('no id or email');
         }
 
         let query = User.findOne({})
-            .select(WHITELIST.join(' ') + ' purchases materials subscription role dateAdded dateModified superAdmin ' + select);
+            .select(WHITELIST.join(' ') + ' purchases materials subscription preferences role dateAdded dateModified superAdmin ' + select);
 
-        if (key.indexOf('@') > -1) {
+        // catch a mongoose ObjectID, which looks like a string but isn't really
+        if (typeof(key) == 'object' && key.toString) {
+            key = key.toString();
+        }
+
+        if (key.indexOf && key.indexOf('@') > -1) {
             query.where('email').equals(key);
         } else {
             query.where('_id').equals(key);
         }
 
-        query.populate('subscription purchases')
+        query.populate('subscription purchases preferences')
             .populate({
                 path: 'materials',
                 options: {
@@ -128,7 +133,7 @@ module.exports = {
 
         return query.exec()
             .then(user => {
-                if (user) {
+                if (user && !raw) {
                     user = user.toObject();
 
                     if (!user.superAdmin) {
@@ -217,6 +222,25 @@ module.exports = {
                     res.json({});
                 }
             });
+    },
+
+    // POST: /api/user/:_id/preference
+    preference: (req, res) => {
+        let userId = req.user._id,
+            prefKey = req.body.key,
+            prefVal = req.body.val;
+
+        return User.findOne({})
+            .where('_id').equals(userId.toString())
+            .exec()
+            .then(user => {
+                return user.setPreference(prefKey, prefVal);
+            }).then(user => {
+                return module.exports.findUser(userId);
+            }).then(user => {
+                res.json(user);
+            });
+
     }
 
 }

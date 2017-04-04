@@ -2,6 +2,14 @@ import {Purchase} from './purchase';
 import {MaterialItem} from './material-item';
 import {Subscription} from './subscription';
 
+export class Preference {
+    _id?: string;
+    key: string;
+    value: string;
+    date?: Date;
+    user?: string;
+}
+
 export class User {
     _id: string;
     email: string;
@@ -29,4 +37,5 @@ export class User {
     purchases: Purchase[];
     materials: MaterialItem[];
     subscription: Subscription;
+    preferences: Preference[];
 }

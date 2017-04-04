@@ -3,7 +3,6 @@ $color-primary: #d32f2f; // the primary color for the app!
 $color-primary-text: #FFFFFF; // color for text when shown on top of the primary color
 
 $color-secondary: #64b5f6; // the color for various components
-$color-secondary-fade: #B6DCFB; // the color that fades in at the top of the screen
 
 $color-active: $color-secondary; // active links and buttons
 $color-active-bg: #ededed; 
@@ -15,6 +14,12 @@ $color-shade: rgba(0,0,0,0.2); // the color for fullscreen 'shade' elements
 
 $color-text: #606060; // primary text color
 $color-hr: rgba(96,96,96,0.5); // color for dividers
+
+$color-home-bg-black: rgba(0,0,0,0.3);
+$color-home-bg-white: rgba(255,255,255,0.3);
+
+$color-curtain: #CCCCCC; // the color for the app background (or curtain for paper-style pages)
+$color-curtain-fade: #e5e5e5; // the color that fades in at the top of the screen
 
 $color-transparent: rgba(0,0,0,0); //utility!
 

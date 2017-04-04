@@ -1,6 +1,7 @@
 const mongoose = require('mongoose'),
 
-    Subscription = require('./subscription.model');
+    Subscription = require('./subscription.model'),
+    Preference   = require('./preference.model');
 
 const UserSchema = new mongoose.Schema({
     email: { type: String, unique: true },
@@ -29,7 +30,8 @@ const UserSchema = new mongoose.Schema({
 
     purchases: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Purchase' }],
     materials: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MaterialItem' }],
-    subscription: { type: mongoose.Schema.Types.ObjectId, ref: 'Subscription' }
+    subscription: { type: mongoose.Schema.Types.ObjectId, ref: 'Subscription' },
+    preferences: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Preference' }]
 });
 
 UserSchema.methods.addSubscription = function(role, expires) {
@@ -73,6 +75,48 @@ UserSchema.methods.addMaterial = function(materials) {
     });
 
     return this.save();
+}
+
+UserSchema.methods.setPreference = function(key, value) {
+    return Preference.findOne({})
+        .where('key').equals(key)
+        .where('user').equals(this._id)
+        .exec()
+        .then(pref => {
+            if (pref) {
+                if (value) {
+                    pref.value = value;
+                    pref.date = Date.now();
+                    return pref.save();
+                } else {
+                    // remove it from the array
+                    this.preferences.remove(pref._id);
+                    return pref.remove();
+                }
+            } else {
+                return Preference.create({
+                    key: key,
+                    value: value,
+                    user: this._id
+                });
+            }
+        }).then(pref => {
+            if (pref) {
+                // update it if it already exists, and add it if it doesn't
+                let found = false;
+                this.preferences.forEach(p => {
+                    if (p == pref._id.toString()) {
+                        found = true;
+                        p = pref;
+                    }
+                });
+                if (!found) {
+                    this.preferences.push(pref);
+                }
+            }
+
+            return this.save();
+        })
 }
 
 UserSchema.virtual('fullName')

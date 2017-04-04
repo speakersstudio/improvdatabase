@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/ts/util/preference.util.ts"],"names":[],"mappings":";;AAAA;IAAA;IAEA,CAAC;IAAD,qBAAC;AAAD,CAFA,AAEC;AADU,mCAAoB,GAAW,sBAAsB,CAAC;AADpD,wCAAc","file":"preference.util.js","sourcesContent":["export class PreferenceUtil {\r\n    static hide_welcome_message: string = 'hide_welcome_message';\r\n}"]}

@@ -14,13 +14,17 @@ const Purchase = require('./models/purchase.model');
 const User = require('./models/user.model');
 const MaterialItem = require('./models/material-item.model');
 const Package = require('./models/package.model');
+const Preference = require('./models/preference.model');
 
 mongoose.Promise = Promise;
 mongoose.connect(config.mongodb.uri);
 
 function deleteUsers() {
     console.log('deleting users');
-    return User.find({}).remove().exec();
+    return User.find({}).remove().exec()
+        .then(() => {
+            return Preference.find({}).remove().exec();
+        });
 }
 
 function seedUsers() {

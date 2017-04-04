@@ -1166,6 +1166,8 @@ nav {
   .card-list .card {
     flex-grow: 1;
     max-width: 46%; }
+    .card-list .card.full {
+      max-width: 100%; }
   .card-list.span3 .card {
     max-width: 30%; }
 
@@ -1276,9 +1278,12 @@ nav {
       font-size: 19px;
       margin: 24px 0;
       font-weight: 300; }
-    .card.brackets:hover:before {
+    .card.brackets .action {
+      border: 0px;
+      padding-bottom: 16px; }
+    .card.brackets.clickable:hover:before {
       width: 34px; }
-    .card.brackets:hover:after {
+    .card.brackets.clickable:hover:after {
       width: 34px; }
     .card.brackets.red:after, .card.brackets.red:before {
       border-color: #d32f2f; }
@@ -1636,10 +1641,10 @@ user .user-form {
   left: 0;
   z-index: 1;
   height: 25vh;
-  background: #64b5f6;
-  background: -moz-linear-gradient(top, #B6DCFB 12px, #64b5f6 86.4px);
-  background: -webkit-linear-gradient(top, #B6DCFB 12px, #64b5f6 86.4px);
-  background: linear-gradient(to bottom, #B6DCFB 12px, #64b5f6 86.4px); }
+  background: #CCCCCC;
+  background: -moz-linear-gradient(top, #e5e5e5 12px, #CCCCCC 86.4px);
+  background: -webkit-linear-gradient(top, #e5e5e5 12px, #CCCCCC 86.4px);
+  background: linear-gradient(to bottom, #e5e5e5 12px, #CCCCCC 86.4px); }
   .curtain img {
     width: 100%; }
 
@@ -1650,7 +1655,7 @@ user .user-form {
   bottom: 0;
   left: 0;
   z-index: 0;
-  background: #64b5f6; }
+  background: #CCCCCC; }
 
 .page {
   min-height: 100vh;
@@ -1668,10 +1673,10 @@ user .user-form {
     left: 0;
     z-index: 1;
     height: 25vh;
-    background: #64b5f6;
-    background: -moz-linear-gradient(top, #B6DCFB 12px, #64b5f6 86.4px);
-    background: -webkit-linear-gradient(top, #B6DCFB 12px, #64b5f6 86.4px);
-    background: linear-gradient(to bottom, #B6DCFB 12px, #64b5f6 86.4px); }
+    background: #CCCCCC;
+    background: -moz-linear-gradient(top, #e5e5e5 12px, #CCCCCC 86.4px);
+    background: -webkit-linear-gradient(top, #e5e5e5 12px, #CCCCCC 86.4px);
+    background: linear-gradient(to bottom, #e5e5e5 12px, #CCCCCC 86.4px); }
   .page .paper-label {
     font-size: 16px;
     padding: 16px;

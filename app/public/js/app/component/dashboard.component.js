@@ -13,6 +13,7 @@ var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var app_component_1 = require("../../component/app.component");
 var user_service_1 = require("../../service/user.service");
+var preference_util_1 = require("../../util/preference.util");
 var DashboardComponent = (function () {
     function DashboardComponent(_app, router, userService) {
         this._app = _app;
@@ -23,6 +24,11 @@ var DashboardComponent = (function () {
     }
     DashboardComponent.prototype.ngOnInit = function () {
         this._app.showBackground(true);
+        this.welcomeMessageVisible = this.userService.getPreference(preference_util_1.PreferenceUtil.hide_welcome_message) != 'true';
+    };
+    DashboardComponent.prototype.hideWelcomeMessage = function () {
+        this.userService.setPreference(preference_util_1.PreferenceUtil.hide_welcome_message, 'true');
+        this.welcomeMessageVisible = false;
     };
     return DashboardComponent;
 }());

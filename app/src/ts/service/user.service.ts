@@ -131,6 +131,31 @@ export class UserService {
             });
     }
 
+    setPreference(key: string, val: string): Promise<User> {
+        return this.http.post(this.userUrl + this.loggedInUser._id + '/preference', {
+            key: key,
+            val: val
+        }).toPromise()
+            .then((response) => {
+                this.loggedInUser = response.json() as User;
+                return this.loggedInUser;
+            });
+    }
+
+    getPreference(key: string): string {
+        let value: string = '';
+
+        if (this.loggedInUser.preferences) {
+            this.loggedInUser.preferences.forEach(pref => {
+                if (pref.key == key) {
+                    value = pref.value;
+                }
+            });
+        }
+
+        return value;
+    }
+
     can (key: string): boolean {
         if (!this.loggedInUser || !this.loggedInUser.actions.length) {
             return false;

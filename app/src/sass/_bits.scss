@@ -277,6 +277,7 @@ iplus {
 
     & > input {
         margin-top: 0px;
+        margin-bottom: 0px;
     }
 
     & > input[name="state"] {
@@ -623,9 +624,11 @@ button,
     justify-content: center;
     align-items: center;
     @include fixed(0, 0, 0, 0, 0);
+    transition: z-index 1ms $anim-duration;
 
     &.show {
         z-index: 500;
+        transition: z-index 1ms 0ms;
     }
 
     .dialog-dismiss {

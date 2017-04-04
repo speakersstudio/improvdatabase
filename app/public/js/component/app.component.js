@@ -128,6 +128,9 @@ var AppComponent = (function () {
         this.showLogin = false;
         this.showBackdrop = false;
     };
+    AppComponent.prototype.backdrop = function (show) {
+        this.showBackdrop = show;
+    };
     AppComponent.prototype.fullscreen = function () {
         // are we full-screen?
         if (document.fullscreenElement ||

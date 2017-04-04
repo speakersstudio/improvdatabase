@@ -34,7 +34,7 @@ export class AppComponent implements OnInit {
     toolbarVisible: boolean;
 
     private scrollSource = new Subject<number>();
-    onScroll$ = this.scrollSource.asObservable();
+    onScroll$ = this.scrollSource.asObservable()
 
     inApp: boolean;
     backgroundVisible: boolean;
@@ -171,6 +171,10 @@ export class AppComponent implements OnInit {
         this.showMenu = false;
         this.showLogin = false;
         this.showBackdrop = false;
+    }
+
+    backdrop(show: boolean): void {
+        this.showBackdrop = show;
     }
 
     fullscreen(): void {

@@ -56,9 +56,7 @@
             <h4>are you ready?</h4>
 
             <div class="columns spaced">
-                <a href="#" class="button">Join the mailing list</a>
-
-                <a href="#" class="button raised large">Join <iplus></iplus></a>
+                <a routerLink="/signup" class="button raised large">Join <iplus></iplus></a>
             </div>
 
         </div>
@@ -88,20 +86,6 @@
                 <div class="card red brackets clickable">
                     <h4>Participant Handouts</h4>
                     <p>Vestibulum at mollis lectus, in eleifend justo. Donec dignissim vestibulum ex vel consequat.</p>
-                </div>
-
-            </div>
-
-            <div class="columns spaced block">
-
-                <div>
-                    <h4>Not sure?</h4>
-                    <a href="#" class="button">Learn More</a>
-                </div>
-
-                <div>
-                    <h4>$1500</h4>
-                    <a href="#" class="button raised large">Join <iplus></iplus></a>
                 </div>
 
             </div>
@@ -174,9 +158,7 @@
             </div>
 
             <div class="columns spaced">
-                <a href="#" class="button">Join the mailing list</a>
-
-                <a href="#" class="button raised large">Join <iplus></iplus></a>
+                <a routerLink="/signup" class="button raised large">Join <iplus></iplus></a>
             </div>
 
         </div>    
@@ -214,7 +196,7 @@
 
             <p>Business around the world are discovering the power of Improv to make them more awesome. <br /> Absolutely everyone can do it. Absolutely everyone will benefit from it.</p>
 
-            <a href="#" class="button">Contact Us</a>
+            <a (click)="showContactDialog()" class="button">Contact Us</a>
 
         </div>
 
@@ -229,33 +211,47 @@
         </div>
 
         <div class="block">
-            <a href="#" class="button">Sign up as an improviser</a>
+            <a routerLink="/signup" class="button">Sign up as an improviser</a>
         </div>
 
     </div>
 
 </div>
 
-<div class="dialog-container" [class.show]="getNotifiedDialogVisible">
-    <div class="dialog" [@dialog] *ngIf="getNotifiedDialogVisible && !sent && !sending">
+<div class="dialog-container" [class.show]="contactDialogVisible">
+    <div class="dialog-dismiss" (click)="hideContactDialog()"></div>
 
-        <form name="getNotified" (ngSubmit)="submitGetNotified()" #getNotifiedForm="ngForm">
+    <div class="dialog" [@dialog] *ngIf="contactDialogVisible && !sent && !sending">
+
+        <form name="contact" (ngSubmit)="submitContact()" #contactForm="ngForm">
             <div class="dialog-content">
-                <h2>Get Notified About <span class="light">improv</span><strong>plus</strong></h2>
+                <h2>contact <span class="light">improv</span><strong>plus</strong></h2>
 
-                <div class="columns">
-                    <input name="firstName" [(ngModel)]="firstName" required type="text" placeholder="First Name" />
-                    <input name="lastName" [(ngModel)]="lastName" required type="text" placeholder="Last Name" />
+                <div class="section">
+                    <div class="columns">
+                        <input name="firstName" [(ngModel)]="contact.firstName" required type="text" placeholder="First Name *" />
+                        <input name="lastName" [(ngModel)]="contact.lastName" required type="text" placeholder="Last Name *" />
+                    </div>
+
+                    <input name="email" [(ngModel)]="contact.email" required type="text" placeholder="Email Address *" />
+
+                    <input name="company" [(ngModel)]="contact.company" type="text" placeholder="Company" />
+
+                    <label>Describe your Team
+                        <textarea name="team" [(ngModel)]="contact.team" rows="4"></textarea>
+                    </label>
+
+                    <label>What do you hope to accomplish?
+                        <textarea name="objective" [(ngModel)]="contact.objective" rows="4"></textarea>
+                    </label>
+
+                    <div class="error" *ngIf="contactError" [innerHTML]="contactError"></div>
                 </div>
-
-                <input name="email" [(ngModel)]="email" required type="text" placeholder="Email Address" />
-
-                <div class="error" *ngIf="getNotifiedError" [innerHTML]="getNotifiedError"></div>
             </div>
 
             <div class="button-group" *ngIf="!sending">
-                <div class="button" (click)="hideGetNotified()">Cancel</div>
-                <input type="submit" class="button raised" value="SUBMIT" [disabled]="!getNotifiedForm.form.valid" />
+                <div class="button" (click)="hideContactDialog()">Cancel</div>
+                <input type="submit" class="button raised" value="SUBMIT" [disabled]="!contactForm.form.valid" />
             </div>
 
             <div class="button-group" *ngIf="sending">
@@ -268,13 +264,13 @@
     <div class="dialog" [@dialog] *ngIf="sent">
 
         <div class="dialog-content center">
-            <h2>Your Information has been Saved</h2>
+            <h2>thank you</h2>
 
-            <p>You will be among the first to know when ImprovPlus is ready to change your world.</p>
+            <p>Our expert team will reach out to you shortly.</p>
         </div>
 
         <div class="button-group">
-            <div class="button" (click)="hideGetNotified()">Done</div>
+            <div class="button" (click)="hideContactDialog()">Done</div>
         </div>
 
     </div>

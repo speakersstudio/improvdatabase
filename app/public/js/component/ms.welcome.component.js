@@ -21,6 +21,14 @@ var WelcomeComponent = (function () {
         this._app = _app;
         this.router = router;
         this.http = http;
+        this.contact = {
+            firstName: "",
+            lastName: "",
+            email: "",
+            company: "",
+            team: "",
+            objective: ""
+        };
         this.toolbarheight = 48;
         this.pageStart = window.innerHeight - (this.toolbarheight + 24);
     }
@@ -32,31 +40,30 @@ var WelcomeComponent = (function () {
     WelcomeComponent.prototype.login = function () {
         this._app.login();
     };
-    WelcomeComponent.prototype.showGetNotified = function () {
-        this.getNotifiedDialogVisible = true;
+    WelcomeComponent.prototype.showContactDialog = function () {
+        this.contactDialogVisible = true;
+        this._app.backdrop(true);
     };
-    WelcomeComponent.prototype.hideGetNotified = function () {
-        this.getNotifiedDialogVisible = false;
+    WelcomeComponent.prototype.hideContactDialog = function () {
+        this.contactDialogVisible = false;
         this.sent = false;
         this.sending = false;
+        this._app.backdrop(false);
     };
-    WelcomeComponent.prototype.submitGetNotified = function () {
+    WelcomeComponent.prototype.submitContact = function () {
         var _this = this;
-        if (!this.firstName || !this.lastName || !this.email) {
-            this.error = "Please enter your name and email to be notified when ImprovPlus is ready.";
+        if (!this.contact.firstName || !this.contact.lastName || !this.contact.email) {
+            this.contactError = "Please enter your name and email.";
         }
         else {
-            this.error = "";
+            this.contactError = "";
             this.sending = true;
             this._app.showLoader();
-            this.http.post('/getNotified', {
-                firstName: this.firstName,
-                lastName: this.lastName,
-                email: this.email
-            })
+            this.http.post('/hireUs', this.contact)
                 .toPromise()
                 .then(function (response) {
                 _this._app.hideLoader();
+                _this._app.backdrop(true);
                 _this.sending = false;
                 _this.sent = true;
             });

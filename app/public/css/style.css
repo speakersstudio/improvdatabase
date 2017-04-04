@@ -482,7 +482,8 @@ iplus {
     .columns > *:last-child {
       margin-right: 0; }
   .columns > input {
-    margin-top: 0px; }
+    margin-top: 0px;
+    margin-bottom: 0px; }
   .columns > input[name="state"] {
     width: 3em;
     text-align: center; }
@@ -749,9 +750,11 @@ button,
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 0; }
+  z-index: 0;
+  transition: z-index 1ms 300ms; }
   .dialog-container.show {
-    z-index: 500; }
+    z-index: 500;
+    transition: z-index 1ms 0ms; }
   .dialog-container .dialog-dismiss {
     position: absolute;
     top: 0;

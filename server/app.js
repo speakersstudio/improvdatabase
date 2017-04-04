@@ -76,6 +76,7 @@ app.all('/api/*', auth.checkToken, auth.checkAuth);
 // CONTACT
 app.post('/contact', contact.send);
 app.post('/getNotified', contact.getNotified);
+app.post('/hireUs', contact.hireUs);
 
 // CHECKOUT PROCESS!
 var charge = require('./routes/charge');

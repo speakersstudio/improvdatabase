@@ -22,13 +22,18 @@ import { DialogAnim, FadeAnim } from '../util/anim.util';
 })
 export class WelcomeComponent implements OnInit {
 
-    getNotifiedDialogVisible: boolean;
+    contactDialogVisible: boolean;
 
-    firstName: string;
-    lastName: string;
-    email: string;
+    contact = {
+        firstName: "",
+        lastName: "",
+        email: "",
+        company: "",
+        team: "",
+        objective: ""
+    }
 
-    error: string;
+    contactError: string;
 
     sending: boolean;
     sent: boolean;
@@ -53,31 +58,31 @@ export class WelcomeComponent implements OnInit {
         this._app.login();
     }
 
-    showGetNotified(): void {
-        this.getNotifiedDialogVisible = true;
+    showContactDialog(): void {
+        this.contactDialogVisible = true;
+        this._app.backdrop(true);
     }
-    hideGetNotified(): void {
-        this.getNotifiedDialogVisible = false;
+    hideContactDialog(): void {
+        this.contactDialogVisible = false;
         this.sent = false;
         this.sending = false;
+        this._app.backdrop(false);
     }
 
-    submitGetNotified(): void {
-        if (!this.firstName || !this.lastName || !this.email) {
-            this.error = "Please enter your name and email to be notified when ImprovPlus is ready."
+    submitContact(): void {
+        if (!this.contact.firstName || !this.contact.lastName || !this.contact.email) {
+            this.contactError = "Please enter your name and email."
         } else {
-            this.error = "";
+            this.contactError = "";
             
             this.sending = true;
             this._app.showLoader();
-            this.http.post('/getNotified', {
-                firstName: this.firstName,
-                lastName: this.lastName,
-                email: this.email
-            })
+            this.http.post('/hireUs', this.contact)
                 .toPromise()
                 .then(response => {
                     this._app.hideLoader();
+                    this._app.backdrop(true);
+                    
                     this.sending = false;
                     this.sent = true;
                 });

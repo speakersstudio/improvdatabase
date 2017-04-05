@@ -45,6 +45,9 @@ var AppHttp = (function () {
     AppHttp.prototype.post = function (url, body, options) {
         return this.intercept(this.http.post(url, body, this.getRequestOptionArgs(options)));
     };
+    AppHttp.prototype.postFormData = function (url, body, options) {
+        return this.intercept(this.http.post(url, body, this.getRequestOptionArgs(options, 'multipart/form-data')));
+    };
     AppHttp.prototype.put = function (url, body, options) {
         return this.intercept(this.http.put(url, body, this.getRequestOptionArgs(options)));
     };
@@ -56,15 +59,20 @@ var AppHttp = (function () {
         if (this.checkTokenExpiration()) {
             headers.append('x-access-token', this.token);
         }
-        headers.append('Content-Type', 'application/json');
         return headers;
     };
-    AppHttp.prototype.getRequestOptionArgs = function (options) {
+    AppHttp.prototype.getRequestOptionArgs = function (options, contentType) {
         if (options == null) {
             options = new http_1.RequestOptions();
         }
         if (options.headers == null) {
             options.headers = new http_1.Headers();
+            if (contentType) {
+                options.headers.append('Content-Type', contentType);
+            }
+            else {
+                options.headers.append('Content-Type', 'application/json');
+            }
         }
         this.appendAuthorizationHeader(options.headers);
         return options;

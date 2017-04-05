@@ -14,4 +14,6 @@ export class MaterialItem {
     "extension": string;
     "versions": MaterialItemVersion[];
     "visible": boolean;
+    "tags": string[];
+    "color": string;
 }

@@ -249,6 +249,10 @@ iplus {
     color: $color-primary;
 }
 
+.nowrap {
+    white-space: nowrap;
+}
+
 .columns {
     display: flex;
     flex-direction: row;
@@ -288,6 +292,12 @@ iplus {
     & > input[name="zip"] {
         width: 5em;
     }
+}
+
+.data-row {
+    border-bottom: 1px solid $color-hr;
+    padding: $small 0;
+    margin: $small 0;
 }
 
 .button-group {

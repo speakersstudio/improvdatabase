@@ -143,6 +143,9 @@ var UserService = (function () {
             return this.loggedInUser.actions.indexOf(key) > -1;
         }
     };
+    UserService.prototype.isSuperAdmin = function () {
+        return this.loggedInUser && this.loggedInUser.superAdmin;
+    };
     UserService.prototype.validate = function (user) {
         return this.http.post(this.validateUrl, user)
             .toPromise()

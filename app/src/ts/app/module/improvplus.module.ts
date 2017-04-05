@@ -16,6 +16,7 @@ import { UserComponent } from '../component/user.component';
 import { GameDetailsComponent } from '../component/game-details.component';
 import { HelpComponent } from "../component/help.component";
 import { LegalComponent } from "../component/legal.component";
+import { AdminComponent } from '../component/admin.component';
 
 // sub-views
 import { ToolbarView } from '../view/toolbar.view';
@@ -48,6 +49,7 @@ import { ImprovPlusRoutingModule } from './improvplus-routing.module';
         HelpComponent,
         GameDetailsComponent,
         LegalComponent,
+        AdminComponent,
         
         ToolbarView,
         GameCardView,

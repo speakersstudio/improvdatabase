@@ -22,7 +22,10 @@ var AuthGuard = (function () {
         if (this.userService.getLoggedInUser()) {
             var data = route.data;
             //console.log(data, this.userService.can(data.action));
-            if (!data.action || this.userService.can(data.action)) {
+            if (data.admin && this.userService.isSuperAdmin()) {
+                return true;
+            }
+            else if (!data.action || this.userService.can(data.action)) {
                 return true;
             }
             else if (this.userService.can('subscription_renew')) {

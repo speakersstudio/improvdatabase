@@ -1,0 +1,154 @@
+<div class="toolbar"
+    [class.on]="_app.toolbarVisible"
+    [tools]="_tools"
+    [title]="title"
+    [showBack]="selectedMaterial"
+    (goBack)="back()"
+    ></div>
+
+<div class="page">
+
+    <!-- Material Item List -->
+    <div class="paper has-brackets" *ngIf="page == 'materials' && !selectedMaterial">
+
+        <div class="content">
+
+            <h4 class="right">All of the Material Items</h4>
+
+            <div class="card-list">
+
+                <div class="card small clickable {{material.color}}"
+                    *ngFor="let material of materialItems"
+                    (click)="selectMaterial(material)">
+
+                    <div class="top">
+                        <i *ngIf="material.extension == 'pdf'" class="fa fa-file-pdf-o" title="PDF"></i>
+                        <h3>{{material.name}}</h3>
+                    </div>
+                    <div class="body">
+                        <p>{{material.description}}</p>
+                        <ul class="taglist grey">
+                            <li *ngFor="let tag of material.tags">{{tag}}</li>
+                            <li *ngIf="!material.visible"><i class="fa fa-eye-slash"></i> Hidden!</li>
+                            <li>{{material.versions.length}} version(s)</li>
+                        </ul>
+                    </div>
+                    <!--<div class="action">
+                        <a href="#" class="button">Download</a>
+                    </div>-->
+                </div>
+
+                <div class="card small clickable" (click)="createMaterial()">
+                    <div class="top">
+                        <i class="fa fa-plus"></i>
+                        <h3>New</h3>
+                    </div>
+                    <div class="body">
+                        <p>Create a new Material Item</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>materials database</h1></div>
+    </div>
+
+    <!-- Edit Material Item -->
+    <div class="paper has-brackets" *ngIf="page == 'materials' && selectedMaterial">
+
+        <div class="content">
+
+            <label>
+                Name
+                <input name="name" [(ngModel)]="selectedMaterial.name" type="text" placeholder="Name" />
+            </label>
+
+            <label>Description
+                <textarea name="description" [(ngModel)]="selectedMaterial.description" rows="4"></textarea>
+            </label>
+
+            <div class="columns">
+                <label>
+                    Price (no dollar sign, but decimals are okay)
+                    <input name="price" [(ngModel)]="selectedMaterial.price" type="text" placeholder="Price" />
+                </label>
+
+                <label>
+                    Color (red, blue, orange, yellow)
+                    <input name="color" [(ngModel)]="selectedMaterial.color" type="text" placeholder="Color" />
+                </label>
+            </div>
+
+            <div class="columns">
+                <label>
+                    Fileslug (The filename on the server, it can be anything)
+                    <input name="fileslug" [(ngModel)]="selectedMaterial.fileslug" type="text" placeholder="Fileslug" />
+                </label>
+
+                <label>
+                    Extension (i.e. pdf)
+                    <input name="extension" [(ngModel)]="selectedMaterial.extension" type="text" placeholder="Extension" />
+                </label>
+            </div>
+
+            <div class="columns">
+                <label>
+                    Tags (comma-separated)
+                    <input name="tags" [(ngModel)]="selectedMaterial.tags" type="text" placeholder="Tags" />
+                </label>
+            </div>
+
+            <div class="columns">
+                <label class="checkbox">
+                    <input type="checkbox" class="inline-block" name="visible" [checked]="selectedMaterial.visible" (change)="selectedMaterial.visible = !selectedMaterial.visible" />
+                    Visible?
+                </label>
+            </div>
+
+            <div class="section right">
+                <div class="button raised" (click)="saveMaterial()">Save</div>
+            </div>
+
+            <div class="section">
+
+                <h5>Versions</h5>
+
+                <div class="columns data-row centered" *ngFor="let version of selectedMaterial.versions">
+                    <span class="fit">{{version.ver}}</span>
+                    
+                    <span>{{version.description || 'No description'}}</span>
+
+                    <span class="fit nowrap">{{simpleDate(version.dateAdded)}}</span>
+                </div>
+
+                <div class="section columns centered">
+                    <label class="fit">
+                        Version
+                        <input name="ver" [(ngModel)]="newVersion.ver" type="text" placeholder="Ver" />
+                    </label>
+
+                    <label>Description
+                        <textarea name="description" [(ngModel)]="newVersion.description" rows="2"></textarea>
+                    </label>
+
+                    <label class="fit">File
+                        <input type="file" (change)="fileChange($event)" name="newVersionFile" />
+                    </label>
+                </div>
+
+                <div class="section right">
+                    <div class="button raised" (click)="saveVersion()">Add Version</div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>materials database</h1></div>
+    </div>
+
+</div>

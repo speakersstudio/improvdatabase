@@ -105,7 +105,11 @@ module.exports = {
 
                 'tag_create',
                 'tag_edit',
-                'tag_delete'
+                'tag_delete',
+
+                'material_edit',
+                'material_create',
+                'material_delete'
             ]
         }
     ],

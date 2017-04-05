@@ -13,6 +13,8 @@ import { GameDetailsComponent } from '../component/game-details.component';
 import { UserComponent } from '../component/user.component';
 import { LegalComponent } from "../component/legal.component";
 
+import { AdminComponent } from '../component/admin.component';
+
 const routes: Routes = [
     {
         path: 'app',
@@ -70,6 +72,13 @@ const routes: Routes = [
                         component: UserComponent,
                         data: {
                             action: 'account_edit'
+                        }
+                    },
+                    {
+                        path: 'admin',
+                        component: AdminComponent,
+                        data: {
+                            admin: true
                         }
                     }
                 ]

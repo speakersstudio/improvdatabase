@@ -19,6 +19,7 @@ var contact_component_1 = require("../component/contact.component");
 var game_details_component_1 = require("../component/game-details.component");
 var user_component_1 = require("../component/user.component");
 var legal_component_1 = require("../component/legal.component");
+var admin_component_1 = require("../component/admin.component");
 var routes = [
     {
         path: 'app',
@@ -76,6 +77,13 @@ var routes = [
                         component: user_component_1.UserComponent,
                         data: {
                             action: 'account_edit'
+                        }
+                    },
+                    {
+                        path: 'admin',
+                        component: admin_component_1.AdminComponent,
+                        data: {
+                            admin: true
                         }
                     }
                 ]

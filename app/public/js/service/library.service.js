@@ -76,6 +76,37 @@ var LibraryService = (function () {
         });
         return m.versions[0];
     };
+    // this is for admin - perhaps admin items should live in their own service?
+    LibraryService.prototype.getAllMaterials = function () {
+        return this.http.get(this.materialsUrl + 'all')
+            .toPromise()
+            .then(function (response) {
+            return response.json();
+        });
+    };
+    LibraryService.prototype.saveMaterial = function (material) {
+        if (!this.userService.isSuperAdmin()) {
+            return;
+        }
+        return this.http.put(this.materialsUrl + material._id, material)
+            .toPromise()
+            .then(function (response) {
+            return response.json();
+        });
+    };
+    LibraryService.prototype.postNewVersion = function (materialItemId, version, file) {
+        if (!this.userService.isSuperAdmin()) {
+            return;
+        }
+        var formData = new FormData();
+        formData.append('ver', version.ver);
+        formData.append('description', version.description);
+        formData.append('file', file, file.name);
+        return this.http.postFormData(this.materialsUrl + materialItemId + '/version', formData).toPromise()
+            .then(function (response) {
+            return response.json();
+        });
+    };
     LibraryService.prototype.handleError = function (error) {
         console.error('An error has occurred', error);
         return Promise.reject(error.message || error);

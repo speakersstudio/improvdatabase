@@ -164,6 +164,10 @@ export class UserService {
         }
     }
 
+    isSuperAdmin(): boolean {
+        return this.loggedInUser && this.loggedInUser.superAdmin;
+    }
+
     validate (user: User): Promise<String> {
         return this.http.post(this.validateUrl, user)
             .toPromise()

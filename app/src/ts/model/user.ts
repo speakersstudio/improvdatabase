@@ -33,6 +33,7 @@ export class User {
     description: string;
     permissions: Object;
     actions: string[];
+    superAdmin: boolean;
 
     purchases: Purchase[];
     materials: MaterialItem[];

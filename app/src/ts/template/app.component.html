@@ -59,6 +59,14 @@
             <a routerLink="/app/help" routerLinkActive="active" class="nav-item">
                 <i class="fa fa-question"></i> <span>Help</span>
             </a>
+
+            <hr *ngIf="userService.isSuperAdmin()" />
+
+            <a routerLink="/app/admin" routerLinkActive="active" class="nav-item" 
+                *ngIf="userService.isSuperAdmin()">
+                <i class="fa fa-motorcycle"></i> <span>Admin</span>
+            </a>
+
         </div>
 
         <footer>

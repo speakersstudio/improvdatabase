@@ -466,6 +466,9 @@ iplus {
 .primary {
   color: #d32f2f; }
 
+.nowrap {
+  white-space: nowrap; }
+
 .columns {
   display: flex;
   flex-direction: row; }
@@ -489,6 +492,11 @@ iplus {
     text-align: center; }
   .columns > input[name="zip"] {
     width: 5em; }
+
+.data-row {
+  border-bottom: 1px solid rgba(96, 96, 96, 0.5);
+  padding: 8px 0;
+  margin: 8px 0; }
 
 .button-group {
   margin-top: 16px;

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import 'rxjs/add/operator/toPromise';
 
+import { RequestOptions, Headers } from '@angular/http';
 import { AppHttp } from '../data/app-http';
 
 import { Package } from '../model/package';
@@ -84,6 +85,42 @@ export class LibraryService {
             return b.ver - a.ver;
         });
         return m.versions[0];
+    }
+
+    // this is for admin - perhaps admin items should live in their own service?
+    getAllMaterials(): Promise<MaterialItem[]> {
+        return this.http.get(this.materialsUrl + 'all')
+            .toPromise()
+            .then(response => {
+                return response.json() as MaterialItem[];
+            });
+    }
+
+    saveMaterial(material: MaterialItem): Promise<MaterialItem> {
+        if (!this.userService.isSuperAdmin()) {
+            return;
+        }
+        return this.http.put(this.materialsUrl + material._id, material)
+            .toPromise()
+            .then(response => {
+                return response.json() as MaterialItem;
+            });
+    }
+
+    postNewVersion(materialItemId: string, version: MaterialItemVersion, file: File): Promise<MaterialItem> {
+        if (!this.userService.isSuperAdmin()) {
+            return;
+        }
+
+        let formData = new FormData();
+        formData.append('ver', version.ver);
+        formData.append('description', version.description);
+        formData.append('file', file, file.name);
+
+        return this.http.postFormData(this.materialsUrl + materialItemId + '/version', formData).toPromise()
+            .then(response => {
+                return response.json() as MaterialItem;
+            });
     }
 
     private handleError(error: any): Promise<any> {

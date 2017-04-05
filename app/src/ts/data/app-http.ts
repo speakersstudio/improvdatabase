@@ -60,6 +60,10 @@ export class AppHttp {
         return this.intercept(this.http.post(url, body, this.getRequestOptionArgs(options)));
     }
 
+    postFormData(url: string, body: FormData, options?: RequestOptionsArgs): Observable<Response> {
+        return this.intercept(this.http.post(url, body, this.getRequestOptionArgs(options, 'multipart/form-data')));
+    }
+
     put(url: string, body: any, options?: RequestOptionsArgs): Observable<Response> {
         return this.intercept(this.http.put(url, body, this.getRequestOptionArgs(options)));
     }
@@ -73,16 +77,20 @@ export class AppHttp {
         if (this.checkTokenExpiration()) {
             headers.append('x-access-token', this.token);
         }
-        headers.append('Content-Type', 'application/json');
         return headers;
     }
 
-    getRequestOptionArgs(options?: RequestOptionsArgs): RequestOptionsArgs {
+    getRequestOptionArgs(options?: RequestOptionsArgs, contentType?: string): RequestOptionsArgs {
         if (options == null) {
             options = new RequestOptions();
         }
         if (options.headers == null) {
             options.headers = new Headers();
+            if (contentType) {
+                options.headers.append('Content-Type', contentType);
+            } else {
+                options.headers.append('Content-Type', 'application/json');
+            }
         }
         this.appendAuthorizationHeader(options.headers);
         return options;

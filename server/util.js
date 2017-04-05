@@ -2,7 +2,7 @@ module.exports = {
 
     smartUpdate: (model, data, whitelist) => {
         whitelist.forEach(name => {
-            if (data[name]) {
+            if (data[name] != undefined && data[name] != null) {
                 model[name] = data[name];
             }
         });

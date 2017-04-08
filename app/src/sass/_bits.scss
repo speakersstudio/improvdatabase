@@ -236,6 +236,10 @@ iplus {
     text-align: center;
 }
 
+.left {
+    text-align: left;
+}
+
 .scroll {
     overflow: auto;
 
@@ -251,6 +255,11 @@ iplus {
 
 .nowrap {
     white-space: nowrap;
+}
+
+.fa.huge {
+    font-size: 50px;
+    margin-top: $large;
 }
 
 .columns {
@@ -305,6 +314,24 @@ iplus {
     text-align: right;
 }
 
+.form-input {
+    position: relative;
+
+    label {
+        @include abs(18px);
+        cursor: text;
+        font-size: 16px;
+        transition: all 200ms;
+        margin: 0;
+        pointer-events: none;
+
+        &.active {
+            transform: translateY(-140%);
+            font-size: 12px;
+        }
+    }
+}
+
 button,
 .button {
     border-radius: $border-radius;
@@ -324,7 +351,7 @@ button,
     text-transform: uppercase;
     text-decoration: none;
 
-    @include md-elevation-transition(opacity $anim-duration);
+    @include md-elevation-transition("opacity $anim-duration");
 
     iplus {
         margin-left: $small;

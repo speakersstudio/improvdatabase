@@ -28,7 +28,7 @@ export class LibraryService {
         ) { }
 
     private _packagePromise: Promise<Package[]>;
-    getPackages(): Promise<Package[]> {
+    private _getPackages(): Promise<Package[]> {
         if (!this._packagePromise) {
             this._packagePromise = this.http.get(this.packageUrl)
                 .toPromise()
@@ -39,6 +39,26 @@ export class LibraryService {
                 .catch(this.handleError);
         }
         return this._packagePromise;
+    }
+
+    getPackages(type?: string, team?: boolean): Promise<Package[]> {
+        
+        return new Promise<Package[]>((resolve, reject) => {
+            this._getPackages().then(allPackages => {
+                if (type != undefined || team != undefined) {
+                    let selectedPackages = [];
+                    allPackages.forEach(p => {
+                        if ((team == undefined || p.team == team) &&
+                            (type == undefined || p.type == type)) {
+                                selectedPackages.push(p);
+                            }
+                    });
+                    resolve(selectedPackages);
+                } else {
+                    resolve(allPackages);
+                }
+            })
+        })
     }
 
     private _materialPromise: Promise<MaterialItem[]>;

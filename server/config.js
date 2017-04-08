@@ -22,7 +22,12 @@ module.exports = function () {
                 publishable: 'pk_test_o2Kb3Is8AdQuSP8a4UjrvRyK'
             },
             port: 1919,
-            saltRounds: 10
+            saltRounds: 10,
+
+            settings: {
+                facilitator_team_sub_count: 3,
+                improviser_team_sub_count: 5
+            }
         };
     } else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'qa') {
         return {
@@ -45,7 +50,12 @@ module.exports = function () {
                 publishable: process.env.STRIPE_PUBLISHABLE
             },
             port: process.env.PORT || 5000,
-            saltRounds: 10
+            saltRounds: 10,
+
+            settings: {
+                facilitator_team_sub_count: 3,
+                improviser_team_sub_count: 5
+            }
         };
     }
 };

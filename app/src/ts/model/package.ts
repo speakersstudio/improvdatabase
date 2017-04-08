@@ -10,15 +10,14 @@ export class Package {
     "_id": string;
     "slug": string;
     "name": string;
-    "description": string;
+    "description": string[];
     "color": string;
     "price": number;
     "dateAdded": Date;
     "dateModified": Date;
     "materials": MaterialItem[];
-    "includeSubscription": boolean;
-
-    // not sure how these work
-    "coachingSessions": number;
-    "supportCalls": number;
+    "type": string;
+    "team": boolean;
+    "subscriptions": number;
+    "role": number;
 }

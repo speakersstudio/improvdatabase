@@ -44,75 +44,6 @@ landing-hero {
         @include abs(0, 0, 0, 0, 2);
     }
 
-    .content {
-        width: 100%;
-        background: $color-home-bg-black;
-        padding: $std 0;
-        position: relative;
-        z-index: 5;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: $color-white;
-
-        h1 {
-            font-size: 110px;
-            margin-bottom: $large;
-
-            @media #{$media-mobile} {
-                font-size: 65px;
-            }
-        }
-
-        h2 {
-            font-size: 30px;
-            // margin-top: $large;
-            margin: 0 $std;
-            
-            @media #{$media-mobile} {
-                font-size: 16px;
-            }
-        }
-
-        h3 {
-            font-size: 24px;
-            margin: $small $std;
-        }
-
-        hr {
-            margin: 0 $std;
-            background: $color-white;
-        }
-
-        p {
-            line-height: 2;
-        }
-        
-        .button {
-            margin-top: 24px;
-            color: $color-white;
-            
-            &:before,
-            &:after {
-                border-color: $color-white;
-            }
-
-            &:hover {
-                &:before,
-                &:after {
-                    border-color: $color-primary;
-                }
-            }
-        }
-
-        .block {
-            margin: $large 0;
-            max-width: 690px;
-            text-align: center;
-        }
-    }
-
     .fa-chevron-down {
         @include abs(null, null, $std, 50%, 10);
         font-size: 50px;
@@ -127,6 +58,82 @@ landing-hero {
         }
     }
 } // end of landing-hero
+
+.blackbox {
+    background: $color-home-bg-black;
+    padding: $std 0;
+    position: relative;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: $color-white;
+
+    h1 {
+        font-size: 110px;
+        margin-bottom: $large;
+
+        @media #{$media-mobile} {
+            font-size: 65px;
+        }
+    }
+
+    h2 {
+        font-size: 30px;
+        // margin-top: $large;
+        margin: 0 $std;
+        
+        @media #{$media-mobile} {
+            font-size: 16px;
+        }
+    }
+
+    h3 {
+        font-size: 24px;
+        margin: $small $std;
+    }
+
+    hr {
+        margin: 0 $std;
+        background: $color-white;
+    }
+
+    p {
+        line-height: 2;
+    }
+    
+    .button {
+        margin-top: 24px;
+        color: $color-white;
+        
+        &:before,
+        &:after {
+            border-color: $color-white;
+        }
+
+        &:hover {
+            &:before,
+            &:after {
+                border-color: $color-primary;
+            }
+        }
+    }
+
+    .block {
+        margin: $large 0;
+        max-width: 690px;
+        text-align: center;
+    }
+}
+
+.page .blackbox {
+    margin: 0 (-8.7vw) $large;
+
+    h2 {
+        font-size: 50px;
+    }
+}
 
 welcome, signup {
     .toolbar {
@@ -270,10 +277,9 @@ welcome, signup {
     }
 
     .payment-info {
-        width: 90%;
         max-width: 500px;
         text-align: left;
-        border: 1px solid $color-hr;
+        margin: 0 auto;
 
         .StripeElement {
             background-color: white;
@@ -300,4 +306,8 @@ welcome, signup {
             background-color: #fefde5 !important;
         }
     }
+}
+
+signup .page {
+    padding-top: $page-bracket-width;
 }

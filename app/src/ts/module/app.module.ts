@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PathLocationStrategy } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { WebStorageService, WebStorageSubscriber } from "../util/webstorage.util";
 
@@ -24,11 +25,14 @@ import { ImprovPlusModule } from '../app/module/improvplus.module';
 import { LoginScreenComponent } from '../component/login-screen.component';
 import { SignupComponent } from '../component/signup.component';
 
+import { FormInputDirective } from '../view/form-input.directive';
+
 @NgModule({
     imports: [
         BrowserModule,
         FormsModule,
         HttpModule,
+        BrowserAnimationsModule,
         SharedModule,
         AppRoutingModule,
         ImprovPlusModule
@@ -37,7 +41,8 @@ import { SignupComponent } from '../component/signup.component';
         LoginScreenComponent,
         AppComponent,
         WelcomeComponent,
-        SignupComponent
+        SignupComponent,
+        FormInputDirective
     ],
     bootstrap: [ AppComponent ],
     providers: [

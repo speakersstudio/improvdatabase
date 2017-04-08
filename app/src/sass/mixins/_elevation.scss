@@ -166,12 +166,23 @@ $md-elevation-transition-timing-function: $md-fast-out-slow-in-timing-function;
 // This mixin should be applied to elements whose elevation values will change depending on their
 // context (e.g. when active or disabled).
 //
-// NOTE(traviskaufman): Both this mixin and the above function use default parameters so they can
-// be used in the same way by clients.
+// Include additional transition properties by passing an array of strings
+// I.E. @include md-elevation-transition(("width 500ms", "opacity 500ms"));
+//    will generate transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1), width 500ms, opacity 500ms;
 @mixin md-elevation-transition(
     $include: null,
     $duration: $md-elevation-transition-duration,
     $easing: $md-elevation-transition-timing-function) {
-  transition: md-elevation-transition-property-value($duration, $easing), $include;
+
+  @if $include == null {
+    transition: md-elevation-transition-property-value($duration, $easing);
+  } @else {
+    $props: ();
+    @each $p in $include {
+      $props: append($props, unquote($p), comma);
+    }
+    transition: md-elevation-transition-property-value($duration, $easing), $props;
+  }
+
   will-change: $md-elevation-property;
 }

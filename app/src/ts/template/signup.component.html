@@ -12,81 +12,208 @@
 
 <div class="page">
 
-    <div class="paper" *ngIf="step == 1">
+    <div class="blackbox">
+        <h2>find your path to <strong>plus</strong></h2>
+        <p>You are three simple questions away from joining <span class="light">improv</span><strong>plus</strong></p>
+    </div>
 
-        <div class="content center" *ngIf="isLoadingPackages">
-            <h5>loading options<i class="loading"></i></h5>
+
+    <!-- step 1: who are you? -->
+    <div class="block center" [@dialogSlow]>
+        
+        <div class="card">
+            1. How do you describe yourself?
         </div>
 
-        <div class="content" *ngIf="!isLoadingPackages && packages">
+        <div class="card-list">
 
-            <h5 class="center">select your path to <strong>plus</strong></h5>
+            <div class="card red brackets clickable" #facilitatorCard
+                    (click)="selectFacilitator()">
 
-            <div class="block">
+                <i class="fa fa-book"></i>
 
-                <div class="card-list">
+                <div *ngIf="userType != 'facilitator'" [@fadeAbsolute]>
+                    <h4>Facilitator</h4>
 
-                    <div class="card {{package.color}} brackets clickable"
-                         *ngFor="let package of packages"
-                         (click)="selectPackage(package)">
+                    <ul>
+                        <li>You are a member of your company's HR team.</li>
+                        <li>You conduct professional trainings.</li>
+                        <li>You want to make your professional team more awesome.</li>
+                    </ul>
+                </div>
 
-                        <h4>{{package.name}}</h4>
-                        <p>{{package.description}}</p>
-                        <h4 class="center text-{{package.color}}">${{package.price}}</h4>
-                    </div>
+                <div class="body" *ngIf="userType == 'facilitator'" [@fadeAbsolute]>
+                    <p>Great! Let's start with the email and password you want to use for your new Facilitator account.</p>
+                    
+                    <input name="email"
+                        [(ngModel)]="email"
+                        placeholder="Email"
+                        formInput
+                        required
+                        type="text" />
+                    <span class="error" *ngIf="emailError">{{emailError}}</span>
+                    
+                    <input name="password" 
+                        [(ngModel)]="password"
+                        placeholder="Password"
+                        formInput
+                        required
+                        type="password" />
 
                 </div>
 
             </div>
-        </div>
 
-        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
-        <div class="right-bracket"><h1>step 1 of 3</h1></div>
-    </div>
+            <div class="card blue brackets clickable" #improviserCard
+                    (click)="selectImproviser()">
 
-    <div class="paper" *ngIf="step == 2">
-        <div class="content">
-            <div class="block">
-                <!--<div class="card-list center">
+                <i class="fa fa-smile-o"></i>
 
-                    <div class="card {{selectedPackage.color}} brackets clickable" (click)="step1()">
-                        <h4>{{selectedPackage.name}}</h4>
-                        <h4 class="center text-{{selectedPackage.color}}">${{selectedPackage.price}}</h4>
-                    </div>
+                <div *ngIf="userType != 'improviser'" [@fadeAbsolute]>
+                    <h4>Improviser</h4>
 
-                </div>-->
+                    <ul>
+                        <li>You perform (or want to perform) Improv.</li>
+                        <li>You want to promote your Improv Group.</li>
+                        <li>You want to be part of the ever-growing Improv Community.</li>
+                    </ul>
+                </div>
 
-                <p>Enter your information below to create an account. You will be able to enter your billing information on the next step.</p>
+                <div class="body" *ngIf="userType == 'improviser'" [@fadeAbsolute]>
+                    <p>Awesome! Let's start with the email and password you want to use for your new Improviser account.</p>
 
-                <user-form
-                    [user]="user" 
-                    [isPosting]="isPosting"
-                    [saveText]="'Next'"
-                    [backText]="'Back'"
-                    (back)="step1()"
-                    (onValidated)="saveUser($event)"></user-form>
+                    <input name="email"
+                        [(ngModel)]="email"
+                        placeholder="Email"
+                        formInput
+                        required 
+                        type="text" />
+                    
+                    <input name="password" 
+                        [(ngModel)]="password"
+                        placeholder="Password"
+                        formInput
+                        required
+                        type="password" />
+                </div>
             </div>
+
         </div>
 
-        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
-        <div class="right-bracket"><h1>step 2 of 3</h1></div>
     </div>
 
-    <div class="paper" *ngIf="step == 3">
-        <div class="content">
-            <div class="block center">
-                <div class="card payment-info">
+    <!-- step 2: yourself or your team -->
+    <div class="block center" *ngIf="userType" [@dialogSlow]>
+        
+        <div class="card">
+            2. Who do you represent?
+        </div>
+
+        <div class="card clickable" (click)="reset()" *ngIf="!teamOption" [@dialogSlow]>
+            <i class="fa fa-caret-up"></i> Start over?
+        </div>
+
+        <div class="card-list">
+
+            <div class="card brackets clickable" 
+                    [class.red]="userType == 'facilitator'" 
+                    [class.blue]="userType == 'improviser'"
+                    #yourselfCard
+                    (click)="selectYourself()">
+
+                <i class="fa fa-user"></i>
+
+                <div *ngIf="teamOption != 'individual'" [@fadeAbsolute]>
+                    <h4>Yourself</h4>
+
+                    <ul *ngIf="userType == 'facilitator'">
+                        <li>You conduct trainings yourself.</li>
+                        <li>You want to join a team that was already registered.</li>
+                        <li>You aren't sure (you can always register your team later).</li>
+                    </ul>
+
+                    <ul *ngIf="userType == 'improviser'">
+                        <li>You aren't part of a group right now.</li>
+	                    <li>You want to join an Improv Team that was already registered.</li>
+                        <li>You aren't sure (you can always register your team later).</li>
+                    </ul>
+                </div>
+
+                <div class="body" *ngIf="teamOption == 'individual'" [@fadeAbsolute]>
+                    <p>Hello! What do we call you?</p>
+                    <input formInput name="userName" placeholder="Your Name" [(ngModel)]="userName" required type="text" />
+                </div>
+
+            </div>
+
+            <div class="card brackets clickable" 
+                    [class.red]="userType == 'facilitator'" 
+                    [class.blue]="userType == 'improviser'"
+                    #yourTeamCard
+                    (click)="selectYourTeam()">
+
+                <i class="fa fa-users"></i>
+
+                <div *ngIf="teamOption != 'team'" [@fadeAbsolute]>
+                    <h4>Your Team</h4>
+
+                    <ul *ngIf="userType == 'facilitator'">
+                        <li>You want to share your ImprovPlus resources.</li>
+                        <li>You want to set up multiple user accounts.</li>
+                        <li>You want to collaborate with other members of your team.</li>
+                    </ul>
+
+                    <ul *ngIf="userType == 'improviser'">
+                        <li>You want to collaborate with your Improv Team.</li>
+                        <li>You want a collection of user accounts to share with your team.</li>
+                        <li>You want access to powerful tools to help your team practice and promote itself.</li>
+                    </ul>
+                </div>
+
+                <div class="body" *ngIf="teamOption == 'team'" [@fadeAbsolute]>
+                    <p>What should we call your team?</p>
+                    <input formInput name="teamName" placeholder="Team Name" [(ngModel)]="teamName" required type="text" />
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- step 3: choose your package -->
+    <div class="block center" *ngIf="teamOption" [@dialogSlow]>
+
+        <div class="card">
+            3. Which option is for you?
+        </div>
+
+        <div class="card clickable" (click)="reset()" *ngIf="!isFormValid()">
+            <i class="fa fa-caret-up"></i> Start over?
+        </div>
+
+        <div class="card-list">
+
+            <div class="card brackets clickable {{package.color}}"
+                *ngFor="let package of packages"
+                (click)="selectPackage($event, package, packageCard)"
+                #packageCard>
+
+                <div *ngIf="selectedPackage != package" [@fadeAbsolute]>
+                    <h4>{{package.name}}</h4>
+
+                    <ul>
+                        <li *ngFor="let desc of package.description">{{desc}}</li>
+                    </ul>
+
+                    <h4>${{package.price}}</h4>
+                </div>
+
+                <div class="body left payment-info" *ngIf="selectedPackage == package" [@fadeAbsolute]>
+                    <p><strong>{{selectedPackage.name}}</strong> ${{selectedPackage.price}}</p>
+
+                    <p>Now we just need your billing info. Don't worry - your information is secure through the whole process.</p>
                     <form id="payment-form" (ngSubmit)="submitPayment()" #paymentForm="ngForm">
                         <div class="form-row">
-                            <div class="section">
-                                <h3>{{user.firstName}} {{user.lastName}}</h3>
-
-                                <div class="columns">
-                                    <span>{{selectedPackage.name}}</span>
-                                    <span class="fit">${{selectedPackage.price}}</span>
-                                </div>
-                            </div>
-
                             <label for="card-element">
                                 Credit or debit card number
                             </label>
@@ -98,21 +225,48 @@
                             <div class="StripeCardErrors" *ngIf="cardError">{{cardError}}</div>
                         </div>
 
-                        <div class="action right" *ngIf="!isPosting">
+                        <!--<div class="action right" *ngIf="!isPosting">
                             <span class="button" (click)="showUser()">Back</span>
                             <button class="button raised" [class.disabled]="!cardComplete || cardError">Submit Payment</button>
                         </div>
 
                         <div class="action right" *ngIf="isPosting">
                             <div class="button"><i class="loading"></i></div>
-                        </div>
+                        </div>-->
                     </form>
                 </div>
             </div>
+
         </div>
 
-        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
-        <div class="right-bracket"><h1>step 3 of 3</h1></div>
+    </div>
+
+    <!-- step 4: GO! -->
+    <div class="block center" *ngIf="selectedPackage && isFormValid()" [@dialogSlow]>
+
+        <div class="card">
+            4. Let's do this.
+        </div>
+
+        <div class="card clickable" (click)="reset()">
+            <i class="fa fa-caret-up"></i> Start over?
+        </div>
+
+        <div class="card-list">
+
+            <div class="card brackets clickable"
+                [class.red]="userType == 'facilitator'" 
+                [class.blue]="userType == 'improviser'"
+                (click)="submitPayment()">
+
+                <i class="fa fa-rocket"></i>
+
+                <h4>Activate your Account</h4>
+
+                <p>You're just one click away from <span class="light">improv</span><strong>plus</strong>...</p>
+            </div>
+
+        </div>
 
     </div>
 

@@ -80,6 +80,7 @@ app.post('/hireUs', contact.hireUs);
 
 // CHECKOUT PROCESS!
 var charge = require('./routes/charge');
+app.post('/signup', auth.checkToken, charge.signup);
 app.post('/charge', auth.checkToken, charge.doCharge);
 
 //CRUD

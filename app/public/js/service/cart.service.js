@@ -19,6 +19,7 @@ var CartService = (function () {
         this.http = http;
         this.userService = userService;
         this.chargeUrl = "/charge";
+        this.signupUrl = "/signup";
         this.cart = [];
     }
     CartService.prototype.reset = function () {
@@ -43,6 +44,20 @@ var CartService = (function () {
             stripeToken: token,
             cart: this.cart,
             user: this.user
+        }).toPromise()
+            .then(function (result) {
+            return result.json();
+        });
+    };
+    CartService.prototype.signup = function (token, email, password, pack, userName, teamName) {
+        this.addPackage(pack);
+        return this.http.post(this.signupUrl, {
+            stripeToken: token,
+            cart: this.cart,
+            email: email,
+            password: password,
+            userName: userName,
+            teamName: teamName
         }).toPromise()
             .then(function (result) {
             return result.json();

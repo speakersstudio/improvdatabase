@@ -1,6 +1,5 @@
 const mongoose = require('mongoose'),
 
-    Subscription = require('./subscription.model'),
     Preference   = require('./preference.model');
 
 const UserSchema = new mongoose.Schema({
@@ -26,7 +25,9 @@ const UserSchema = new mongoose.Schema({
     description: String,
     permissions: String, // in case we want to grant or revoke specific permissions
     superAdmin: { type: Boolean, default: false },
-    stripeCustomerId: String,
+
+    memberOfTeams: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Team' }],
+    adminOfTeams: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Team' }],
 
     purchases: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Purchase' }],
     materials: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MaterialItem' }],
@@ -34,7 +35,7 @@ const UserSchema = new mongoose.Schema({
     preferences: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Preference' }]
 });
 
-UserSchema.methods.addSubscription = function(role, expires) {
+UserSchema.methods.addSubscription = function(role, stripeCustomerId, expires) {
     if (!expires) {
         expires = new Date();
         expires.setFullYear(expires.getFullYear() + 1);
@@ -43,10 +44,11 @@ UserSchema.methods.addSubscription = function(role, expires) {
     if (typeof(expires) == 'object' && expires.getTime) {
         expiration = expires.getTime();
     }
-    return Subscription.create({
+    return mongoose.model('Subscription').create({
         user: this._id,
         role: role,
-        expiration: expiration
+        expiration: expiration,
+        stripeCustomerId: stripeCustomerId
     }).then(sub => {
         this.subscription = sub;
 
@@ -57,6 +59,10 @@ UserSchema.methods.addSubscription = function(role, expires) {
 // TODO: create a renewSubscription method?
 
 UserSchema.methods.addMaterial = function(materials) {
+    if (!materials || !materials.length) {
+        return Promise.resolve(this);
+    }
+
     materials = [].concat(materials);
     materials.forEach(mat => {
         let id = typeof(mat) == 'object' ? mat._id : mat,
@@ -118,6 +124,10 @@ UserSchema.methods.setPreference = function(key, value) {
             return this.save();
         })
 }
+
+UserSchema.virtual('isThisAUser').get(function() {
+    return true;
+});
 
 UserSchema.virtual('fullName')
     .get(function() {

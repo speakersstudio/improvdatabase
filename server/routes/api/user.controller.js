@@ -106,7 +106,8 @@ module.exports = {
         }
 
         let query = User.findOne({})
-            .select(WHITELIST.join(' ') + ' purchases materials subscription preferences role dateAdded dateModified superAdmin ' + select);
+            .select(WHITELIST.join(' ') + 
+            ' purchases materials subscription preferences memberOfTeams adminOfTeams role dateAdded dateModified superAdmin ' + select);
 
         // catch a mongoose ObjectID, which looks like a string but isn't really
         if (typeof(key) == 'object' && key.toString) {
@@ -119,7 +120,31 @@ module.exports = {
             query.where('_id').equals(key);
         }
 
-        query.populate('subscription purchases preferences')
+        query.populate('purchases preferences')
+            .populate({
+                path: 'subscription',
+                select: '-stripeCustomerId'
+            })
+            .populate({
+                path: 'adminOfTeams',
+                populate: {
+                    path: 'subscription',
+                    select: '-stripeCustomerId'
+                },
+                options: {
+                    sort: 'name'
+                }
+            })
+            .populate({
+                path: 'memberOfTeams',
+                populate: {
+                    path: 'subscription',
+                    select: '-stripeCustomerId'
+                },
+                options: {
+                    sort: 'name'
+                }
+            })
             .populate({
                 path: 'materials',
                 options: {

@@ -4,6 +4,7 @@ import { Package } from './package';
 export class Purchase {
     _id?: string;
     user?: string;
+    team?: string;
     date?: Date;
     type: string;
     materialItem?: MaterialItem;

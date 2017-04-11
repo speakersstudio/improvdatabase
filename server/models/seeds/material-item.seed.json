@@ -3,6 +3,7 @@
       "name": "Hidden Item",
       "description": "This should not show up. If you can see me, something has gone wrong. Uh oh.",
       "fileslug": "hidden",
+      "visible": false,
       "versions": [
           {
               "ver": 1

@@ -11,6 +11,7 @@ var platform_browser_1 = require("@angular/platform-browser");
 var http_1 = require("@angular/http");
 var forms_1 = require("@angular/forms");
 var common_1 = require("@angular/common");
+var animations_1 = require("@angular/platform-browser/animations");
 var webstorage_util_1 = require("../util/webstorage.util");
 var app_http_1 = require("../data/app-http");
 // main components
@@ -24,6 +25,7 @@ var shared_module_1 = require("./shared.module");
 var improvplus_module_1 = require("../app/module/improvplus.module");
 var login_screen_component_1 = require("../component/login-screen.component");
 var signup_component_1 = require("../component/signup.component");
+var form_input_directive_1 = require("../view/form-input.directive");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -35,6 +37,7 @@ AppModule = __decorate([
             platform_browser_1.BrowserModule,
             forms_1.FormsModule,
             http_1.HttpModule,
+            animations_1.BrowserAnimationsModule,
             shared_module_1.SharedModule,
             app_routing_module_1.AppRoutingModule,
             improvplus_module_1.ImprovPlusModule
@@ -43,7 +46,8 @@ AppModule = __decorate([
             login_screen_component_1.LoginScreenComponent,
             app_component_1.AppComponent,
             ms_welcome_component_1.WelcomeComponent,
-            signup_component_1.SignupComponent
+            signup_component_1.SignupComponent,
+            form_input_directive_1.FormInputDirective
         ],
         bootstrap: [app_component_1.AppComponent],
         providers: [

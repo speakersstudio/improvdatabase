@@ -48,14 +48,14 @@ var routes = [
                         path: 'materials',
                         component: materials_library_component_1.MaterialsLibraryComponent,
                         data: {
-                            action: 'materials_page_view'
+                            action: 'material_page_view'
                         }
                     },
                     {
                         path: 'materials/:packageSlug',
                         component: materials_library_component_1.MaterialsLibraryComponent,
                         data: {
-                            action: 'materials_page_view'
+                            action: 'material_page_view'
                         }
                     },
                     {

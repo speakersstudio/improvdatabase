@@ -6,6 +6,7 @@ const Package = require('./package.model')
 // used to track both a customer's purchase history as well as items in their cart
 const PurchaseSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    team: { type: mongoose.Schema.Types.ObjectId, ref: 'Team' },
     date: { type: Date, default: Date.now },
     type: String,
     materialItem: { type: mongoose.Schema.Types.ObjectId, ref: 'MaterialItem' },

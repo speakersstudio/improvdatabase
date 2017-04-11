@@ -43,14 +43,14 @@ const routes: Routes = [
                         path: 'materials',
                         component: MaterialsLibraryComponent,
                         data: {
-                            action: 'materials_page_view'
+                            action: 'material_page_view'
                         }
                     },
                     {
                         path: 'materials/:packageSlug',
                         component: MaterialsLibraryComponent,
                         data: {
-                            action: 'materials_page_view'
+                            action: 'material_page_view'
                         }
                     },
                     {

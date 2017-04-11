@@ -1,20 +1,22 @@
 import {
     Component,
-    Renderer,
-    OnInit
+    OnInit,
+    Renderer2
 } from '@angular/core';
 import 'rxjs/Subject';
 import 'rxjs/add/operator/filter';
 import { PathLocationStrategy } from '@angular/common';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
-import { Router, RoutesRecognized, NavigationStart } from '@angular/router';
+import { Router, RoutesRecognized, NavigationStart, NavigationEnd } from '@angular/router';
 
 import { User } from "../model/user";
 import { UserService } from '../service/user.service';
 import { AuthGuard } from '../service/auth-guard.service';
 
 import { DialogAnim, FadeAnim } from '../util/anim.util';
+
+
 
 @Component({
     moduleId: module.id,
@@ -64,7 +66,7 @@ export class AppComponent implements OnInit {
     dialogOnConfirm: Function;
 
     constructor(
-        private _renderer: Renderer,
+        private _renderer: Renderer2,
         private router: Router,
         private userService: UserService,
         private authGuard: AuthGuard,
@@ -79,6 +81,7 @@ export class AppComponent implements OnInit {
                 this.showBackground(false);
                 this.showWhiteBrackets(false);
                 this.closeOverlays();
+                this.hideLoader();
 
                 if (event.url.indexOf('/app') > -1) {
                     this.inApp = true;
@@ -269,26 +272,41 @@ export class AppComponent implements OnInit {
             perTick = duration > 0 ? difference / duration * 10 : difference;
 
         let easeInOutQuad = function (time, start, end, duration) {
+            let reverse = false,
+                s, e, val;
+            if (start > end) {
+                reverse = true;
+                s = end;
+                e = start;
+            } else {
+                s = start;
+                e = end;
+            }
+
             time /= duration/2;
-            if (time < 1) return end/2*time*time + start;
+            if (time < 1) val = e/2*time*time + s;
             time--;
-            return -end/2 * (time*(time-2) - 1) + start;
+            val = -e/2 * (time*(time-2) - 1) + s;
+
+            if (reverse) {
+                return end - val;
+            } else {
+                return val;
+            }
         }
 
         let startTime = 0;
 
         let scrollFunc = function(time) {
+
             if (startTime === 0) {
                 startTime = time;
             }
             if (window.scrollY === to || (time - startTime) >= duration) {
                 return;
             }
+
             window.scroll(0, easeInOutQuad((time - startTime), from, to, duration));
-            // if (window.scrollY === to) return;
-            // if (duration - 10 > 0) {
-            //     this._scrollTo(to, duration - 10);
-            // }
             requestAnimationFrame(scrollFunc);
         };
 

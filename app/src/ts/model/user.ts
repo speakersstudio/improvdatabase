@@ -1,6 +1,7 @@
 import {Purchase} from './purchase';
 import {MaterialItem} from './material-item';
 import {Subscription} from './subscription';
+import {Team} from './team';
 
 export class Preference {
     _id?: string;
@@ -11,32 +12,35 @@ export class Preference {
 }
 
 export class User {
-    _id: string;
+    _id?: string;
     email: string;
     password: string;
-    firstName: string;
-    lastName: string;
-    company: string;
-    phone: string;
-    address: string;
-    city: string;
-    state: string;
-    zip: string;
-    country: string;
-    improvExp: number;
-    facilitationExp: number;
-    trainingInterest: boolean;
-    url: string;
-    dateAdded: Date;
-    dateModified: Date;
-    locked: boolean;
-    description: string;
-    permissions: Object;
-    actions: string[];
-    superAdmin: boolean;
+    firstName?: string;
+    lastName?: string;
+    company?: string;
+    phone?: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    zip?: string;
+    country?: string;
+    improvExp?: number;
+    facilitationExp?: number;
+    trainingInterest?: boolean;
+    url?: string;
+    dateAdded?: Date;
+    dateModified?: Date;
+    locked?: boolean;
+    description?: string;
+    permissions?: Object;
+    actions?: string[];
+    superAdmin?: boolean;
 
-    purchases: Purchase[];
-    materials: MaterialItem[];
-    subscription: Subscription;
-    preferences: Preference[];
+    memberOfTeams?: Team[];
+    adminOfTeams?: Team[];
+
+    purchases?: Purchase[];
+    materials?: MaterialItem[];
+    subscription?: Subscription;
+    preferences?: Preference[];
 }

@@ -49,6 +49,7 @@ var AppComponent = (function () {
                 _this.showBackground(false);
                 _this.showWhiteBrackets(false);
                 _this.closeOverlays();
+                _this.hideLoader();
                 if (event.url.indexOf('/app') > -1) {
                     _this.inApp = true;
                 }
@@ -211,11 +212,27 @@ var AppComponent = (function () {
         }
         var from = window.scrollY, difference = to - from, perTick = duration > 0 ? difference / duration * 10 : difference;
         var easeInOutQuad = function (time, start, end, duration) {
+            var reverse = false, s, e, val;
+            if (start > end) {
+                reverse = true;
+                s = end;
+                e = start;
+            }
+            else {
+                s = start;
+                e = end;
+            }
             time /= duration / 2;
             if (time < 1)
-                return end / 2 * time * time + start;
+                val = e / 2 * time * time + s;
             time--;
-            return -end / 2 * (time * (time - 2) - 1) + start;
+            val = -e / 2 * (time * (time - 2) - 1) + s;
+            if (reverse) {
+                return end - val;
+            }
+            else {
+                return val;
+            }
         };
         var startTime = 0;
         var scrollFunc = function (time) {
@@ -226,10 +243,6 @@ var AppComponent = (function () {
                 return;
             }
             window.scroll(0, easeInOutQuad((time - startTime), from, to, duration));
-            // if (window.scrollY === to) return;
-            // if (duration - 10 > 0) {
-            //     this._scrollTo(to, duration - 10);
-            // }
             requestAnimationFrame(scrollFunc);
         };
         requestAnimationFrame(scrollFunc);
@@ -246,7 +259,7 @@ AppComponent = __decorate([
             anim_util_1.FadeAnim.fade
         ]
     }),
-    __metadata("design:paramtypes", [core_1.Renderer,
+    __metadata("design:paramtypes", [core_1.Renderer2,
         router_1.Router,
         user_service_1.UserService,
         auth_guard_service_1.AuthGuard,

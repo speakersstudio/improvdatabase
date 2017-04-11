@@ -21,7 +21,7 @@ var LibraryService = (function () {
         this.materialsUrl = '/api/material/';
         this.ownedMaterialsUrl = '/api/user/:_id/materials';
     }
-    LibraryService.prototype.getPackages = function () {
+    LibraryService.prototype._getPackages = function () {
         var _this = this;
         if (!this._packagePromise) {
             this._packagePromise = this.http.get(this.packageUrl)
@@ -33,6 +33,26 @@ var LibraryService = (function () {
                 .catch(this.handleError);
         }
         return this._packagePromise;
+    };
+    LibraryService.prototype.getPackages = function (type, team) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this._getPackages().then(function (allPackages) {
+                if (type != undefined || team != undefined) {
+                    var selectedPackages_1 = [];
+                    allPackages.forEach(function (p) {
+                        if ((team == undefined || p.team == team) &&
+                            (type == undefined || p.type == type)) {
+                            selectedPackages_1.push(p);
+                        }
+                    });
+                    resolve(selectedPackages_1);
+                }
+                else {
+                    resolve(allPackages);
+                }
+            });
+        });
     };
     LibraryService.prototype.getOwnedMaterials = function () {
         var user = this.userService.getLoggedInUser();

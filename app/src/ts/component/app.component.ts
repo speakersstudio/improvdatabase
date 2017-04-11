@@ -77,17 +77,15 @@ export class AppComponent implements OnInit {
         this.hideLoader();
 
         this.router.events.filter(event => event instanceof NavigationStart).subscribe(event => {
-            if (event instanceof NavigationStart) {
-                this.showBackground(false);
-                this.showWhiteBrackets(false);
-                this.closeOverlays();
-                this.hideLoader();
+            this.showBackground(false);
+            this.showWhiteBrackets(false);
+            this.closeOverlays();
+            this.hideLoader();
 
-                if (event.url.indexOf('/app') > -1) {
-                    this.inApp = true;
-                } else {
-                    this.inApp = false;
-                }
+            if ((<NavigationStart> event).url.indexOf('/app') > -1) {
+                this.inApp = true;
+            } else {
+                this.inApp = false;
             }
         });
 
@@ -106,7 +104,9 @@ export class AppComponent implements OnInit {
                 } else {
                     path.push('app/dashboard');
                 }
-                this.router.navigate(path, { replaceUrl: true });
+                setTimeout(() => {
+                    this.router.navigate(path, { replaceUrl: true });
+                }, 0);
             }
             if (!user) {
                 // we just logged out

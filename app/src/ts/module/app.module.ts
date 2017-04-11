@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PathLocationStrategy } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { WebStorageService, WebStorageSubscriber } from "../util/webstorage.util";
+import { WebStorageModule, LocalStorageService } from "../util/webstorage.util";
 
 import { AppHttp } from '../data/app-http';
 
@@ -33,6 +33,7 @@ import { FormInputDirective } from '../view/form-input.directive';
         FormsModule,
         HttpModule,
         BrowserAnimationsModule,
+        WebStorageModule,
         SharedModule,
         AppRoutingModule,
         ImprovPlusModule
@@ -47,7 +48,7 @@ import { FormInputDirective } from '../view/form-input.directive';
     bootstrap: [ AppComponent ],
     providers: [
         PathLocationStrategy,
-        WebStorageService,
+        LocalStorageService,
         AppHttp
     ]
 })

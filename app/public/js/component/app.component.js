@@ -45,17 +45,15 @@ var AppComponent = (function () {
         var _this = this;
         this.hideLoader();
         this.router.events.filter(function (event) { return event instanceof router_1.NavigationStart; }).subscribe(function (event) {
-            if (event instanceof router_1.NavigationStart) {
-                _this.showBackground(false);
-                _this.showWhiteBrackets(false);
-                _this.closeOverlays();
-                _this.hideLoader();
-                if (event.url.indexOf('/app') > -1) {
-                    _this.inApp = true;
-                }
-                else {
-                    _this.inApp = false;
-                }
+            _this.showBackground(false);
+            _this.showWhiteBrackets(false);
+            _this.closeOverlays();
+            _this.hideLoader();
+            if (event.url.indexOf('/app') > -1) {
+                _this.inApp = true;
+            }
+            else {
+                _this.inApp = false;
             }
         });
         this.setUser(this.userService.getLoggedInUser());
@@ -72,8 +70,9 @@ var AppComponent = (function () {
                 else {
                     path_1.push('app/dashboard');
                 }
-                console.log(_this.router);
-                _this.router.navigate(path_1, { replaceUrl: true });
+                setTimeout(function () {
+                    _this.router.navigate(path_1, { replaceUrl: true });
+                }, 0);
             }
             if (!user) {
                 // we just logged out
@@ -83,7 +82,6 @@ var AppComponent = (function () {
             _this.setUser(user);
         });
         if (this.userService.getLoggedInUser()) {
-            console.log('Refreshing user');
             // TODO: where is the best place for this?
             this.userService.refreshToken();
         }

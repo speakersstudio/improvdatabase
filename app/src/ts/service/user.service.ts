@@ -10,6 +10,12 @@ import { User } from "../model/user";
 
 import { LocalStorage } from "../util/webstorage.util";
 
+class LoginResponse {
+    user: User;
+    token: string;
+    expires: number;
+}
+
 @Injectable()
 export class UserService {
 
@@ -62,13 +68,11 @@ export class UserService {
     }
 
     _handleLoginRequest(response): User {
-        let responseData = response.json();
+        let responseData = response.json() as LoginResponse;
 
-        this.http.setToken(responseData['token'], responseData['expires']);
+        this.http.setToken(responseData.token, responseData.expires);
 
-        // this.token = responseData['token'];
-        // this.tokenExpires = responseData['expires'];
-        this.loggedInUser = responseData['user'];
+        this.loggedInUser = responseData.user;
 
         // don't save the password
         this.loggedInUser.password = "";

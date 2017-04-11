@@ -97,6 +97,7 @@ export class AppComponent implements OnInit {
             if (!this.user) {
                 // we just logged in
                 let path:string[] = [];
+
                 if (this.authGuard.redirect) {
                     path.push('app');
                     this.authGuard.redirect.forEach(segment => {
@@ -116,7 +117,6 @@ export class AppComponent implements OnInit {
         });
 
         if (this.userService.getLoggedInUser()) {
-            console.log('Refreshing user');
             // TODO: where is the best place for this?
             this.userService.refreshToken();
         }
@@ -242,6 +242,10 @@ export class AppComponent implements OnInit {
 
     handleLogin(user: User): void {
         this.closeOverlays();
+
+        if (this.inApp || this.router.url == '/login') {
+            this.router.navigate(['welcome']);
+        }
     }
 
     logout(): void {

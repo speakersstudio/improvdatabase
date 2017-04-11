@@ -15,6 +15,11 @@ require("rxjs/add/operator/toPromise");
 var app_http_1 = require("../data/app-http");
 var user_1 = require("../model/user");
 var webstorage_util_1 = require("../util/webstorage.util");
+var LoginResponse = (function () {
+    function LoginResponse() {
+    }
+    return LoginResponse;
+}());
 var UserService = (function () {
     function UserService(http) {
         this.http = http;
@@ -56,10 +61,8 @@ var UserService = (function () {
     };
     UserService.prototype._handleLoginRequest = function (response) {
         var responseData = response.json();
-        this.http.setToken(responseData['token'], responseData['expires']);
-        // this.token = responseData['token'];
-        // this.tokenExpires = responseData['expires'];
-        this.loggedInUser = responseData['user'];
+        this.http.setToken(responseData.token, responseData.expires);
+        this.loggedInUser = responseData.user;
         // don't save the password
         this.loggedInUser.password = "";
         this.announceLoginState();

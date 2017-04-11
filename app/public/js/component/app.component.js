@@ -72,6 +72,7 @@ var AppComponent = (function () {
                 else {
                     path_1.push('app/dashboard');
                 }
+                console.log(_this.router);
                 _this.router.navigate(path_1, { replaceUrl: true });
             }
             if (!user) {
@@ -190,6 +191,9 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.handleLogin = function (user) {
         this.closeOverlays();
+        if (this.inApp || this.router.url == '/login') {
+            this.router.navigate(['welcome']);
+        }
     };
     AppComponent.prototype.logout = function () {
         this.showLoader();

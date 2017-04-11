@@ -95,6 +95,14 @@
         }
     }
 
+    .taglist {
+        margin: 0;
+
+        li {
+            margin: 0;
+        }
+    }
+
     .message {
         @include abs(null, 0, $small, 0);
         text-align: center;

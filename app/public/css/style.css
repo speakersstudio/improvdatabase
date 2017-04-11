@@ -1252,6 +1252,10 @@ nav {
       margin-bottom: 8px; }
       .card ul li:last-child {
         margin: 0; }
+  .card .taglist {
+    margin: 0; }
+    .card .taglist li {
+      margin: 0; }
   .card .message {
     position: absolute;
     right: 0;

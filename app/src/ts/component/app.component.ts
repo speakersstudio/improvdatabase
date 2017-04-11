@@ -81,6 +81,7 @@ export class AppComponent implements OnInit {
                 this.showBackground(false);
                 this.showWhiteBrackets(false);
                 this.closeOverlays();
+                this.hideLoader();
 
                 if (event.url.indexOf('/app') > -1) {
                     this.inApp = true;

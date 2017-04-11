@@ -281,6 +281,15 @@ sup {
 .text-red {
   color: #d32f2f; }
 
+.text-blue {
+  color: #64b5f6; }
+
+.text-primary {
+  color: #d32f2f; }
+
+.text-shadow-2 {
+  text-shadow: 0px 2px 1px rgba(0, 0, 0, 0.2); }
+
 iplus {
   display: inline-flex;
   cursor: default;
@@ -1867,6 +1876,8 @@ landing-hero {
     color: #d32f2f; }
     landing-hero .fa-chevron-down.hide {
       opacity: 0; }
+  landing-hero .blackbox {
+    width: 100%; }
 
 .blackbox {
   background: rgba(0, 0, 0, 0.3);

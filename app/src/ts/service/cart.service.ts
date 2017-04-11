@@ -15,6 +15,7 @@ import { UserService } from './user.service';
 @Injectable()
 export class CartService {
     private chargeUrl = "/charge";
+    private signupUrl = "/signup";
 
     private cart: Purchase[] = [];
     private user: User;
@@ -51,6 +52,21 @@ export class CartService {
             stripeToken: token,
             cart: this.cart,
             user: this.user
+        }).toPromise()
+            .then(result => {
+                return result.json() as User;
+            })
+    }
+
+    signup(token: string, email: string, password: string, pack: Package, userName: string, teamName: string) {
+        this.addPackage(pack);
+        return this.http.post(this.signupUrl, {
+            stripeToken: token,
+            cart: this.cart,
+            email: email,
+            password: password,
+            userName: userName,
+            teamName: teamName
         }).toPromise()
             .then(result => {
                 return result.json() as User;

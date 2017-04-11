@@ -47,7 +47,7 @@ SubscriptionSchema.methods.createChildSubscription = function(user) {
             return User.findOne({}).where('_id').equals(userId).exec()
                 .then(u => {
                     u.subscription = sub;
-                    return user.save();
+                    return u.save();
                 });
         }
     }).then(() => {

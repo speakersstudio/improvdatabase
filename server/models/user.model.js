@@ -1,6 +1,5 @@
 const mongoose = require('mongoose'),
 
-    Subscription = require('./subscription.model'),
     Preference   = require('./preference.model');
 
 const UserSchema = new mongoose.Schema({
@@ -45,7 +44,7 @@ UserSchema.methods.addSubscription = function(role, stripeCustomerId, expires) {
     if (typeof(expires) == 'object' && expires.getTime) {
         expiration = expires.getTime();
     }
-    return Subscription.create({
+    return mongoose.model('Subscription').create({
         user: this._id,
         role: role,
         expiration: expiration,

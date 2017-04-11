@@ -257,7 +257,7 @@ export class SignupComponent implements OnInit {
             } else {
                 this.cartService.setUser(user);
 
-                this.cartService.charge(result.token)
+                this.cartService.signup(result.token, this.email, this.password, this.selectedPackage, this.userName, this.teamName)
                     .catch(response => {
                         this._app.hideLoader();
                         this.isPosting = false;
@@ -269,113 +269,16 @@ export class SignupComponent implements OnInit {
                         }
                     })
                     .then(u => {
-                        this._app.hideLoader();
-                        if (u) {
+                        if (u && u.email) {
+                            this._app.scrollTo(0,1);
                             return this.userService.login(user.email, user.password);
+                        } else {
+                            // uh oh?
+                        this._app.hideLoader();
                         }
                     });
             }
         });
     }
-
-
-
-    // step1(): void {
-    //     this.step = 1;
-    //     this.cartService.reset();
-    // }
-
-    // selectPackage(pack: Package): void {
-    //     this.selectedPackage = pack;
-    //     this.cartService.addPackage(pack);
-    //     this.showUser();
-    // }
-
-    // showUser(): void {
-    //     this.step = 2;
-    // }
-
-    // saveUser(user: User): void {
-
-    //     if (!user || !user.email) {
-    //         return;
-    //     }
-
-    //     this.user = user;
-    //     this.cartService.setUser(this.user);
-
-    //     this.step = 3;
-
-    //     // let button = document.querySelector('.button.raised'),
-    //     //     color = document.defaultView.getComputedStyle(button)['background-color'];
-
-    //     // setup the stripe credit card input
-    //     setTimeout(() => {
-    //         this.stripe = Stripe(Config.STRIPE_KEY);
-    //         let elements = this.stripe.elements();
-    //         this.card = elements.create('card', {
-    //             value: {postalCode: this.user.zip},
-    //             style: {
-    //                 base: {
-    //                     color: '#32325d',
-    //                     lineHeight: '24px',
-    //                     fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-    //                     fontSmoothing: 'antialiased',
-    //                     fontSize: '16px',
-
-    //                     '::placeholder': {
-    //                         color: 'rgba(96,96,96,0.5)'
-    //                     }
-    //                 },
-    //                 invalid: {
-    //                     color: '#fa755a',
-    //                     iconColor: '#fa755a'
-    //                 }
-    //             }
-    //         });
-    //         this.card.mount('#card-element');
-
-    //         this.card.addEventListener('change', e => {
-                
-    //             this.cardComplete = e.complete;
-
-    //             if (e.error) {
-    //                 this.cardError = e.error.message;
-    //             } else {
-    //                 this.cardError = '';
-    //             }
-    //         });
-
-    //     }, 100)
-
-    // }
-
-    // submitPayment(): void {
-    //     if (this.cardError || !this.cardComplete) {
-    //         return;
-    //     }
-
-    //     this.isPosting = true;
-    //     this.stripe.createToken(this.card).then(result => {
-    //         if (result.error) {
-    //             this.cardError = result.error.message;
-    //         } else {
-    //             this.cartService.charge(result.token)
-    //                 .catch(response => {
-    //                     this.isPosting = false;
-    //                     let msg = response.json();
-    //                     if (msg.error && msg.error == 'email already exists') {
-    //                         this.showUser();
-    //                     }
-    //                 })
-    //                 .then(user => {
-    //                     if (user) {
-    //                         return this.userService.login(this.user.email, this.user.password);
-    //                     }
-    //                 });
-    //         }
-    //     });
-
-    // }
 
 }

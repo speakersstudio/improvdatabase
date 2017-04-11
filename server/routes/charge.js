@@ -26,6 +26,7 @@ module.exports = {
             cart = req.body.cart,
             email = req.body.email,
             password = req.body.password,
+            userName = req.body.userName,
             teamName = req.body.teamName,
 
             /**
@@ -44,7 +45,7 @@ module.exports = {
 
         // make sure stripe token is the actual string
         if (typeof tokenVal == 'object' && tokenVal.id) {
-            token = token.id;
+            token = tokenVal.id;
         }
 
         if (!email) {
@@ -66,10 +67,12 @@ module.exports = {
         // step 1: verify that the email address is available for a user account
         User.findOne({}).where('email').equals(email).exec()
             .then(user => {
-                res.status(401).json({
-                    error: 'email already exists'
-                });
-                return Promise.reject(false);
+                if (user) {
+                    res.status(401).json({
+                        error: 'email already exists'
+                    });
+                    return Promise.reject('email already exists');
+                }
             })
             .then(() => {
                 // step 2: charge the credit card
@@ -109,28 +112,41 @@ module.exports = {
                 // step 3: are we creating a team or just a user?
                 if (teamName) {
                     // step 4: create a new team
-                    return teamController.createTeam(name);
+                    return teamController.createTeam(teamName);
                 } else {
                     return Promise.resolve(false);
                 }
             })
             .then(team => {
+                let firstName = '',
+                    lastName = '';
+                if (userName) {
+                    firstName = userName.substr(0, (userName+' ').indexOf(' ')).trim();
+                    lastName = userName.substr((userName+' ').indexOf(' '), userName.length).trim();
+                }
+
                 // step 5: create a new user
                 let userData = {
                     email: email,
-                    password: password
+                    password: password,
+                    firstName: firstName,
+                    lastName: lastName
                 };
                 return userController.createUser(userData)
                     .then(user => {
                         if (team) {
                             user.adminOfTeams = util.addToObjectIdArray(user.adminOfTeams, team);
                             return user.save();
+                        } else {
+                            return Promise.resolve(user);
                         }
                     })
                     .then(user => {
                         if (team) {
                             team.admins = util.addToObjectIdArray(team.admins, user);
                             return team.save();
+                        } else {
+                            return Promise.resolve(user);
                         }
                     });
             })
@@ -154,6 +170,8 @@ module.exports = {
                         .then(sub => {
                             return userController.findUser(userId);
                         });
+                } else {
+                    return Promise.resolve(owner);
                 }
             })
             .then(user => {

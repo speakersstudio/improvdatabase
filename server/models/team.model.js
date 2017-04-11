@@ -2,7 +2,6 @@ const mongoose = require('mongoose'),
 
     util = require('../util'),
 
-    Subscription = require('./subscription.model'),
     User = require('./user.model');
 
 const TeamSchema = new mongoose.Schema({
@@ -40,7 +39,7 @@ TeamSchema.methods.addSubscription = function(role, stripeCustomerId, subCount, 
     if (typeof(expires) == 'object' && expires.getTime) {
         expiration = expires.getTime();
     }
-    return Subscription.create({
+    return mongoose.model('Subscription').create({
         team: this._id,
         role: role,
         expiration: expiration,

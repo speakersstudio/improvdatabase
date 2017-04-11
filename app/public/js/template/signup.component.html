@@ -100,6 +100,9 @@
 
         </div>
 
+        <i class="fa fa-chevron-down huge text-shadow-2"
+            [class.text-red]="userType == 'facilitator'" 
+            [class.text-blue]="userType == 'improviser'" *ngIf="userType" [@dialogSlow]></i>
     </div>
 
     <!-- step 2: yourself or your team -->
@@ -178,6 +181,10 @@
 
         </div>
 
+        <i class="fa fa-chevron-down huge text-shadow-2"
+            [class.text-red]="userType == 'facilitator'" 
+            [class.text-blue]="userType == 'improviser'" *ngIf="teamOption" [@dialogSlow]></i>
+
     </div>
 
     <!-- step 3: choose your package -->
@@ -239,10 +246,15 @@
 
         </div>
 
+        <i class="fa fa-chevron-down huge text-shadow-2"
+            [class.text-red]="userType == 'facilitator'" 
+            [class.text-blue]="userType == 'improviser'"
+            *ngIf="isFormValid()" [@dialogSlow]></i>
+
     </div>
 
     <!-- step 4: GO! -->
-    <div class="block center" *ngIf="selectedPackage && isFormValid()" [@dialogSlow]>
+    <div class="block center" *ngIf="isFormValid()" [@dialogSlow]>
 
         <div class="card">
             4. Let's do this.

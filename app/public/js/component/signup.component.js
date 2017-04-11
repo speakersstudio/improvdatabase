@@ -188,7 +188,7 @@ var SignupComponent = (function () {
             }
             else {
                 _this.cartService.setUser(user);
-                _this.cartService.charge(result.token)
+                _this.cartService.signup(result.token, _this.email, _this.password, _this.selectedPackage, _this.userName, _this.teamName)
                     .catch(function (response) {
                     _this._app.hideLoader();
                     _this.isPosting = false;
@@ -200,9 +200,13 @@ var SignupComponent = (function () {
                     }
                 })
                     .then(function (u) {
-                    _this._app.hideLoader();
-                    if (u) {
+                    if (u && u.email) {
+                        _this._app.scrollTo(0, 1);
                         return _this.userService.login(user.email, user.password);
+                    }
+                    else {
+                        // uh oh?
+                        _this._app.hideLoader();
                     }
                 });
             }

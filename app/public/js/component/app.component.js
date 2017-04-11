@@ -49,6 +49,7 @@ var AppComponent = (function () {
                 _this.showBackground(false);
                 _this.showWhiteBrackets(false);
                 _this.closeOverlays();
+                _this.hideLoader();
                 if (event.url.indexOf('/app') > -1) {
                     _this.inApp = true;
                 }

@@ -2,6 +2,7 @@ export class MaterialItemVersion {
     "_id": string;
     "ver": number;
     "description": string;
+    "extension": string;
     "dateAdded": Date;
 }
 
@@ -10,8 +11,6 @@ export class MaterialItem {
     "name": string;
     "description": string;
     "price": number;
-    "fileslug": string;
-    "extension": string;
     "versions": MaterialItemVersion[];
     "visible": boolean;
     "tags": string[];

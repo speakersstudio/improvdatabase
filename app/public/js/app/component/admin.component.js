@@ -66,6 +66,12 @@ var AdminComponent = (function () {
             _this.selectedMaterial.versions = m.versions;
         });
     };
+    AdminComponent.prototype.deleteVersion = function (version) {
+        var _this = this;
+        this.libraryService.deleteVersion(this.selectedMaterial._id, version).then(function (m) {
+            _this.selectedMaterial.versions = m.versions;
+        });
+    };
     return AdminComponent;
 }());
 AdminComponent = __decorate([

@@ -54,28 +54,36 @@ module.exports = {
         return array;
     },
 
+    indexOfObjectId: (array, id) => {
+        let indexInArray = -1;
+
+        array.forEach((item, i) => {
+            let itemId = module.exports.getObjectIdAsString(item);
+            if (itemId == id) {
+                indexInArray = i;
+                return false;
+            }
+        });
+
+        return indexInArray;
+    },
+
     /**
      * Removes an item from an array of object ids
      * There might be an easier way to do this with mongoose?
      */
     removeFromObjectIdArray: (array, itemToRemove) => {
-        let indexInArray = -1,
-            itemToRemoveId = module.exports.getObjectIdAsString(itemToRemove);
+        let itemToRemoveId = module.exports.getObjectIdAsString(itemToRemove);
 
         if (!array || !array.length) {
             // it isn't even array, so it sure doesn't contain the thing
             return [];
         }
 
-        array.forEach((item, i) => {
-            let itemId = module.exports.getObjectIdAsString(item);
-            if (itemId == itemToRemoveId) {
-                indexInArray = i;
-                return false;
-            }
-        });
+        let indexInArray = module.exports.indexOfObjectId(array, itemToRemoveId);
+        
         if (indexInArray > -1) {
-            array = array.splice(indexInArray, 1);
+            array.splice(indexInArray, 1);
         }
         return array;
     }

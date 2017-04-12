@@ -90,4 +90,10 @@ export class AdminComponent implements OnInit {
         });
     }
 
+    deleteVersion(version: MaterialItemVersion): void {
+        this.libraryService.deleteVersion(this.selectedMaterial._id, version).then(m => {
+            this.selectedMaterial.versions = m.versions;
+        })
+    }
+
 }

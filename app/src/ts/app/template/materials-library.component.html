@@ -27,7 +27,7 @@
                     (click)="selectMaterial(material)">
 
                     <div class="top">
-                        <i *ngIf="material.versions[0].extension == 'pdf'" class="fa fa-file-pdf-o" title="PDF"></i>
+                        <i *ngIf="material.versions[0] && material.versions[0].extension == 'pdf'" class="fa fa-file-pdf-o" title="PDF"></i>
                         <h3>{{material.name}}</h3>
                     </div>
                     <div class="body">

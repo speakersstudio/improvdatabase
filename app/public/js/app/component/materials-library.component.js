@@ -36,6 +36,7 @@ var MaterialsLibraryComponent = (function () {
         this.libraryService.getOwnedMaterials()
             .then(function (materials) {
             _this._app.hideLoader();
+            console.log(materials);
             _this.ownedMaterials = materials;
         });
     };

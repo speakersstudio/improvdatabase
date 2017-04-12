@@ -52,6 +52,7 @@ export class MaterialsLibraryComponent implements OnInit {
         this.libraryService.getOwnedMaterials()
             .then(materials => {
                 this._app.hideLoader();
+                console.log(materials);
                 this.ownedMaterials = materials;
             });
     }

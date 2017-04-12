@@ -16,6 +16,8 @@ const auth = require('../../auth');
 
 const util = require('../../util');
 
+const materialFolderName = '../../../materials';
+
 module.exports = {
 
     getAll: (req, res) => {
@@ -120,7 +122,11 @@ module.exports = {
 
             busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
                 fileExtension = filename.substr(filename.lastIndexOf('.'), filename.length);
-                tempLocation = path.join(__dirname, '../../../materials', materialId + fileExtension);
+                tempLocation = path.join(__dirname, materialFolderName, materialId + fileExtension);
+
+                if (!fs.existsSync(path.join(__dirname, materialFolderName))) {
+                    fs.mkdirSync(path.join(__dirname, materialFolderName));
+                }
 
                 file.pipe(fs.createWriteStream(tempLocation));
             });
@@ -170,7 +176,7 @@ module.exports = {
                 .then(item => {
                     let version = item.versions[util.indexOfObjectId(item.versions, versionId)];
 
-                    fs.unlink(path.join(__dirname, '../../../materials', materialId + '.' + version.ver + '.' + version.extension));
+                    fs.unlink(path.join(__dirname, materialFolderName, materialId + '.' + version.ver + '.' + version.extension));
 
                     item.versions = util.removeFromObjectIdArray(item.versions, versionId);
                     return item.save();

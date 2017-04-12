@@ -52,7 +52,6 @@ export class MaterialsLibraryComponent implements OnInit {
         this.libraryService.getOwnedMaterials()
             .then(materials => {
                 this._app.hideLoader();
-                console.log(materials);
                 this.ownedMaterials = materials;
             });
     }
@@ -68,7 +67,11 @@ export class MaterialsLibraryComponent implements OnInit {
     versionTag(m: MaterialItem): string {
         let v = this.libraryService.getLatestVersionForMaterialItem(m);
         // TODO: show the date this was released
-        return "version " + v.ver;
+        if (v) {
+            return "version " + v.ver;
+        } else {
+            return "no version published";
+        }
     }
 
 }

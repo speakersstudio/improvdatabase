@@ -36,7 +36,6 @@ var MaterialsLibraryComponent = (function () {
         this.libraryService.getOwnedMaterials()
             .then(function (materials) {
             _this._app.hideLoader();
-            console.log(materials);
             _this.ownedMaterials = materials;
         });
     };
@@ -48,7 +47,12 @@ var MaterialsLibraryComponent = (function () {
     MaterialsLibraryComponent.prototype.versionTag = function (m) {
         var v = this.libraryService.getLatestVersionForMaterialItem(m);
         // TODO: show the date this was released
-        return "version " + v.ver;
+        if (v) {
+            return "version " + v.ver;
+        }
+        else {
+            return "no version published";
+        }
     };
     return MaterialsLibraryComponent;
 }());

@@ -143,6 +143,17 @@ export class LibraryService {
             });
     }
 
+    deleteVersion(materialItemId: string, version: MaterialItemVersion): Promise<MaterialItem> {
+        if (!this.userService.isSuperAdmin()) {
+            return;
+        }
+
+        return this.http.delete(this.materialsUrl + materialItemId + '/version/' + version._id).toPromise()
+            .then(response => {
+                return response.json() as MaterialItem;
+            });
+    }
+
     private handleError(error: any): Promise<any> {
         console.error('An error has occurred', error);
         return Promise.reject(error.message || error);

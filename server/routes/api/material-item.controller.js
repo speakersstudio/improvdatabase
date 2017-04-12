@@ -109,23 +109,77 @@ module.exports = {
     },
 
     version: (req, res) => {
-        let busboy = new Busboy({ headers: req.headers }),
-            file;
-        busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-            file.on('data', function(data) {
-                file += data;
+        if (req.method == 'POST') {
+            let busboy = new Busboy({ headers: req.headers }),
+                fileData,
+                ver,
+                description,
+                tempLocation,
+                fileExtension,
+                materialId = req.params.id;
+
+            busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
+                fileExtension = filename.substr(filename.lastIndexOf('.'), filename.length);
+                tempLocation = path.join(__dirname, '../../../materials', materialId + fileExtension);
+
+                file.pipe(fs.createWriteStream(tempLocation));
             });
-            file.on('end', function() {
-                console.log('file', file);
-            })
-        });
-        busboy.on('field', (fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) => {
-            console.log('field', fieldname, val);
-        });
-        busboy.on('finish', () => {
-            console.log('done parsing form');
-            res.json({});
-        });
+            busboy.on('field', (fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) => {
+                if (fieldname == 'ver' && val != 'undefined') {
+                    ver = val;
+                } else if (fieldname == 'description' && val != 'undefined') {
+                    description = val;
+                }
+            });
+            busboy.on('finish', () => {
+                MaterialItem.findOne({}).where('_id').equals(materialId).exec()
+                    .then(item => {
+
+                        if (!ver || ver == 'undefined') {
+                            ver = 0;
+                            item.versions.forEach(v => {
+                                if (v.ver >= ver) {
+                                    ver = v.ver;
+                                }
+                            });
+                            ver++;
+                        }
+
+                        fs.rename(tempLocation, tempLocation.replace(fileExtension, '.' + ver + fileExtension));
+
+                        item.versions.push({
+                            ver: ver,
+                            extension: fileExtension.replace('.', ''),
+                            description: description
+                        });
+
+                        return item.save();
+                    })
+                    .then(item => {
+                        res.json(item);
+                    })
+            });
+            req.pipe(busboy);
+
+        } else if (req.method == 'DELETE') {
+
+            let materialId = req.params.id,
+                versionId = req.params.toId;
+
+            MaterialItem.findOne({}).where('_id').equals(materialId).exec()
+                .then(item => {
+                    let version = item.versions[util.indexOfObjectId(item.versions, versionId)];
+
+                    fs.unlink(path.join(__dirname, '../../../materials', materialId + '.' + version.ver + '.' + version.extension));
+
+                    item.versions = util.removeFromObjectIdArray(item.versions, versionId);
+                    return item.save();
+                })
+                .then(item => {
+                    res.json(item);
+                });
+
+        }
     },
 
     download: (req, res, next) => {
@@ -148,6 +202,15 @@ module.exports = {
         } else {
             auth.unauthorized(req,res);
         }
+    },
+
+    backup: (req, res) => {
+        return MeterialItem.find({})
+            .select('-versions') // we don't want to back up the actual files
+            .exec()
+            .then(i => {
+                res.json(i);
+            })
     }
 
 }

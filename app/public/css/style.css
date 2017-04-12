@@ -1255,7 +1255,7 @@ nav {
   .card .taglist {
     margin: 0; }
     .card .taglist li {
-      margin: 0; }
+      margin: 2px; }
   .card .message {
     position: absolute;
     right: 0;

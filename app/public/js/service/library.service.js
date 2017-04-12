@@ -127,6 +127,15 @@ var LibraryService = (function () {
             return response.json();
         });
     };
+    LibraryService.prototype.deleteVersion = function (materialItemId, version) {
+        if (!this.userService.isSuperAdmin()) {
+            return;
+        }
+        return this.http.delete(this.materialsUrl + materialItemId + '/version/' + version._id).toPromise()
+            .then(function (response) {
+            return response.json();
+        });
+    };
     LibraryService.prototype.handleError = function (error) {
         console.error('An error has occurred', error);
         return Promise.reject(error.message || error);

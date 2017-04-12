@@ -5,11 +5,10 @@ const MaterialItemSchema = new mongoose.Schema({
     description: String,
     price: Number,
     color: String,
-    fileslug: String,
-    extension: String,
     tags: [String],
     versions: [{
         ver: Number,
+        extension: String,
         dateAdded: { type: Date, default: Date.now },
         description: String
     }],
@@ -20,6 +19,7 @@ MaterialItemSchema.query.byName = function(name) {
     return this.find({ name: new RegExp(name, 'i') });
 };
 
+// returns either the version specified, or the latest version
 MaterialItemSchema.methods.version = function(ver) {
     let versions = this.versions,
         version;
@@ -40,11 +40,12 @@ MaterialItemSchema.methods.version = function(ver) {
 
 MaterialItemSchema.methods.filename = function(ver) {
     let version = this.version(ver);
-    return this.fileslug + '.' + version.ver + '.' + this.extension;
+    return this._id.toString() + '.' + version.ver + '.' + version.extension;
 };
 
 MaterialItemSchema.methods.dlfilename = function() {
-    return this.name + '.' + this.extension;
+    let version = this.version();
+    return this.name + '.' + version.extension;
 };
 
 const MaterialItem = mongoose.model('MaterialItem', MaterialItemSchema);

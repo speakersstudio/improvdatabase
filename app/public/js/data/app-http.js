@@ -67,10 +67,8 @@ var AppHttp = (function () {
         }
         if (options.headers == null) {
             options.headers = new http_1.Headers();
-            if (contentType) {
-                options.headers.append('Content-Type', contentType);
-            }
-            else {
+            if (contentType !== 'multipart/form-data') {
+                // angular will set up the multipart/form-data headers properly on its own
                 options.headers.append('Content-Type', 'application/json');
             }
         }

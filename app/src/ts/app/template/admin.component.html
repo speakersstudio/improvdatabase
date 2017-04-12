@@ -22,7 +22,7 @@
                     (click)="selectMaterial(material)">
 
                     <div class="top">
-                        <i *ngIf="material.extension == 'pdf'" class="fa fa-file-pdf-o" title="PDF"></i>
+                        <i *ngIf="material.versions[0] && material.versions[0].extension == 'pdf'" class="fa fa-file-pdf-o" title="PDF"></i>
                         <h3>{{material.name}}</h3>
                     </div>
                     <div class="body">
@@ -84,18 +84,6 @@
 
             <div class="columns">
                 <label>
-                    Fileslug (The filename on the server, it can be anything)
-                    <input name="fileslug" [(ngModel)]="selectedMaterial.fileslug" type="text" placeholder="Fileslug" />
-                </label>
-
-                <label>
-                    Extension (i.e. pdf)
-                    <input name="extension" [(ngModel)]="selectedMaterial.extension" type="text" placeholder="Extension" />
-                </label>
-            </div>
-
-            <div class="columns">
-                <label>
                     Tags (comma-separated)
                     <input name="tags" [(ngModel)]="selectedMaterial.tags" type="text" placeholder="Tags" />
                 </label>
@@ -116,12 +104,18 @@
 
                 <h5>Versions</h5>
 
+                <div class="columns data-row centered" *ngIf="!selectedMaterial.versions.length">
+                    <span><em>None!</em></span>
+                </div>
+
                 <div class="columns data-row centered" *ngFor="let version of selectedMaterial.versions">
                     <span class="fit">{{version.ver}}</span>
                     
                     <span>{{version.description || 'No description'}}</span>
 
                     <span class="fit nowrap">{{simpleDate(version.dateAdded)}}</span>
+
+                    <span class="fit"><i class="fa fa-close clickable" (click)="deleteVersion(version)"></i></span>
                 </div>
 
                 <div class="section columns centered">

@@ -2,129 +2,67 @@
   {
       "name": "Hidden Item",
       "description": "This should not show up. If you can see me, something has gone wrong. Uh oh.",
-      "fileslug": "hidden",
-      "visible": false,
-      "versions": [
-          {
-              "ver": 1
-          }
-      ]
+      "visible": false
   },
   {
     "_id": "58d3e622b385ee0238d3d8b2",
     "name": "Facilitation Tips",
     "description": "Use these universal tips to make the most of your facilitation.",
-    "fileslug": "FacilitationTips",
-    "extension": "pdf",
     "price": 100,
-    "visible": true,
-    "versions": [
-      {
-        "ver": 1,
-        "dateAdded": "2017-03-23T15:13:38.665Z"
-      }
-    ]
+    "visible": true
   },
   {
     "_id": "58d3e622b385ee0238d3d8b4",
     "name": "Handshake Academy",
     "description": "Learn how to master (and teach others to master) the handshake and get the most out of their networking opportunities.",
-    "fileslug": "handshake_academy",
-    "extension": "pdf",
     "price": 100,
     "color": "blue",
     "visible": true,
-    "tags": ["Improv+Networking", "Breakout Activity"],
-    "versions": [
-      {
-        "ver": 1,
-        "dateAdded": "2017-03-23T15:13:38.666Z"
-      }
-    ]
+    "tags": ["Improv+Networking", "Breakout Activity"]
   },
   {
     "_id": "58d3e622b385ee0238d3d8b8",
     "name": "Improv+Leadership Handouts",
     "description": "The participant handout packet for Improv+Leadership.",
-    "fileslug": "leadership_handouts",
-    "extension": "pdf",
     "price": 100,
     "color": "orange",
     "visible": true,
-    "tags": ["Improv+Leadership", "Participant Handouts"],
-    "versions": [
-      {
-        "ver": 1,
-        "dateAdded": "2017-03-23T15:13:38.667Z"
-      }
-    ]
+    "tags": ["Improv+Leadership", "Participant Handouts"]
   },
   {
     "_id": "58d3e622b385ee0238d3d8b6",
     "name": "Improv+Leadership Facilitator's Guide",
     "description": "The handbook for leading our most powerful Improv session.",
-    "fileslug": "leadership_fac_guide",
-    "extension": "pdf",
     "price": 100,
     "color": "orange",
     "visible": true,
-    "tags": ["Improv+Leadership", "Program Guide"],
-    "versions": [
-      {
-        "ver": 1,
-        "dateAdded": "2017-03-23T15:13:38.666Z"
-      }
-    ]
+    "tags": ["Improv+Leadership", "Program Guide"]
   },
   {
     "_id": "58d3e622b385ee0238d3d8ba",
     "name": "Your Improv+Leadership ROI",
     "description": "Get the most out of your Improv+ experience.",
-    "fileslug": "leadership_roi",
-    "extension": "pdf",
     "price": 100,
     "color": "orange",
     "visible": true,
-    "tags": ["Improv+Leadership"],
-    "versions": [
-      {
-        "ver": 1,
-        "dateAdded": "2017-03-23T15:13:38.667Z"
-      }
-    ]
+    "tags": ["Improv+Leadership"]
   },
   {
     "_id": "58d3e622b385ee0238d3d8be",
     "name": "Improv+Networking Handouts",
     "description": "The participant handout packet for Improv+Networking.",
-    "fileslug": "networking_handouts",
-    "extension": "pdf",
     "price": 100,
     "color": "blue",
     "visible": true,
-    "tags": ["Improv+Networking", "Participant Handouts"],
-    "versions": [
-      {
-        "ver": 1,
-        "dateAdded": "2017-03-23T15:13:38.668Z"
-      }
-    ]
+    "tags": ["Improv+Networking", "Participant Handouts"]
   },
   {
     "_id": "58d3e622b385ee0238d3d8bc",
     "name": "Improv+Networking Facilitator's Guide",
     "description": "The handbook for leading the Improv+Networking session.",
-    "fileslug": "networking_fac_guide",
-    "extension": "pdf",
     "price": 100,
     "color": "blue",
     "visible": true,
-    "tags": ["Improv+Networking", "Program Guide"],
-    "versions": [
-      {
-        "ver": 1,
-        "dateAdded": "2017-03-23T15:13:38.668Z"
-      }
-    ]
+    "tags": ["Improv+Networking", "Program Guide"]
   }
 ]

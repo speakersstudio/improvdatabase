@@ -38,6 +38,7 @@ AppModule = __decorate([
             forms_1.FormsModule,
             http_1.HttpModule,
             animations_1.BrowserAnimationsModule,
+            webstorage_util_1.WebStorageModule,
             shared_module_1.SharedModule,
             app_routing_module_1.AppRoutingModule,
             improvplus_module_1.ImprovPlusModule
@@ -52,7 +53,7 @@ AppModule = __decorate([
         bootstrap: [app_component_1.AppComponent],
         providers: [
             common_1.PathLocationStrategy,
-            webstorage_util_1.WebStorageService,
+            webstorage_util_1.LocalStorageService,
             app_http_1.AppHttp
         ]
     })

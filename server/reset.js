@@ -219,12 +219,28 @@ module.exports = {
                 }
             })
     },
-    
-    resetPackages: function (done) {
-        console.log('Re-seeding packages and stuff');
+
+    resetMaterials: function (done) {
+        console.log('Re-seeding material items');
         return deleteItems()
             .then(seedItems)
-            .then(deletePackages)
+            .then(() => {
+                return DBInfo.findOne({}).exec();
+            })
+            .then(dbi => {
+                dbi.materials = Date.now();
+                return dbi.save();
+            })
+            .then(() => {
+                if (done) {
+                    process.exit(0);
+                }
+            });
+    },
+    
+    resetPackages: function (done) {
+        console.log('Re-seeding packages, subscriptions, and purchases');
+        return deletePackages()
             .then(seedPackages)
             .then(deleteSubscriptions)
             .then(seedPurchases)
@@ -258,7 +274,8 @@ module.exports = {
             purchaseBackupTime = new Date(fs.statSync(path.join(__dirname, './models/seeds/purchase.seed.json')).mtime),
             subscriptionBackupTime = new Date(fs.statSync(path.join(__dirname, './models/seeds/subscription.seed.json')).mtime),
             dbUserTime,
-            dbPackageTime;
+            dbPackageTime,
+            dbMaterialsTime;
 
         return DBInfo.count({}).exec()
             .then(count => {
@@ -273,6 +290,7 @@ module.exports = {
 
                 dbUserTime = dbi.user.getTime();
                 dbPackageTime = dbi.package.getTime();
+                dbMaterialsTime = dbi.materials ? dbi.materials.getTime() : 0;
 
                 if (!dbUserTime || 
                         dbUserTime < userBackupTime.getTime() ||
@@ -286,8 +304,17 @@ module.exports = {
                 }
             })
             .then(() => {
+                if (!dbMaterialsTime || 
+                    dbMaterialsTime < materialsBackupTime.getTime()) {
+                        console.log("Material Item backup is more recent than material item database!");
+                        return this.resetMaterials(false);
+                    } else {
+                        console.log('No need to reset material item database...');
+                        return Promise.resolve(true);
+                    }
+            })
+            .then(() => {
                 if (!dbPackageTime || 
-                    dbPackageTime < materialsBackupTime.getTime() ||
                     dbPackageTime < packageBackupTime.getTime()) {
                         console.log("Package backup is more recent than package database!");
                         return this.resetPackages(false);

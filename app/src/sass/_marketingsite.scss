@@ -270,8 +270,14 @@ welcome, signup {
             text-align: center;
             color: $color-white;
 
-            h4 {
+            h3 {
+                font-size: 4em;
                 margin: $home-page-spacing 0 $large 0;
+            }
+
+            h5 {
+                margin-bottom: $large;
+                font-size: 2em;
             }
 
             .content {

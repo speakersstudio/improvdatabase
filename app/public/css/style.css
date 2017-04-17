@@ -314,7 +314,9 @@ iplus {
   .large .iplus {
     transform: scale(1.5); }
     .large .iplus .i {
-      top: 0px; }
+      top: -1px; }
+    .large .iplus .plus {
+      top: -4px; }
   .huge .iplus {
     transform: scale(3);
     font-weight: bold; }
@@ -335,13 +337,13 @@ iplus {
     font-size: 83%;
     font-weight: bold;
     left: 6px;
-    top: 1px;
+    top: -1px;
     transition: color 300ms;
     text-transform: lowercase; }
   .iplus .plus {
     font-size: 70%;
     font-weight: bold;
-    top: -3px;
+    top: -5px;
     left: 10px;
     opacity: 1;
     transition: color 300ms, opacity 300ms; }
@@ -2014,8 +2016,12 @@ welcome .page, signup .page {
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2) inset, 0px 2px 2px 0px rgba(0, 0, 0, 0.14) inset, 0px 1px 5px 0px rgba(0, 0, 0, 0.12) inset;
     text-align: center;
     color: #FFFFFF; }
-    welcome .page .hero h4, signup .page .hero h4 {
+    welcome .page .hero h3, signup .page .hero h3 {
+      font-size: 4em;
       margin: 72px 0 24px 0; }
+    welcome .page .hero h5, signup .page .hero h5 {
+      margin-bottom: 24px;
+      font-size: 2em; }
     welcome .page .hero .content, signup .page .hero .content {
       padding: 0 0 72px 0; }
 

@@ -288,8 +288,8 @@ module.exports = {
             })
             .then(dbi => {
 
-                dbUserTime = dbi.user.getTime();
-                dbPackageTime = dbi.package.getTime();
+                dbUserTime = dbi.user ? dbi.user.getTime() : 0;
+                dbPackageTime = dbi.package ? dbi.package.getTime() : 0;
                 dbMaterialsTime = dbi.materials ? dbi.materials.getTime() : 0;
 
                 if (!dbUserTime || 

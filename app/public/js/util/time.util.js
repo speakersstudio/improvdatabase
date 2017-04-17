@@ -4,7 +4,14 @@ var TimeUtil = (function () {
     function TimeUtil() {
     }
     TimeUtil.simpleDate = function (dateString) {
-        var date = new Date(dateString), month = this.getMonthName(date.getMonth()), day = date.getDate(), year = date.getFullYear();
+        var date;
+        if (typeof (dateString) == 'string') {
+            date = new Date(dateString);
+        }
+        else {
+            date = dateString;
+        }
+        var month = this.getMonthName(date.getMonth()), day = date.getDate(), year = date.getFullYear();
         return month + ' ' + day + ', ' + year;
     };
     TimeUtil.getMonthName = function (month) {
@@ -34,6 +41,10 @@ var TimeUtil = (function () {
             case 11:
                 return "December";
         }
+    };
+    TimeUtil.simpleTime = function (dateString) {
+        var date = new Date(dateString), rawHours = date.getHours(), mins = date.getMinutes(), ampm = rawHours > 11 ? 'pm' : 'am', hours = rawHours > 12 ? rawHours - 12 : rawHours;
+        return hours + ':' + mins + ' ' + ampm;
     };
     return TimeUtil;
 }());

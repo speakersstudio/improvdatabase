@@ -23,6 +23,9 @@ var MaterialsLibraryComponent = (function () {
         this.pathLocationStrategy = pathLocationStrategy;
         this.title = '<span class="light">materials</span><strong>library</strong>';
         this.searchResults = [];
+        this.ownedMaterials = [];
+        this.teams = [];
+        this.adminTeams = [];
         this._tools = [];
     }
     MaterialsLibraryComponent.prototype.ngOnInit = function () {
@@ -38,21 +41,16 @@ var MaterialsLibraryComponent = (function () {
             _this._app.hideLoader();
             _this.ownedMaterials = materials;
         });
+        this.libraryService.getTeamMaterials()
+            .then(function (teams) {
+            _this.teams = teams;
+        });
+        this.libraryService.getAdminTeamMaterials()
+            .then(function (teams) {
+            _this.adminTeams = teams;
+        });
     };
     MaterialsLibraryComponent.prototype.clearFilter = function () {
-    };
-    MaterialsLibraryComponent.prototype.selectMaterial = function (material) {
-        this.libraryService.downloadMaterial(material._id);
-    };
-    MaterialsLibraryComponent.prototype.versionTag = function (m) {
-        var v = this.libraryService.getLatestVersionForMaterialItem(m);
-        // TODO: show the date this was released
-        if (v) {
-            return "version " + v.ver;
-        }
-        else {
-            return "no version published";
-        }
     };
     return MaterialsLibraryComponent;
 }());

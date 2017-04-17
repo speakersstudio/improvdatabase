@@ -107,7 +107,7 @@ module.exports = {
 
         let query = User.findOne({})
             .select(WHITELIST.join(' ') + 
-            ' purchases materials subscription preferences memberOfTeams adminOfTeams role dateAdded dateModified superAdmin ' + select);
+            ' subscription preferences memberOfTeams adminOfTeams role dateAdded dateModified superAdmin ' + select);
 
         // catch a mongoose ObjectID, which looks like a string but isn't really
         if (typeof(key) == 'object' && key.toString) {
@@ -120,7 +120,7 @@ module.exports = {
             query.where('_id').equals(key);
         }
 
-        query.populate('purchases preferences')
+        query.populate('preferences')
             .populate({
                 path: 'subscription',
                 select: '-stripeCustomerId'
@@ -141,12 +141,6 @@ module.exports = {
                     path: 'subscription',
                     select: '-stripeCustomerId'
                 },
-                options: {
-                    sort: 'name'
-                }
-            })
-            .populate({
-                path: 'materials',
                 options: {
                     sort: 'name'
                 }
@@ -212,13 +206,70 @@ module.exports = {
             });
     },
 
+    /**
+     * Get all of a user's purchases, including teams they are admin of
+     */
+    purchases: (req, res) => {
+        return User.findOne({}).where('_id').equals(req.user._id)
+            .select('purchases adminOfTeams')
+            .populate({
+                path: 'adminOfTeams',
+                select: 'purchases name',
+                populate: {
+                    path: 'purchases',
+                    populate: {
+                        path: 'package materialItem'
+                    },
+                    options: {
+                        sort: 'date'
+                    }
+                }
+            })
+            .populate({
+                path: 'purchases',
+                populate: {
+                    path: 'package materialItem'
+                },
+                options: {
+                    sort: 'date'
+                }
+            })
+            .then(u => {
+                res.json(u);
+            })
+    },
+
     // fetched with a GET call to /api/user/:_id/materials
     materials: (req, res) => {
-        if (req.user && req.user.materials && req.user.materials.length) {
-            res.json(req.user.materials);
-        } else {
-            res.json([]);
-        }
+        return User.findOne({}).where('_id').equals(req.user._id)
+            .select('materials memberOfTeams adminOfTeams')
+            .populate({
+                path: 'adminOfTeams',
+                populate: {
+                    path: 'materials',
+                    options: {
+                        sort: 'name'
+                    }
+                }
+            })
+            .populate({
+                path: 'memberOfTeams',
+                populate: {
+                    path: 'materials',
+                    options: {
+                        sort: 'name'
+                    }
+                }
+            })
+            .populate({
+                path: 'materials',
+                options: {
+                    sort: 'name'
+                }
+            })
+            .then(u => {
+                res.json(u);
+            })
     },
 
     backup: (req, res) => {

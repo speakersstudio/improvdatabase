@@ -25,7 +25,7 @@ var shared_module_1 = require("./shared.module");
 var improvplus_module_1 = require("../app/module/improvplus.module");
 var login_screen_component_1 = require("../component/login-screen.component");
 var signup_component_1 = require("../component/signup.component");
-var form_input_directive_1 = require("../view/form-input.directive");
+// import { FormInputDirective } from '../view/form-input.directive';
 var AppModule = (function () {
     function AppModule() {
     }
@@ -48,7 +48,6 @@ AppModule = __decorate([
             app_component_1.AppComponent,
             ms_welcome_component_1.WelcomeComponent,
             signup_component_1.SignupComponent,
-            form_input_directive_1.FormInputDirective
         ],
         bootstrap: [app_component_1.AppComponent],
         providers: [

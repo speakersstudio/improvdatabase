@@ -34,7 +34,8 @@ export class AdminComponent implements OnInit {
     constructor(
         private _app: AppComponent,
         private router: Router,
-        private libraryService: LibraryService
+        private libraryService: LibraryService,
+        private userService: UserService
     ) { }
 
     private _tools: Tool[] = [
@@ -76,7 +77,6 @@ export class AdminComponent implements OnInit {
             });
             this.selectedMaterial.tags = tagArray;
         }
-        console.log(this.selectedMaterial);
         this.libraryService.saveMaterial(this.selectedMaterial).then();
     }
 
@@ -87,6 +87,8 @@ export class AdminComponent implements OnInit {
     saveVersion(): void {
         this.libraryService.postNewVersion(this.selectedMaterial._id, this.newVersion, this.newVersionFile).then(m => {
             this.selectedMaterial.versions = m.versions;
+
+            this.userService.refreshToken();
         });
     }
 

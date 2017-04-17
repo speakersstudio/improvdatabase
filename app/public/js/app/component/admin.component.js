@@ -14,12 +14,14 @@ var router_1 = require("@angular/router");
 var app_component_1 = require("../../component/app.component");
 var library_service_1 = require("../../service/library.service");
 var material_item_1 = require("../../model/material-item");
+var user_service_1 = require("../../service/user.service");
 var time_util_1 = require("../../util/time.util");
 var AdminComponent = (function () {
-    function AdminComponent(_app, router, libraryService) {
+    function AdminComponent(_app, router, libraryService, userService) {
         this._app = _app;
         this.router = router;
         this.libraryService = libraryService;
+        this.userService = userService;
         this.title = '<span class="light">super</span><strong>admin</strong>';
         this._tools = [];
     }
@@ -54,7 +56,6 @@ var AdminComponent = (function () {
             });
             this.selectedMaterial.tags = tagArray_1;
         }
-        console.log(this.selectedMaterial);
         this.libraryService.saveMaterial(this.selectedMaterial).then();
     };
     AdminComponent.prototype.fileChange = function ($event) {
@@ -64,6 +65,7 @@ var AdminComponent = (function () {
         var _this = this;
         this.libraryService.postNewVersion(this.selectedMaterial._id, this.newVersion, this.newVersionFile).then(function (m) {
             _this.selectedMaterial.versions = m.versions;
+            _this.userService.refreshToken();
         });
     };
     AdminComponent.prototype.deleteVersion = function (version) {
@@ -82,7 +84,8 @@ AdminComponent = __decorate([
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,
         router_1.Router,
-        library_service_1.LibraryService])
+        library_service_1.LibraryService,
+        user_service_1.UserService])
 ], AdminComponent);
 exports.AdminComponent = AdminComponent;
 

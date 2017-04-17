@@ -50,6 +50,8 @@ $paper-bg: $color-white;
         font-style: italic;
         font-weight: bold;
         white-space: nowrap;
+        min-width: 50px;
+        text-align: right;
     }
 
     @media #{$media-mobile} {
@@ -126,6 +128,17 @@ $paper-bg: $color-white;
 
     h5 {
         font-size: 18px;
+    }
+
+    .tabs {
+        margin: 0 ($toolbar-height / 2)+2 0;
+        position: relative;
+        z-index: 2;
+        padding: 0 $border-radius;
+
+        &:first-child {
+            margin-top: ($curtain-height * 0.3);
+        }
     }
 
     .paper {

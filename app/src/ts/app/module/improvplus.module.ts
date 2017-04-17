@@ -22,6 +22,7 @@ import { AdminComponent } from '../component/admin.component';
 import { ToolbarView } from '../view/toolbar.view';
 import { GameCardView } from '../view/game-card.view';
 import { CreateMetadataView } from '../view/create-metadata.view';
+import { MaterialsPageView } from '../view/materials-page.view';
 
 import { SharedModule } from '../../module/shared.module';
 import { ImprovPlusRoutingModule } from './improvplus-routing.module';
@@ -53,7 +54,8 @@ import { ImprovPlusRoutingModule } from './improvplus-routing.module';
         
         ToolbarView,
         GameCardView,
-        CreateMetadataView
+        CreateMetadataView,
+        MaterialsPageView
     ],
     // bootstrap: [ AppComponent ],
     providers: [

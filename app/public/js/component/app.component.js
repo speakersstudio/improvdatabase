@@ -40,6 +40,7 @@ var AppComponent = (function () {
         this.dialogTitle = "";
         this.dialogMessage = "";
         this.dialogConfirm = "";
+        this.toastMessageQueue = [];
     }
     AppComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -177,6 +178,25 @@ var AppComponent = (function () {
             this.closeOverlays();
         }
     };
+    AppComponent.prototype.toast = function (message) {
+        this.toastMessageQueue.push(message);
+        if (!this.toastMessage) {
+            this.hideToast();
+        }
+    };
+    AppComponent.prototype.hideToast = function () {
+        var _this = this;
+        clearTimeout(this._toastTimer);
+        if (this.toastMessageQueue.length) {
+            this.toastMessage = this.toastMessageQueue.shift();
+            this._toastTimer = setTimeout(function () {
+                _this.hideToast();
+            }, 5000);
+        }
+        else {
+            this.toastMessage = '';
+        }
+    };
     AppComponent.prototype.login = function () {
         if (this.user) {
             this.router.navigate(['/app']);
@@ -213,6 +233,7 @@ var AppComponent = (function () {
             to = maxScroll;
         }
         var from = window.scrollY, difference = to - from, perTick = duration > 0 ? difference / duration * 10 : difference;
+        duration = duration || Math.abs(difference);
         var easeInOutQuad = function (time, start, end, duration) {
             var reverse = false, s, e, val;
             if (start > end) {

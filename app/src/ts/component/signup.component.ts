@@ -18,7 +18,9 @@ import { Config } from '../config';
 import { User } from '../model/user';
 import { Package } from '../model/package';
 
-import { FadeAnim, DialogAnim, CardAnim } from '../util/anim.util';
+import { FadeAnim, DialogAnim } from '../util/anim.util';
+
+import { BracketCardDirective } from '../view/bracket-card.directive';
 
 declare var Stripe: any;
 
@@ -33,11 +35,11 @@ declare var Stripe: any;
 })
 export class SignupComponent implements OnInit {
 
-    @ViewChild('facilitatorCard') facilitatorCard: ElementRef;
-    @ViewChild('improviserCard') improviserCard: ElementRef;
-    @ViewChild('yourselfCard') yourselfCard: ElementRef;
-    @ViewChild('yourTeamCard') yourTeamCard: ElementRef;
-    @ViewChildren('packageCard') packageCards: QueryList<ElementRef>;
+    @ViewChild('facilitatorCard', {read: BracketCardDirective}) facilitatorCard: BracketCardDirective;
+    @ViewChild('improviserCard', {read: BracketCardDirective}) improviserCard: BracketCardDirective;
+    @ViewChild('yourselfCard', {read: BracketCardDirective}) yourselfCard: BracketCardDirective;
+    @ViewChild('yourTeamCard', {read: BracketCardDirective}) yourTeamCard: BracketCardDirective;
+    @ViewChildren('packageCard', {read: BracketCardDirective}) packageCards: QueryList<BracketCardDirective>;
 
     userType: string;
     teamOption: string;
@@ -54,7 +56,7 @@ export class SignupComponent implements OnInit {
     isPosting: boolean = false;
 
     stripe: any;
-    card: any;
+    creditCard: any;
 
     emailError: string;
     cardError: string;
@@ -80,7 +82,7 @@ export class SignupComponent implements OnInit {
 
         this.stripe = Stripe(Config.STRIPE_KEY);
         let elements = this.stripe.elements();
-        this.card = elements.create('card', {
+        this.creditCard = elements.create('card', {
             // value: {postalCode: this.user.zip},
             style: {
                 base: {
@@ -101,7 +103,7 @@ export class SignupComponent implements OnInit {
             }
         });
 
-        this.card.addEventListener('change', e => {
+        this.creditCard.addEventListener('change', e => {
             
             this.cardComplete = e.complete;
 
@@ -114,7 +116,7 @@ export class SignupComponent implements OnInit {
 
     }
 
-    selectCard(option: string, value: string, cardToOpen: HTMLElement, cardToClose: HTMLElement): void {
+    selectCard(option: string, value: string, cardToOpen: BracketCardDirective, cardToClose: BracketCardDirective): void {
         if (this[option] == value) {
             return;
         }
@@ -129,16 +131,21 @@ export class SignupComponent implements OnInit {
             this.showPackages(value == 'team');
         }
 
-        CardAnim.openCard(cardToOpen, 200);
-        CardAnim.closeCard(cardToClose, 200);
+        let delay = 400;
+        if (cardToOpen.isOpen) {
+            delay = 200;
+        }
+
+        cardToOpen.open(delay);
+        cardToClose.close(delay);
 
         setTimeout(() => {
             this[option] = value;
-        }, 400);
+        }, delay * 2);
     }
 
     reset(): void {
-        this._app.scrollTo(0, 600);
+        this._app.scrollTo(0);
 
         setTimeout(() => {
             this.userType = '';
@@ -150,29 +157,29 @@ export class SignupComponent implements OnInit {
             this.teamName = '';
             this.selectedPackage = null;
 
-            CardAnim.openCard(this.facilitatorCard.nativeElement, 200);
-            CardAnim.openCard(this.improviserCard.nativeElement, 200);
+            this.facilitatorCard.open(500);
+            this.improviserCard.open(500)
         }, 600);
     }
 
     selectFacilitator(): void {
         this.selectCard('userType', 'facilitator', 
-            this.facilitatorCard.nativeElement, this.improviserCard.nativeElement);
+            this.facilitatorCard, this.improviserCard);
     }
 
     selectImproviser(): void {
         this.selectCard('userType', 'improviser', 
-            this.improviserCard.nativeElement, this.facilitatorCard.nativeElement);
+            this.improviserCard, this.facilitatorCard);
     }
 
     selectYourself(): void {
         this.selectCard('teamOption', 'individual', 
-            this.yourselfCard.nativeElement, this.yourTeamCard.nativeElement);
+            this.yourselfCard, this.yourTeamCard);
     }
 
     selectYourTeam(): void {
         this.selectCard('teamOption', 'team',
-            this.yourTeamCard.nativeElement, this.yourselfCard.nativeElement);
+            this.yourTeamCard, this.yourselfCard);
     }
 
     showPackages(team: boolean): void {
@@ -191,21 +198,22 @@ export class SignupComponent implements OnInit {
         this.selectedPackage = null;
 
         this.packageCards.forEach(card => {
-            if (card.nativeElement != cardClicked) {
-                CardAnim.closeCard(card.nativeElement, 200);
+            if (card.card != cardClicked) {
+                card.close(200);
+            } else {
+                card.open(200);
             }
         });
-        CardAnim.openCard(cardClicked, 200);
 
         setTimeout(() => {
             this.selectedPackage = pack;
 
             // setup the stripe credit card input
-            this.card.unmount();
+            this.creditCard.unmount();
             setTimeout(() => {
-                this.card.mount('#card-element');
+                this.creditCard.mount('#card-element');
             }, 400)
-        }, 200);
+        }, 400);
     }
 
     isFormValid(): boolean {
@@ -251,7 +259,7 @@ export class SignupComponent implements OnInit {
         this._app.showLoader();
         this.isPosting = true;
 
-        this.stripe.createToken(this.card).then(result => {
+        this.stripe.createToken(this.creditCard).then(result => {
             if (result.error) {
                 this.cardError = result.error.message;
             } else {
@@ -264,8 +272,8 @@ export class SignupComponent implements OnInit {
                         let msg = response.json();
                         if (msg.error && msg.error == 'email already exists') {
                             this.emailError = "That email address is already registered.";
-                            let card: HTMLElement = this.facilitatorCard.nativeElement;
-                            this._app.scrollTo(card.offsetTop, 600);
+                            // let card: HTMLElement = this.facilitatorCard.nativeElement;
+                            // this._app.scrollTo(card.offsetTop);
                         }
                     })
                     .then(u => {

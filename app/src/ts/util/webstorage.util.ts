@@ -80,7 +80,7 @@ export function SessionStorage(key?: string) {
     return WebStorage(sessionStorage, key);
 }
 
-let cache = {};
+// let cache = {};
 
 export let WebStorage = (webStorage: Storage, key: string) => {
     return (target: Object, propertyName: string): void => {
@@ -94,14 +94,15 @@ export let WebStorage = (webStorage: Storage, key: string) => {
                 return WebStorageUtility.get(webStorage, key);
             },
             set: function(value: any) {
-                if (!cache[key]) {
-                    if (storedValue === null) {
-                        WebStorageUtility.set(webStorage, key, value);
-                    }
+                // I don't get the purpose of this, other than to break this code
+                // if (!cache[key]) {
+                //     if (storedValue === null) {
+                //         WebStorageUtility.set(webStorage, key, value);
+                //     }
 
-                    cache[key] = true;
-                    return;
-                }
+                //     cache[key] = true;
+                //     return;
+                // }
 
                 WebStorageUtility.set(webStorage, key, value);
             }

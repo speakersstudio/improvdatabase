@@ -16,6 +16,12 @@ const MaterialItem = require('./models/material-item.model');
 const Package = require('./models/package.model');
 const Preference = require('./models/preference.model');
 
+const userBackupTime = 1492176592742,
+    materialsBackupTime = 1492176592742,
+    packageBackupTime = 1492176592742,
+    purchaseBackupTime = 1492176592742,
+    subscriptionBackupTime = 1492176592742;
+
 mongoose.Promise = Promise;
 mongoose.connect(config.mongodb.uri);
 
@@ -72,36 +78,6 @@ function seedPackages() {
             console.log('packages seeded');
             console.log(' -- ');
         });
-
-    // // manually create packages
-    // return Package.create({
-    //     "slug": "ultimate",
-    //     "name": "Improv+Ultimate",
-    //     "description": "Gain access to all of our materials as well as our unbeatable hands-on support and coaching. The Ultimate package comes with your first year of access to the app for free.",
-    //     "color": "red",
-    //     "price": 1500
-    // }).then((improvNetworking) => {
-    //     console.log('Created Improv+Networking');
-    //     return improvNetworking.addMaterial([
-    //         { name: "Improv+Leadership Facilitator's Guide" },
-    //         { name: "Improv+Leadership Handouts" },
-    //         { name: "Improv+Networking Facilitator's Guide" },
-    //         { name: "Improv+Networking Handouts" },
-    //         { name: "Facilitation Tips" },
-    //         { name: "Handshake Academy" },
-    //         { name: "Your Improv+Leadership ROI" }
-    //     ]);
-    // }).then(() => {
-    //     return Package.create({
-    //         "slug": "subscription",
-    //         "name": "App Subscription",
-    //         "description": 'Gain access to the the app for one year',
-    //         "price": 99
-    //     });
-    // }).then((sub) => {
-    //     console.log('Created Subscription package');
-    //     console.log(' -- ');
-    // });
 }
 
 function deleteSubscriptions() {
@@ -110,31 +86,6 @@ function deleteSubscriptions() {
         .then(() => {
             return Purchase.find({}).remove().exec();
         });
-
-    // console.log('deleting subscriptions and purchases');
-    // return Subscription.find({}).remove().exec()
-    //     .then(() => {
-    //         return Purchase.find({}).remove().exec();
-    //     }).then(() => {
-    //         return User.find({}).exec();
-    //     }).then(users => {
-    //         let doUser = (userIndex) => {
-    //             let u = users[userIndex];
-    //             u.subscription = null;
-    //             u.materials = [];
-    //             u.purchases = [];
-    //             return u.save()
-    //                 .then(() => {
-    //                     userIndex++;
-    //                     if (userIndex < users.length) {
-    //                         return doUser(userIndex);
-    //                     } else {
-    //                         console.log('user purchase data deleted');
-    //                     }
-    //                 })
-    //         }
-    //         return doUser(0);
-    //     });
 }
 
 function seedPurchases(callback) {
@@ -148,54 +99,7 @@ function seedPurchases(callback) {
         .then(() => {
             console.log('Subscriptions and purchases seeded');
             console.log(' -- ');
-        })
-
-    // const expires = "2018-03-08T14:26:29.214Z";
-    // const expired = "2016-03-08T14:26:29.214Z";
-
-    // return Package.find({})
-    //     .where('slug').equals('ultimate')
-    //     .exec()
-    //     .then(packages => {
-    //         return User.find({})
-    //             .where('email').in(['smcgill@denyconformity.com', 'kate@katebringardner.com'])
-    //             .exec()
-    //             .then(users => {
-    //                 let purchaseArray = [];
-    //                 packages.forEach((pack, i) => {
-    //                     purchaseArray.push({
-    //                         type: 'package',
-    //                         total: 0,
-    //                         package: packages[i]._id
-    //                     });
-    //                 });
-
-    //                 let createSub = (userIndex) => {
-    //                     return charge.createPurchase(users[userIndex], purchaseArray)
-    //                         .then(() => {
-    //                             userIndex++;
-    //                             if (userIndex < users.length) {
-    //                                 return createSub(userIndex);
-    //                             } else {
-    //                                 console.log('Purchases made for Shauvon and Kate');
-    //                                 console.log(' -- ');
-    //                             }
-    //                         })
-    //                 }
-
-    //                 return createSub(0);
-
-    //             });
-    //     }).then(() => {
-    //         // the expired user gets an expired subscription for testing!
-    //         return User.findOne({})
-    //             .where('email').equals('expireduser@improvpl.us')
-    //             .exec();
-    //     }).then(expiredUser => {
-    //         let expiredDate = new Date();
-    //         expiredDate.setFullYear(expiredDate.getFullYear() - 1);
-    //         return expiredUser.addSubscription(roles.ROLE_SUBSCRIBER, expiredDate);
-    //     });
+        });
 }
 
 const DBInfo = require('./models/dbinfo.model');
@@ -217,7 +121,7 @@ module.exports = {
                 if (done) {
                     process.exit(0);
                 }
-            })
+            });
     },
 
     resetMaterials: function (done) {
@@ -268,12 +172,7 @@ module.exports = {
     },
 
     checkForSeed: function() {
-        let userBackupTime = new Date(fs.statSync(path.join(__dirname, './models/seeds/user.seed.json')).mtime),
-            materialsBackupTime = new Date(fs.statSync(path.join(__dirname, './models/seeds/material-item.seed.json')).mtime),
-            packageBackupTime = new Date(fs.statSync(path.join(__dirname, './models/seeds/package.seed.json')).mtime),
-            purchaseBackupTime = new Date(fs.statSync(path.join(__dirname, './models/seeds/purchase.seed.json')).mtime),
-            subscriptionBackupTime = new Date(fs.statSync(path.join(__dirname, './models/seeds/subscription.seed.json')).mtime),
-            dbUserTime,
+        let dbUserTime,
             dbPackageTime,
             dbMaterialsTime;
 
@@ -293,10 +192,10 @@ module.exports = {
                 dbMaterialsTime = dbi.materials ? dbi.materials.getTime() : 0;
 
                 if (!dbUserTime || 
-                        dbUserTime < userBackupTime.getTime() ||
-                        dbUserTime < purchaseBackupTime.getTime() ||
-                        dbUserTime < subscriptionBackupTime.getTime()) {
-                    console.log("User backup is more recent than user database!", dbUserTime, userBackupTime.getTime());
+                        dbUserTime < userBackupTime ||
+                        dbUserTime < purchaseBackupTime ||
+                        dbUserTime < subscriptionBackupTime) {
+                    console.log("User backup is more recent than user database!", dbUserTime, userBackupTime);
                     return this.resetUsers(false);
                 } else {
                     console.log('No need to reset user database...');
@@ -305,7 +204,7 @@ module.exports = {
             })
             .then(() => {
                 if (!dbMaterialsTime || 
-                    dbMaterialsTime < materialsBackupTime.getTime()) {
+                    dbMaterialsTime < materialsBackupTime) {
                         console.log("Material Item backup is more recent than material item database!");
                         return this.resetMaterials(false);
                     } else {
@@ -315,7 +214,7 @@ module.exports = {
             })
             .then(() => {
                 if (!dbPackageTime || 
-                    dbPackageTime < packageBackupTime.getTime()) {
+                    dbPackageTime < packageBackupTime) {
                         console.log("Package backup is more recent than package database!");
                         return this.resetPackages(false);
                     } else {

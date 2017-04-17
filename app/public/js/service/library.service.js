@@ -34,6 +34,11 @@ var LibraryService = (function () {
         }
         return this._packagePromise;
     };
+    /**
+     * Get all available packages
+     * @param type filter by a specific type (facilitator or improviser)
+     * @param team filter by team-oriented packages or individual packages
+     */
     LibraryService.prototype.getPackages = function (type, team) {
         var _this = this;
         return new Promise(function (resolve, reject) {
@@ -55,32 +60,28 @@ var LibraryService = (function () {
         });
     };
     LibraryService.prototype.getOwnedMaterials = function () {
-        var user = this.userService.getLoggedInUser();
-        if (user) {
-            if (user.materials && user.materials.length) {
-                this._materialPromise = new Promise(function (res, rej) {
-                    res(user.materials);
-                });
-            }
-            else {
-                this._materialPromise = this._getOwnedMaterials();
-            }
-        }
-        else {
-            this._materialPromise = new Promise(function (res, rej) {
-                rej("No user");
+        var _this = this;
+        return new Promise(function (res, rej) {
+            _this.userService.fetchMaterials().then(function (user) {
+                res(user.materials);
             });
-        }
-        return this._materialPromise;
+        });
     };
-    LibraryService.prototype._getOwnedMaterials = function () {
-        var url = this.ownedMaterialsUrl.replace(':_id', this.userService.getLoggedInUser()._id);
-        return this.http.get(url)
-            .toPromise()
-            .then(function (response) {
-            return response.json();
-        })
-            .catch(this.handleError);
+    LibraryService.prototype.getTeamMaterials = function () {
+        var _this = this;
+        return new Promise(function (res, rej) {
+            _this.userService.fetchMaterials().then(function (user) {
+                res(user.memberOfTeams);
+            });
+        });
+    };
+    LibraryService.prototype.getAdminTeamMaterials = function () {
+        var _this = this;
+        return new Promise(function (res, rej) {
+            _this.userService.fetchMaterials().then(function (user) {
+                res(user.adminOfTeams);
+            });
+        });
     };
     LibraryService.prototype.downloadMaterial = function (id) {
         this.http.get(this.materialsUrl + id)
@@ -90,6 +91,10 @@ var LibraryService = (function () {
             window.open(location.origin + url);
         });
     };
+    /**
+     * Util method to sort a material item's versions
+     * @param m the material item to find the latest version for
+     */
     LibraryService.prototype.getLatestVersionForMaterialItem = function (m) {
         m.versions.sort(function (a, b) {
             return b.ver - a.ver;

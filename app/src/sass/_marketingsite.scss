@@ -105,6 +105,7 @@ landing-hero {
 
     p {
         line-height: 2;
+        margin: $small $std;
     }
     
     .button {
@@ -187,6 +188,10 @@ welcome, signup {
 
         h5 {
             font-size: 2em;
+        }
+
+        h2 {
+            margin-top: $large;
         }
 
         p {
@@ -320,4 +325,9 @@ welcome, signup {
 
 signup .page {
     padding-top: $page-bracket-width;
+
+    @media #{$media-mobile} {
+        padding-top: ($large * 2);
+        padding-bottom: ($large * 4);
+    }
 }

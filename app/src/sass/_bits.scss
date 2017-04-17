@@ -281,6 +281,19 @@ iplus {
     &.spaced {
         justify-content: space-around;
         align-items: center;
+
+        & > * {
+            width: auto;
+        }
+    }
+
+    &.fill {
+        justify-content: space-between;
+        align-items: left;
+
+        & > * {
+            width: auto;
+        }
     }
 
     &.centered {
@@ -312,6 +325,43 @@ iplus {
 
     & > input[name="zip"] {
         width: 5em;
+    }
+
+    &.responsive {
+        @media #{$media-mobile} {
+            flex-direction: column;
+        }
+    }
+}
+
+.tabs {
+    .tab {
+        display: inline-block;
+        padding: $std;
+        background: $color-white;
+        border-bottom: 1px solid $color-hr-light;
+        cursor: pointer;
+        margin-right: $small;
+
+        border-top-left-radius: $border-radius;
+        border-top-right-radius: $border-radius;
+
+        @include md-elevation(0);
+        @include md-elevation-transition('border 280ms');
+
+        &:hover {
+            @include md-elevation($card-elevation-active);
+        }
+
+        &.active {
+            @include md-elevation($card-elevation-default);
+            border-bottom: 1px solid $color-transparent;
+            cursor: default;
+            font-weight: bold;
+        }
+    }
+    .fa {
+        margin-right: $small;
     }
 }
 
@@ -706,6 +756,22 @@ button,
         color: $color-primary;
         font-size: 28px;
         text-align: center;
+    }
+}
+
+.toast {
+    @include fixed(null, 0, $large*2, 0, 500);
+    display: flex;
+    justify-content: center;
+
+    & > * {
+        padding: $std;
+        background-color: $color-black;
+        font-size: $large;
+        color: $color-white;
+        border-radius: $border-radius;
+        @include md-elevation($dialog-elevation);
+        cursor: default;
     }
 }
 

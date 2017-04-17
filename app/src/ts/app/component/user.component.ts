@@ -13,6 +13,10 @@ import { Tool } from '../view/toolbar.view';
 import { UserService } from "../../service/user.service";
 
 import { User } from "../../model/user";
+import { Purchase } from '../../model/purchase';
+import { Team } from '../../model/team';
+
+import { TimeUtil } from '../../util/time.util';
 
 const MAX_ATTEMPTS = 5;
 
@@ -24,6 +28,20 @@ const MAX_ATTEMPTS = 5;
 export class UserComponent implements OnInit, OnDestroy {
 
     title: string = "Account";
+
+    tabs = [
+        {
+            name: 'Your Account',
+            id: 'user',
+            icon: 'user'
+        },
+        {
+            name: 'Purchase History',
+            id: 'purchases',
+            icon: 'money'
+        }
+    ];
+    selectedTab: string = 'user';
 
     email: string;
     password: string;
@@ -40,6 +58,9 @@ export class UserComponent implements OnInit, OnDestroy {
     user: User;
 
     isPosting: boolean;
+
+    purchases: Purchase[];
+    teamPurchases: Team[];
 
     constructor(
         private userService: UserService,
@@ -63,10 +84,21 @@ export class UserComponent implements OnInit, OnDestroy {
         this.weGood = true;
 
         this.user = this._app.user;
+
+        this.userService.fetchPurchases().then(u => {
+            this.purchases = u.purchases;
+            this.teamPurchases = u.adminOfTeams;
+
+            console.log(this.teamPurchases);
+        });
     }
 
     ngOnDestroy(): void {
 
+    }
+
+    selectTab(tab): void {
+        this.selectedTab = tab.id;
     }
 
     logout(): void {
@@ -78,6 +110,8 @@ export class UserComponent implements OnInit, OnDestroy {
             this.userService.updateUser(user)
                 .then(() => {
                     this.isPosting = false;
+                    console.log('hello');
+                    this._app.toast("Your information has been saved!");
                 })
                 .catch(() => {
                     this.isPosting = false;
@@ -93,5 +127,13 @@ export class UserComponent implements OnInit, OnDestroy {
                 this._app.logout();
                 break;
         }
+    }
+
+    getDate(date: string): string {
+        return TimeUtil.simpleDate(date);
+    }
+
+    getTime(date: string): string {
+        return TimeUtil.simpleTime(date);
     }
 }

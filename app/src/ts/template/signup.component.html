@@ -12,8 +12,8 @@
 
 <div class="page">
 
-    <div class="blackbox">
-        <h2>find your path to <strong>plus</strong></h2>
+    <div class="blackbox center">
+        <h2><span class="light">find your path to</span> <strong>plus</strong></h2>
         <p>You are three simple questions away from joining <span class="light">improv</span><strong>plus</strong></p>
     </div>
 
@@ -27,7 +27,7 @@
 
         <div class="card-list">
 
-            <div class="card red brackets clickable" #facilitatorCard
+            <div class="card red brackets clickable" bracketCard #facilitatorCard
                     (click)="selectFacilitator()">
 
                 <i class="fa fa-book"></i>
@@ -64,7 +64,7 @@
 
             </div>
 
-            <div class="card blue brackets clickable" #improviserCard
+            <div class="card blue brackets clickable" bracketCard #improviserCard
                     (click)="selectImproviser()">
 
                 <i class="fa fa-smile-o"></i>
@@ -118,7 +118,7 @@
 
         <div class="card-list">
 
-            <div class="card brackets clickable" 
+            <div class="card brackets clickable" bracketCard 
                     [class.red]="userType == 'facilitator'" 
                     [class.blue]="userType == 'improviser'"
                     #yourselfCard
@@ -149,7 +149,7 @@
 
             </div>
 
-            <div class="card brackets clickable" 
+            <div class="card brackets clickable" bracketCard 
                     [class.red]="userType == 'facilitator'" 
                     [class.blue]="userType == 'improviser'"
                     #yourTeamCard
@@ -200,7 +200,7 @@
 
         <div class="card-list">
 
-            <div class="card brackets clickable {{package.color}}"
+            <div class="card brackets clickable {{package.color}}" bracketCard
                 *ngFor="let package of packages"
                 (click)="selectPackage($event, package, packageCard)"
                 #packageCard>
@@ -266,7 +266,7 @@
 
         <div class="card-list">
 
-            <div class="card brackets clickable"
+            <div class="card brackets clickable" bracketCard
                 [class.red]="userType == 'facilitator'" 
                 [class.blue]="userType == 'improviser'"
                 (click)="submitPayment()">

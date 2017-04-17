@@ -16,6 +16,10 @@
         flex-grow: 1;
         max-width: calc(50% - #{$std * 2});
 
+        @media #{$media-mobile} {
+            max-width: 100%;
+        }
+
         &.full {
             max-width: 100%;
             width: 100%;
@@ -32,11 +36,10 @@
         }
     }
 
-    // .paper & {
-    //     .card {
-    //         @include md-elevation(0);
-    //     }
-    // }
+    @media #{$media-mobile} {
+        flex-direction: column;
+        align-items: center;
+    }
 
 }
 
@@ -65,9 +68,10 @@
 
     @media #{$media-mobile} {
         display: block;
-        width: 90%;
-        max-width: 90%;
+        // width: 90%;
+        // max-width: 90%;
         box-sizing: border-box;
+        margin: $std 0;
     }
 
     &.clickable:hover {
@@ -98,7 +102,7 @@
     .taglist {
         margin: 0;
 
-        li {
+        li, li:last-child {
             margin: $small / 4;
         }
     }
@@ -123,19 +127,33 @@
             padding-top: 50%;
         }
 
-        h3 {
+        .content {
+            @include abs(null, null, 0, 0);
+            padding: $large;
+
+            h3 {
+                font-size: 1.5em;
+                margin: 2px 0;
+            }
+            h4 {
+                font-size: 1em;
+                margin: 2px 0;
+            }
+        }
+
+        & > h3 {
             @include abs(null, null, 0, 0);
             padding: $large;
             font-size: 1.5em;
         }
 
-        em {
+        & > em {
             @include abs($small, $small, null, null);
             font-size: 0.7em;
             opacity: 0.5;
         }
 
-        .fa {
+        & > .fa {
             @include abs($large, $large);
             font-size: $icon-size;
         }

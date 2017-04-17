@@ -8,6 +8,7 @@ import { AppHttp } from '../data/app-http';
 import { Package } from '../model/package';
 import { MaterialItem, MaterialItemVersion } from '../model/material-item';
 import { Subscription } from '../model/subscription';
+import { Team } from '../model/team';
 
 import { User } from '../model/user';
 import { UserService } from './user.service';
@@ -19,8 +20,11 @@ export class LibraryService {
     private ownedMaterialsUrl = '/api/user/:_id/materials';
 
     private subscriptions: Subscription[];
-    private materials: MaterialItem[];
     private packages: Package[];
+
+    private materials: MaterialItem[];
+    private teams: Team[];
+    private adminTeams: Team[];
 
     constructor(
         private http: AppHttp,
@@ -41,8 +45,12 @@ export class LibraryService {
         return this._packagePromise;
     }
 
+    /**
+     * Get all available packages
+     * @param type filter by a specific type (facilitator or improviser)
+     * @param team filter by team-oriented packages or individual packages
+     */
     getPackages(type?: string, team?: boolean): Promise<Package[]> {
-        
         return new Promise<Package[]>((resolve, reject) => {
             this._getPackages().then(allPackages => {
                 if (type != undefined || team != undefined) {
@@ -61,34 +69,28 @@ export class LibraryService {
         })
     }
 
-    private _materialPromise: Promise<MaterialItem[]>;
     getOwnedMaterials(): Promise<MaterialItem[]> {
-        let user = this.userService.getLoggedInUser();
-        if (user) {
-            if (user.materials && user.materials.length) {
-                this._materialPromise = new Promise<MaterialItem[]>((res, rej) => {
-                    res(user.materials);
-                });
-            } else {
-                this._materialPromise = this._getOwnedMaterials();
-            }
-        } else {
-            this._materialPromise = new Promise<MaterialItem[]>((res, rej) => {
-                rej("No user");
+        return new Promise<MaterialItem[]>((res, rej) => {
+            this.userService.fetchMaterials().then(user => {
+                res(user.materials);
             });
-        }
-
-        return this._materialPromise;
+        });
     }
 
-    private _getOwnedMaterials(): Promise<MaterialItem[]> {
-        let url = this.ownedMaterialsUrl.replace(':_id', this.userService.getLoggedInUser()._id);
-        return this.http.get(url)
-            .toPromise()
-            .then(response => {
-                return response.json() as MaterialItem[];
-            })
-            .catch(this.handleError);
+    getTeamMaterials(): Promise<Team[]> {
+        return new Promise<Team[]>((res, rej) => {
+            this.userService.fetchMaterials().then(user => {
+                res(user.memberOfTeams);
+            });
+        });
+    }
+
+    getAdminTeamMaterials(): Promise<Team[]> {
+        return new Promise<Team[]>((res, rej) => {
+            this.userService.fetchMaterials().then(user => {
+                res(user.adminOfTeams);
+            });
+        });
     }
 
     downloadMaterial(id: string): void {
@@ -100,6 +102,10 @@ export class LibraryService {
             });
     }
 
+    /**
+     * Util method to sort a material item's versions
+     * @param m the material item to find the latest version for
+     */
     getLatestVersionForMaterialItem(m: MaterialItem): MaterialItemVersion {
         m.versions.sort((a, b) => {
             return b.ver - a.ver;

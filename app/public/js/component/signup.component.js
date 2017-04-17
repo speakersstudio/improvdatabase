@@ -18,6 +18,7 @@ var cart_service_1 = require("../service/cart.service");
 var config_1 = require("../config");
 var user_1 = require("../model/user");
 var anim_util_1 = require("../util/anim.util");
+var bracket_card_directive_1 = require("../view/bracket-card.directive");
 var SignupComponent = (function () {
     function SignupComponent(_app, router, userService, libraryService, cartService) {
         this._app = _app;
@@ -38,7 +39,7 @@ var SignupComponent = (function () {
         });
         this.stripe = Stripe(config_1.Config.STRIPE_KEY);
         var elements = this.stripe.elements();
-        this.card = elements.create('card', {
+        this.creditCard = elements.create('card', {
             // value: {postalCode: this.user.zip},
             style: {
                 base: {
@@ -57,7 +58,7 @@ var SignupComponent = (function () {
                 }
             }
         });
-        this.card.addEventListener('change', function (e) {
+        this.creditCard.addEventListener('change', function (e) {
             _this.cardComplete = e.complete;
             if (e.error) {
                 _this.cardError = e.error.message;
@@ -81,15 +82,19 @@ var SignupComponent = (function () {
             this.teamName = '';
             this.showPackages(value == 'team');
         }
-        anim_util_1.CardAnim.openCard(cardToOpen, 200);
-        anim_util_1.CardAnim.closeCard(cardToClose, 200);
+        var delay = 400;
+        if (cardToOpen.isOpen) {
+            delay = 200;
+        }
+        cardToOpen.open(delay);
+        cardToClose.close(delay);
         setTimeout(function () {
             _this[option] = value;
-        }, 400);
+        }, delay * 2);
     };
     SignupComponent.prototype.reset = function () {
         var _this = this;
-        this._app.scrollTo(0, 600);
+        this._app.scrollTo(0);
         setTimeout(function () {
             _this.userType = '';
             _this.teamOption = '';
@@ -98,21 +103,21 @@ var SignupComponent = (function () {
             _this.userName = '';
             _this.teamName = '';
             _this.selectedPackage = null;
-            anim_util_1.CardAnim.openCard(_this.facilitatorCard.nativeElement, 200);
-            anim_util_1.CardAnim.openCard(_this.improviserCard.nativeElement, 200);
+            _this.facilitatorCard.open(500);
+            _this.improviserCard.open(500);
         }, 600);
     };
     SignupComponent.prototype.selectFacilitator = function () {
-        this.selectCard('userType', 'facilitator', this.facilitatorCard.nativeElement, this.improviserCard.nativeElement);
+        this.selectCard('userType', 'facilitator', this.facilitatorCard, this.improviserCard);
     };
     SignupComponent.prototype.selectImproviser = function () {
-        this.selectCard('userType', 'improviser', this.improviserCard.nativeElement, this.facilitatorCard.nativeElement);
+        this.selectCard('userType', 'improviser', this.improviserCard, this.facilitatorCard);
     };
     SignupComponent.prototype.selectYourself = function () {
-        this.selectCard('teamOption', 'individual', this.yourselfCard.nativeElement, this.yourTeamCard.nativeElement);
+        this.selectCard('teamOption', 'individual', this.yourselfCard, this.yourTeamCard);
     };
     SignupComponent.prototype.selectYourTeam = function () {
-        this.selectCard('teamOption', 'team', this.yourTeamCard.nativeElement, this.yourselfCard.nativeElement);
+        this.selectCard('teamOption', 'team', this.yourTeamCard, this.yourselfCard);
     };
     SignupComponent.prototype.showPackages = function (team) {
         var _this = this;
@@ -128,19 +133,21 @@ var SignupComponent = (function () {
         }
         this.selectedPackage = null;
         this.packageCards.forEach(function (card) {
-            if (card.nativeElement != cardClicked) {
-                anim_util_1.CardAnim.closeCard(card.nativeElement, 200);
+            if (card.card != cardClicked) {
+                card.close(200);
+            }
+            else {
+                card.open(200);
             }
         });
-        anim_util_1.CardAnim.openCard(cardClicked, 200);
         setTimeout(function () {
             _this.selectedPackage = pack;
             // setup the stripe credit card input
-            _this.card.unmount();
+            _this.creditCard.unmount();
             setTimeout(function () {
-                _this.card.mount('#card-element');
+                _this.creditCard.mount('#card-element');
             }, 400);
-        }, 200);
+        }, 400);
     };
     SignupComponent.prototype.isFormValid = function () {
         if (!this.email) {
@@ -182,7 +189,7 @@ var SignupComponent = (function () {
         user.password = this.password;
         this._app.showLoader();
         this.isPosting = true;
-        this.stripe.createToken(this.card).then(function (result) {
+        this.stripe.createToken(this.creditCard).then(function (result) {
             if (result.error) {
                 _this.cardError = result.error.message;
             }
@@ -195,8 +202,8 @@ var SignupComponent = (function () {
                     var msg = response.json();
                     if (msg.error && msg.error == 'email already exists') {
                         _this.emailError = "That email address is already registered.";
-                        var card = _this.facilitatorCard.nativeElement;
-                        _this._app.scrollTo(card.offsetTop, 600);
+                        // let card: HTMLElement = this.facilitatorCard.nativeElement;
+                        // this._app.scrollTo(card.offsetTop);
                     }
                 })
                     .then(function (u) {
@@ -215,23 +222,23 @@ var SignupComponent = (function () {
     return SignupComponent;
 }());
 __decorate([
-    core_1.ViewChild('facilitatorCard'),
-    __metadata("design:type", core_1.ElementRef)
+    core_1.ViewChild('facilitatorCard', { read: bracket_card_directive_1.BracketCardDirective }),
+    __metadata("design:type", bracket_card_directive_1.BracketCardDirective)
 ], SignupComponent.prototype, "facilitatorCard", void 0);
 __decorate([
-    core_1.ViewChild('improviserCard'),
-    __metadata("design:type", core_1.ElementRef)
+    core_1.ViewChild('improviserCard', { read: bracket_card_directive_1.BracketCardDirective }),
+    __metadata("design:type", bracket_card_directive_1.BracketCardDirective)
 ], SignupComponent.prototype, "improviserCard", void 0);
 __decorate([
-    core_1.ViewChild('yourselfCard'),
-    __metadata("design:type", core_1.ElementRef)
+    core_1.ViewChild('yourselfCard', { read: bracket_card_directive_1.BracketCardDirective }),
+    __metadata("design:type", bracket_card_directive_1.BracketCardDirective)
 ], SignupComponent.prototype, "yourselfCard", void 0);
 __decorate([
-    core_1.ViewChild('yourTeamCard'),
-    __metadata("design:type", core_1.ElementRef)
+    core_1.ViewChild('yourTeamCard', { read: bracket_card_directive_1.BracketCardDirective }),
+    __metadata("design:type", bracket_card_directive_1.BracketCardDirective)
 ], SignupComponent.prototype, "yourTeamCard", void 0);
 __decorate([
-    core_1.ViewChildren('packageCard'),
+    core_1.ViewChildren('packageCard', { read: bracket_card_directive_1.BracketCardDirective }),
     __metadata("design:type", core_1.QueryList)
 ], SignupComponent.prototype, "packageCards", void 0);
 SignupComponent = __decorate([

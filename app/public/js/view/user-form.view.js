@@ -80,7 +80,7 @@ __decorate([
     __metadata("design:type", core_1.EventEmitter)
 ], UserFormView.prototype, "back", void 0);
 __decorate([
-    core_1.Output(),
+    core_1.Output('valid'),
     __metadata("design:type", core_1.EventEmitter)
 ], UserFormView.prototype, "onValidated", void 0);
 UserFormView = __decorate([

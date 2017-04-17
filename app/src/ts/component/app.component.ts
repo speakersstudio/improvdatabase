@@ -65,6 +65,9 @@ export class AppComponent implements OnInit {
     dialogConfirm: string = "";
     dialogOnConfirm: Function;
 
+    toastMessage: string;
+    toastMessageQueue: string[] = [];
+
     constructor(
         private _renderer: Renderer2,
         private router: Router,
@@ -230,6 +233,26 @@ export class AppComponent implements OnInit {
         }
     }
 
+    private _toastTimer: NodeJS.Timer;
+    toast(message: string): void {
+        this.toastMessageQueue.push(message);
+        if (!this.toastMessage) {
+            this.hideToast();
+        }
+    }
+
+    hideToast(): void {
+        clearTimeout(this._toastTimer);
+        if (this.toastMessageQueue.length) {
+            this.toastMessage = this.toastMessageQueue.shift();
+            this._toastTimer = setTimeout(() => {
+                this.hideToast();
+            }, 5000);
+        } else {
+            this.toastMessage = '';
+        }
+    }
+
     login(): void {
         if (this.user) {
             this.router.navigate(['/app']);
@@ -264,7 +287,7 @@ export class AppComponent implements OnInit {
         }
     }
 
-    scrollTo(to, duration) {
+    scrollTo(to, duration?: number) {
         let maxScroll = document.body.scrollHeight - window.innerHeight;
         if (maxScroll < to) {
             duration = duration * (maxScroll / to);
@@ -274,6 +297,8 @@ export class AppComponent implements OnInit {
         let from = window.scrollY,
             difference = to - from,
             perTick = duration > 0 ? difference / duration * 10 : difference;
+
+        duration = duration || Math.abs(difference);
 
         let easeInOutQuad = function (time, start, end, duration) {
             let reverse = false,

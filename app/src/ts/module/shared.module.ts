@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -15,24 +16,32 @@ import { UserService } from "../service/user.service";
 import { AuthGuard } from "../service/auth-guard.service";
 import { CartService } from '../service/cart.service';
 
+import { FormInputDirective } from '../view/form-input.directive';
+import { BracketCardDirective } from '../view/bracket-card.directive';
+
 @NgModule({
     imports: [
         BrowserModule,
-        FormsModule
+        FormsModule,
+        RouterModule
     ],
     declarations: [
         IPlusView,
         LoginView,
         UserFormView,
         LandingHeroView,
-        FormInputView
+        FormInputView,
+        FormInputDirective,
+        BracketCardDirective
     ],
     exports: [
         IPlusView,
         LoginView,
         UserFormView,
         LandingHeroView,
-        FormInputView
+        FormInputView,
+        FormInputDirective,
+        BracketCardDirective
     ],
     providers: [
         GameDatabaseService,

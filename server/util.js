@@ -86,6 +86,34 @@ module.exports = {
             array.splice(indexInArray, 1);
         }
         return array;
+    },
+
+    unionArrays: function() {
+        let arrayKeys = Object.keys(arguments),
+            union = [],
+            obj = {};
+
+        arrayKeys.forEach(key => {
+            arguments[key].forEach(item => {
+                if (typeof item == 'object') {
+                    let itemKey;
+                    if (item._id) {
+                        itemKey = item._id.toString() || item._id;
+                    } else {
+                        itemKey = JSON.stringify(item);
+                    }
+                    obj[itemKey] = item;
+                } else {
+                    obj[item] = item;
+                }
+            });
+        });
+
+        Object.keys(obj).forEach(itemKey => {
+            union.push(obj[itemKey]);
+        })
+
+        return union;
     }
 
 }

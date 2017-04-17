@@ -15,6 +15,7 @@ var common_1 = require("@angular/common");
 var forms_1 = require("@angular/forms");
 var app_component_1 = require("../../component/app.component");
 var user_service_1 = require("../../service/user.service");
+var time_util_1 = require("../../util/time.util");
 var MAX_ATTEMPTS = 5;
 var UserComponent = (function () {
     function UserComponent(userService, router, location, _app, fb) {
@@ -24,6 +25,19 @@ var UserComponent = (function () {
         this._app = _app;
         this.fb = fb;
         this.title = "Account";
+        this.tabs = [
+            {
+                name: 'Your Account',
+                id: 'user',
+                icon: 'user'
+            },
+            {
+                name: 'Purchase History',
+                id: 'purchases',
+                icon: 'money'
+            }
+        ];
+        this.selectedTab = 'user';
         this._tools = [
             {
                 icon: "fa-sign-out",
@@ -34,11 +48,20 @@ var UserComponent = (function () {
         ];
     }
     UserComponent.prototype.ngOnInit = function () {
+        var _this = this;
         this.errorCount = 0;
         this.weGood = true;
         this.user = this._app.user;
+        this.userService.fetchPurchases().then(function (u) {
+            _this.purchases = u.purchases;
+            _this.teamPurchases = u.adminOfTeams;
+            console.log(_this.teamPurchases);
+        });
     };
     UserComponent.prototype.ngOnDestroy = function () {
+    };
+    UserComponent.prototype.selectTab = function (tab) {
+        this.selectedTab = tab.id;
     };
     UserComponent.prototype.logout = function () {
         this._app.logout();
@@ -49,6 +72,8 @@ var UserComponent = (function () {
             this.userService.updateUser(user)
                 .then(function () {
                 _this.isPosting = false;
+                console.log('hello');
+                _this._app.toast("Your information has been saved!");
             })
                 .catch(function () {
                 _this.isPosting = false;
@@ -62,6 +87,12 @@ var UserComponent = (function () {
                 this._app.logout();
                 break;
         }
+    };
+    UserComponent.prototype.getDate = function (date) {
+        return time_util_1.TimeUtil.simpleDate(date);
+    };
+    UserComponent.prototype.getTime = function (date) {
+        return time_util_1.TimeUtil.simpleTime(date);
     };
     return UserComponent;
 }());

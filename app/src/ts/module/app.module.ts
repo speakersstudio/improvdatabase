@@ -25,7 +25,7 @@ import { ImprovPlusModule } from '../app/module/improvplus.module';
 import { LoginScreenComponent } from '../component/login-screen.component';
 import { SignupComponent } from '../component/signup.component';
 
-import { FormInputDirective } from '../view/form-input.directive';
+// import { FormInputDirective } from '../view/form-input.directive';
 
 @NgModule({
     imports: [
@@ -43,7 +43,7 @@ import { FormInputDirective } from '../view/form-input.directive';
         AppComponent,
         WelcomeComponent,
         SignupComponent,
-        FormInputDirective
+        // FormInputDirective
     ],
     bootstrap: [ AppComponent ],
     providers: [

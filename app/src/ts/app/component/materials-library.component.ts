@@ -10,6 +10,7 @@ import { LibraryService } from '../../service/library.service';
 import { Subscription } from '../../model/subscription';
 import { Package } from '../../model/package';
 import { MaterialItem } from '../../model/material-item';
+import { Team } from '../../model/team';
 
 import { UserService } from '../../service/user.service';
 
@@ -25,7 +26,9 @@ export class MaterialsLibraryComponent implements OnInit {
     filter: boolean; // TODO
     searchResults: SearchResult[] = [];
 
-    ownedMaterials: MaterialItem[];
+    ownedMaterials: MaterialItem[] = [];
+    teams: Team[] = [];
+    adminTeams: Team[] = [];
 
     constructor(
         private _app: AppComponent,
@@ -54,24 +57,20 @@ export class MaterialsLibraryComponent implements OnInit {
                 this._app.hideLoader();
                 this.ownedMaterials = materials;
             });
+
+        this.libraryService.getTeamMaterials()
+            .then(teams => {
+                this.teams = teams;
+            });
+
+        this.libraryService.getAdminTeamMaterials()
+            .then(teams => {
+                this.adminTeams = teams;
+            });
     }
 
     clearFilter(): void {
 
-    }
-
-    selectMaterial(material: MaterialItem): void {
-        this.libraryService.downloadMaterial(material._id);
-    }
-
-    versionTag(m: MaterialItem): string {
-        let v = this.libraryService.getLatestVersionForMaterialItem(m);
-        // TODO: show the date this was released
-        if (v) {
-            return "version " + v.ver;
-        } else {
-            return "no version published";
-        }
     }
 
 }

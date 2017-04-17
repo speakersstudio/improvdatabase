@@ -23,13 +23,16 @@
                 </div>
             </div>-->
 
-            <div class="content clickable" *ngIf="user && userService.can('account_edit')" routerLink="/app/user">
+            <div class="content clickable" *ngIf="user && userService.can('account_edit')" routerLinkActive="active" routerLink="/app/user">
 
                 <div class="user-picture">
                     <i class="fa fa-user"></i>
                 </div>
-                <div class="user-name">{{user.email}}</div>
-
+                <div class="user-name">
+                    {{user.email}}
+                </div>
+                <div class="link">View your account</div>
+                
             </div>
         </div>
         
@@ -101,6 +104,10 @@
             <button (click)="onDialogConfirm()">{{dialogConfirm}}</button>
         </div>
     </div>
+</div>
+
+<div class="toast" (click)="hideToast()">
+    <span [@dialog] *ngIf="toastMessage">{{toastMessage}}</span>
 </div>
 
 <login [show]="showLogin" (done)="handleLogin($user)" class="dialog-container" [class.show]="showLogin"></login>

@@ -1,0 +1,37 @@
+<div class="content">
+    <!--<h4 class="right">Your Materials</h4>-->
+
+    <p *ngIf="team">These materials are available to everyone in {{team.name}}.</p>
+
+    <div class="card-list">
+
+        <div class="card small clickable {{material.color}}"
+            *ngFor="let material of materials"
+            (click)="selectMaterial(material)">
+
+            <div class="top">
+                <i *ngIf="material.versions[0] && material.versions[0].extension == 'pdf'" class="fa fa-file-pdf-o" title="PDF"></i>
+                <h3>{{material.name}}</h3>
+            </div>
+            <div class="body">
+                <p>{{material.description}}</p>
+                <ul class="taglist grey">
+                    <li *ngFor="let tag of material.tags">{{tag}}</li>
+                    <li class="dull">{{versionTag(material)}}</li>
+                </ul>
+            </div>
+            <!--<div class="action">
+                <a href="#" class="button">Download</a>
+            </div>-->
+        </div>
+
+    </div>
+
+</div>
+
+<div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+
+<div class="right-bracket">
+    <h1 *ngIf="!team">Your Materials</h1>
+    <h1 *ngIf="team">{{team.name}}</h1>
+</div>

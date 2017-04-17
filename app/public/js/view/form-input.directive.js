@@ -24,6 +24,9 @@ var FormInputDirective = (function () {
         this.inputElement.setAttribute('placeholder', '');
         this.labelElement = document.createElement('label');
         this.labelElement.textContent = this.placeholder;
+        if (this.inputElement.required) {
+            this.labelElement.textContent += ' *';
+        }
         this.divElement.appendChild(this.labelElement);
         setTimeout(function () {
             if (_this.inputElement.value) {

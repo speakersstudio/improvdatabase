@@ -37,6 +37,9 @@ export class FormInputDirective implements OnInit {
 
         this.labelElement = document.createElement('label');
         this.labelElement.textContent = this.placeholder;
+        if (this.inputElement.required) {
+            this.labelElement.textContent += ' *';
+        }
         this.divElement.appendChild(this.labelElement);
 
         setTimeout(() => {

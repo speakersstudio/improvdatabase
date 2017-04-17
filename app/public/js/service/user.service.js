@@ -45,6 +45,7 @@ var UserService = (function () {
     };
     UserService.prototype.login = function (email, password) {
         var _this = this;
+        this.isLoggingIn = true;
         return this.http.post(this.loginUrl, {
             email: email,
             password: password
@@ -54,6 +55,7 @@ var UserService = (function () {
     UserService.prototype.refreshToken = function () {
         var _this = this;
         if (this.checkTokenExpiration()) {
+            this.isLoggingIn = true;
             return this.http.post(this.refreshUrl, {})
                 .toPromise()
                 .then(function (response) { return _this._handleLoginRequest(response); });
@@ -65,19 +67,10 @@ var UserService = (function () {
         this.loggedInUser = responseData.user;
         // don't save the password
         this.loggedInUser.password = "";
+        this.isLoggingIn = false;
         this.announceLoginState();
         return this.loggedInUser;
     };
-    // appendAuthorizationHeader(headers: Headers): Headers {
-    //     // TODO: somehow make this asynchronous so we can refresh the token if necessary?
-    //     if (this.checkTokenExpiration()) {
-    //         headers.append('x-access-token', this.getToken());
-    //     }
-    //     return headers;
-    // }
-    // getAuthorizationHeader (): Object {
-    //     return { headers: this.appendAuthorizationHeader(new Headers()) };
-    // }
     UserService.prototype.logout = function () {
         var _this = this;
         return this.http.post(this.logoutUrl, {})
@@ -86,6 +79,8 @@ var UserService = (function () {
             _this.http.setToken(null, 0);
             // this.token = null;
             _this.loggedInUser = null;
+            _this._materialPromise = null;
+            _this._purchasePromise = null;
             _this.announceLoginState();
             return true;
         });
@@ -93,9 +88,6 @@ var UserService = (function () {
     UserService.prototype.isLoggedIn = function () {
         return this.loggedInUser && true;
     };
-    // private getToken(): string {
-    //     return this.token;
-    // }
     UserService.prototype.getLoggedInUser = function () {
         if (this.checkTokenExpiration()) {
             return this.loggedInUser;
@@ -112,7 +104,8 @@ var UserService = (function () {
         return this.http.put(this.userUrl + this.loggedInUser._id, user)
             .toPromise()
             .then(function (response) {
-            _this.loggedInUser = response.json();
+            var user = response.json();
+            Object.assign(_this.loggedInUser, user);
             return _this.loggedInUser;
         });
     };
@@ -123,7 +116,8 @@ var UserService = (function () {
             val: val
         }).toPromise()
             .then(function (response) {
-            _this.loggedInUser = response.json();
+            var user = response.json();
+            Object.assign(_this.loggedInUser, user);
             return _this.loggedInUser;
         });
     };
@@ -139,7 +133,7 @@ var UserService = (function () {
         return value;
     };
     UserService.prototype.can = function (key) {
-        if (!this.loggedInUser || !this.loggedInUser.actions.length) {
+        if (!this.loggedInUser || !this.loggedInUser.actions || !this.loggedInUser.actions.length) {
             return false;
         }
         else {
@@ -161,6 +155,26 @@ var UserService = (function () {
                 return '';
             }
         });
+    };
+    UserService.prototype.fetchMaterials = function () {
+        if (!this._materialPromise) {
+            this._materialPromise = this.http.get(this.userUrl + this.loggedInUser._id + '/materials')
+                .toPromise()
+                .then(function (response) {
+                return response.json();
+            });
+        }
+        return this._materialPromise;
+    };
+    UserService.prototype.fetchPurchases = function () {
+        if (!this._purchasePromise) {
+            this._purchasePromise = this.http.get(this.userUrl + this.loggedInUser._id + '/purchases')
+                .toPromise()
+                .then(function (response) {
+                return response.json();
+            });
+        }
+        return this._purchasePromise;
     };
     return UserService;
 }());

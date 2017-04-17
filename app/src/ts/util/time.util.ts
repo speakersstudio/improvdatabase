@@ -1,8 +1,14 @@
 export class TimeUtil {
 
-    static simpleDate(dateString: string): string {
-        let date = new Date(dateString),
-            month = this.getMonthName(date.getMonth()),
+    static simpleDate(dateString: any): string {
+        let date;
+        if (typeof(dateString) == 'string') {
+            date = new Date(dateString);
+        } else {
+            date = dateString;
+        }
+
+        let month = this.getMonthName(date.getMonth()),
             day = date.getDate(),
             year = date.getFullYear();
 
@@ -36,6 +42,16 @@ export class TimeUtil {
             case 11:
                 return "December";
         }
+    }
+
+    static simpleTime(dateString: string): string {
+        let date = new Date(dateString),
+            rawHours = date.getHours(),
+            mins = date.getMinutes(),
+            ampm = rawHours > 11 ? 'pm' : 'am',
+            hours = rawHours > 12 ? rawHours - 12 : rawHours;
+
+        return hours + ':' + mins + ' ' + ampm;
     }
 
 }

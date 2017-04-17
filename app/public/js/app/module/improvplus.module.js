@@ -27,6 +27,7 @@ var admin_component_1 = require("../component/admin.component");
 var toolbar_view_1 = require("../view/toolbar.view");
 var game_card_view_1 = require("../view/game-card.view");
 var create_metadata_view_1 = require("../view/create-metadata.view");
+var materials_page_view_1 = require("../view/materials-page.view");
 var shared_module_1 = require("../../module/shared.module");
 var improvplus_routing_module_1 = require("./improvplus-routing.module");
 // utils
@@ -60,7 +61,8 @@ ImprovPlusModule = __decorate([
             admin_component_1.AdminComponent,
             toolbar_view_1.ToolbarView,
             game_card_view_1.GameCardView,
-            create_metadata_view_1.CreateMetadataView
+            create_metadata_view_1.CreateMetadataView,
+            materials_page_view_1.MaterialsPageView
         ],
         // bootstrap: [ AppComponent ],
         providers: []

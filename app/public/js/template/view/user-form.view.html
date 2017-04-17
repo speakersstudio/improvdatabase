@@ -1,68 +1,88 @@
 <form name="edit-user" class="content" (ngSubmit)="submitForm()" #userForm="ngForm">
             
     <div class="section">
-        <label>
-            Email*
-            <input name="email" [(ngModel)]="user.email" required type="text" placeholder="Email" />
-            
-            <label class="error" *ngIf="emailConflict">It seems this email address already exists!</label>
-        </label>
+        <input name="email"
+            [(ngModel)]="user.email"
+            placeholder="Email"
+            formInput
+            required
+            type="text" />
+        <span class="error" *ngIf="emailConflict">{{emailError}}</span>
 
-        <div class="columns">
-            <label>Name*
-                <input name="first-name" [(ngModel)]="user.firstName" required type="text" placeholder="First Name" />
-            </label>
-            <label>&nbsp;
-                <input name="last-name" [(ngModel)]="user.lastName" required type="text" placeholder="Last Name" />
-            </label>
+        <div class="columns responsive">
+            <input name="first-name"
+                [(ngModel)]="user.firstName"
+                placeholder="First Name"
+                formInput
+                required
+                type="text" />
+            <input name="last-name"
+                [(ngModel)]="user.lastName"
+                placeholder="Last Name"
+                formInput
+                required
+                type="text" />
         </div>
 
-        <div class="columns">
-            <div>
-                <label>Title
-                    <input name="title" [(ngModel)]="user.title" type="text" placeholder="Title" />
-                </label>
-            </div>
-            <div>
-                <label>Company (if applicable)
-                    <input name="company" [(ngModel)]="user.company" type="text" placeholder="Company" />
-                </label>
-            </div>
+        <div class="columns responsive">
+            <input name="title"
+                [(ngModel)]="user.title"
+                placeholder="Title"
+                formInput
+                type="text" />
+            <input name="company"
+                [(ngModel)]="user.company"
+                placeholder="Company"
+                formInput
+                type="text" />
         </div>
     </div>
 
     <div class="section">
-        <!--<div class="columns">
-            <label>
-                <input type="radio" name="gender" value="M" [(ngModel)]="user.Gender" />
-                Male
-            </label>
-            <label>
-                <input type="radio" name="gender" value="F" [(ngModel)]="user.Gender" />
-                Female
-            </label>
-            <label>
-                <input type="radio" name="gender" value="O" [(ngModel)]="user.Gender" />
-                None of your business
-            </label>
-        </div>-->
-        <div class="columns">
-            <label>Address*
-                <input name="address" [(ngModel)]="user.address" required type="text" placeholder="Address" />
-                <div class="columns">
-                    <input name="city" [(ngModel)]="user.city" required type="text" placeholder="City" />
-                    <input name="state" [(ngModel)]="user.state" maxlength="2" required type="text" placeholder="State" />
-                    <input name="zip" [(ngModel)]="user.zip" maxlength="5" required type="text" placeholder="Zip" />
-                </div>
-                <input name="country" [(ngModel)]="user.country" type="text" placeholder="Country" />
-            </label>
+        <div class="columns responsive">
             <div>
-                <label>Phone
-                    <input name="phone" [(ngModel)]="user.phone" type="text" placeholder="Phone" />
-                </label>
-                <label>Website
-                    <input name="URL" [(ngModel)]="user.url" type="text" placeholder="URL" />
-                </label>
+                <input name="address"
+                    [(ngModel)]="user.address"
+                    placeholder="Address"
+                    formInput
+                    type="text" />
+                <div class="columns">
+                    <input name="city"
+                        [(ngModel)]="user.city"
+                        placeholder="City"
+                        formInput
+                        type="text" />
+                    <input name="state"
+                        [(ngModel)]="user.state"
+                        placeholder="State"
+                        maxlength="2"
+                        formInput
+                        type="text" />
+                    <input name="zip"
+                        [(ngModel)]="user.zip"
+                        placeholder="Zip"
+                        maxlength="5"
+                        formInput
+                        type="text" />
+                </div>
+                <input name="country"
+                    [(ngModel)]="user.country"
+                    placeholder="Country"
+                    formInput
+                    type="text" />
+            </div>
+            
+            <div>
+                <input name="phone"
+                    [(ngModel)]="user.phone"
+                    placeholder="Phone"
+                    formInput
+                    type="text" />
+                <input name="url"
+                    [(ngModel)]="user.url"
+                    placeholder="URL"
+                    formInput
+                    type="text" />
             </div>
         </div>
 
@@ -105,9 +125,21 @@
     </div>
 
     <div class="section">
-        <div class="columns">
-            <input name="change-password" [(ngModel)]="password" type="password" placeholder="Password" [required]="newUser ? 'required' : 'false'" />
-            <input name="change-password-confirm" [(ngModel)]="passwordConfirm" type="password" placeholder="Confirm Password" [required]="newUser ? 'required' : 'false'" />
+        <div class="columns responsive">
+            <input name="change-password"
+                [(ngModel)]="password"
+                type="password"
+                placeholder="Password"
+                [required]="newUser ? 'required' : 'false'"
+                formInput
+                type="text" />
+            <input name="change-password-confirm"
+                [(ngModel)]="passwordConfirm"
+                type="password"
+                placeholder="Confirm Password"
+                [required]="newUser ? 'required' : 'false'"
+                formInput
+                type="text" />
         </div>
         <label *ngIf="!newUser">(Leave the password blank if you don't want to change it)</label>
         <label class="error" *ngIf="passwordMatchError">The two passwords you entered do not match.</label>

@@ -29,6 +29,8 @@ export class UserService {
     // @LocalStorage() tokenExpires: number;
     @LocalStorage() loggedInUser: User;
 
+    private isLoggingIn: boolean;
+
     private logginStateSource = new Subject<User>();
 
     loginState$ = this.logginStateSource.asObservable();
@@ -52,6 +54,7 @@ export class UserService {
     }
 
     login(email: string, password: string): Promise<User> {
+        this.isLoggingIn = true;
         return this.http.post(this.loginUrl, {
                 email: email,
                 password: password
@@ -61,6 +64,7 @@ export class UserService {
 
     refreshToken(): Promise<User> {
         if (this.checkTokenExpiration()) {
+            this.isLoggingIn = true;
             return this.http.post(this.refreshUrl, {})
                 .toPromise()
                 .then(response => this._handleLoginRequest(response));
@@ -77,22 +81,11 @@ export class UserService {
         // don't save the password
         this.loggedInUser.password = "";
 
+        this.isLoggingIn = false;
         this.announceLoginState();
 
         return this.loggedInUser;
     }
-
-    // appendAuthorizationHeader(headers: Headers): Headers {
-    //     // TODO: somehow make this asynchronous so we can refresh the token if necessary?
-    //     if (this.checkTokenExpiration()) {
-    //         headers.append('x-access-token', this.getToken());
-    //     }
-    //     return headers;
-    // }
-
-    // getAuthorizationHeader (): Object {
-    //     return { headers: this.appendAuthorizationHeader(new Headers()) };
-    // }
 
     logout(): Promise<boolean> {
         return this.http.post(this.logoutUrl, {})
@@ -101,6 +94,8 @@ export class UserService {
                 this.http.setToken(null, 0);
                 // this.token = null;
                 this.loggedInUser = null;
+                this._materialPromise = null;
+                this._purchasePromise = null;
 
                 this.announceLoginState();
                 return true;
@@ -110,10 +105,6 @@ export class UserService {
     isLoggedIn(): boolean {
         return this.loggedInUser && true;
     }
-
-    // private getToken(): string {
-    //     return this.token;
-    // }
 
     getLoggedInUser(): User {
         if (this.checkTokenExpiration()) {
@@ -130,7 +121,8 @@ export class UserService {
         return this.http.put(this.userUrl + this.loggedInUser._id, user)
             .toPromise()
             .then((response) => {
-                this.loggedInUser = response.json() as User;
+                let user = response.json() as User;
+                Object.assign(this.loggedInUser, user);
                 return this.loggedInUser;
             });
     }
@@ -141,7 +133,9 @@ export class UserService {
             val: val
         }).toPromise()
             .then((response) => {
-                this.loggedInUser = response.json() as User;
+                let user = response.json() as User;
+                Object.assign(this.loggedInUser, user);
+                
                 return this.loggedInUser;
             });
     }
@@ -161,7 +155,7 @@ export class UserService {
     }
 
     can (key: string): boolean {
-        if (!this.loggedInUser || !this.loggedInUser.actions.length) {
+        if (!this.loggedInUser || !this.loggedInUser.actions || !this.loggedInUser.actions.length) {
             return false;
         } else {
             return this.loggedInUser.actions.indexOf(key) > -1;
@@ -183,6 +177,30 @@ export class UserService {
                     return '';
                 }
             })
+    }
+
+    private _materialPromise: Promise<User>;
+    fetchMaterials(): Promise<User> {
+        if (!this._materialPromise) {
+            this._materialPromise = this.http.get(this.userUrl + this.loggedInUser._id + '/materials')
+                .toPromise()
+                .then(response => {
+                    return response.json() as User;
+                });
+        }
+        return this._materialPromise;
+    }
+
+    private _purchasePromise: Promise<User>;
+    fetchPurchases(): Promise<User> {
+        if (!this._purchasePromise) {
+            this._purchasePromise = this.http.get(this.userUrl + this.loggedInUser._id + '/purchases')
+                .toPromise()
+                .then(response => {
+                    return response.json() as User;
+                });
+        }
+        return this._purchasePromise;
     }
 
 }

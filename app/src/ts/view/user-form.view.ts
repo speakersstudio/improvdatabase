@@ -26,7 +26,7 @@ export class UserFormView implements OnInit, OnDestroy {
     @Input() saveText: string = "Save";
 
     @Output() back: EventEmitter<boolean> = new EventEmitter();
-    @Output() onValidated: EventEmitter<User> = new EventEmitter();
+    @Output('valid') onValidated: EventEmitter<User> = new EventEmitter();
 
     newUser: boolean;
 

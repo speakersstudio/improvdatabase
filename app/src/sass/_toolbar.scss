@@ -427,7 +427,7 @@ nav {
             /* makes it square! */
             content: "";
             display: block;
-            padding-top: 100%;
+            padding-top: 85%;
         }
 
         .content {
@@ -436,6 +436,7 @@ nav {
             flex-direction: column;
             justify-content: space-around;
             align-items: center;
+            text-align: center;
             overflow: hidden;
             margin: 0;
             cursor: pointer;
@@ -473,9 +474,28 @@ nav {
                 transition: color 300ms;
             }
 
+            .link {
+                height: 0;
+                overflow: hidden;
+                margin-bottom: -$std;
+                transition: height 250ms, color 250ms;
+            }
+
+            &.active {
+                background-color: $color-active-bg;
+                color: $color-active;
+                box-shadow: 0px 2px 10px rgba(0,0,0,0.1) inset;
+
+                .link {
+                    color: $color-active;
+                    height: $std * 2;
+                }
+            }
+
             &:hover {
-                .user-name {
+                .link {
                     color: $color-primary;
+                    height: $std * 2;
                 }
             }
         }

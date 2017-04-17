@@ -106,7 +106,7 @@ function SessionStorage(key) {
     return exports.WebStorage(sessionStorage, key);
 }
 exports.SessionStorage = SessionStorage;
-var cache = {};
+// let cache = {};
 exports.WebStorage = function (webStorage, key) {
     return function (target, propertyName) {
         key = key || propertyName;
@@ -117,13 +117,14 @@ exports.WebStorage = function (webStorage, key) {
                 return WebStorageUtility.get(webStorage, key);
             },
             set: function (value) {
-                if (!cache[key]) {
-                    if (storedValue === null) {
-                        WebStorageUtility.set(webStorage, key, value);
-                    }
-                    cache[key] = true;
-                    return;
-                }
+                // I don't get the purpose of this, other than to break this code
+                // if (!cache[key]) {
+                //     if (storedValue === null) {
+                //         WebStorageUtility.set(webStorage, key, value);
+                //     }
+                //     cache[key] = true;
+                //     return;
+                // }
                 WebStorageUtility.set(webStorage, key, value);
             }
         });

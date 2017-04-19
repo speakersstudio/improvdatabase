@@ -55,7 +55,7 @@ iplus {
         transform: scale(1.5);
 
         .i {
-            top: -1px;
+            top: 0px;
         }
         .plus {
             top: -4px;
@@ -94,14 +94,14 @@ iplus {
         font-size: 83%;
         font-weight: bold;
         left: 6px;
-        top: -1px;
+        top: 1px;
         transition: color 300ms;
         text-transform: lowercase;
     }
     .plus {
         font-size: 70%;
         font-weight: bold;
-        top: -5px;
+        top: -3px;
         left: 10px;
         opacity: 1;
         transition: color 300ms, opacity 300ms;
@@ -242,6 +242,10 @@ iplus {
 
 .right {
     text-align: right;
+
+    input {
+        text-align: right;
+    }
 }
 
 .center {
@@ -335,6 +339,10 @@ iplus {
 }
 
 .tabs {
+    @media #{$media-mobile} {
+        text-align: right;
+    }
+
     .tab {
         display: inline-block;
         padding: $std;
@@ -358,22 +366,42 @@ iplus {
             border-bottom: 1px solid $color-transparent;
             cursor: default;
             font-weight: bold;
+            display: inline-block;
+        }
+
+        @media #{$media-mobile} {
+            white-space: nowrap;
+            width: $std;
+
+            span {
+                display: none;
+            }
         }
     }
     .fa {
+        width: $std;
+        text-align: center;
         margin-right: $small;
     }
 }
 
 .data-row {
     border-bottom: 1px solid $color-hr;
-    padding: $small 0;
-    margin: $small 0;
+    padding: ($small + $small/2) 0;
+    margin: 0;
+
+    &:last-child {
+        border-bottom: 0px;
+    }
 }
 
 .button-group {
     margin-top: $std;
     text-align: right;
+
+    .button:last-child {
+        margin-right: 0;
+    }
 }
 
 .form-input {
@@ -413,7 +441,7 @@ button,
     text-transform: uppercase;
     text-decoration: none;
 
-    @include md-elevation-transition("opacity $anim-duration");
+    @include md-elevation-transition("opacity #{$anim-duration}");
 
     iplus {
         margin-left: $small;
@@ -536,6 +564,10 @@ button,
             border-bottom: 0px;
         }
 
+        &.clickable:hover {
+            background: $color-bg;
+        }
+
         .badge {
             font-size: 24px;
             padding-right: 16px;
@@ -549,6 +581,7 @@ button,
 
         .metadata {
             overflow: hidden;
+            flex-grow: 1;
 
             .row {
                 display: flex;
@@ -591,6 +624,21 @@ button,
                 margin: 0 $std 0 0;
             }
         }
+
+        .action {
+            .fa {
+                font-size: $icon-size;
+            }
+
+            .button {
+                padding: 0;
+                margin: 0 $small;
+                padding: 0;
+                min-width: $icon-size;
+                width: $icon-size;
+                text-align: center;
+            }
+        }
     }
 } // end of .list
 
@@ -618,6 +666,14 @@ button,
             margin: 0;
             display: inline-block;
             width: auto;
+        }
+
+        input {
+            padding: 0 ($small / 2) 0;
+            margin: 0 ($small / 2) ($small / 2) 0;
+            display: inline-block;
+            width: auto;
+            text-align: left;
         }
     }
 
@@ -656,6 +712,10 @@ button,
     .fa {
         font-size: 0.9em;
         line-height: 14px;
+    }
+
+    &.grey {
+        background-color: $color-text;
     }
 
     &.flat {
@@ -752,6 +812,10 @@ button,
         padding: 0 $std;
     }
 
+    .button-group {
+        padding: 0 $std;
+    }
+
     h2 {
         color: $color-primary;
         font-size: 28px;
@@ -760,7 +824,7 @@ button,
 }
 
 .toast {
-    @include fixed(null, 0, $large*2, 0, 500);
+    @include fixed(null, 0, $page-bracket-width, 0, 500);
     display: flex;
     justify-content: center;
 

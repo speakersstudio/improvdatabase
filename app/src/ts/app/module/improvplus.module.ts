@@ -17,12 +17,16 @@ import { GameDetailsComponent } from '../component/game-details.component';
 import { HelpComponent } from "../component/help.component";
 import { LegalComponent } from "../component/legal.component";
 import { AdminComponent } from '../component/admin.component';
+import { TeamListComponent } from '../component/team-list.component';
+import { TeamDetailsComponent } from '../component/team-details.component';
 
 // sub-views
 import { ToolbarView } from '../view/toolbar.view';
 import { GameCardView } from '../view/game-card.view';
 import { CreateMetadataView } from '../view/create-metadata.view';
 import { MaterialsPageView } from '../view/materials-page.view';
+import { UserCardView } from '../view/user-card.view';
+import { EditableMetadataView } from '../view/editable-metadata.view';
 
 import { SharedModule } from '../../module/shared.module';
 import { ImprovPlusRoutingModule } from './improvplus-routing.module';
@@ -39,7 +43,6 @@ import { ImprovPlusRoutingModule } from './improvplus-routing.module';
         ImprovPlusRoutingModule
      ],
     declarations: [
-        // AppComponent,
         UnauthorizedComponent,
         DashboardComponent,
         MaterialsLibraryComponent,
@@ -48,6 +51,8 @@ import { ImprovPlusRoutingModule } from './improvplus-routing.module';
         ContactComponent,
         UserComponent,
         HelpComponent,
+        TeamListComponent,
+        TeamDetailsComponent,
         GameDetailsComponent,
         LegalComponent,
         AdminComponent,
@@ -55,7 +60,9 @@ import { ImprovPlusRoutingModule } from './improvplus-routing.module';
         ToolbarView,
         GameCardView,
         CreateMetadataView,
-        MaterialsPageView
+        MaterialsPageView,
+        UserCardView,
+        EditableMetadataView
     ],
     // bootstrap: [ AppComponent ],
     providers: [

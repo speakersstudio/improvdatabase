@@ -119,6 +119,7 @@
         position: relative;
         color: $color-white;
         background: $color-text;
+        border-radius: $border-radius $border-radius 0 0;
         
         &:before {
             content: "";

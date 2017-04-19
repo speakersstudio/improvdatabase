@@ -1,0 +1,47 @@
+<i class="fa fa-{{icon}}" *ngIf="icon"></i> 
+                    
+<span *ngIf="!editShown"
+    [class.clickable]="canEdit"
+    (click)="showEdit()"
+    [innerHTML]="text || blankText"></span>
+
+<input name="editMetadata" #metadataInput
+    *ngIf="editShown && type=='text'"
+    [(ngModel)]="editModel"
+    (keydown.enter)="pressEnter()"
+    (keydown.escape)="closeEdit()"
+    (blur)="saveEdit()" />
+
+<div *ngIf="editShown && type=='address'">
+
+    <input name="address" #metadataInput
+        [(ngModel)]="address"
+        placeholder="Address"
+        (keydown.enter)="saveEdit()"
+        (keydown.escape)="closeEdit()" />
+
+    <div class="columns">
+        <input name="city"
+            [(ngModel)]="city"
+            placeholder="City"
+            (keydown.enter)="saveEdit()"
+            (keydown.escape)="closeEdit()" />
+        <input name="state"
+            [(ngModel)]="state"
+            placeholder="State"
+            (keydown.enter)="saveEdit()"
+            (keydown.escape)="closeEdit()" />
+        <input name="zip"
+            [(ngModel)]="zip"
+            placeholder="Zip"
+            (keydown.enter)="saveEdit()"
+            (keydown.escape)="closeEdit()" />
+    </div>
+
+    <input name="country"
+        [(ngModel)]="country"
+        placeholder="Country"
+        (keydown.enter)="saveEdit()"
+        (keydown.escape)="closeEdit()" />
+
+</div>

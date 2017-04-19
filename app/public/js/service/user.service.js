@@ -14,6 +14,7 @@ var Rx_1 = require("rxjs/Rx");
 require("rxjs/add/operator/toPromise");
 var app_http_1 = require("../data/app-http");
 var user_1 = require("../model/user");
+var team_service_1 = require("./team.service");
 var webstorage_util_1 = require("../util/webstorage.util");
 var LoginResponse = (function () {
     function LoginResponse() {
@@ -21,8 +22,9 @@ var LoginResponse = (function () {
     return LoginResponse;
 }());
 var UserService = (function () {
-    function UserService(http) {
+    function UserService(http, teamService) {
         this.http = http;
+        this.teamService = teamService;
         this.loginUrl = '/login';
         this.logoutUrl = '/logout';
         this.refreshUrl = '/refreshToken';
@@ -81,6 +83,7 @@ var UserService = (function () {
             _this.loggedInUser = null;
             _this._materialPromise = null;
             _this._purchasePromise = null;
+            _this._subscriptionPromise = null;
             _this.announceLoginState();
             return true;
         });
@@ -140,6 +143,22 @@ var UserService = (function () {
             return this.loggedInUser.actions.indexOf(key) > -1;
         }
     };
+    UserService.prototype.isAdminOfTeam = function (team) {
+        return this.isUserAdminOfTeam(this.loggedInUser, team);
+    };
+    UserService.prototype.isUserAdminOfTeam = function (user, team) {
+        if (!user || !team) {
+            return false;
+        }
+        if (user.adminOfTeams[0]._id) {
+            return user.adminOfTeams.findIndex(function (t) {
+                return t._id === team._id;
+            }) > -1;
+        }
+        else {
+            return user.adminOfTeams.indexOf(team._id) > -1;
+        }
+    };
     UserService.prototype.isSuperAdmin = function () {
         return this.loggedInUser && this.loggedInUser.superAdmin;
     };
@@ -176,6 +195,30 @@ var UserService = (function () {
         }
         return this._purchasePromise;
     };
+    UserService.prototype.fetchSubscription = function () {
+        if (!this._subscriptionPromise) {
+            this._subscriptionPromise = this.http.get(this.userUrl + this.loggedInUser._id + '/subscription')
+                .toPromise()
+                .then(function (response) {
+                return response.json();
+            });
+        }
+        return this._subscriptionPromise;
+    };
+    UserService.prototype.fetchTeams = function () {
+        var _this = this;
+        if (!this._teamPromise) {
+            this._teamPromise = this.http.get(this.userUrl + this.loggedInUser._id + '/teams')
+                .toPromise()
+                .then(function (response) {
+                var user = response.json();
+                _this.teamService.addTeams(user.adminOfTeams);
+                _this.teamService.addTeams(user.memberOfTeams);
+                return user;
+            });
+        }
+        return this._teamPromise;
+    };
     return UserService;
 }());
 __decorate([
@@ -184,7 +227,8 @@ __decorate([
 ], UserService.prototype, "loggedInUser", void 0);
 UserService = __decorate([
     core_1.Injectable(),
-    __metadata("design:paramtypes", [app_http_1.AppHttp])
+    __metadata("design:paramtypes", [app_http_1.AppHttp,
+        team_service_1.TeamService])
 ], UserService);
 exports.UserService = UserService;
 

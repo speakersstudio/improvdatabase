@@ -23,11 +23,15 @@ var game_details_component_1 = require("../component/game-details.component");
 var help_component_1 = require("../component/help.component");
 var legal_component_1 = require("../component/legal.component");
 var admin_component_1 = require("../component/admin.component");
+var team_list_component_1 = require("../component/team-list.component");
+var team_details_component_1 = require("../component/team-details.component");
 // sub-views
 var toolbar_view_1 = require("../view/toolbar.view");
 var game_card_view_1 = require("../view/game-card.view");
 var create_metadata_view_1 = require("../view/create-metadata.view");
 var materials_page_view_1 = require("../view/materials-page.view");
+var user_card_view_1 = require("../view/user-card.view");
+var editable_metadata_view_1 = require("../view/editable-metadata.view");
 var shared_module_1 = require("../../module/shared.module");
 var improvplus_routing_module_1 = require("./improvplus-routing.module");
 // utils
@@ -47,7 +51,6 @@ ImprovPlusModule = __decorate([
             improvplus_routing_module_1.ImprovPlusRoutingModule
         ],
         declarations: [
-            // AppComponent,
             unauthorized_component_1.UnauthorizedComponent,
             dashboard_component_1.DashboardComponent,
             materials_library_component_1.MaterialsLibraryComponent,
@@ -56,13 +59,17 @@ ImprovPlusModule = __decorate([
             contact_component_1.ContactComponent,
             user_component_1.UserComponent,
             help_component_1.HelpComponent,
+            team_list_component_1.TeamListComponent,
+            team_details_component_1.TeamDetailsComponent,
             game_details_component_1.GameDetailsComponent,
             legal_component_1.LegalComponent,
             admin_component_1.AdminComponent,
             toolbar_view_1.ToolbarView,
             game_card_view_1.GameCardView,
             create_metadata_view_1.CreateMetadataView,
-            materials_page_view_1.MaterialsPageView
+            materials_page_view_1.MaterialsPageView,
+            user_card_view_1.UserCardView,
+            editable_metadata_view_1.EditableMetadataView
         ],
         // bootstrap: [ AppComponent ],
         providers: []

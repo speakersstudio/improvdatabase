@@ -314,7 +314,7 @@ iplus {
   .large .iplus {
     transform: scale(1.5); }
     .large .iplus .i {
-      top: -1px; }
+      top: 0px; }
     .large .iplus .plus {
       top: -4px; }
   .huge .iplus {
@@ -337,13 +337,13 @@ iplus {
     font-size: 83%;
     font-weight: bold;
     left: 6px;
-    top: -1px;
+    top: 1px;
     transition: color 300ms;
     text-transform: lowercase; }
   .iplus .plus {
     font-size: 70%;
     font-weight: bold;
-    top: -5px;
+    top: -3px;
     left: 10px;
     opacity: 1;
     transition: color 300ms, opacity 300ms; }
@@ -460,6 +460,8 @@ iplus {
 
 .right {
   text-align: right; }
+  .right input {
+    text-align: right; }
 
 .center {
   text-align: center; }
@@ -521,6 +523,10 @@ iplus {
     .columns.responsive {
       flex-direction: column; } }
 
+@media only screen and (max-width: 500px) {
+  .tabs {
+    text-align: right; } }
+
 .tabs .tab {
   display: inline-block;
   padding: 16px;
@@ -539,19 +545,32 @@ iplus {
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
     border-bottom: 1px solid transparent;
     cursor: default;
-    font-weight: bold; }
+    font-weight: bold;
+    display: inline-block; }
+  @media only screen and (max-width: 500px) {
+    .tabs .tab {
+      white-space: nowrap;
+      width: 16px; }
+      .tabs .tab span {
+        display: none; } }
 
 .tabs .fa {
+  width: 16px;
+  text-align: center;
   margin-right: 8px; }
 
 .data-row {
   border-bottom: 1px solid rgba(96, 96, 96, 0.5);
-  padding: 8px 0;
-  margin: 8px 0; }
+  padding: 12px 0;
+  margin: 0; }
+  .data-row:last-child {
+    border-bottom: 0px; }
 
 .button-group {
   margin-top: 16px;
   text-align: right; }
+  .button-group .button:last-child {
+    margin-right: 0; }
 
 .form-input {
   position: relative; }
@@ -585,7 +604,7 @@ button,
   background: none;
   text-transform: uppercase;
   text-decoration: none;
-  transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1), opacity $anim-duration;
+  transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1), opacity 300ms;
   will-change: box-shadow; }
   button iplus,
   .button iplus {
@@ -696,6 +715,8 @@ button,
     align-items: center; }
     .list .item:last-child {
       border-bottom: 0px; }
+    .list .item.clickable:hover {
+      background: #f5f5f5; }
     .list .item .badge {
       font-size: 24px;
       padding-right: 16px; }
@@ -704,7 +725,8 @@ button,
         width: 24px;
         height: 24px; }
     .list .item .metadata {
-      overflow: hidden; }
+      overflow: hidden;
+      flex-grow: 1; }
       .list .item .metadata .row {
         display: flex;
         flex-direction: row;
@@ -731,6 +753,15 @@ button,
           display: none; }
       .list .item .metadata span {
         margin: 0 16px 0 0; }
+    .list .item .action .fa {
+      font-size: 24px; }
+    .list .item .action .button {
+      padding: 0;
+      margin: 0 8px;
+      padding: 0;
+      min-width: 24px;
+      width: 24px;
+      text-align: center; }
 
 .metadata > span {
   display: inline-block;
@@ -749,6 +780,12 @@ button,
     margin: 0;
     display: inline-block;
     width: auto; }
+  .metadata > span input {
+    padding: 0 4px 0;
+    margin: 0 4px 4px 0;
+    display: inline-block;
+    width: auto;
+    text-align: left; }
 
 .metadata i {
   width: 16px;
@@ -777,6 +814,8 @@ button,
   .tag .fa, .taglist li .fa {
     font-size: 0.9em;
     line-height: 14px; }
+  .tag.grey, .taglist li.grey {
+    background-color: #606060; }
   .tag.flat, .taglist li.flat {
     background: none;
     box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
@@ -847,6 +886,8 @@ button,
   box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12); }
   .dialog .dialog-content {
     padding: 0 16px; }
+  .dialog .button-group {
+    padding: 0 16px; }
   .dialog h2 {
     color: #d32f2f;
     font-size: 28px;
@@ -855,7 +896,7 @@ button,
 .toast {
   position: fixed;
   right: 0;
-  bottom: 48px;
+  bottom: 8.7%;
   left: 0;
   z-index: 500;
   display: flex;
@@ -1340,7 +1381,8 @@ nav {
     margin-bottom: 0;
     position: relative;
     color: #FFFFFF;
-    background: #606060; }
+    background: #606060;
+    border-radius: 2px 2px 0 0; }
     .card .top:before {
       content: "";
       display: block;
@@ -1864,6 +1906,8 @@ user .user-form {
       text-align: center; }
   .page h4 {
     font-size: 28px; }
+    .page h4 input {
+      font-size: 20px; }
   .page h5 {
     font-size: 18px; }
   .page .tabs {
@@ -1873,6 +1917,9 @@ user .user-form {
     padding: 0 2px; }
     .page .tabs:first-child {
       margin-top: 7.5vh; }
+    @media only screen and (max-width: 500px) {
+      .page .tabs {
+        margin: 0; } }
   .page .paper {
     border-radius: 2px;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
@@ -1899,6 +1946,10 @@ user .user-form {
     .page .paper .metadata {
       position: relative;
       z-index: 7; }
+      .page .paper .metadata.horizontal {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end; }
     .page .paper .description, .page .paper .description p {
       line-height: 1.25; }
   .page.fullbg .paper:first-child {

@@ -5,7 +5,7 @@ var ops     = {
         "name": require('./name.controller'), 
         "note": require('./note.controller'),
         "tag": require('./tag.controller'),
-
+        "team": require('./team.controller'),
         "package": require('./package.controller'),
         "subscription": require('./subscription.controller'),
         "material": require('./material-item.controller'),

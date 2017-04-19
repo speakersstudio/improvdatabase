@@ -1,0 +1,126 @@
+<div class="toolbar"
+    [class.on]="_app.toolbarVisible"
+    [tools]="_tools"
+    [showBack]="user.memberOfTeams.length + user.adminOfTeams.length > 1"
+    ></div>
+
+<div class="page">
+
+    <div class="paper has-brackets">
+
+        <div class="content" *ngIf="team">
+
+            <h4 class="right improvplus-editable-metadata"
+                [text]="team.name"
+                [blankText]="'The Team with No Name'"
+                [canEdit]="can('team_edit')"
+                (save)="saveEditName($event)"></h4>
+
+            <div class="metadata horizontal">
+
+                <span class="bullet improvplus-editable-metadata"
+                    [text]="team.phone"
+                    [blankText]="'No Phone Number'"
+                    [icon]="'phone'"
+                    [canEdit]="can('team_edit')"
+                    (save)="saveEditPhone($event)"></span>
+
+                <span class="bullet improvplus-editable-metadata"
+                    [text]="team.email"
+                    [blankText]="'No Email'"
+                    [icon]="'envelope'"
+                    [canEdit]="can('team_edit')"
+                    (save)="saveEditEmail($event)"></span>
+
+                <span class="bullet improvplus-editable-metadata"
+                    [text]="team.url"
+                    [blankText]="'No URL'"
+                    [icon]="'link'"
+                    [canEdit]="can('team_edit')"
+                    (save)="saveEditURL($event)"></span>
+
+                <span class="bullet improvplus-editable-metadata"
+                    [text]="team.company"
+                    [blankText]="'No Company'"
+                    [icon]="'building'"
+                    [canEdit]="can('team_edit')"
+                    (save)="saveEditCompany($event)"></span>
+
+                <span class="improvplus-editable-metadata"
+                    [address]="team.address"
+                    [city]="team.city"
+                    [state]="team.state"
+                    [zip]="team.zip"
+                    [country]="team.country"
+                    [type]="'address'"
+                    [blankText]="'No Address'"
+                    [canEdit]="can('team_edit')"
+                    (saveAddress)="saveEditAddress($event)"></span>
+
+            </div>
+
+            <hr />
+
+            <div class="description" 
+                [innerHTML]="team.description ? team.description : 'No Description'"
+                *ngIf="!editDescriptionShown"></div>
+
+            <textarea name="description"
+                class="description"
+                [(ngModel)]="newDescriptionText" 
+                *ngIf="editDescriptionShown"></textarea>
+
+            <div class="button-group" *ngIf="can('team_edit')">
+                <div class="button" *ngIf="!editDescriptionShown" (click)="showEditDescription()">Edit Description</div>
+                
+                <div class="button" *ngIf="editDescriptionShown" (click)="cancelDescription()">cancel</div>
+                <div class="button raised" *ngIf="editDescriptionShown" (click)="saveDescription()">SAVE</div>
+            </div>
+
+        </div>
+
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>team details</h1></div>
+    </div>
+
+    <div class="paper has-brackets">
+
+        <div class="content" *ngIf="team">
+            <div class="list">
+                <div class="item improvplus-user-card clickable" *ngFor="let user of [].concat(team.admins, team.members)"
+                    [user]="user"
+                    [team]="team"
+                    [class.selected] = "user === selectedUser"
+                    (click)="selectUser(user)">
+                </div>
+            </div>
+
+            <div class="right">
+                <p>Total Users: <span class="tag grey">{{team.admins.length + team.members.length}}</span></p>
+
+                <div *ngIf="isUserAdmin()" class="right">
+                    <p>Remaining Subscriptions: <span class="tag">{{remainingSubs}}</span></p>
+
+                    <p *ngIf="remainingSubs > 0">You can invite {{team.subscription.subscriptions - team.subscription.children.length}} more of your team members to join ImprovPlus for free.</p>
+                    <p *ngIf="remainingSubs == 0">You have no more free invites, but you can buy additional subscriptions for your team members.</p>
+
+                    <div class="button-group">
+                        <div class="button" (click)="leave()">Leave Team</div>
+                        <div class="button raised" (click)="invite()">Invite Someone</div>
+                    </div>
+                </div>
+
+                <div *ngIf="!isUserAdmin()" class="right">
+                    <div class="button-group">
+                        <div class="button" (click)="leave()">Leave Team</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>members</h1></div>
+    </div>
+
+</div>

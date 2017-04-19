@@ -1,14 +1,17 @@
+import { Team } from './team';
+
 export class Subscription {
     _id: string;
     start: Date;
     role: number;
+    roleName: string;
     expiration: Date;
 
-    team: string; // the _id of the team with this sub
+    team: string|Team; // the _id of the team with this sub
     subscriptions: number; // how many users can inherit this sub
-    children: string[]; // array of _ids of child subscriptions
+    children: string[]|Subscription[]; // array of _ids (or the data) of child subscriptions
 
     user: string; // the _id of the user who has this subscription
 
-    parent: string; // the _id of a parent subscription
+    parent: string|Subscription; // the _id (or Subscription object) of a parent subscription
 }

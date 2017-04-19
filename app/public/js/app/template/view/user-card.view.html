@@ -1,0 +1,28 @@
+<div class="badge" *ngIf="admin"><i class="fa fa-black-tie" title="Admin"></i></div>
+<div class="badge" *ngIf="!admin"><i class="fa fa-user"></i></div>
+
+<div class="metadata">
+    <div class="row">
+        <h5 *ngIf="user.firstName || user.lastName">{{user.firstName}} {{user.lastName}}</h5>
+        <h5 *ngIf="!user.firstName && !user.lastName">{{user.email}}</h5>
+
+        <div class="ellipsise">{{descriptionText}}</div>
+    </div>
+
+    <div class="row">
+        <span><i class="fa fa-clock-o"></i> Subscription expires: {{_timeUtil.simpleDate(user.subscription.expiration)}}</span>
+    </div>
+</div>
+
+<div class="action" *ngIf="userIsMe">
+    <span><em>This is you!</em></span>
+</div>
+
+<div class="action" *ngIf="!userIsMe">
+    <div class="button" *ngIf="admin && amIAdmin"
+        title="Demote {{user.firstName || 'this user'}} to no longer be Admin of this Team"><i class="fa fa-user-o"></i></div>
+    <div class="button" *ngIf="!admin && amIAdmin"
+        title="Promote {{user.firstName || 'this user'}} to Admin of this Team"><i class="fa fa-black-tie"></i></div>
+
+    <div class="button" title="Send {{user.firstName || 'this user'}} a message"><i class="fa fa-envelope"></i></div>
+</div>

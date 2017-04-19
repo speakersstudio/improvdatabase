@@ -47,7 +47,7 @@ AppModule = __decorate([
             login_screen_component_1.LoginScreenComponent,
             app_component_1.AppComponent,
             ms_welcome_component_1.WelcomeComponent,
-            signup_component_1.SignupComponent,
+            signup_component_1.SignupComponent
         ],
         bootstrap: [app_component_1.AppComponent],
         providers: [

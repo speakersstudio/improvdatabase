@@ -12,6 +12,8 @@ import { ContactComponent } from "../component/contact.component";
 import { GameDetailsComponent } from '../component/game-details.component';
 import { UserComponent } from '../component/user.component';
 import { LegalComponent } from "../component/legal.component";
+import { TeamListComponent } from '../component/team-list.component';
+import { TeamDetailsComponent } from '../component/team-details.component';
 
 import { AdminComponent } from '../component/admin.component';
 
@@ -79,6 +81,20 @@ const routes: Routes = [
                         component: AdminComponent,
                         data: {
                             admin: true
+                        }
+                    },
+                    {
+                        path: 'teams',
+                        component: TeamListComponent,
+                        data: {
+                            action: 'team_page_view'
+                        }
+                    },
+                    {
+                        path: 'team/:id',
+                        component: TeamDetailsComponent,
+                        data: {
+                            action: 'team_page_view'
                         }
                     }
                 ]

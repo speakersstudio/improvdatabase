@@ -7,7 +7,9 @@ import 'rxjs/add/operator/toPromise';
 import { AppHttp } from '../data/app-http';
 
 import { User } from "../model/user";
+import { Team } from '../model/team';
 
+import { TeamService } from './team.service';
 import { LocalStorage } from "../util/webstorage.util";
 
 class LoginResponse {
@@ -36,7 +38,8 @@ export class UserService {
     loginState$ = this.logginStateSource.asObservable();
 
     constructor(
-        private http: AppHttp
+        private http: AppHttp,
+        private teamService: TeamService
     ) {
     }
 
@@ -94,8 +97,10 @@ export class UserService {
                 this.http.setToken(null, 0);
                 // this.token = null;
                 this.loggedInUser = null;
+                
                 this._materialPromise = null;
                 this._purchasePromise = null;
+                this._subscriptionPromise = null;
 
                 this.announceLoginState();
                 return true;
@@ -162,6 +167,24 @@ export class UserService {
         }
     }
 
+    isAdminOfTeam(team: Team): boolean {
+        return this.isUserAdminOfTeam(this.loggedInUser, team);
+    }
+
+    isUserAdminOfTeam(user: User, team: Team): boolean {
+        if (!user || !team) {
+            return false;
+        }
+
+        if ((<Team> user.adminOfTeams[0])._id) {
+            return (<Team[]> user.adminOfTeams).findIndex(t => {
+                return t._id === team._id;
+            }) > -1;
+        } else {
+            return (<string[]> user.adminOfTeams).indexOf(team._id) > -1;
+        }
+    }
+
     isSuperAdmin(): boolean {
         return this.loggedInUser && this.loggedInUser.superAdmin;
     }
@@ -201,6 +224,35 @@ export class UserService {
                 });
         }
         return this._purchasePromise;
+    }
+
+    private _subscriptionPromise: Promise<User>;
+    fetchSubscription(): Promise<User> {
+        if (!this._subscriptionPromise) {
+            this._subscriptionPromise = this.http.get(this.userUrl + this.loggedInUser._id + '/subscription')
+                .toPromise()
+                .then(response => {
+                    return response.json() as User;
+                });
+        }
+        return this._subscriptionPromise;
+    }
+
+    private _teamPromise: Promise<User>;
+    fetchTeams(): Promise<User> {
+        if (!this._teamPromise) {
+            this._teamPromise = this.http.get(this.userUrl + this.loggedInUser._id + '/teams')
+                .toPromise()
+                .then(response => {
+                    let user = response.json() as User;
+                        
+                    this.teamService.addTeams(<Team[]> user.adminOfTeams);
+                    this.teamService.addTeams(<Team[]> user.memberOfTeams);
+
+                    return user;
+                });
+        }
+        return this._teamPromise;
     }
 
 }

@@ -114,6 +114,32 @@ module.exports = {
         })
 
         return union;
+    },
+
+    populations: {
+        team: {
+            path: 'admins members subscription',
+            select: '-stripeCustomerId -password',
+            populate: {
+                path: 'subscription',
+                select: '-stripeCustomerId'
+            }
+        },
+        purchases: {
+            path: 'purchases',
+            populate: {
+                path: 'package materialItem'
+            },
+            options: {
+                sort: 'date'
+            }
+        },
+        materials: {
+            path: 'materials',
+            options: {
+                sort: 'name'
+            }
+        }
     }
 
 }

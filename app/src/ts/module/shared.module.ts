@@ -15,6 +15,7 @@ import { LibraryService } from "../service/library.service";
 import { UserService } from "../service/user.service";
 import { AuthGuard } from "../service/auth-guard.service";
 import { CartService } from '../service/cart.service';
+import { TeamService } from '../service/team.service';
 
 import { FormInputDirective } from '../view/form-input.directive';
 import { BracketCardDirective } from '../view/bracket-card.directive';
@@ -48,7 +49,8 @@ import { BracketCardDirective } from '../view/bracket-card.directive';
         LibraryService,
         UserService,
         AuthGuard,
-        CartService
+        CartService,
+        TeamService
     ]
 })
 

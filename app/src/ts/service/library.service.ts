@@ -80,7 +80,7 @@ export class LibraryService {
     getTeamMaterials(): Promise<Team[]> {
         return new Promise<Team[]>((res, rej) => {
             this.userService.fetchMaterials().then(user => {
-                res(user.memberOfTeams);
+                res(<Team[]> user.memberOfTeams);
             });
         });
     }
@@ -88,7 +88,7 @@ export class LibraryService {
     getAdminTeamMaterials(): Promise<Team[]> {
         return new Promise<Team[]>((res, rej) => {
             this.userService.fetchMaterials().then(user => {
-                res(user.adminOfTeams);
+                res(<Team[]> user.adminOfTeams);
             });
         });
     }

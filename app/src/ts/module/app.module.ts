@@ -42,8 +42,7 @@ import { SignupComponent } from '../component/signup.component';
         LoginScreenComponent,
         AppComponent,
         WelcomeComponent,
-        SignupComponent,
-        // FormInputDirective
+        SignupComponent
     ],
     bootstrap: [ AppComponent ],
     providers: [

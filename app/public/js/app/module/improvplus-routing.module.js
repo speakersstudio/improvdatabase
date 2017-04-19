@@ -19,6 +19,8 @@ var contact_component_1 = require("../component/contact.component");
 var game_details_component_1 = require("../component/game-details.component");
 var user_component_1 = require("../component/user.component");
 var legal_component_1 = require("../component/legal.component");
+var team_list_component_1 = require("../component/team-list.component");
+var team_details_component_1 = require("../component/team-details.component");
 var admin_component_1 = require("../component/admin.component");
 var routes = [
     {
@@ -84,6 +86,20 @@ var routes = [
                         component: admin_component_1.AdminComponent,
                         data: {
                             admin: true
+                        }
+                    },
+                    {
+                        path: 'teams',
+                        component: team_list_component_1.TeamListComponent,
+                        data: {
+                            action: 'team_page_view'
+                        }
+                    },
+                    {
+                        path: 'team/:id',
+                        component: team_details_component_1.TeamDetailsComponent,
+                        data: {
+                            action: 'team_page_view'
                         }
                     }
                 ]

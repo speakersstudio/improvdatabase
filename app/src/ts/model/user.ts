@@ -36,8 +36,8 @@ export class User {
     actions?: string[];
     superAdmin?: boolean;
 
-    memberOfTeams?: Team[];
-    adminOfTeams?: Team[];
+    memberOfTeams?: Team[]|string[];
+    adminOfTeams?: Team[]|string[];
 
     purchases?: Purchase[];
     materials?: MaterialItem[];

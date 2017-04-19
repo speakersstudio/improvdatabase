@@ -191,6 +191,17 @@ module.exports = {
         }
     ],
 
+    findRoleById: (id) => {
+        let role;
+        module.exports.roles.forEach(r => {
+            if (r.id == id) {
+                role = r;
+                return true;
+            }
+        });
+        return role;
+    },
+
     canUserHave: (url, method, user) => {
         method = method.toLowerCase();
         let action = findActionForUrl(url, method),
@@ -401,8 +412,6 @@ const actionmap = {
                 return true;
             }
 
-            // TODO: admins can edit a team
-            // TODO: subscribers can view a team
             // TODO: members and admins can view a team's materials
         }
     },

@@ -1,13 +1,14 @@
 const   mongoose = require('mongoose'),
         bcrypt = require('bcrypt'),
         Promise = require('bluebird'),
+
+        auth = require('../../auth'),
         
         config = require('../../config')(),
         roles = require('../../roles'),
         util = require('../../util'),
 
         Subscription = require('../../models/subscription.model'),
-        User = require('../../models/user.model'),
         Team = require('../../models/team.model'),
 
         WHITELIST = [
@@ -25,6 +26,36 @@ const   mongoose = require('mongoose'),
         ];
 
 module.exports = {
+
+    get: (req, res) => {
+        let id = req.params.id;
+        return Team.findOne({}).where('_id').equals(id)
+            .populate(util.populations.team)
+            .exec()
+            .then(t => {
+                res.json(t);
+            });
+    },
+
+    update: (req, res) => {
+        let id = req.params.id;
+
+        if (util.indexOfObjectId(req.user.adminOfTeams, id) == -1) {
+            auth.unauthorized(req, res);
+            return;
+        } else {
+
+            return Team.findOne({}).where('_id').equals(id).exec()
+                .then(team => {
+                    team = util.smartUpdate(team, req.body, WHITELIST);
+                    return team.save();
+                })
+                .then(team => {
+                    res.json(team);
+                });
+
+        }
+    },
 
     createTeam: (name) => {
         return Team.create({

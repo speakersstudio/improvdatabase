@@ -125,26 +125,26 @@ module.exports = {
                 path: 'subscription',
                 select: '-stripeCustomerId'
             })
-            .populate({
-                path: 'adminOfTeams',
-                populate: {
-                    path: 'subscription',
-                    select: '-stripeCustomerId'
-                },
-                options: {
-                    sort: 'name'
-                }
-            })
-            .populate({
-                path: 'memberOfTeams',
-                populate: {
-                    path: 'subscription',
-                    select: '-stripeCustomerId'
-                },
-                options: {
-                    sort: 'name'
-                }
-            });
+            // .populate({
+            //     path: 'adminOfTeams',
+            //     populate: {
+            //         path: 'subscription',
+            //         select: '-stripeCustomerId'
+            //     },
+            //     options: {
+            //         sort: 'name'
+            //     }
+            // })
+            // .populate({
+            //     path: 'memberOfTeams',
+            //     populate: {
+            //         path: 'subscription',
+            //         select: '-stripeCustomerId'
+            //     },
+            //     options: {
+            //         sort: 'name'
+            //     }
+            // });
 
         if (populate) {
             query.populate(populate);
@@ -215,24 +215,20 @@ module.exports = {
             .populate({
                 path: 'adminOfTeams',
                 select: 'purchases name',
-                populate: {
-                    path: 'purchases',
-                    populate: {
-                        path: 'package materialItem'
-                    },
-                    options: {
-                        sort: 'date'
-                    }
-                }
+                populate: util.populations.purchases
             })
+            .populate(util.populations.purchases)
+            .then(u => {
+                res.json(u);
+            })
+    },
+
+    teams: (req, res) => {
+        return User.findOne({}).where('_id').equals(req.user._id)
+            .select('memberOfTeams adminOfTeams')
             .populate({
-                path: 'purchases',
-                populate: {
-                    path: 'package materialItem'
-                },
-                options: {
-                    sort: 'date'
-                }
+                path: 'adminOfTeams memberOfTeams',
+                populate: util.populations.team
             })
             .then(u => {
                 res.json(u);
@@ -244,31 +240,35 @@ module.exports = {
         return User.findOne({}).where('_id').equals(req.user._id)
             .select('materials memberOfTeams adminOfTeams')
             .populate({
-                path: 'adminOfTeams',
-                populate: {
-                    path: 'materials',
-                    options: {
-                        sort: 'name'
-                    }
-                }
+                path: 'adminOfTeams memberOfTeams',
+                populate: util.populations.materials
             })
-            .populate({
-                path: 'memberOfTeams',
-                populate: {
-                    path: 'materials',
-                    options: {
-                        sort: 'name'
-                    }
-                }
+            .populate(util.populations.materials)
+            .then(u => {
+                res.json(u);
             })
+    },
+
+    subscription: (req, res) => {
+        return User.findOne({}).where('_id').equals(req.user._id)
+            .select('subscription')
             .populate({
-                path: 'materials',
-                options: {
-                    sort: 'name'
+                path: 'subscription',
+                select: '-stripeCustomerId',
+                populate: {
+                    path: 'parent',
+                    select: '-stripeCustomerId',
+                    populate: {
+                        path: 'team',
+                        select: 'name'
+                    }
                 }
             })
             .then(u => {
-                res.json(u);
+                let user = u.toObject();
+                user.subscription.roleName = roles.findRoleById(user.subscription.role).name;
+
+                res.json(user);
             })
     },
 

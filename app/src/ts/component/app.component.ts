@@ -65,8 +65,8 @@ export class AppComponent implements OnInit {
     dialogConfirm: string = "";
     dialogOnConfirm: Function;
 
-    toastMessage: string;
-    toastMessageQueue: string[] = [];
+    private toastMessage: string;
+    private toastMessageQueue: string[] = [];
 
     constructor(
         private _renderer: Renderer2,

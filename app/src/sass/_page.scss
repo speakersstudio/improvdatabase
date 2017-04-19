@@ -124,6 +124,10 @@ $paper-bg: $color-white;
 
     h4 {
         font-size: 28px;
+
+        input {
+            font-size: 20px;
+        }
     }
 
     h5 {
@@ -138,6 +142,10 @@ $paper-bg: $color-white;
 
         &:first-child {
             margin-top: ($curtain-height * 0.3);
+        }
+
+        @media #{$media-mobile} {
+            margin: 0;
         }
     }
 
@@ -178,6 +186,12 @@ $paper-bg: $color-white;
         & .metadata {
             position: relative;
             z-index: 7;
+
+            &.horizontal {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: flex-end;
+            }
         }
 
         .description, .description p {

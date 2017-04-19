@@ -31,7 +31,7 @@
                 <div class="user-name">
                     {{user.email}}
                 </div>
-                <div class="link">View your account</div>
+                <div class="link">Your account</div>
                 
             </div>
         </div>
@@ -51,6 +51,13 @@
             <a routerLink="/app/games" routerLinkActive="active" class="nav-item"
                 *ngIf="userService.can('game_view')">
                 <i class="fa fa-rocket"></i> <span>Game Database</span>
+            </a>
+
+            <hr />
+
+            <a routerLink="/app/teams" routerLinkActive="active" class="nav-item"
+                *ngIf="userService.can('team_page_view')">
+                <i class="fa fa-users"></i> <span>Your Teams</span>
             </a>
 
             <hr />

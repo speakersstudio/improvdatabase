@@ -12,7 +12,7 @@
             [class.active]="tab.id == selectedTab"
             (click)="selectTab(tab)">
             <i class="fa fa-{{tab.icon}}"></i>
-            {{tab.name}}
+            <span>{{tab.name}}</span>
         </span>
     </div>
 
@@ -31,11 +31,41 @@
         <div class="right-bracket"><h1>your account</h1></div>
     </div>
 
-    <div class="paper has-brackets" *ngIf="user && selectedTab == 'purchases'">
+    <div class="paper has-brackets" *ngIf="subscription && selectedTab == 'subscription'">
 
         <div class="card-list">
 
-            <div class="card small"
+            <div class="card" *ngIf="subscription">
+                <div class="top">
+                    <i class="fa fa-id-card-o"></i>
+                    <div class="content">
+                        <h4 class="light">Your <strong>{{subscription.roleName}}</strong> Subscription</h4>
+                        <h4 class="light">Expires</h4>
+                        <h3>{{getDate(subscription.expiration)}}</h3>
+                    </div>
+                </div>
+                <div class="body">
+                    <p>Activated {{getDate(subscription.start)}}</p>
+
+                    <p *ngIf="subscription.parent">Inherited from <strong>{{subscription.parent.team.name}}</strong></p>
+                    <p *ngIf="subscription.parent">When {{subscription.parent.team.name}}'s Subscription is renewed, yours will be too.</p>
+                </div>
+                <div class="action">
+                    <a (click)="cancelSubscription()" class="button">Cancel Your Subscription</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>your subscription</h1></div>
+    </div>
+
+    <div class="paper has-brackets" *ngIf="(purchases || teamPurchases) && selectedTab == 'purchases'">
+
+        <div class="card-list">
+
+            <div class="card"
                 *ngFor="let purchase of purchases">
 
                 <div class="top">

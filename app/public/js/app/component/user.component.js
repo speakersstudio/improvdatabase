@@ -32,6 +32,11 @@ var UserComponent = (function () {
                 icon: 'user'
             },
             {
+                name: 'Your Subscription',
+                id: 'subscription',
+                icon: 'id-card-o'
+            },
+            {
                 name: 'Purchase History',
                 id: 'purchases',
                 icon: 'money'
@@ -55,7 +60,10 @@ var UserComponent = (function () {
         this.userService.fetchPurchases().then(function (u) {
             _this.purchases = u.purchases;
             _this.teamPurchases = u.adminOfTeams;
-            console.log(_this.teamPurchases);
+        });
+        this.userService.fetchSubscription().then(function (u) {
+            _this.subscription = u.subscription;
+            console.log(_this.subscription);
         });
     };
     UserComponent.prototype.ngOnDestroy = function () {
@@ -93,6 +101,9 @@ var UserComponent = (function () {
     };
     UserComponent.prototype.getTime = function (date) {
         return time_util_1.TimeUtil.simpleTime(date);
+    };
+    UserComponent.prototype.cancelSubscription = function () {
+        this._app.toast("This button doesn't work yet.");
     };
     return UserComponent;
 }());

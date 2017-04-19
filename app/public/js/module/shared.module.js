@@ -21,6 +21,7 @@ var library_service_1 = require("../service/library.service");
 var user_service_1 = require("../service/user.service");
 var auth_guard_service_1 = require("../service/auth-guard.service");
 var cart_service_1 = require("../service/cart.service");
+var team_service_1 = require("../service/team.service");
 var form_input_directive_1 = require("../view/form-input.directive");
 var bracket_card_directive_1 = require("../view/bracket-card.directive");
 var SharedModule = (function () {
@@ -58,7 +59,8 @@ SharedModule = __decorate([
             library_service_1.LibraryService,
             user_service_1.UserService,
             auth_guard_service_1.AuthGuard,
-            cart_service_1.CartService
+            cart_service_1.CartService,
+            team_service_1.TeamService
         ]
     })
 ], SharedModule);

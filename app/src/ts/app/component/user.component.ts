@@ -13,6 +13,7 @@ import { Tool } from '../view/toolbar.view';
 import { UserService } from "../../service/user.service";
 
 import { User } from "../../model/user";
+import { Subscription } from '../../model/subscription';
 import { Purchase } from '../../model/purchase';
 import { Team } from '../../model/team';
 
@@ -34,6 +35,11 @@ export class UserComponent implements OnInit, OnDestroy {
             name: 'Your Account',
             id: 'user',
             icon: 'user'
+        },
+        {
+            name: 'Your Subscription',
+            id: 'subscription',
+            icon: 'id-card-o'
         },
         {
             name: 'Purchase History',
@@ -59,6 +65,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
     isPosting: boolean;
 
+    subscription: Subscription;
     purchases: Purchase[];
     teamPurchases: Team[];
 
@@ -87,9 +94,13 @@ export class UserComponent implements OnInit, OnDestroy {
 
         this.userService.fetchPurchases().then(u => {
             this.purchases = u.purchases;
-            this.teamPurchases = u.adminOfTeams;
+            this.teamPurchases = <Team[]> u.adminOfTeams;
+        });
 
-            console.log(this.teamPurchases);
+        this.userService.fetchSubscription().then(u => {
+            this.subscription = u.subscription;
+
+            console.log(this.subscription);
         });
     }
 
@@ -135,5 +146,9 @@ export class UserComponent implements OnInit, OnDestroy {
 
     getTime(date: string): string {
         return TimeUtil.simpleTime(date);
+    }
+
+    cancelSubscription(): void {
+        this._app.toast("This button doesn't work yet.");
     }
 }

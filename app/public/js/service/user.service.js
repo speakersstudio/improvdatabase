@@ -99,6 +99,9 @@ var UserService = (function () {
             return null;
         }
     };
+    UserService.prototype.getUserName = function () {
+        return this.loggedInUser.firstName + ' ' + this.loggedInUser.lastName;
+    };
     /**
      * Change information on the current user
      */

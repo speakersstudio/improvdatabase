@@ -8,11 +8,6 @@ var exphbs = require('express-handlebars');
 var mongoose = require('mongoose');
 var Promise = require('bluebird');
 
-var indexRoute  = require('./routes/index'),
-    api         = require('./routes/api'),
-    contact     = require('./routes/contact'),
-    materialCtrl = require('./routes/api/material-item.controller');
-
 var config = require('./config')();
 
 var app = express();
@@ -63,44 +58,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../app/public')));
 app.use('/node_modules', express.static(path.join(__dirname, '../node_modules')));
 
-
-// ROUTES
-
-// AUTH
-var auth = require('./auth');
-app.post('/login', auth.login);
-app.post('/logout', auth.logout);
-app.post('/refreshToken', auth.checkToken, auth.refresh);
-app.all('/api/*', auth.checkToken, auth.checkAuth);
-
-// CONTACT
-app.post('/contact', contact.send);
-app.post('/getNotified', contact.getNotified);
-app.post('/hireUs', contact.hireUs);
-
-// CHECKOUT PROCESS!
-var charge = require('./routes/charge');
-app.post('/signup', auth.checkToken, charge.signup);
-app.post('/charge', auth.checkToken, charge.doCharge);
-
-//CRUD
-app.post('/api/:op', api.create);
-app.get('/api/:op', api.getAll);
-app.get('/api/:op/backup', api.backup);
-app.post('/api/:op/validate', api.validate);
-app.get('/api/:op/expand', api.getAllExpanded);
-app.get('/api/:op/:id', api.get);
-app.get('/api/:op/:id/expand', api.getExpanded);
-app.put('/api/:op', api.update);
-app.put('/api/:op/:id', api.update);
-app.delete('/api/:op/:id', api.delete);
-app.all('/api/:op/:id/:method', api.method);
-app.all('/api/:op/:id/:method/:toId', api.method);
-
-/* Download Materials */
-app.get('/download/:token', materialCtrl.download);
-
-app.get('/*', indexRoute);
+app.use(require('./routes'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

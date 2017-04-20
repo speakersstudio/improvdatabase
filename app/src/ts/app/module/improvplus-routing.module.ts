@@ -96,16 +96,26 @@ const routes: Routes = [
                         data: {
                             action: 'team_page_view'
                         }
+                    },
+                    {
+                        path: 'contact/:type',
+                        component: ContactComponent,
+                        data: {
+                            action: 'contact_page_view'
+                        }
+                    },
+                    {
+                        path: 'contact',
+                        component: ContactComponent,
+                        data: {
+                            action: 'contact_page_view'
+                        }
                     }
                 ]
             },
             {
                 path: 'about',
                 component: AboutComponent
-            },
-            {
-                path: 'contact',
-                component: ContactComponent
             },
             {
                 path: 'help',

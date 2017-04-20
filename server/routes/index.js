@@ -2,16 +2,32 @@ var express = require('express');
 var router = express.Router();
 var config = require('../config')();
 
-// /* GET App */
-// router.get('/app/*', function(req, res, next) {
-//   res.render('app', {
-//        title: 'improvplus',
-//        baseHref: '/app/',
-//        prod: process.env.NODE_ENV === 'production'
-//    });
-// });
+// AUTH
+var auth = require('../auth');
+router.post('/login', auth.login);
+router.post('/logout', auth.logout);
+router.post('/refreshToken', auth.checkToken, auth.refresh);
+router.all('/api/*', auth.checkToken, auth.checkAuth);
 
-/* GET home page. */
+// CHECKOUT PROCESS
+var charge = require('./charge');
+router.post('/signup', auth.checkToken, charge.signup);
+router.post('/charge', auth.checkToken, charge.doCharge);
+
+// CONTACT
+let contactRoute = require('./contact');
+router.use('/api/contact', contactRoute);
+
+//CRUD
+let api = require('./api');
+router.use('/api', api);
+
+// DOWNLOAD MATERIALS
+let materialCtrl = require('./api/material-item.controller');
+router.get('/download/:token', materialCtrl.download);
+
+
+// MAIN HOME PAGE HTML
 router.get('/*', function(req, res, next) {
   res.render('index', {
        title: 'improvplus',

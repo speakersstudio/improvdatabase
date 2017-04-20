@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Headers, Http } from '@angular/http';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import { AppHttp } from '../../data/app-http';
 
 import { AppComponent } from '../../component/app.component';
 import { Tool } from '../view/toolbar.view';
 import { FormsModule } from '@angular/forms';
+
+import { UserService } from '../../service/user.service';
 
 //TODO: import models
 
@@ -13,15 +15,6 @@ import { FormsModule } from '@angular/forms';
     selector: "contact",
     templateUrl: "../template/contact.component.html",
     styles: [`
-        .description {
-            margin: 0 10%;
-        }
-
-        textarea {
-            width: 100%;
-            font-size: 1.2em;
-        }
-
         #contactSigOutput {
             font-family: 'Alex Brush';
             font-size: 52px;
@@ -29,42 +22,38 @@ import { FormsModule } from '@angular/forms';
             transform-origin: 0%;
             color: #333;
         }
-
-        .pull-right {
-            text-align: right;
-        }
-
-        .center {
-            text-align: center;
-            margin: 0;
-        }
-
-        .center p {
-            margin: 0;
-        }
-
-        button {
-            margin: 0;
-        }
     `]
 })
 export class ContactComponent implements OnInit {
     title: string = '<span class="light">contact</span><strong>us</strong>';
 
+    tabs = [
+        {
+            name: 'Request a Feature',
+            id: 'featurerequest',
+            icon: 'exclamation-circle'
+        },
+        {
+            name: 'Report a Bug',
+            id: 'reportbug',
+            icon: 'bug'
+        }
+    ];
+    selectedTab: string = 'featurerequest';
+
     month: string;
     day: number;
-    year: number
+    year: number;
 
-    data: {
-        name: string;
-        email: string;
-        wishto: string;
-        caused: string;
-        seeking: string;
-        demand: string;
-        message: string;
-        jingers: string;
-    }
+    name: string;
+    email: string;
+
+    featureMessage: string;
+
+    bugTryingTo: string;
+    bugExpectation: string;
+    bugReality: string;
+    bugSteps: string;
 
     error: string;
     errorField: string;
@@ -75,7 +64,9 @@ export class ContactComponent implements OnInit {
     constructor(
         private _app: AppComponent,
         private router: Router,
-        private http: Http
+        private route: ActivatedRoute,
+        private http: AppHttp,
+        private userService: UserService
     ) { }
 
     private _tools: Tool[] = [
@@ -83,96 +74,65 @@ export class ContactComponent implements OnInit {
     ]
 
     ngOnInit(): void {
-        this.data = {
-            "name": "",
-            "email": "",
-            "wishto": "discuss an important matter",
-            "caused": "waste valuable seconds of my life",
-            "seeking": "your response",
-            "demand": "do something about this",
-            "message": "",
-            "jingers": "robot"
-        };
+        this.route.params.forEach((params: Params) => {
+            this.selectedTab = params['type'] || 'featurerequest';
+        });
 
-        let d = new Date();
-        this.day = d.getDate();
-        this.year = d.getFullYear();
-
-        switch(d.getMonth()) {
-            case 0:
-                this.month = "January";
-                break;
-            case 1:
-                this.month = "February";
-                break;
-            case 2:
-                this.month = "March";
-                break;
-            case 3:
-                this.month = "April";
-                break;
-            case 4:
-                this.month = "May";
-                break;
-            case 5:
-                this.month = "June";
-                break;
-            case 6:
-                this.month = "July";
-                break;
-            case 7:
-                this.month = "August";
-                break;
-            case 8:
-                this.month = "September";
-                break;
-            case 9:
-                this.month = "October";
-                break;
-            case 10:
-                this.month = "November";
-                break;
-            case 11:
-                this.month = "December";
-                break;
-        }
+        this.name = this.userService.getUserName() || 'A humble user';
+        this.email = this.userService.getLoggedInUser().email;
     }
 
-    submit(): void {
-        if (this.data.jingers == "robot") {
-            this.error = "Sorry, no robots.";
-            this.errorField = 'jingers';
-        } else if (!this.data.message) {
+    selectTab(tab): void {
+        this.selectedTab = tab.id;
+
+        this._app.setPath('/app/contact/' + tab.id);
+
+        this.error = "";
+        this.errorField = "";
+    }
+
+    sendFeatureRequest(): void {
+        if (!this.featureMessage) {
             this.error = "We appreciate the attention, but you should actually say something."
             this.errorField = 'message';
         } else {
             this.error = "";
             this.errorField = "";
 
-            /*
-            Backbone.ajax({
-                        url: '/contact',
-                        type: 'POST',
-                        data: data,
-                        success: function () {
-                            self.showContactSuccess();
-                        },
-                        error: function (e) {
-                            console.log('error', e);
-                            self.$('.about-contact .error').show().text('Sorry, some sort of error happened. Feel free to contact us directly at contact@improvdatabase.com.');
-                        }
-                    });
-                    */
-            
             this.sending = true;
             this._app.showLoader();
-            this.http.post('/contact', this.data)
+            this.http.post('/api/contact/featurerequest', {
+                message: this.featureMessage
+            })
                 .toPromise()
                 .then(response => {
                     this._app.hideLoader();
                     this.sending = false;
                     this.sent = true;
                 });
+        }
+    }
+
+    sendBugReport(): void {
+        if (!this.bugTryingTo && !this.bugExpectation && !this.bugReality && !this.bugSteps) {
+            this.error="We are truly sorry that you encountered a problem. However, you should probably give us some clue as to what it was.";
+        } else {
+            this.error = '';
+
+            this.sending = true;
+            this._app.showLoader();
+            this.http.post('/api/contact/bugreport', {
+                tryingTo: this.bugTryingTo,
+                expectation: this.bugExpectation,
+                reality: this.bugReality,
+                steps: this.bugSteps
+            })
+                .toPromise()
+                .then(response => {
+                    this._app.hideLoader();
+                    this.sending = false;
+                    this.sent = true;
+                })
         }
     }
 }

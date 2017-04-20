@@ -119,6 +119,10 @@ export class UserService {
         }
     }
 
+    getUserName(): string {
+        return this.loggedInUser.firstName + ' ' + this.loggedInUser.lastName;
+    }
+
     /**
      * Change information on the current user
      */

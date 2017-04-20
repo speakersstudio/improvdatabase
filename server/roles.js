@@ -45,10 +45,10 @@ module.exports = {
             name: 'user',
             inherits: [ROLE_NOBODY],
             actions: [
-                'featurerequest_page_view',
+                'contact_page_view',
                 'featurerequest_send',
-                'reportbug_page_view',
-                'reportbug_send',
+                'bugreport_send',
+                
                 'dashboard_page_view',
                 'subscription_view',
                 'account_edit', // editing oneself
@@ -413,6 +413,13 @@ const actionmap = {
             }
 
             // TODO: members and admins can view a team's materials
+        }
+    },
+    contact: {
+        // we should only be getting posts to this
+        post: function(url, method, user) {
+            let action = url.replace(/\/api\/contact\/([a-z]*)\/?.*/i, '$1');
+            return action + '_send';
         }
     },
     // TODO: add lock user route here

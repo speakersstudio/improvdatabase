@@ -101,16 +101,26 @@ var routes = [
                         data: {
                             action: 'team_page_view'
                         }
+                    },
+                    {
+                        path: 'contact/:type',
+                        component: contact_component_1.ContactComponent,
+                        data: {
+                            action: 'contact_page_view'
+                        }
+                    },
+                    {
+                        path: 'contact',
+                        component: contact_component_1.ContactComponent,
+                        data: {
+                            action: 'contact_page_view'
+                        }
                     }
                 ]
             },
             {
                 path: 'about',
                 component: about_component_1.AboutComponent
-            },
-            {
-                path: 'contact',
-                component: contact_component_1.ContactComponent
             },
             {
                 path: 'help',

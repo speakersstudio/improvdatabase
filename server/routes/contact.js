@@ -1,112 +1,97 @@
-var nodemailer = require('nodemailer');
+var express = require('express');
+var router = express.Router();
+var config = require('../config')();
+const util = require('../util');
 
-exports.send = function(req, res) {
-    var transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'shauvon.mcgill@gmail.com',
-                pass: 'cvgoyzkfbhusjpoh'
+const emailUtil = require('../email'),
+    ContactModel = require('../models/contact.model'),
+    contactGreeting = 'Dear Proprietors of <span>improv</span><strong>plus</strong>,';
+
+router.post('/featurerequest', function(req, res) {
+  
+    let message = req.body.message,
+        email = req.user.email,
+        name = req.user.firstName + ' ' + req.user.lastName,
+        body = util.breakStringIntoParagraphs(message);
+
+    ContactModel.create({
+        user: req.user._id,
+        type: 'featurerequest',
+        message: body
+    }).then(data => {
+
+        let sendObject = {
+            from: email,
+            fromName: name,
+            subject: 'ImprovPlus Feature Request',
+            content: {
+                type: 'text',
+                greeting: contactGreeting,
+                body: '<p>In order to make ImprovPlus even more awesome...</p>' + body,
+                afterAction: '<p></p><p>Sincerely,</p><p>' + name + '</p><p>' + email + '</p><p>User ID: ' + req.user._id + '</p>'
             }
-        }),
-        mailOptions = {
-            from: req.body.email || 'none@denyconformity.com',
-            to: 'shauvonmcg.i.ll@gmail.com', //'contact@improvdatabase.com',
-            subject: 'Improv Database Contact Submission'
-        },
-        html;
-
-    html = '<p>Dear Proprietors of The Improv Comedy Database,</p>';
-
-    html += '<p>I wish to contact you to ' + req.body.wishto + '. This particular incident has caused me to ' + req.body.caused + '. I am currently seeking ' + req.body.seeking + ' for this situation.</p>';
-
-    html += '<p>To elaborate:</p>';
-
-    html += '<p>***</p> <p>' + req.body.message + '</p> <p>***</p>';
-
-    html += '<p>I demand that you ' + req.body.demand + '</p>';
-
-    html += '<p>Sincerely, ' + req.body.name + ' - ' + req.body.email + '</p>';
-
-    mailOptions.html = html;
-
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.error(error);
-            res.json(500, error);
-        } else {
-            console.log('Message Sent: ', info.response);
-            res.sendStatus(200);
         }
-    });
-};
 
-exports.getNotified = function(req, res) {
-    var transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'shauvon.mcgill@gmail.com',
-                pass: 'cvgoyzkfbhusjpoh'
+        emailUtil.send(sendObject, (error, response) => {
+            if (error) {
+                res.status(500).json({error: "very yes"});
+            } else {
+                res.send('Success');
             }
-        }),
-        mailOptions = {
-            from: req.body.email || 'none@denyconformity.com',
-            to: 'shauvonmcg.i.ll@gmail.com; kateb.dynamics@gmail.com', //'contact@improvdatabase.com',
-            subject: 'Get Notified About ImprovPlus!'
-        },
-        html;
+        });
 
-    html = '<p>I would like to get notified about ImprovPlus!</p>';
+    })
 
-    html += '<p>' + req.body.firstName + ' ' + req.body.lastName + '</p>';
-    html += '<p>' + req.body.email + '</p>';
+});
 
-    mailOptions.html = html;
+router.post('/bugreport', function(req, res) {
 
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.error(error);
-            res.json(500, error);
-        } else {
-            console.log('Message Sent: ', info.response);
-            res.sendStatus(200);
-        }
-    });
-};
+    let email = req.user.email,
+        name = req.user.firstName + ' ' + req.user.lastName,
 
-exports.hireUs = function(req, res) {
-    var transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'shauvon.mcgill@gmail.com',
-                pass: 'cvgoyzkfbhusjpoh'
+        tryingTo = req.body.tryingTo,
+        expectation = req.body.expectation,
+        reality = req.body.reality,
+        steps = req.body.steps;
+
+    body = '<p>Something went wrong while I was trying to...</p>'
+    body += util.breakStringIntoParagraphs(tryingTo);
+    
+    body += '<p>I expected it to...</p>'
+    body += util.breakStringIntoParagraphs(expectation);
+    
+    body += '<p>But unfortunately it actually...</p>'
+    body += util.breakStringIntoParagraphs(reality);
+    
+    body += '<p>The steps I took to cause the problem were...</p>'
+    body += util.breakStringIntoParagraphs(steps)
+
+    ContactModel.create({
+        user: req.user._id,
+        type: 'bugreport',
+        message: body
+    }).then(data => {
+        let sendObject = {
+            from: email,
+            fromName: name,
+            subject: 'ImprovPlus Bug Report',
+            content: {
+                type: 'text',
+                greeting: contactGreeting,
+                body: body,
+                afterAction: '<p></p><p>Sincerely,</p><p>' + name + '</p><p>' + email + '</p><p>User ID: ' + req.user._id + '</p>'
             }
-        }),
-        mailOptions = {
-            from: req.body.email || 'none@denyconformity.com',
-            to: 'shauvonmcg.i.ll@gmail.com; kateb.dynamics@gmail.com', //'contact@improvdatabase.com',
-            subject: 'Hire Us from ImprovPlus!'
-        },
-        html;
+        };
 
-    html = '<p>I would like to know more about hiring ImprovPlus!</p>';
-
-    html += '<p>' + req.body.firstName + ' ' + req.body.lastName + '</p>';
-    html += '<p>' + req.body.email + '</p>';
-    html += '<p>' + req.body.company + '</p>';
-    html += '<p>Describe your team: ' + req.body.team + '</p>';
-    html += '<p>What I want to Accomplish: ' + req.body.objective + '</p>';
-
-    mailOptions.html = html;
-
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.error(error);
-            res.json(500, error);
-        } else {
-            console.log('Message Sent: ', info.response);
-            res.sendStatus(200);
-        }
+        emailUtil.send(sendObject, (error, response) => {
+            if (error) {
+                res.status(500).json({error: "very yes"});
+            } else {
+                res.send('Success');
+            }
+        });
     });
-};
 
+})
 
+module.exports = router;

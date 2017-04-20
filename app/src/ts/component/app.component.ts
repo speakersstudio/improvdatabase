@@ -49,6 +49,9 @@ export class AppComponent implements OnInit {
 
     whiteBrackets: boolean = false;
 
+    private _teamCount: number;
+    private _teamId: string;
+
     // Login stuff
     redirectUrl: string;
     user: User;
@@ -165,6 +168,11 @@ export class AppComponent implements OnInit {
 
     setUser(user: User): void {
         this.user = user;
+
+        this._teamCount = this.user.adminOfTeams.length + this.user.memberOfTeams.length;
+        if (this._teamCount == 1) {
+            this._teamId = <string> this.user.adminOfTeams[0] || <string> this.user.memberOfTeams[0];
+        }
     }
 
     toggleNav(): void {

@@ -5,7 +5,8 @@ mongoose.Promise = Promise;
 
 let config = require('../config')();
 
-let util = require('../util');
+let util = require('../util'),
+    emailUtil = require('../email');
 
 let userController = require('./api/user.controller'),
     teamController = require('./api/team.controller'),
@@ -175,9 +176,51 @@ module.exports = {
                 }
             })
             .then(user => {
-                // TODO: send confirmation email to new user!
+                let body = `
+                    <p>Congratulations on making your first step to a more awesome you!</p>
+                    <p>Your subscription is now active. You can log into the ImprovPlus app and browse all of our fabulous features. </p>
 
-                res.json(user);
+                `;
+
+                if (teamName) {
+                    body += `
+                        <p>Your team, ${teamName}, is ready to go, and you can share your additional subscriptions with members of your Team through the app. See your Team details by visiting the "Your Team" link in the app menu.</p>
+                    `
+                }
+                
+                // TODO: insert a purchase summary / receipt sort of thing here
+                
+                if (cart[0].materialItem || (cart[0].package.materials && cart[0].package.materials.length)) {
+                    body += `
+                        <p>Visit the Materials Library to download your new Materials - they're officially yours to keep!</p>
+                    `
+                }
+
+                emailUtil.send({
+                    to: user.email,
+                    toName: user.firstName + ' ' + user.lastName,
+                    subject: 'Welcome to ImprovPlus',
+                    content: {
+                        type: 'text',
+                        greeting: 'Welcome to ImprovPlus!',
+                        body: body,
+                        action: 'https://improvpl.us/app',
+                        actionText: 'Log In Now',
+                        afterAction: `
+                            <p>If you have any questions about how to use the ImprovPlus app, do not hesitate to reach out to us. You can use the "Request a feature" or "Report a Bug" options in the App Menu to send your feedback directly to us, or you can respond directly to this email.</p>
+
+                            <p>Be excellent to each other, and party on.</p>
+
+                            <p>Sincerely,</p>
+
+                            <p>The Proprietors of <span class="light">improv</span><strong>plus</strong>.</p>
+                        `
+                    }
+                }, (error, response) => {
+
+                    res.json(user);
+
+                })
             })
     },
 

@@ -118,6 +118,10 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.setUser = function (user) {
         this.user = user;
+        this._teamCount = this.user.adminOfTeams.length + this.user.memberOfTeams.length;
+        if (this._teamCount == 1) {
+            this._teamId = this.user.adminOfTeams[0] || this.user.memberOfTeams[0];
+        }
     };
     AppComponent.prototype.toggleNav = function () {
         this.showMenu = !this.showMenu;

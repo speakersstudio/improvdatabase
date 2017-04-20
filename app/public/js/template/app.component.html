@@ -56,14 +56,28 @@
             <hr />
 
             <a routerLink="/app/teams" routerLinkActive="active" class="nav-item"
-                *ngIf="userService.can('team_page_view')">
-                <i class="fa fa-users"></i> <span>Your Teams</span>
+                *ngIf="userService.can('team_page_view') && _teamCount != 1">
+                <i class="fa fa-users"></i>
+
+                <span *ngIf="_teamCount > 1">Your Teams</span>
+                <span *ngIf="_teamCount == 0">Create a Team</span>
+
+            </a>
+
+            <a routerLink="/app/team/{{_teamId}}" routerLinkActive="active" class="nav-item"
+                *ngIf="userService.can('team_page_view') && _teamCount == 1">
+                <i class="fa fa-users"></i>
+                <span>Your Team</span>
             </a>
 
             <hr />
 
-            <a routerLink="/app/contact" routerLinkActive="active" class="nav-item">
-                <i class="fa fa-envelope"></i> <span>Contact</span>
+            <a routerLink="/app/contact/featurerequest" routerLinkActive="active" class="nav-item">
+                <i class="fa fa-exclamation-circle"></i> <span>Request a Feature</span>
+            </a>
+
+            <a routerLink="/app/contact/reportbug" routerLinkActive="active" class="nav-item">
+                <i class="fa fa-bug"></i> <span>Report a Bug</span>
             </a>
 
             <a routerLink="/app/help" routerLinkActive="active" class="nav-item">

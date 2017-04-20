@@ -9,117 +9,120 @@
 
 <div class="page">
 
-    <div class="paper has-brackets" [class.dim]="sending" *ngIf="!sent">
+    <div class="tabs">
+        <span class="tab" 
+            *ngFor="let tab of tabs"
+            [class.active]="tab.id == selectedTab"
+            (click)="selectTab(tab)">
+            <i class="fa fa-{{tab.icon}}"></i>
+            <span>{{tab.name}}</span>
+        </span>
+    </div>
+
+    <div class="paper has-brackets" *ngIf="selectedTab == 'featurerequest' && !sent">
 
         <div class="content">
 
-            <div class="metadata">
-                <span>Fill out this form letter to get your voice heard. Perhaps not your voice specifically, but one that we will make up for you as we read your comments.</span>
-            </div>
+            <p>Would you like to see a feature added to ImprovPlus that we haven't managed to get working yet? Drop us a note and let us know what you want!</p>
 
             <hr />
 
-            <div class="description">
+            <h5>Dear Proprietors of <span class="light">improv</span><strong>plus</strong>,</h5>
 
-                <h5>Dear Proprietors of The Improv Comedy Database,</h5>
+            <p>In order to make ImprovPlus even more awesome...</p>
+            
+            <textarea name="gordon" [(ngModel)]="featureMessage" rows="10"></textarea>
 
-                <p>I, the undersigned, on this the <strong>{{day}}th</strong> day of <strong>{{month}}</strong>, <strong>{{year}}</strong>, hereby wish to contact you to
-                <select name="wishto" [(ngModel)]="data.wishto">
-                    <option>discuss an important matter</option>
-                    <option>complain</option>
-                    <option>inform you of an idea I have for improving this site</option>
-                    <option>inform you of my general opinions</option>
-                    <option>document a bug I found on this site</option>
-                    <option>send you some sort of spam</option>
-                    <option>document a period of harassment I received from you</option>
-                    <option>inform you of pending legal action against you</option>
-                    <option>lie down on your lap (I am a cat)</option>
-                </select>. 
-                This particular incident has caused me to
-                <select name="caused" [(ngModel)]="data.caused">
-                    <option>waste valuable seconds of my life</option>
-                    <option>be frustrated, dammit</option>
-                    <option>contact you (obviously)</option>
-                    <option>evaluate my role in society</option>
-                    <option>gain unfathomable emotional wealth</option>
-                    <option>have 99 problems</option>
-                    <option>suffer severe humiliation and embarassment</option>
-                    <option>get uncontrollably poofy (I am a cat)</option>
-                </select>.
-                I am currently seeking
-                <select name="seeking" [(ngModel)]="data.seeking">
-                    <option>your response</option>
-                    <option>your aid</option>
-                    <option>your thoughts</option>
-                    <option>your momma</option>
-                    <option>medical and psychological attention</option>
-                    <option>only medical attention</option>
-                    <option>any kind of attention at all really</option>
-                    <option>your bank account info</option>
-                    <option>no reward</option>
-                    <option>something to kill (I am a cat)</option>
-                </select>
-                for this particular situation.</p>
-
-                <p>To further elaborate on the incident in question, <br /><textarea name="gordon" [(ngModel)]="data.message" rows="10"></textarea></p>
-
-                <p>I hereby demand that you
-                <select name="demand" [(ngModel)]="data.demand">
-                    <option>do something about this</option>
-                    <option>know how great you are</option>
-                    <option>cut it right out</option>
-                    <option>fix this problem</option>
-                    <option>do some sort of dance</option>
-                    <option>cease and desist in your action</option>
-                    <option>fix it fix it fix it fix it fix it</option>
-                    <option>feed me (I am a cat)</option>
-                </select>
-                immediately. To prove that I can send this message I hereby verify that I am a
-                <select name="jingers" [(ngModel)]="data.jingers" [class.error]="errorField=='jingers'">
-                    <option>robot</option>
-                    <option>human</option>
-                    <option>meat popsicle</option>
-                    <option>cat, for the last freaking time</option>
-                </select>.
-                </p>
+            <div class="pull-right">
+                <p>Sincerely,</p>
                 
-                <div class="pull-right">
-                    <p>Sincerely,</p>
-                    
-                    <div id="contactSigOutput">{{data.name}} <span *ngIf="!data.name">The Undersigned</span></div>
+                <div id="contactSigOutput">{{name}}</div>
 
-                    <p><input type="text" name="name" [(ngModel)]="data.name" placeholder="The Undersigned" /></p>
-                    <p><input type="text" name="email" [(ngModel)]="data.email" placeholder="Email Address (optional)" /></p>
+                <p>{{email}}</p>
 
-                </div>
-                <div class="clearfix"></div>
-                
+            </div>
+            <div class="clearfix"></div>
 
-                <div class="center" *ngIf="data.message && !sending">
-                    <p *ngIf="error" class="error">{{error}}</p>
+            <div class="right button-group" *ngIf="!sending">
+                <p *ngIf="error" class="error">{{error}}</p>
 
-                    <button class="btn" (click)="submit()">Send</button>
-                </div>
+                <button class="button raised" (click)="sendFeatureRequest()">Send</button>
             </div>
 
         </div>
 
         <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
-        <div class="right-bracket"><h1>contact us</h1></div>
+        <div class="right-bracket"><h1>request a feature</h1></div>
 
     </div>
 
-    <div class="page has-brackets" *ngIf="sent">
+    <div class="paper has-brackets" *ngIf="selectedTab == 'reportbug' && !sent">
+
+        <div class="content">
+
+            <p>Did something not quite meet your expectations (especially if your expectations are that it, you know, works)? Let us know what went wrong and how you expected it to work.</p>
+
+            <p><em>Developers note: please provide as much detail as possible in your report, including all of the steps you took to find the bug. The more we know, the more easily we will be able to track down the problem.</em></p>
+
+            <hr />
+
+            <h5>Dear Proprietors of <span class="light">improv</span><strong>plus</strong>,</h5>
+
+            <p>Something went wrong while I was trying to...</p>
+            
+            <textarea name="bugTryingTo" [(ngModel)]="bugTryingTo" rows="5"></textarea>
+
+            <p>I expected it to...</p>
+            
+            <textarea name="bugExpectation" [(ngModel)]="bugExpectation" rows="5"></textarea>
+
+            <p>But unfortunately it actually...</p>
+            
+            <textarea name="bugReality" [(ngModel)]="bugReality" rows="5"></textarea>
+
+            <p>The steps I took to cause the problem were...</p>
+            
+            <textarea name="bugSteps" [(ngModel)]="bugSteps" rows="5"></textarea>
+
+            <div class="pull-right">
+                <p>Sincerely,</p>
+                
+                <div id="contactSigOutput">{{name}}</div>
+
+                <p>{{email}}</p>
+
+            </div>
+            <div class="clearfix"></div>
+
+            <div class="right button-group" *ngIf="!sending">
+                <p *ngIf="error" class="error">{{error}}</p>
+
+                <button class="button raised" (click)="sendBugReport()">Send</button>
+            </div>
+
+        </div>
+
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>report a bug</h1></div>
+    </div>
+
+    <div class="paper has-brackets" *ngIf="sent">
 
         <div class="content">
 
             <h4>Message Delivered</h4>
 
             <div class="description">
-                <p>Thank you, sincerely, for your patronage. If you wrote to point out a bug, know that we will look into it immediately. If you wrote to complain, know that we are rubber and you are glue and everything you say bounces off us and sticks to you.</p>
+                <p>Thank you, sincerely, for your feedback.</p>
+                
+                <p *ngIf="selectedTab == 'reportbug'">If you wrote to point out a bug, know that we will look into it immediately.</p>
+
+                <p *ngIf="selectedTab == 'featurerequest'">If you wrote to request a feature, we will do what we can to make it happen (as long as it's actually possible).</p>
+                    
+                <p>If you wrote to complain, know that we are rubber and you are glue and everything you say bounces off us and sticks to you.</p>
 
                 <div class="center">
-                    <a routerLink="/games" class="button" >Return to the Database</a>
+                    <a routerLink="/app/dashboard" class="button raised">Return to your Dashboard</a>
                 </div>
             </div>
             

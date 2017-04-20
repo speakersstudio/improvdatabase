@@ -46,7 +46,7 @@ module.exports = {
     },
 
     getAll: (req, res) => {
-        getGames()
+        getGames(req.user)
             .catch(err => {
                 util.handleError(req, res, err);
             }).then(games => {
@@ -56,7 +56,7 @@ module.exports = {
     },
 
     get: (req, res) => {
-        getGames(req.params.id)
+        getGames(req.user, req.params.id)
             .catch(err => {
                 util.handleError(req, res, err);
             }).then(games => {
@@ -68,7 +68,7 @@ module.exports = {
         let gameId = req.params.id,
             tagId = req.params.toId;
 
-        return getGames(gameId).then(games => {
+        return getGames(req.user, gameId).then(games => {
             let game = games[0];
             return game.addTag(null, tagId, req.user._id);
         }).then(game => {
@@ -80,7 +80,7 @@ module.exports = {
         let gameId = req.params.id,
             tagId = req.params.toId;
 
-        return getGames(gameId).then(games => {
+        return getGames(req.user, gameId).then(games => {
             let game = games[0];
             return game.removeTag(tagId, req.user._id);
         }).then(game => {
@@ -92,7 +92,7 @@ module.exports = {
         let gameId = req.params.id,
             tag = req.body.name;
         
-        return getGames(gameId).then(games => {
+        return getGames(req.user, gameId).then(games => {
             let game = games[0];
             return game.addTag(tag, null, req.user._id);
         }).then(game => {
@@ -179,8 +179,13 @@ function updateGame(gamePromise, data, userId) {
         // });
 }
 
-function getGames(id) {
+function getGames(user, id) {
+    
     let query = Game.find({})
+
+    query.select('addedUser dateAdded dateModified description modifiedUser names');
+
+    query
         .populate({
             path: 'names',
             select: 'name votes weight dateAdded dateModified',
@@ -192,18 +197,6 @@ function getGames(id) {
             }
         })
         .populate({
-            path: 'playerCount',
-            select: 'name description',
-        })
-        .populate({
-            path: 'duration',
-            select: 'name description'
-        })
-        .populate({
-            path: 'tags.tag',
-            select: 'name description'
-        })
-        .populate({
             path: 'addedUser',
             select: 'firstName lastName'
         })
@@ -211,6 +204,26 @@ function getGames(id) {
             path: 'modifiedUser',
             select: 'firstName lastName'
         })
+
+    if (user.actions.indexOf('metadata_view') > -1) {
+        query.select('playerCount duration')
+        .populate({
+            path: 'playerCount',
+            select: 'name description',
+        })
+        .populate({
+            path: 'duration',
+            select: 'name description'
+        })
+    }
+
+    if (user.actions.indexOf('tag_view') > -1) {
+        query.select('tags')
+        .populate({
+            path: 'tags.tag',
+            select: 'name description'
+        })
+    }
 
     if (id) {
         query.where('_id').equals(id);

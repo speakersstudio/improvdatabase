@@ -26,9 +26,6 @@ export class AuthGuard implements CanActivateChild {
                 return true;
             } else if (!data.action || this.userService.can(data.action)) {
                 return true;
-            } else if (this.userService.can('subscription_renew')) {
-                // their subscription is expired
-                this.router.navigate(['/app/unauthorized'], { replaceUrl: true });
             } else {
                 this.router.navigate(['/app/unauthorized'], { replaceUrl: true });
             }

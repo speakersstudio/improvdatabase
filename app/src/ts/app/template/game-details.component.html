@@ -46,6 +46,7 @@
                 </div>
 
                 <span class="bullet"
+                    *ngIf="game.playerCount"
                     [title]="game.playerCount && !editPlayerCountShown ? game.playerCount.description : ''">
 
                     <i class="fa fa-group"></i> 
@@ -66,7 +67,9 @@
 
                 </span>
                 
-                <span [title]="duration && !editDurationShown ? duration.description : ''">
+                <span
+                    *ngIf="game.duration"
+                    [title]="game.duration && !editDurationShown ? game.duration.description : ''">
                     
                     <i class="fa fa-clock-o"></i> 
                     

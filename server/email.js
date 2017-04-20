@@ -28,7 +28,7 @@ const config = require('./config')(),
 module.exports = {
 
     fromAddress: 'contact@improvpl.us',
-    contactAddress: 'shauvonmcg.i.ll@gmail.com',
+    contactAddress: 'contact@improvpl.us',
 
     send: (sendObject, callback) => {
 

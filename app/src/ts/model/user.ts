@@ -7,7 +7,7 @@ export class Preference {
     _id?: string;
     key: string;
     value: string;
-    date?: Date;
+    date?: string;
     user?: string;
 }
 
@@ -28,8 +28,8 @@ export class User {
     facilitationExp?: number;
     trainingInterest?: boolean;
     url?: string;
-    dateAdded?: Date;
-    dateModified?: Date;
+    dateAdded?: string;
+    dateModified?: string;
     locked?: boolean;
     description?: string;
     permissions?: Object;

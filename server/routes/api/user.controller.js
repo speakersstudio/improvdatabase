@@ -107,7 +107,7 @@ module.exports = {
 
         let query = User.findOne({})
             .select(WHITELIST.join(' ') + 
-            ' subscription preferences memberOfTeams adminOfTeams role dateAdded dateModified superAdmin ' + select);
+            ' subscription preferences memberOfTeams adminOfTeams role dateAdded dateModified superAdmin locked ' + select);
 
         // catch a mongoose ObjectID, which looks like a string but isn't really
         if (typeof(key) == 'object' && key.toString) {
@@ -125,32 +125,15 @@ module.exports = {
                 path: 'subscription',
                 select: '-stripeCustomerId'
             })
-            // .populate({
-            //     path: 'adminOfTeams',
-            //     populate: {
-            //         path: 'subscription',
-            //         select: '-stripeCustomerId'
-            //     },
-            //     options: {
-            //         sort: 'name'
-            //     }
-            // })
-            // .populate({
-            //     path: 'memberOfTeams',
-            //     populate: {
-            //         path: 'subscription',
-            //         select: '-stripeCustomerId'
-            //     },
-            //     options: {
-            //         sort: 'name'
-            //     }
-            // });
 
         if (populate) {
             query.populate(populate);
         }
 
         return query.exec()
+            .catch(error => {
+                return Promise.resolve(null);
+            })
             .then(user => {
                 if (user && !raw) {
                     user = user.toObject();
@@ -158,9 +141,13 @@ module.exports = {
                     if (!user.superAdmin) {
                         delete user.superAdmin;
                     }
+
+                    console.log(user.locked);
                     
                     // make sure the user has an active subscription
-                    if (user.subscription &&
+                    if (user.locked) {
+                        user.actions = roles.getActionsForRole(roles.ROLE_LOCKED);
+                    } else if (user.subscription &&
                          typeof(user.subscription) == 'object' &&
                             (
                                 // user.subscription.role == roles.ROLE_SUPER_ADMIN ||
@@ -169,7 +156,7 @@ module.exports = {
 
                         user.actions = roles.getActionsForRole(user.subscription.role);
                     } else {
-                        user.actions = roles.getActionsForRole(roles.ROLE_EXPIRED);
+                        user.actions = roles.getActionsForRole(roles.ROLE_USER);
                     }
                 }
 
@@ -190,7 +177,7 @@ module.exports = {
                             }
                         });
                 } else {
-                    return Promise.reject('no user found');
+                    return Promise.resolve(false);
                 }
             });
     },

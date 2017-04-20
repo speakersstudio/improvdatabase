@@ -168,10 +168,14 @@ export class AppComponent implements OnInit {
 
     setUser(user: User): void {
         this.user = user;
-
-        this._teamCount = this.user.adminOfTeams.length + this.user.memberOfTeams.length;
-        if (this._teamCount == 1) {
-            this._teamId = <string> this.user.adminOfTeams[0] || <string> this.user.memberOfTeams[0];
+        if (this.user) {
+            this._teamCount = this.user.adminOfTeams.length + this.user.memberOfTeams.length;
+            if (this._teamCount == 1) {
+                this._teamId = <string> this.user.adminOfTeams[0] || <string> this.user.memberOfTeams[0];
+            }
+        } else {
+            this._teamCount = 0;
+            this._teamId = '';
         }
     }
 

@@ -8,8 +8,8 @@
     </div>
 
     <div class="row">
-        <span *ngIf="game.playerCount.name" title="{{game.playerCount.description}}"><i class="fa fa-group"></i> {{game.playerCount.name}}</span>
-        <span *ngIf="game.duration.name" title="{{game.duration.description}}"><i class="fa fa-clock-o"></i> {{game.duration.name}}</span>
+        <span *ngIf="game.playerCount && game.playerCount.name" title="{{game.playerCount.description}}"><i class="fa fa-group"></i> {{game.playerCount.name}}</span>
+        <span *ngIf="game.duration && game.duration.name" title="{{game.duration.description}}"><i class="fa fa-clock-o"></i> {{game.duration.name}}</span>
 
         <ul class="taglist">
             <li *ngFor="let taggame of game.tags"

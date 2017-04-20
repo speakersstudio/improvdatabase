@@ -1,7 +1,7 @@
 const 
  // DUDE DON'T CHANGE THESE NUMBERS DUDE
     ROLE_NOBODY = 0,
-    ROLE_EXPIRED = 13, // no longer used
+    ROLE_LOCKED = 13,
     ROLE_SUBSCRIBER = 1,
     ROLE_ULTIMATE = 2, // no longer used
     ROLE_USER = 3,
@@ -15,13 +15,12 @@ const
     ROLE_SUPER_ADMIN = 19;
 
 module.exports = {
-    ROLE_EXPIRED: ROLE_EXPIRED,
     ROLE_NOBODY: ROLE_NOBODY,
     ROLE_USER: ROLE_USER,
     ROLE_SUBSCRIBER: ROLE_SUBSCRIBER,
     ROLE_TEAM_SUBSCRIBER: ROLE_TEAM_SUBSCRIBER,
-    ROLE_ULTIMATE: ROLE_ULTIMATE,
     ROLE_SUPER_ADMIN: ROLE_SUPER_ADMIN,
+    ROLE_LOCKED: ROLE_LOCKED,
 
     ROLE_FACILITATOR: ROLE_FACILITATOR,
     ROLE_FACILITATOR_TEAM: ROLE_FACILITATOR_TEAM,
@@ -67,10 +66,10 @@ module.exports = {
                 'metadata_view',
                 'tag_view',
 
-                'note_view',
-                'note_public_view',
-                'note_private_create',
-                'note_private_edit',
+                'note_view', // your notes
+                'note_public_view', // public notes
+                'note_create', // provided they're your own
+                'note_edit', // provided they're your own
 
                 'name_view',
                 'name_vote',

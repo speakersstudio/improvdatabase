@@ -164,7 +164,7 @@ export class UserService {
     }
 
     can (key: string): boolean {
-        if (!this.loggedInUser || !this.loggedInUser.actions || !this.loggedInUser.actions.length) {
+        if (!this.loggedInUser || !this.loggedInUser.actions || !this.loggedInUser.actions.length || this.isLocked()) {
             return false;
         } else {
             return this.loggedInUser.actions.indexOf(key) > -1;
@@ -191,6 +191,14 @@ export class UserService {
 
     isSuperAdmin(): boolean {
         return this.loggedInUser && this.loggedInUser.superAdmin;
+    }
+
+    isLocked(): boolean {
+        return this.loggedInUser.locked;
+    }
+
+    isExpired(): boolean {
+        return (new Date(this.loggedInUser.subscription.expiration)).getTime() <= Date.now();
     }
 
     validate (user: User): Promise<String> {

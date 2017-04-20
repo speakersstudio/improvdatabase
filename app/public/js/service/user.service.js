@@ -139,7 +139,7 @@ var UserService = (function () {
         return value;
     };
     UserService.prototype.can = function (key) {
-        if (!this.loggedInUser || !this.loggedInUser.actions || !this.loggedInUser.actions.length) {
+        if (!this.loggedInUser || !this.loggedInUser.actions || !this.loggedInUser.actions.length || this.isLocked()) {
             return false;
         }
         else {
@@ -164,6 +164,12 @@ var UserService = (function () {
     };
     UserService.prototype.isSuperAdmin = function () {
         return this.loggedInUser && this.loggedInUser.superAdmin;
+    };
+    UserService.prototype.isLocked = function () {
+        return this.loggedInUser.locked;
+    };
+    UserService.prototype.isExpired = function () {
+        return (new Date(this.loggedInUser.subscription.expiration)).getTime() <= Date.now();
     };
     UserService.prototype.validate = function (user) {
         return this.http.post(this.validateUrl, user)

@@ -74,12 +74,15 @@
         width: 100%;
         box-sizing: border-box;
         padding: 16px;
-        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12); }
+        box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+
+            background-image: url('{{baseurl}}/images/email/header_name.png');
+            background-position: 64px 8px;
+            background-repeat: no-repeat; }
 
         .top-bracket {
             border-bottom: 1px #606060 solid;
-            width: 16px;
-            padding-left: 16px;
+            width: 32px;
             line-height: 1px;
             height: 1px;
         }
@@ -88,9 +91,8 @@
             height: 1px;
             padding: 0 16px;
         }
-        .top-middle img {
-            margin-top: -12px;
-            margin-bottom: -12px;
+        .top-middle {
+            
         }
 
         .bottom-bracket {
@@ -334,7 +336,6 @@
                 <tr>
                     <td class="top-bracket"></td>
                     <td class="top-middle">
-                        <a href="https://improvpl.us/app"><img src="{{baseurl}}/images/email/header_name.png" alt="ImprovPlus" /></a>
                     </td>
                     <td class="top-bracket"></td>
                 </tr>
@@ -398,7 +399,7 @@
                 </tr>
                 <tr>
                   <td class="content-block powered-by">
-                    Eagerly adapted from <a href="https://github.com/leemunroe/responsive-html-email-template">leemunroe on Github</a>.
+                    Email template happily adapted from <a href="https://github.com/leemunroe/responsive-html-email-template">leemunroe on Github</a>.
                   </td>
                 </tr>
               </table>

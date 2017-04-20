@@ -118,9 +118,15 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.setUser = function (user) {
         this.user = user;
-        this._teamCount = this.user.adminOfTeams.length + this.user.memberOfTeams.length;
-        if (this._teamCount == 1) {
-            this._teamId = this.user.adminOfTeams[0] || this.user.memberOfTeams[0];
+        if (this.user) {
+            this._teamCount = this.user.adminOfTeams.length + this.user.memberOfTeams.length;
+            if (this._teamCount == 1) {
+                this._teamId = this.user.adminOfTeams[0] || this.user.memberOfTeams[0];
+            }
+        }
+        else {
+            this._teamCount = 0;
+            this._teamId = '';
         }
     };
     AppComponent.prototype.toggleNav = function () {

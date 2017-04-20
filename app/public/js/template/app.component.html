@@ -72,11 +72,13 @@
 
             <hr />
 
-            <a routerLink="/app/contact/featurerequest" routerLinkActive="active" class="nav-item">
+            <a routerLink="/app/contact/featurerequest" routerLinkActive="active" class="nav-item"
+                *ngIf="userService.can('contact_page_view')">
                 <i class="fa fa-exclamation-circle"></i> <span>Request a Feature</span>
             </a>
 
-            <a routerLink="/app/contact/reportbug" routerLinkActive="active" class="nav-item">
+            <a routerLink="/app/contact/reportbug" routerLinkActive="active" class="nav-item"
+                *ngIf="userService.can('contact_page_view')">
                 <i class="fa fa-bug"></i> <span>Report a Bug</span>
             </a>
 

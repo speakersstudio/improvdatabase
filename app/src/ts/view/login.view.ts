@@ -11,7 +11,7 @@ import { UserService } from "../service/user.service";
 
 import { User } from "../model/user";
 
-import { DialogAnim } from '../util/anim.util';
+import { DialogAnim, FadeAnim } from '../util/anim.util';
 
 const MAX_ATTEMPTS = 5;
 
@@ -20,8 +20,14 @@ const MAX_ATTEMPTS = 5;
     selector: "login",
     templateUrl: "../template/view/login.view.html",
     animations: [
-        DialogAnim.dialog
-    ]
+        DialogAnim.dialog,
+        FadeAnim.fadeAbsolute
+    ],
+    styles: [`
+        .password-recover-link {
+            
+        }
+    `]
 })
 export class LoginView implements OnInit {
 
@@ -38,6 +44,10 @@ export class LoginView implements OnInit {
 
     @Output() done: EventEmitter<User> = new EventEmitter();
 
+    showRecoverPassword: boolean;
+    recoverPasswordError: string;
+    recoverPasswordDone: boolean;
+
     isPosting: boolean;
 
     weGood: boolean;
@@ -53,6 +63,7 @@ export class LoginView implements OnInit {
 
     submitLogin(): void {
         this.loginError = "";
+        this.isPosting = true;
         this.userService.login(this.email, this.password)
             .then((user) => {
                 this.email = "";
@@ -60,8 +71,10 @@ export class LoginView implements OnInit {
 
                 //this.router.navigate(['/games']);
                 this.done.emit(user);
+                this.isPosting = false;
             })
             .catch((reason) => {
+                this.isPosting = false;
                 this.errorCount++;
                 if (reason.status == 500) {
                     this.loginError = "Some sort of server error happened. Sorry.";
@@ -83,6 +96,7 @@ export class LoginView implements OnInit {
 
                         setTimeout(() => {
                             this.weGood = false;
+                            this.show = false;
                             this.done.emit(null);
                         }, 7100);
                     }
@@ -91,8 +105,51 @@ export class LoginView implements OnInit {
     }
 
     cancel(): boolean {
+        this.showRecoverPassword = false;
         this.done.emit(null);
         return false;
+    }
+
+    recoverPassword(): void {
+        this.show = false;
+        setTimeout(() => {
+            this.showRecoverPassword = true;
+            this.show = true;
+        }, 200)
+    }
+
+    cancelRecoverPassword(): void {
+        this.show = false;
+        setTimeout(() => {
+            this.showRecoverPassword = false;
+            this.show = true;
+        }, 200)
+    }
+
+    submitRecoverPassword(): void {
+        this.isPosting = true;
+        this.recoverPasswordError = '';
+        this.userService.recoverPassword(this.email)
+        .catch(e => {
+            console.log(e);
+            this.recoverPasswordError = 'We had a problem looking up that address.';
+        })
+        .then((success) => {
+            this.isPosting = false;
+
+            console.log('success?', success);
+
+            if (success) {
+                this.show = false;
+                setTimeout(() => {
+                    this.showRecoverPassword = false;
+                    this.recoverPasswordDone = true;
+                    this.show = true;
+                }, 200)
+            } else {
+                this.recoverPasswordError = 'We had a problem looking up that address.';
+            }
+        });
     }
 
 }

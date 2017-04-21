@@ -208,9 +208,10 @@ iplus {
     background: $color-shade;
     opacity: 0;
     transition: opacity $swift-ease-out-duration $swift-ease-out-timing-function, right 0ms $swift-ease-out-duration;
+    box-shadow: 0 2px 20vw rgba(0,0,0,0.75) inset;
 
     &.show {
-        transition: opacity $swift-ease-out-duration $swift-ease-out-timing-function;
+        transition: opacity 1500ms $swift-ease-out-timing-function;
         right: 0px;
         opacity: 1;
     }
@@ -408,7 +409,7 @@ iplus {
     position: relative;
 
     label {
-        @include abs(18px);
+        @include abs(18px, null, null, null, 1);
         cursor: text;
         font-size: 16px;
         transition: all 200ms;
@@ -418,6 +419,18 @@ iplus {
         &.active {
             transform: translateY(-140%);
             font-size: 12px;
+        }
+    }
+
+    .help {
+        @include abs(18px, $small, null, null, 2);
+        cursor: pointer;
+        text-decoration: none;
+        transition: opacity 250ms;
+
+        &.gone {
+            opacity: 0;
+            z-index: 0;
         }
     }
 }

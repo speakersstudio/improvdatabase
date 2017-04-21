@@ -20,7 +20,8 @@ const FADE_STYLE_IN = { opacity: 1 };
 const FADE_STYLE_OUT = { opacity: 0 };
 const FADE_STYLE_ABSOLUTE_OUT = {
     opacity: 0,
-    position: 'absolute'
+    position: 'absolute',
+    top: 0
 };
 const FADE_ANIM_DURATION = 200;
 

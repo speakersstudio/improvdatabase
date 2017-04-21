@@ -434,9 +434,10 @@ iplus {
   z-index: 400;
   background: rgba(0, 0, 0, 0.2);
   opacity: 0;
-  transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1), right 0ms 400ms; }
+  transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1), right 0ms 400ms;
+  box-shadow: 0 2px 20vw rgba(0, 0, 0, 0.75) inset; }
   .backdrop.show {
-    transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: opacity 1500ms cubic-bezier(0.25, 0.8, 0.25, 1);
     right: 0px;
     opacity: 1; }
 
@@ -577,6 +578,7 @@ iplus {
   .form-input label {
     position: absolute;
     top: 18px;
+    z-index: 1;
     cursor: text;
     font-size: 16px;
     transition: all 200ms;
@@ -585,6 +587,17 @@ iplus {
     .form-input label.active {
       transform: translateY(-140%);
       font-size: 12px; }
+  .form-input .help {
+    position: absolute;
+    top: 18px;
+    right: 8px;
+    z-index: 2;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 250ms; }
+    .form-input .help.gone {
+      opacity: 0;
+      z-index: 0; }
 
 button,
 .button {

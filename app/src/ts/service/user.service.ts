@@ -22,6 +22,9 @@ class LoginResponse {
 export class UserService {
 
     private loginUrl = '/login';
+    private passwordRecoveryUrl = '/recoverPassword';
+    private passwordRecoveryTokenCheckUrl = '/checkPasswordToken';
+    private passwordChangeUrl = '/changePassword';
     private logoutUrl = '/logout';
     private refreshUrl = '/refreshToken';
     private userUrl = '/api/user/';
@@ -63,6 +66,43 @@ export class UserService {
                 password: password
             }).toPromise()
             .then(response => this._handleLoginRequest(response));
+    }
+
+    recoverPassword(email: string): Promise<boolean> {
+        return this.http.post(this.passwordRecoveryUrl, {
+            email: email
+        }).toPromise()
+        .then(response => {
+            if (response.status == 200) {
+                return true;
+            } else {
+                return false;
+            }
+        })
+    }
+
+    checkPasswordRecoveryToken(token: string): Promise<boolean> {
+        return this.http.post(this.passwordRecoveryTokenCheckUrl, {
+            token: token
+        }).toPromise()
+        .then(response => {
+            let data = response.json();
+            if (data['message'] && data['message'] == 'Okay') {
+                return true;
+            } else {
+                return false;
+            }
+        })
+    }
+
+    changePassword(token: string, password: string): Promise<User> {
+        return this.http.post(this.passwordChangeUrl, {
+            password: password,
+            token: token
+        }).toPromise()
+        .then(response => {
+            return response.json() as User;
+        })
     }
 
     refreshToken(): Promise<User> {

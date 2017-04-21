@@ -14,7 +14,8 @@ var FADE_STYLE_IN = { opacity: 1 };
 var FADE_STYLE_OUT = { opacity: 0 };
 var FADE_STYLE_ABSOLUTE_OUT = {
     opacity: 0,
-    position: 'absolute'
+    position: 'absolute',
+    top: 0
 };
 var FADE_ANIM_DURATION = 200;
 // bouncing

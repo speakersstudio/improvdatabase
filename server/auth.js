@@ -3,7 +3,9 @@ const   jwt = require('jwt-simple'),
         roles = require('./roles'),
         util = require('./util'),
         config  = require('./config')(),
-        url = require('url');
+        url = require('url'),
+        bcrypt = require('bcrypt'),
+        emailUtil = require('./email');
         //redis   = require('redis'),
         //client;
 
@@ -42,6 +44,115 @@ module.exports = {
                     module.exports.invalid(req, res);
                 }
             });
+    },
+
+    recoverPassword: (req, res) => {
+        let email = req.body.email,
+            noUser = function() {
+                res.json({ error: 'No user found'});
+            }
+
+        if (email === '') {
+            noUser();
+            return;
+        }
+
+        userApi.findUser(email).then(user => {
+
+            if (!user) {
+                noUser();
+            } else {
+
+                var dateObj = new Date();
+                dateObj.setHours(dateObj.getHours() + 12); // you have 12 hours to use the link
+
+                let token = jwt.encode({
+                    exp: dateObj.getTime(),
+                    iss: user._id
+                }, config.token);
+
+                let name = user.firstName + ' ' + user.lastName;
+                if (!name.trim()) {
+                    name = 'ImprovPlus User';
+                }
+
+                let link = req.protocol + '://' + req.get('host') + '/resetMyPassword/' + token;
+
+                emailUtil.send({
+                    to: user.email,
+                    toName: user.firstName + ' ' + user.lastName,
+                    subject: 'ImprovPlus Password Rescue',
+                    content: {
+                        type: 'text',
+                        preheader: 'Did you forget your ImprovPlus password? We can help with that.',
+                        greeting: `Dear ${name},`,
+                        body: `
+                            <p>So you lost your password. That's okay - it happens to the best of us. You can use the button below to change it to something else.</p>
+                        `,
+                        action: link,
+                        actionText: 'Click here to reset your password.',
+                        afterAction: `
+                            <p>If that link doesn't work for whatever reason, you can point your browser directly to ${link} and make it happen.</p>
+                            <p>By the way, if you didn't ask for a new password, let us know - some joker might be trying to commit some sort of hijink.</p>
+                            <p>If you are still having problems, feel free to reach out to us. You can reply directly to this email.</p>
+
+                            <p> </p>
+                            <p>Sincerely,</p>
+
+                            <p>The Proprietors of ImprovPlus</p>
+                        `
+                    }
+                }, (error, response) => {
+                    res.send('Sent');
+                })
+
+            }
+
+        })
+    },
+
+    checkPasswordToken: (req, res) => {
+        let token = req.body.token,
+            decoded = jwt.decode(token, config.token);
+
+        if (decoded.exp > Date.now()) {
+            res.json({message: "Okay"});
+        } else {
+            res.json({message: "Expired"});
+        }
+    },
+
+    changePassword: (req, res) => {
+        let token = req.body.token,
+            password = req.body.password,
+            decoded = jwt.decode(token, config.token),
+            id = decoded.iss,
+            hash;
+
+        if (decoded.exp > Date.now()) {
+            bcrypt.hash(password, config.saltRounds).then(h => {
+                hash = h;
+                return User.findOne({}).where('_id').equals(id).exec();
+            }).then(user => {
+                user.password = hash;
+
+                return user.save((err, saved) => {
+                    if (err) {
+                        util.handleError(req, res, err);
+                    } else {
+                        saved = saved.toObject();
+                        delete saved.password;
+                        saved.actions = roles.getActionsForRole(saved.role);
+
+                        if (res) {
+                            res.json(saved);
+                        }
+                    }
+                });
+            });
+        } else {
+            res.json({message: "Expired"});
+        }
     },
 
     invalid: (req, res) => {
@@ -160,9 +271,10 @@ module.exports = {
         }
     },
 
-    genToken: (user) => {
-        var expires = expiresInDays(7), // one week, as recommended by Auth0
-            token = jwt.encode({
+    genToken: (user, expires) => {
+        expires = expires || expiresInDays(7); // one week is recommended by Auth0
+
+        let token = jwt.encode({
                 exp: expires,
                 iss: user._id
             }, config.token);

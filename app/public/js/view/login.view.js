@@ -25,14 +25,17 @@ var LoginView = (function () {
     LoginView.prototype.submitLogin = function () {
         var _this = this;
         this.loginError = "";
+        this.isPosting = true;
         this.userService.login(this.email, this.password)
             .then(function (user) {
             _this.email = "";
             _this.password = "";
             //this.router.navigate(['/games']);
             _this.done.emit(user);
+            _this.isPosting = false;
         })
             .catch(function (reason) {
+            _this.isPosting = false;
             _this.errorCount++;
             if (reason.status == 500) {
                 _this.loginError = "Some sort of server error happened. Sorry.";
@@ -58,6 +61,7 @@ var LoginView = (function () {
                     _this.runaway = true;
                     setTimeout(function () {
                         _this.weGood = false;
+                        _this.show = false;
                         _this.done.emit(null);
                     }, 7100);
                 }
@@ -65,8 +69,50 @@ var LoginView = (function () {
         });
     };
     LoginView.prototype.cancel = function () {
+        this.showRecoverPassword = false;
         this.done.emit(null);
         return false;
+    };
+    LoginView.prototype.recoverPassword = function () {
+        var _this = this;
+        this.show = false;
+        setTimeout(function () {
+            _this.showRecoverPassword = true;
+            _this.show = true;
+        }, 200);
+    };
+    LoginView.prototype.cancelRecoverPassword = function () {
+        var _this = this;
+        this.show = false;
+        setTimeout(function () {
+            _this.showRecoverPassword = false;
+            _this.show = true;
+        }, 200);
+    };
+    LoginView.prototype.submitRecoverPassword = function () {
+        var _this = this;
+        this.isPosting = true;
+        this.recoverPasswordError = '';
+        this.userService.recoverPassword(this.email)
+            .catch(function (e) {
+            console.log(e);
+            _this.recoverPasswordError = 'We had a problem looking up that address.';
+        })
+            .then(function (success) {
+            _this.isPosting = false;
+            console.log('success?', success);
+            if (success) {
+                _this.show = false;
+                setTimeout(function () {
+                    _this.showRecoverPassword = false;
+                    _this.recoverPasswordDone = true;
+                    _this.show = true;
+                }, 200);
+            }
+            else {
+                _this.recoverPasswordError = 'We had a problem looking up that address.';
+            }
+        });
     };
     return LoginView;
 }());
@@ -84,8 +130,10 @@ LoginView = __decorate([
         selector: "login",
         templateUrl: "../template/view/login.view.html",
         animations: [
-            anim_util_1.DialogAnim.dialog
-        ]
+            anim_util_1.DialogAnim.dialog,
+            anim_util_1.FadeAnim.fadeAbsolute
+        ],
+        styles: ["\n        .password-recover-link {\n            \n        }\n    "]
     }),
     __metadata("design:paramtypes", [user_service_1.UserService])
 ], LoginView);

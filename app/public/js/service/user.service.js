@@ -26,6 +26,9 @@ var UserService = (function () {
         this.http = http;
         this.teamService = teamService;
         this.loginUrl = '/login';
+        this.passwordRecoveryUrl = '/recoverPassword';
+        this.passwordRecoveryTokenCheckUrl = '/checkPasswordToken';
+        this.passwordChangeUrl = '/changePassword';
         this.logoutUrl = '/logout';
         this.refreshUrl = '/refreshToken';
         this.userUrl = '/api/user/';
@@ -53,6 +56,42 @@ var UserService = (function () {
             password: password
         }).toPromise()
             .then(function (response) { return _this._handleLoginRequest(response); });
+    };
+    UserService.prototype.recoverPassword = function (email) {
+        return this.http.post(this.passwordRecoveryUrl, {
+            email: email
+        }).toPromise()
+            .then(function (response) {
+            if (response.status == 200) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+    };
+    UserService.prototype.checkPasswordRecoveryToken = function (token) {
+        return this.http.post(this.passwordRecoveryTokenCheckUrl, {
+            token: token
+        }).toPromise()
+            .then(function (response) {
+            var data = response.json();
+            if (data['message'] && data['message'] == 'Okay') {
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+    };
+    UserService.prototype.changePassword = function (token, password) {
+        return this.http.post(this.passwordChangeUrl, {
+            password: password,
+            token: token
+        }).toPromise()
+            .then(function (response) {
+            return response.json();
+        });
     };
     UserService.prototype.refreshToken = function () {
         var _this = this;

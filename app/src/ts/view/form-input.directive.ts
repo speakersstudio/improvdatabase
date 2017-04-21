@@ -2,26 +2,38 @@ import {
     Directive,
     ElementRef,
     OnInit,
-    Input
+    Input,
+    Output,
+    EventEmitter,
+    Renderer2
 } from '@angular/core';
 
 @Directive({
     selector: '[formInput]',
     host: {
         '(focus)': 'focus()',
-        '(blur)': 'blur()'
+        '(blur)': 'blur()',
+        '(input)': 'input()'
     }
 })
 export class FormInputDirective implements OnInit {
 
     @Input() error: string;
+    @Input() asterisk: boolean = true;
+    @Input() helpLink: string;
+
+    @Output() helpClicked: EventEmitter<boolean> = new EventEmitter();
 
     inputElement: HTMLInputElement;
     divElement: HTMLDivElement;
     labelElement: HTMLLabelElement;
+    helpLinkElement: HTMLAnchorElement;
     placeholder: string;
 
-    constructor(el: ElementRef) {
+    constructor(
+        el: ElementRef,
+        private renderer: Renderer2
+        ) {
         this.inputElement = el.nativeElement;
     }
 
@@ -33,11 +45,20 @@ export class FormInputDirective implements OnInit {
         this.inputElement.parentElement.insertBefore(this.divElement, this.inputElement.nextSibling);
         this.divElement.appendChild(this.inputElement);
 
+        if (this.helpLink) {
+            this.helpLinkElement = document.createElement('a');
+            this.helpLinkElement.innerText = this.helpLink;
+            this.helpLinkElement.className = 'help';
+            this.divElement.appendChild(this.helpLinkElement);
+
+            this.renderer.listen(this.helpLinkElement, 'click', e => this.clickHelp());
+        }
+
         this.inputElement.setAttribute('placeholder', '');
 
         this.labelElement = document.createElement('label');
         this.labelElement.textContent = this.placeholder;
-        if (this.inputElement.required) {
+        if (this.inputElement.required && this.asterisk) {
             this.labelElement.textContent += ' *';
         }
         this.divElement.appendChild(this.labelElement);
@@ -59,6 +80,20 @@ export class FormInputDirective implements OnInit {
         } else {
             this.focus();
         }
+    }
+
+    input(): void {
+        if (this.helpLinkElement) {
+            if (this.inputElement.value) {
+                this.helpLinkElement.className = 'help gone';
+            } else {
+                this.helpLinkElement.className = 'help';
+            }
+        }
+    }
+
+    clickHelp(): void {
+        this.helpClicked.emit(true);
     }
     
 }

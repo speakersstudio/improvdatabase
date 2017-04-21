@@ -7,7 +7,13 @@ var auth = require('../auth');
 router.post('/login', auth.login);
 router.post('/logout', auth.logout);
 router.post('/refreshToken', auth.checkToken, auth.refresh);
+
+router.post('/recoverPassword', auth.recoverPassword);
+router.post('/checkPasswordToken', auth.checkPasswordToken);
+router.post('/changePassword', auth.changePassword);
+
 router.all('/api/*', auth.checkToken, auth.checkAuth);
+
 
 // CHECKOUT PROCESS
 var charge = require('./charge');

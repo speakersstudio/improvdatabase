@@ -224,16 +224,23 @@ module.exports = {
 
     // fetched with a GET call to /api/user/:_id/materials
     materials: (req, res) => {
-        return User.findOne({}).where('_id').equals(req.user._id)
+        return module.exports.fetchMaterials(req.user._id)
+            .then(u => {
+                if (res) {
+                    res.json(u);
+                }
+            })
+    },
+
+    fetchMaterials: (userId) => {
+        return User.findOne({}).where('_id').equals(userId)
             .select('materials memberOfTeams adminOfTeams')
             .populate({
                 path: 'adminOfTeams memberOfTeams',
                 populate: util.populations.materials
             })
             .populate(util.populations.materials)
-            .then(u => {
-                res.json(u);
-            })
+            .exec();
     },
 
     subscription: (req, res) => {

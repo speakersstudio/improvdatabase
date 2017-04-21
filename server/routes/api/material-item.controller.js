@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 const MaterialItem = require('../../models/material-item.model');
 const Package = require('../../models/package.model');
 const Subscription = require('../../models/subscription.model');
+const userController = require('./user.controller');
 
 const subCtrl = require('./subscription.controller');
 const auth = require('../../auth');
@@ -51,23 +52,45 @@ module.exports = {
 
         } else {
 
+            let materialItem;
+
             MaterialItem.findOne({})
                 .where("_id").equals(materialId)
                 .exec()
                 .then(m => {
-                    if (!m) {
+                    materialItem = m;
+                    if (!materialItem) {
                         res.status(404).end();
                         return;
                     }
+                    // we have to load up the user's materials, to make sure they own this one
+                    return userController.fetchMaterials(req.user._id);
+                }).then(user => {
 
-                    let materialItem = m,
-                        access = false;
+                    let access = false,
+                        hasMaterial = function(materials) {
+                            if (!materials || !materials.length) {
+                                return false;
+                            }
+                            let has = false;
+                            materials.forEach(thismat => {
+                                if (thismat._id.equals(materialItem._id)) {
+                                    has = true;
+                                }
+                            });
+                            return has;
+                        };
 
-                    req.user.materials.forEach(thismat => {
-                        if (thismat._id.equals(materialItem._id)) {
-                            access = true;
-                        }
-                    });
+                    access = hasMaterial(user.materials);
+
+                    if (!access) {
+                        let teams = [].concat(req.user.adminOfTeams, req.user.memberOfTeams);
+                        teams.forEach(team => {
+                            if (team) {
+                                access = hasMaterial(team.materials);
+                            }
+                        });
+                    }
 
                     if (access && materialItem) {
 

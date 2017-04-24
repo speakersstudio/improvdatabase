@@ -311,12 +311,14 @@ const actionmap = {
                     }
                     break;
                 case 'post':
-                    if (url.indexOf('addTag')) {
+                    if (url.indexOf('addTag') > -1) {
                         return 'game_tag_add';
-                    } else if (url.indexOf('removeTag')) {
+                    } else if (url.indexOf('removeTag') > -1) {
                         return 'game_tag_remove';
-                    } else if (url.indexOf('createTag')) {
+                    } else if (url.indexOf('createTag') > -1) {
                         return 'tag_create';
+                    } else {
+                        return 'game_create';
                     }
                     break;
             }

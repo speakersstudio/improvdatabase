@@ -14,12 +14,11 @@ module.exports = {
             gameData = {
                 addedUser: userId,
                 description: data.description
-            },
-            gameModel;
+            };
         
         updateGame(Game.create(gameData), data, userId)
             .then(game => {
-                res.json(gameModel);
+                res.json(game);
             });
 
     },

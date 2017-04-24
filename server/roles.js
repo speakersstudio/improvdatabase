@@ -304,7 +304,7 @@ const actionmap = {
                     return 'game_edit';
                     break;
                 case 'delete':
-                    if (url.indexOf('removeTag')) {
+                    if (url.indexOf('removeTag') > -1) {
                         return 'game_tag_remove';
                     } else {
                         return 'game_delete';

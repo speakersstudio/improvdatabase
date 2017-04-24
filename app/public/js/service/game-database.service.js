@@ -312,9 +312,9 @@ var GameDatabaseService = (function () {
                 var notesForGame = [];
                 notes.forEach(function (note) {
                     if (note.game == game._id
-                        || (game.playerCount._id && note.metadata &&
+                        || (game.playerCount && note.metadata &&
                             note.metadata._id == game.playerCount._id)
-                        || (game.duration._id && note.metadata &&
+                        || (game.duration && note.metadata &&
                             note.metadata._id == game.duration._id)
                         || (note.tag && _this.gameHasTag(game, [note.tag._id]))) {
                         notesForGame.push(note);

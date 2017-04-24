@@ -141,8 +141,6 @@ module.exports = {
                     if (!user.superAdmin) {
                         delete user.superAdmin;
                     }
-
-                    console.log(user.locked);
                     
                     // make sure the user has an active subscription
                     if (user.locked) {

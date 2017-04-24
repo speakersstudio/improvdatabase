@@ -340,8 +340,12 @@ var GameDetailsComponent = (function () {
     GameDetailsComponent.prototype.setGame = function (game) {
         var _this = this;
         this.game = game;
-        this.durationID = this.game.duration._id;
-        this.playerCountID = this.game.playerCount._id;
+        if (this.game.duration) {
+            this.durationID = this.game.duration._id;
+        }
+        if (this.game.playerCount) {
+            this.playerCountID = this.game.playerCount._id;
+        }
         this.gameDatabaseService.getNotesForGame(this.game)
             .then(function (notes) { return _this.notes = notes; });
     };

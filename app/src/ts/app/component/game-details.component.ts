@@ -419,8 +419,12 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     setGame(game: Game): void {
         this.game = game;
 
-        this.durationID = this.game.duration._id;
-        this.playerCountID = this.game.playerCount._id;
+        if (this.game.duration) {
+            this.durationID = this.game.duration._id;
+        }
+        if (this.game.playerCount) {
+            this.playerCountID = this.game.playerCount._id;
+        }
 
         this.gameDatabaseService.getNotesForGame(this.game)
             .then((notes) => this.notes = notes);

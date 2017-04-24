@@ -23,6 +23,16 @@ module.exports = {
 
     },
 
+    delete: (req, res) => {
+
+        let gameId = req.params.id;
+
+        Game.remove({ _id: gameId }).then(() => {
+            res.send('Success');
+        });
+
+    },
+
     update: (req, res) => {
 
         let data = req.body,

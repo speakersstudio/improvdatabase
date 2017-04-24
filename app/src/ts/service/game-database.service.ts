@@ -332,9 +332,9 @@ export class GameDatabaseService {
                 notes.forEach((note) => {
                     if (
                         note.game == game._id
-                        || (game.playerCount._id && note.metadata && 
+                        || (game.playerCount && note.metadata && 
                             note.metadata._id == game.playerCount._id)
-                        || (game.duration._id && note.metadata &&
+                        || (game.duration && note.metadata &&
                             note.metadata._id == game.duration._id)
                         || (note.tag && this.gameHasTag(game, [note.tag._id]))
                     ) {

@@ -197,11 +197,11 @@ module.exports = {
                     let version = item.versions[util.indexOfObjectId(item.versions, versionId)];
 
                     let filename = path.join(__dirname, materialFolderName, materialId + '.' + version.ver + '.' + version.extension);
-                    fs.exists(filename, exists => {
-                        if (exists) {
-                            fs.unlink();
-                        }
-                    });
+                    try {
+                        fs.unlink(filename);
+                    } catch(e) {
+                        console.log('Trying to delete version, but file does not exist');
+                    }
 
                     item.versions = util.removeFromObjectIdArray(item.versions, versionId);
                     return item.save();

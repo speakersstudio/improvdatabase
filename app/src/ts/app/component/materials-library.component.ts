@@ -69,6 +69,10 @@ export class MaterialsLibraryComponent implements OnInit {
             });
     }
 
+    onNoVersionsSelected(): void {
+        
+    }
+
     clearFilter(): void {
 
     }

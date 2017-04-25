@@ -37,6 +37,9 @@ var LandingHeroView = (function () {
         });
         this._app.showWhiteBrackets(true);
     };
+    LandingHeroView.prototype.ngOnDestroy = function () {
+        this.scrollSubscription.unsubscribe();
+    };
     LandingHeroView.prototype.scrollBelowLanding = function () {
         this._app.scrollTo(this.pageStart - 10, 800);
     };
@@ -161,8 +164,6 @@ var LandingHeroView = (function () {
         iframe.style.height = this.bgheight + 'px';
         iframe.style.left = '-' + this.bgleft + 'px';
         iframe.style.top = '-' + this.bgtop + 'px';
-    };
-    LandingHeroView.prototype.ngOnDestroy = function () {
     };
     return LandingHeroView;
 }());

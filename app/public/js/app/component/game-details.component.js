@@ -60,6 +60,14 @@ var GameDetailsComponent = (function () {
             this.dialog = true;
             this.setGame(this.game);
         }
+        if (this.can('game_edit')) {
+            this.gameDatabaseService.getPlayerCounts().then(function (playerCounts) {
+                _this.allPlayerCounts = playerCounts;
+            });
+            this.gameDatabaseService.getDurations().then(function (durations) {
+                _this.allDurations = durations;
+            });
+        }
     };
     GameDetailsComponent.prototype.ngOnDestroy = function () {
     };
@@ -128,8 +136,6 @@ var GameDetailsComponent = (function () {
     GameDetailsComponent.prototype._closeAllEdits = function () {
         this.editNameShown = false;
         this.addNameShown = false;
-        this.editPlayerCountShown = false;
-        this.editDurationShown = false;
         this.addTagShown = false;
         this.editDescriptionShown = false;
     };
@@ -144,58 +150,19 @@ var GameDetailsComponent = (function () {
             // TODO: revert?
         });
     };
-    GameDetailsComponent.prototype.showEditPlayerCount = function () {
-        var _this = this;
-        this._closeAllEdits();
+    GameDetailsComponent.prototype.savePlayerCount = function (playerCount) {
         if (this.can('game_edit')) {
-            if (!this.allPlayerCounts.length) {
-                this.gameDatabaseService.getPlayerCounts().then(function (playerCounts) {
-                    _this.allPlayerCounts = playerCounts;
-                });
-            }
-            this.editPlayerCountShown = !this.editPlayerCountShown;
-        }
-    };
-    GameDetailsComponent.prototype.savePlayerCount = function () {
-        var _this = this;
-        if (this.can('game_edit')) {
-            if (this.playerCountID) {
-                this.gameDatabaseService.getPlayerCountById(this.playerCountID)
-                    .then(function (playerCount) {
-                    _this.game.playerCount = playerCount;
-                    _this._saveGame();
-                });
-            }
-            else {
-                // show the create player count dialog
-                this.showCreateMetadataDialog("Player Count");
+            if (!this.game.playerCount || this.game.playerCount._id !== playerCount._id) {
+                this.game.playerCount = playerCount;
+                this._saveGame();
             }
         }
     };
-    GameDetailsComponent.prototype.showEditDuration = function () {
-        var _this = this;
-        this._closeAllEdits();
+    GameDetailsComponent.prototype.saveDuration = function (duration) {
         if (this.can('game_edit')) {
-            if (!this.allDurations.length) {
-                this.gameDatabaseService.getDurations().then(function (durations) {
-                    _this.allDurations = durations;
-                });
-            }
-            this.editDurationShown = !this.editDurationShown;
-        }
-    };
-    GameDetailsComponent.prototype.saveDuration = function () {
-        var _this = this;
-        if (this.can('game_edit')) {
-            if (this.durationID) {
-                this.gameDatabaseService.getDurationById(this.durationID)
-                    .then(function (duration) {
-                    _this.game.duration = duration;
-                    _this._saveGame();
-                });
-            }
-            else {
-                this.showCreateMetadataDialog("Duration");
+            if (!this.game.duration || this.game.duration._id !== duration._id) {
+                this.game.duration = duration;
+                this._saveGame();
             }
         }
     };
@@ -340,12 +307,12 @@ var GameDetailsComponent = (function () {
     GameDetailsComponent.prototype.setGame = function (game) {
         var _this = this;
         this.game = game;
-        if (this.game.duration) {
-            this.durationID = this.game.duration._id;
-        }
-        if (this.game.playerCount) {
-            this.playerCountID = this.game.playerCount._id;
-        }
+        // if (this.game.duration) {
+        //     this.durationID = this.game.duration._id;
+        // }
+        // if (this.game.playerCount) {
+        //     this.playerCountID = this.game.playerCount._id;
+        // }
         this.gameDatabaseService.getNotesForGame(this.game)
             .then(function (notes) { return _this.notes = notes; });
     };

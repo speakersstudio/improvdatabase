@@ -7,7 +7,6 @@ import { IPlusView } from '../view/iplus.view';
 import { LoginView } from '../view/login.view';
 import { UserFormView } from '../view/user-form.view';
 import { LandingHeroView } from '../view/landing-hero.view';
-import { FormInputView } from '../view/form-input.view';
 
 // services
 import { GameDatabaseService } from "../service/game-database.service";
@@ -31,7 +30,6 @@ import { BracketCardDirective } from '../view/bracket-card.directive';
         LoginView,
         UserFormView,
         LandingHeroView,
-        FormInputView,
         FormInputDirective,
         BracketCardDirective
     ],
@@ -40,7 +38,6 @@ import { BracketCardDirective } from '../view/bracket-card.directive';
         LoginView,
         UserFormView,
         LandingHeroView,
-        FormInputView,
         FormInputDirective,
         BracketCardDirective
     ],

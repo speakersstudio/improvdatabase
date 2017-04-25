@@ -50,6 +50,8 @@ var MaterialsLibraryComponent = (function () {
             _this.adminTeams = teams;
         });
     };
+    MaterialsLibraryComponent.prototype.onNoVersionsSelected = function () {
+    };
     MaterialsLibraryComponent.prototype.clearFilter = function () {
     };
     return MaterialsLibraryComponent;

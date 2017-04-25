@@ -1,9 +1,9 @@
 <div class="content">
     <!--<h4 class="right">Your Materials</h4>-->
 
-    <p *ngIf="team">These materials are available to everyone in {{team.name}}.</p>
+    <p *ngIf="team && materials && materials.length">These materials are available to everyone in {{team.name}}.</p>
 
-    <div class="card-list">
+    <div class="card-list" *ngIf="materials && materials.length">
 
         <div class="card small clickable {{material.color}}"
             *ngFor="let material of materials"
@@ -26,6 +26,10 @@
         </div>
 
     </div>
+
+    <!--<p ngIf="!materials || !materials.length">{{team ? team.name + ' doesn\'t' : 'You don\'t'}} own any materials yet.</p>-->
+
+    <!--<p ngIf="team && (!materials || !materials.length)">{{team.name}} doesn't own any materials yet.</p>-->
 
 </div>
 

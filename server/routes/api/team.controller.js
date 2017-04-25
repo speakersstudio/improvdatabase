@@ -73,7 +73,7 @@ module.exports = {
         let name = req.body.name,
             teamId = req.body.teamId;
 
-        let promise = Team.findOne({}).where('name').equals(email);
+        let promise = Team.findOne({}).where('name').equals(name);
 
         if (teamId) {
             promise.where('_id').ne(teamId);

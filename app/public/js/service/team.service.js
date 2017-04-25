@@ -68,6 +68,19 @@ var TeamService = (function () {
             return team;
         });
     };
+    TeamService.prototype.validate = function (team) {
+        return this.http.post(this.teamUrl + 'validate', team)
+            .toPromise()
+            .then(function (response) {
+            var data = response.json();
+            if (data.conflict == 'name') {
+                return 'A team with that name is already registered on ImprovPlus';
+            }
+            else {
+                return '';
+            }
+        });
+    };
     return TeamService;
 }());
 TeamService = __decorate([

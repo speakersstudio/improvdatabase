@@ -19,32 +19,53 @@ export class EditableMetadataView implements OnInit {
 
     @ViewChild('metadataInput') inputElement;
 
-    @Input() icon: string;
-    @Input() text: string;
-    @Input() blankText: string;
-    @Input() canEdit: boolean;
+    @Input() icon: string; // an icon to show if necessary
+    @Input() text: string; // the text to show by default
+    @Input() model: Object; // pass an object if you want, this will try to use the name property if it exists
+    @Input() blankText: string; // the fallback text to show if there is no text
+    @Input() canEdit: boolean; // whether the user can edit this thing
 
-    @Input() type: string = 'text';
+    @Input() type: string; // 'text' 'address' or 'dropdown'
 
-    @Output() save: EventEmitter<string> = new EventEmitter();
-    @Output() saveAddress: EventEmitter<Address> = new EventEmitter();
+    @Output() save: EventEmitter<any> = new EventEmitter(); // called when the item saves
+    @Output() saveAddress: EventEmitter<Address> = new EventEmitter(); // called when the address saves
 
     private editShown: boolean;
 
     private editModel: string;
 
+    // these properties are for address types
     @Input() address: string;
     @Input() city: string;
     @Input() state: string;
     @Input() zip: string;
     @Input() country: string;
 
+    // for dropdowns, the items to show
+    @Input() options: object[];
+    @Input() optionId: string = '_id'; // the property to use as the ID for each option
+    @Input() optionDescription: string = 'description'; // the property to use as the title attribute on each option
+    @Input() optionText: string = 'name'; // the property to use to get the text for each option
+    @Input() optionCreate: boolean = false; // whether to allow creating new dropdown options
+
+    @Output() createOption: EventEmitter<boolean> = new EventEmitter(); // should trigger a dialog or something to create a new option
+
     constructor(
     ) { }
 
     ngOnInit(): void {
-        if (this.address) {
-            this.type = 'address';
+        if (!this.text && this.model && this.model.hasOwnProperty('name')) {
+            this.text = this.model['name'];
+        }
+
+        if (!this.type) {
+            if (this.address) {
+                this.type = 'address';
+            } else if (this.options) {
+                this.type = 'dropdown';
+            } else {
+                this.type = 'text';
+            }
         }
 
         if (this.type == 'address') {
@@ -53,7 +74,9 @@ export class EditableMetadataView implements OnInit {
     }
 
     private _focusInput(): void {
-        (<HTMLInputElement> this.inputElement.nativeElement).focus();
+        if (this.inputElement) {
+            (<HTMLInputElement> this.inputElement.nativeElement).focus();
+        }
     }
 
     setupAddress(): void {
@@ -82,7 +105,12 @@ export class EditableMetadataView implements OnInit {
 
     showEdit(): void {
         if (this.canEdit) {
-            this.editModel = this.text
+            if (this.model) {
+                this.editModel = this.optionId ? this.model[this.optionId] : this.text;
+            } else {
+                this.editModel = this.text
+            }
+
             this.editShown = true;
             setTimeout(() => {
                 this._focusInput();
@@ -109,6 +137,24 @@ export class EditableMetadataView implements OnInit {
                 zip: this.zip,
                 country: this.country
             });
+        } else if (this.type == 'dropdown') {
+            if (this.editModel == '-1') {
+                // create a new thing!
+                this.createOption.emit(true);
+            } else {
+                let selection;
+                if (this.optionId) {
+                    this.options.forEach(option => {
+                        if (option[this.optionId] == this.editModel) {
+                            selection = option;
+                        }
+                    });
+                } else {
+                    selection = this.editModel;
+                }
+                this.text = this.optionText ? selection[this.optionText] : selection;
+                this.save.emit(selection);
+            }
         } else if (this.editModel && this.editModel != this.text) {
             this.text = this.editModel;
             this.save.emit(this.editModel);

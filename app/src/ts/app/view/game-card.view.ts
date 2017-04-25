@@ -37,10 +37,12 @@ export class GameCardView implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
-        // this will create a description string without any HTML tags in it
-        let div = document.createElement("div");
-        div.innerHTML = this.game.description;
-        this.descriptionText = div.textContent || div.innerText || this.game.description;
+        if (this.game.description) {
+            // this will create a description string without any HTML tags in it
+            let div = document.createElement("div");
+            div.innerHTML = this.game.description;
+            this.descriptionText = div.textContent || div.innerText || this.game.description;
+        }
 
         this.game.tags.forEach(taggame => {
             // let's just make sure the tag actually exists

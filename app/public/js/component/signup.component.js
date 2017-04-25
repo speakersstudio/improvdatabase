@@ -13,25 +13,31 @@ var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var app_component_1 = require("./app.component");
 var user_service_1 = require("../service/user.service");
+var team_service_1 = require("../service/team.service");
 var library_service_1 = require("../service/library.service");
 var cart_service_1 = require("../service/cart.service");
 var config_1 = require("../config");
 var user_1 = require("../model/user");
+var team_1 = require("../model/team");
 var anim_util_1 = require("../util/anim.util");
 var bracket_card_directive_1 = require("../view/bracket-card.directive");
 var SignupComponent = (function () {
-    function SignupComponent(_app, router, userService, libraryService, cartService) {
+    function SignupComponent(_app, router, userService, libraryService, cartService, teamService) {
         this._app = _app;
         this.router = router;
         this.userService = userService;
         this.libraryService = libraryService;
         this.cartService = cartService;
+        this.teamService = teamService;
         this.isLoadingPackages = false;
         this.isPosting = false;
         this.cardComplete = false;
     }
     SignupComponent.prototype.ngOnInit = function () {
         var _this = this;
+        if (this.userService.isLoggedIn()) {
+            this.router.navigate(['/app/dashboard'], { replaceUrl: true });
+        }
         this._app.showBackground(true);
         this.isLoadingPackages = true;
         this.libraryService.getPackages().then(function (packages) {
@@ -66,6 +72,43 @@ var SignupComponent = (function () {
             else {
                 _this.cardError = '';
             }
+        });
+    };
+    SignupComponent.prototype.emailInput = function () {
+        var _this = this;
+        clearTimeout(this.emailTimer);
+        this.emailError = '';
+        this.emailTimer = setTimeout(function () {
+            _this.validateEmail();
+        }, 500);
+    };
+    SignupComponent.prototype.validateEmail = function () {
+        var _this = this;
+        var user = new user_1.User();
+        if (this.email.indexOf('@') > -1 && this.email.indexOf('.') > -1) {
+            user.email = this.email;
+            this.userService.validate(user).then(function (message) {
+                _this.emailError = message;
+            });
+        }
+        else {
+            this.emailError = 'This does not seem to be a valid email address.';
+        }
+    };
+    SignupComponent.prototype.teamInput = function () {
+        var _this = this;
+        clearTimeout(this.teamTimer);
+        this.teamError = '';
+        this.teamTimer = setTimeout(function () {
+            _this.validateTeam();
+        }, 500);
+    };
+    SignupComponent.prototype.validateTeam = function () {
+        var _this = this;
+        var team = new team_1.Team();
+        team.name = this.teamName;
+        this.teamService.validate(team).then(function (message) {
+            _this.teamError = message;
         });
     };
     SignupComponent.prototype.selectCard = function (option, value, cardToOpen, cardToClose) {
@@ -165,7 +208,7 @@ var SignupComponent = (function () {
         if (this.teamOption == 'individual' && !this.userName) {
             return false;
         }
-        if (this.cardError || !this.cardComplete) {
+        if (this.cardError || !this.cardComplete || this.teamError) {
             return false;
         }
         return true;
@@ -208,7 +251,6 @@ var SignupComponent = (function () {
                 })
                     .then(function (u) {
                     if (u && u.email) {
-                        _this._app.scrollTo(0, 1);
                         return _this.userService.login(user.email, user.password);
                     }
                     else {
@@ -255,7 +297,8 @@ SignupComponent = __decorate([
         router_1.Router,
         user_service_1.UserService,
         library_service_1.LibraryService,
-        cart_service_1.CartService])
+        cart_service_1.CartService,
+        team_service_1.TeamService])
 ], SignupComponent);
 exports.SignupComponent = SignupComponent;
 

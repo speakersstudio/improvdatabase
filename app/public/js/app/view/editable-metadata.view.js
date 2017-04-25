@@ -12,20 +12,37 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var EditableMetadataView = (function () {
     function EditableMetadataView() {
-        this.type = 'text';
-        this.save = new core_1.EventEmitter();
-        this.saveAddress = new core_1.EventEmitter();
+        this.save = new core_1.EventEmitter(); // called when the item saves
+        this.saveAddress = new core_1.EventEmitter(); // called when the address saves
+        this.optionId = '_id'; // the property to use as the ID for each option
+        this.optionDescription = 'description'; // the property to use as the title attribute on each option
+        this.optionText = 'name'; // the property to use to get the text for each option
+        this.optionCreate = false; // whether to allow creating new dropdown options
+        this.createOption = new core_1.EventEmitter(); // should trigger a dialog or something to create a new option
     }
     EditableMetadataView.prototype.ngOnInit = function () {
-        if (this.address) {
-            this.type = 'address';
+        if (!this.text && this.model && this.model.hasOwnProperty('name')) {
+            this.text = this.model['name'];
+        }
+        if (!this.type) {
+            if (this.address) {
+                this.type = 'address';
+            }
+            else if (this.options) {
+                this.type = 'dropdown';
+            }
+            else {
+                this.type = 'text';
+            }
         }
         if (this.type == 'address') {
             this.setupAddress();
         }
     };
     EditableMetadataView.prototype._focusInput = function () {
-        this.inputElement.nativeElement.focus();
+        if (this.inputElement) {
+            this.inputElement.nativeElement.focus();
+        }
     };
     EditableMetadataView.prototype.setupAddress = function () {
         var address = this.address || '', city = this.city || '', state = this.state || '', zip = this.zip || '', country = this.country || '';
@@ -47,7 +64,12 @@ var EditableMetadataView = (function () {
     EditableMetadataView.prototype.showEdit = function () {
         var _this = this;
         if (this.canEdit) {
-            this.editModel = this.text;
+            if (this.model) {
+                this.editModel = this.optionId ? this.model[this.optionId] : this.text;
+            }
+            else {
+                this.editModel = this.text;
+            }
             this.editShown = true;
             setTimeout(function () {
                 _this._focusInput();
@@ -62,6 +84,7 @@ var EditableMetadataView = (function () {
         this.inputElement.nativeElement.blur();
     };
     EditableMetadataView.prototype.saveEdit = function () {
+        var _this = this;
         if (this.type == 'address') {
             this.setupAddress();
             this.saveAddress.emit({
@@ -71,6 +94,27 @@ var EditableMetadataView = (function () {
                 zip: this.zip,
                 country: this.country
             });
+        }
+        else if (this.type == 'dropdown') {
+            if (this.editModel == '-1') {
+                // create a new thing!
+                this.createOption.emit(true);
+            }
+            else {
+                var selection_1;
+                if (this.optionId) {
+                    this.options.forEach(function (option) {
+                        if (option[_this.optionId] == _this.editModel) {
+                            selection_1 = option;
+                        }
+                    });
+                }
+                else {
+                    selection_1 = this.editModel;
+                }
+                this.text = this.optionText ? selection_1[this.optionText] : selection_1;
+                this.save.emit(selection_1);
+            }
         }
         else if (this.editModel && this.editModel != this.text) {
             this.text = this.editModel;
@@ -92,6 +136,10 @@ __decorate([
     core_1.Input(),
     __metadata("design:type", String)
 ], EditableMetadataView.prototype, "text", void 0);
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", Object)
+], EditableMetadataView.prototype, "model", void 0);
 __decorate([
     core_1.Input(),
     __metadata("design:type", String)
@@ -132,6 +180,30 @@ __decorate([
     core_1.Input(),
     __metadata("design:type", String)
 ], EditableMetadataView.prototype, "country", void 0);
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", Array)
+], EditableMetadataView.prototype, "options", void 0);
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", String)
+], EditableMetadataView.prototype, "optionId", void 0);
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", String)
+], EditableMetadataView.prototype, "optionDescription", void 0);
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", String)
+], EditableMetadataView.prototype, "optionText", void 0);
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", Boolean)
+], EditableMetadataView.prototype, "optionCreate", void 0);
+__decorate([
+    core_1.Output(),
+    __metadata("design:type", core_1.EventEmitter)
+], EditableMetadataView.prototype, "createOption", void 0);
 EditableMetadataView = __decorate([
     core_1.Component({
         moduleId: module.id,

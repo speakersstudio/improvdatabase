@@ -67,6 +67,7 @@ export class AppComponent implements OnInit {
     dialogMessage: string = "";
     dialogConfirm: string = "";
     dialogOnConfirm: Function;
+    dialogHideCancel: boolean = true;
 
     private toastMessage: string;
     private toastMessageQueue: string[] = [];
@@ -112,6 +113,7 @@ export class AppComponent implements OnInit {
                 }
                 setTimeout(() => {
                     this.router.navigate(path, { replaceUrl: true });
+                    window.scrollTo(0, 0);
                 }, 0);
             }
             if (!user) {
@@ -221,11 +223,13 @@ export class AppComponent implements OnInit {
         }
     }
 
-    dialog(title: string, body: string, button: string, onConfirm?: Function): void {
+    dialog(title: string, body: string, button?: string, onConfirm?: Function, hideCancel?: boolean): void {
         this.dialogTitle = title;
         this.dialogMessage = body;
         this.dialogConfirm = button;
         this.dialogOnConfirm = onConfirm;
+
+        this.dialogHideCancel = hideCancel;
 
         this.showDialog = true;
         this.showBackdrop = true;

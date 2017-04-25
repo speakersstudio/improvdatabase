@@ -13,10 +13,10 @@ const Game = require('./models/game.model'),
     Tag = require('./models/tag.model'),
 
     // set these to a Date.now() value to trigger a re-seed
-    metadataBackupTime = 1492176592742,
-    gameBackupTime = 1492176592742,
-    nameBackupTime = 1492176592742,
-    tagBackupTime = 1492176592742,
+    metadataBackupTime = 1493140912105,
+    gameBackupTime = 1493140912105,
+    nameBackupTime = 1493140912105,
+    tagBackupTime = 1493140912105,
     noteBackupTime = 1492176592742;
 
 const ShauvonID = "58c6e5bcd036281f4ce07dff";

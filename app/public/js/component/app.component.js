@@ -40,6 +40,7 @@ var AppComponent = (function () {
         this.dialogTitle = "";
         this.dialogMessage = "";
         this.dialogConfirm = "";
+        this.dialogHideCancel = true;
         this.toastMessageQueue = [];
     }
     AppComponent.prototype.ngOnInit = function () {
@@ -73,6 +74,7 @@ var AppComponent = (function () {
                 }
                 setTimeout(function () {
                     _this.router.navigate(path_1, { replaceUrl: true });
+                    window.scrollTo(0, 0);
                 }, 0);
             }
             if (!user) {
@@ -167,11 +169,12 @@ var AppComponent = (function () {
             this.showFullscreen = true;
         }
     };
-    AppComponent.prototype.dialog = function (title, body, button, onConfirm) {
+    AppComponent.prototype.dialog = function (title, body, button, onConfirm, hideCancel) {
         this.dialogTitle = title;
         this.dialogMessage = body;
         this.dialogConfirm = button;
         this.dialogOnConfirm = onConfirm;
+        this.dialogHideCancel = hideCancel;
         this.showDialog = true;
         this.showBackdrop = true;
     };

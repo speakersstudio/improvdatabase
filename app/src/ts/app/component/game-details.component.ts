@@ -64,10 +64,8 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     editName: string;
 
     allPlayerCounts: GameMetadata[] = [];
-    editPlayerCountShown: boolean;
 
     allDurations: GameMetadata[] = [];
-    editDurationShown: boolean;
 
     addTagShown: boolean;
     newTagText: string;
@@ -78,7 +76,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
 
     createMetadataType: string;
 
-    playerCountID: string;
+    // playerCountID: string;
     durationID: string;
 
     private tools: Tool[] = [
@@ -116,6 +114,15 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         } else {
             this.dialog = true;
             this.setGame(this.game);
+        }
+
+        if (this.can('game_edit')) {
+            this.gameDatabaseService.getPlayerCounts().then((playerCounts) => {
+                this.allPlayerCounts = playerCounts;
+            });
+            this.gameDatabaseService.getDurations().then((durations) => {
+                this.allDurations = durations
+            });
         }
 
     }
@@ -194,8 +201,6 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     private _closeAllEdits(): void {
         this.editNameShown = false;
         this.addNameShown = false;
-        this.editPlayerCountShown = false;
-        this.editDurationShown = false;
         this.addTagShown = false;
         this.editDescriptionShown = false;
     }
@@ -213,53 +218,20 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
             })
     }
 
-    showEditPlayerCount(): void {
-        this._closeAllEdits();
+    savePlayerCount(playerCount: GameMetadata): void {
         if (this.can('game_edit')) {
-            if (!this.allPlayerCounts.length) {
-                this.gameDatabaseService.getPlayerCounts().then((playerCounts) => {
-                    this.allPlayerCounts = playerCounts;
-                });
-            }
-            this.editPlayerCountShown = !this.editPlayerCountShown;
-        }
-    }
-    savePlayerCount(): void {
-        if (this.can('game_edit')) {
-            if (this.playerCountID) {
-                this.gameDatabaseService.getPlayerCountById(this.playerCountID)
-                    .then(playerCount => {
-                        this.game.playerCount = playerCount;
-                        this._saveGame();
-                    });
-            } else {
-                // show the create player count dialog
-                this.showCreateMetadataDialog("Player Count");
+            if (!this.game.playerCount || this.game.playerCount._id !== playerCount._id) {
+                this.game.playerCount = playerCount;
+                this._saveGame();
             }
         }
     }
 
-    showEditDuration(): void {
-        this._closeAllEdits();
+    saveDuration(duration: GameMetadata): void {
         if (this.can('game_edit')) {
-            if (!this.allDurations.length) {
-                this.gameDatabaseService.getDurations().then((durations) => {
-                    this.allDurations = durations
-                });
-            }
-            this.editDurationShown = !this.editDurationShown;
-        }
-    }
-    saveDuration(): void {
-        if (this.can('game_edit')) {
-            if (this.durationID) {
-                this.gameDatabaseService.getDurationById(this.durationID)
-                    .then(duration => {
-                        this.game.duration = duration;
-                        this._saveGame();
-                    });
-            } else {
-                this.showCreateMetadataDialog("Duration");
+            if (!this.game.duration || this.game.duration._id !== duration._id) {
+                this.game.duration = duration;
+                this._saveGame();
             }
         }
     }
@@ -419,12 +391,12 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     setGame(game: Game): void {
         this.game = game;
 
-        if (this.game.duration) {
-            this.durationID = this.game.duration._id;
-        }
-        if (this.game.playerCount) {
-            this.playerCountID = this.game.playerCount._id;
-        }
+        // if (this.game.duration) {
+        //     this.durationID = this.game.duration._id;
+        // }
+        // if (this.game.playerCount) {
+        //     this.playerCountID = this.game.playerCount._id;
+        // }
 
         this.gameDatabaseService.getNotesForGame(this.game)
             .then((notes) => this.notes = notes);

@@ -47,6 +47,7 @@
                     
                     <input name="email"
                         [(ngModel)]="email"
+                        (input)="emailInput($event)"
                         placeholder="Email"
                         formInput
                         required
@@ -84,10 +85,12 @@
 
                     <input name="email"
                         [(ngModel)]="email"
+                        (input)="emailInput($event)"
                         placeholder="Email"
                         formInput
                         required 
                         type="text" />
+                    <span class="error" *ngIf="emailError">{{emailError}}</span>
                     
                     <input name="password" 
                         [(ngModel)]="password"
@@ -175,7 +178,16 @@
 
                 <div class="body" *ngIf="teamOption == 'team'" [@fadeAbsolute]>
                     <p>What should we call your team?</p>
-                    <input formInput name="teamName" placeholder="Team Name" [(ngModel)]="teamName" required type="text" />
+
+                    <input formInput
+                        name="teamName"
+                        placeholder="Team Name"
+                        [(ngModel)]="teamName"
+                        required
+                        (input)="teamInput($event)"
+                        type="text" />
+                    <span class="error" *ngIf="teamError">{{teamError}}</span>
+                    
                 </div>
             </div>
 

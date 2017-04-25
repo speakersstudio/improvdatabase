@@ -75,4 +75,17 @@ export class TeamService {
             })
     }
 
+    validate(team: Team): Promise<string> {
+        return this.http.post(this.teamUrl + 'validate', team)
+            .toPromise()
+            .then(response => {
+                let data = response.json();
+                if (data.conflict == 'name') {
+                    return 'A team with that name is already registered on ImprovPlus';
+                } else {
+                    return '';
+                }
+            });
+    }
+
 }

@@ -215,8 +215,8 @@ var UserService = (function () {
             .toPromise()
             .then(function (response) {
             var data = response.json();
-            if (data.conflict) {
-                return data.conflict;
+            if (data.conflict == 'email') {
+                return 'That email address is already registered on ImprovPlus.';
             }
             else {
                 return '';

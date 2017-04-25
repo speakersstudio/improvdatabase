@@ -241,13 +241,13 @@ export class UserService {
         return (new Date(this.loggedInUser.subscription.expiration)).getTime() <= Date.now();
     }
 
-    validate (user: User): Promise<String> {
+    validate (user: User): Promise<string> {
         return this.http.post(this.validateUrl, user)
             .toPromise()
             .then((response) => {
                 let data = response.json();
-                if (data.conflict) {
-                    return data.conflict;
+                if (data.conflict == 'email') {
+                    return 'That email address is already registered on ImprovPlus.';
                 } else {
                     return '';
                 }

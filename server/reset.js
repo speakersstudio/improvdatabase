@@ -16,11 +16,11 @@ const MaterialItem = require('./models/material-item.model');
 const Package = require('./models/package.model');
 const Preference = require('./models/preference.model');
 
-const userBackupTime = 1492176592742,
-    materialsBackupTime = 1492176592742,
+const userBackupTime = 1493140912105,
+    materialsBackupTime = 1493140912105,
     packageBackupTime = 1492176592742,
-    purchaseBackupTime = 1492176592742,
-    subscriptionBackupTime = 1492176592742;
+    purchaseBackupTime = 1493140912105,
+    subscriptionBackupTime = 1493140912105;
 
 mongoose.Promise = Promise;
 mongoose.connect(config.mongodb.uri);

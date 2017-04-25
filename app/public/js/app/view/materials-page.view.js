@@ -10,10 +10,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
+var app_component_1 = require("../../component/app.component");
 var library_service_1 = require("../../service/library.service");
 var team_1 = require("../../model/team");
 var MaterialsPageView = (function () {
-    function MaterialsPageView(libraryService) {
+    function MaterialsPageView(_app, libraryService) {
+        this._app = _app;
         this.libraryService = libraryService;
         this.materials = [];
     }
@@ -23,7 +25,12 @@ var MaterialsPageView = (function () {
         }
     };
     MaterialsPageView.prototype.selectMaterial = function (material) {
-        this.libraryService.downloadMaterial(material._id);
+        if (material.versions.length > 0) {
+            this.libraryService.downloadMaterial(material._id);
+        }
+        else {
+            this._app.dialog('Whoops', 'We seem to have not published any versions of that Material Item. Hopefully we\'re actively working to fix it. Try again in a few minutes, and if you still get this message, please let us know. You can email us at contact@improvpl.us or use the "Report a Bug" feature in the App menu.', 'Okay Then', null, true);
+        }
     };
     MaterialsPageView.prototype.versionTag = function (m) {
         var v = this.libraryService.getLatestVersionForMaterialItem(m);
@@ -51,7 +58,8 @@ MaterialsPageView = __decorate([
         selector: '.materials-page',
         templateUrl: '../template/view/materials-page.view.html'
     }),
-    __metadata("design:paramtypes", [library_service_1.LibraryService])
+    __metadata("design:paramtypes", [app_component_1.AppComponent,
+        library_service_1.LibraryService])
 ], MaterialsPageView);
 exports.MaterialsPageView = MaterialsPageView;
 

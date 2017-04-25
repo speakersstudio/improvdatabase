@@ -45,50 +45,24 @@
                     </ol>
                 </div>
 
-                <span class="bullet"
-                    *ngIf="game.playerCount"
-                    [title]="game.playerCount && !editPlayerCountShown ? game.playerCount.description : ''">
-
-                    <i class="fa fa-group"></i> 
-                    
-                    <span *ngIf="!editPlayerCountShown"
-                        [class.clickable]="can('game_edit')"
-                        (click)="showEditPlayerCount()">{{game.playerCount ? game.playerCount.name : 'No Player Count'}}</span>
-
-                    <select name="playerCount" type="number"
-                        *ngIf="editPlayerCountShown"
-                        [(ngModel)]="playerCountID"
-                        (ngModelChange)="savePlayerCount()">
-
-                        <option *ngFor="let pc of allPlayerCounts" [ngValue]="pc._id" [title]="pc.description">{{pc.name}}</option>
-
-                        <option *ngIf="can('metadata_create')" [ngValue]="-1">Other...</option>
-                    </select>
-
-                </span>
+                <span class="bullet improvplus-editable-metadata"
+                    [model]="game.playerCount"
+                    [blankText]="'No Player Count Specified'"
+                    [icon]="'users'"
+                    [canEdit]="can('game_edit')"
+                    [options]="allPlayerCounts"
+                    [optionCreate]="can('metadata_create')"
+                    (save)="savePlayerCount($event)"></span>
                 
-                <span
-                    *ngIf="game.duration"
-                    [title]="game.duration && !editDurationShown ? game.duration.description : ''">
-                    
-                    <i class="fa fa-clock-o"></i> 
-                    
-                    <span *ngIf="!editDurationShown"
-                        [class.clickable]="can('game_edit')"
-                        (click)="showEditDuration()">
-                            {{game.duration ? game.duration.name : 'No Duration'}}</span>
 
-                    <select name="duration"
-                        *ngIf="editDurationShown"
-                        [(ngModel)]="durationID"
-                        (ngModelChange)="saveDuration()">
-
-                        <option *ngFor="let d of allDurations" [ngValue]="d._id" [title]="d.description">{{d.name}}</option>
-
-                        <option *ngIf="can('metadata_create')" [ngValue]="-1">Other...</option>
-                    </select>
-                    
-                </span>
+                <span class="improvplus-editable-metadata"
+                    [model]="game.duration"
+                    [blankText]="'No Duration Specified'"
+                    [icon]="'clock-o'"
+                    [canEdit]="can('game_edit')"
+                    [options]="allDurations"
+                    [optionCreate]="can('metadata_create')"
+                    (save)="saveDuration($event)"></span>
 
                 <ul class="taglist">
                     <li *ngIf="can('game_tag_add') && !addTagShown"

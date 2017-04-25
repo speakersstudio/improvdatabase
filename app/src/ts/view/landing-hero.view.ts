@@ -58,6 +58,10 @@ export class LandingHeroView implements OnInit, OnDestroy {
         this._app.showWhiteBrackets(true);
     }
 
+    ngOnDestroy(): void {
+        this.scrollSubscription.unsubscribe();
+    }
+
     scrollBelowLanding(): void {
         this._app.scrollTo(this.pageStart - 10, 800);
     }
@@ -210,8 +214,4 @@ export class LandingHeroView implements OnInit, OnDestroy {
         iframe.style.left = '-' + this.bgleft + 'px';
         iframe.style.top = '-' + this.bgtop + 'px';
     } 
-
-    ngOnDestroy(): void {
-        
-    }
 }

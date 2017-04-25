@@ -10,12 +10,14 @@ import { Router } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { UserService } from '../service/user.service';
+import { TeamService } from '../service/team.service';
 import { LibraryService } from '../service/library.service';
 import { CartService } from '../service/cart.service';
 
 import { Config } from '../config';
 
 import { User } from '../model/user';
+import { Team } from '../model/team';
 import { Package } from '../model/package';
 
 import { FadeAnim, DialogAnim } from '../util/anim.util';
@@ -60,6 +62,7 @@ export class SignupComponent implements OnInit {
 
     emailError: string;
     cardError: string;
+    teamError: string;
 
     cardComplete: boolean = false;
 
@@ -68,10 +71,15 @@ export class SignupComponent implements OnInit {
         private router: Router,
         private userService: UserService,
         private libraryService: LibraryService,
-        private cartService: CartService
+        private cartService: CartService,
+        private teamService: TeamService
     ) { }
 
     ngOnInit(): void {
+
+        if (this.userService.isLoggedIn()) {
+            this.router.navigate(['/app/dashboard'], {replaceUrl: true});
+        }
 
         this._app.showBackground(true);
 
@@ -114,6 +122,48 @@ export class SignupComponent implements OnInit {
             }
         });
 
+    }
+
+    emailTimer: any;
+    emailInput(): void {
+        clearTimeout(this.emailTimer);
+
+        this.emailError = '';
+        this.emailTimer = setTimeout(() => {
+            this.validateEmail();
+        }, 500);
+    }
+
+    validateEmail(): void {
+        let user = new User();
+
+        if (this.email.indexOf('@') > -1 && this.email.indexOf('.') > -1) {
+            user.email = this.email;
+            this.userService.validate(user).then(message => {
+                this.emailError = message;
+            });
+        } else {
+            this.emailError = 'This does not seem to be a valid email address.';
+        }
+    }
+
+    teamTimer: any;
+    teamInput(): void {
+        clearTimeout(this.teamTimer);
+
+        this.teamError = '';
+        this.teamTimer = setTimeout(() => {
+            this.validateTeam();
+        }, 500);
+    }
+
+    validateTeam(): void {
+        let team = new Team();
+        team.name = this.teamName;
+
+        this.teamService.validate(team).then(message => {
+            this.teamError = message;
+        });
     }
 
     selectCard(option: string, value: string, cardToOpen: BracketCardDirective, cardToClose: BracketCardDirective): void {
@@ -232,7 +282,7 @@ export class SignupComponent implements OnInit {
         if (this.teamOption == 'individual' && !this.userName) {
             return false;
         }
-        if (this.cardError || !this.cardComplete) {
+        if (this.cardError || !this.cardComplete || this.teamError) {
             return false;
         }
         return true;
@@ -278,11 +328,10 @@ export class SignupComponent implements OnInit {
                     })
                     .then(u => {
                         if (u && u.email) {
-                            this._app.scrollTo(0,1);
                             return this.userService.login(user.email, user.password);
                         } else {
                             // uh oh?
-                        this._app.hideLoader();
+                            this._app.hideLoader();
                         }
                     });
             }

@@ -2,7 +2,8 @@
     <div class="toolbar-row">
         <iplus class="white" (click)="login()" *ngIf="!_app.loaderVisible"></iplus>
 
-        <a routerLink="/signup">Join</a>
+        <a routerLink="/signup" *ngIf="!_app.user">Join</a>
+        <span *ngIf="_app.user"></span>
 
         <a (click)="login()" [innerHTML]="_app.user ? 'To the App <i class=\'fa fa-chevron-right\'></i>' : 'Log In'"></a>
     </div>

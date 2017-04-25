@@ -45,3 +45,18 @@
         (keydown.escape)="closeEdit()" />
 
 </div>
+
+<select *ngIf="editShown && type=='dropdown'"
+    name="editMetadata"
+    #metadataInput
+    [(ngModel)]="editModel"
+    (ngModelChange)="saveEdit()">
+
+    <option *ngFor="let option of options"
+            [selected]="(optionId && option[optionId] == editModel) || (option == editModel)"
+            [ngValue]="optionId ? option[optionId] : option"
+            [title]="optionDescription ? option[optionDescription] : ''">
+                {{optionText ? option[optionText] : option}}</option>
+
+    <option *ngIf="optionCreate" [ngValue]="-1">Other...</option>
+</select>

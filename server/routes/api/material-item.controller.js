@@ -191,7 +191,10 @@ module.exports = {
                 .then(item => {
                     let version = item.versions[util.indexOfObjectId(item.versions, versionId)];
 
-                    fs.unlink(path.join(__dirname, materialFolderName, materialId + '.' + version.ver + '.' + version.extension));
+                    let filename = path.join(__dirname, materialFolderName, materialId + '.' + version.ver + '.' + version.extension);
+                    fs.exists(filename, () => {
+                        fs.unlink();
+                    });
 
                     item.versions = util.removeFromObjectIdArray(item.versions, versionId);
                     return item.save();
@@ -208,8 +211,6 @@ module.exports = {
             decoded = jwt.decode(token, config.token),
             id = decoded.iss;
 
-        console.log(decoded.exp, Date.now());
-
         if (decoded.exp > Date.now()) {
             MaterialItem.findOne({})
                 .where("_id").equals(id)
@@ -219,7 +220,7 @@ module.exports = {
                 })
                 .then(m => {
                     // the user has access to the file!
-                    let file = path.join(__dirname, '../../../materials/') + m.filename();
+                    let file = path.join(__dirname, materialFolderName) + m.filename();
                     res.download(file, m.dlfilename());
                 });
         } else {

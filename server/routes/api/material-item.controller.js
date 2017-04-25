@@ -192,8 +192,10 @@ module.exports = {
                     let version = item.versions[util.indexOfObjectId(item.versions, versionId)];
 
                     let filename = path.join(__dirname, materialFolderName, materialId + '.' + version.ver + '.' + version.extension);
-                    fs.exists(filename, () => {
-                        fs.unlink();
+                    fs.exists(filename, exists => {
+                        if (exists) {
+                            fs.unlink();
+                        }
                     });
 
                     item.versions = util.removeFromObjectIdArray(item.versions, versionId);

@@ -19,6 +19,11 @@ const util = require('../../util');
 
 const materialFolderName = '../../../materials';
 
+if (!fs.existsSync(path.join(__dirname, materialFolderName))) {
+    console.log('Creating the materials directory!');
+    fs.mkdirSync(path.join(__dirname, materialFolderName));
+}
+
 module.exports = {
 
     getAll: (req, res) => {
@@ -139,11 +144,7 @@ module.exports = {
                 fileExtension = filename.substr(filename.lastIndexOf('.'), filename.length);
                 tempLocation = path.join(__dirname, materialFolderName, materialId + fileExtension);
 
-                console.log('busboy on file, does folder exist?', path.join(__dirname, materialFolderName), fs.existsSync(path.join(__dirname, materialFolderName)));
-
-                if (!fs.existsSync(path.join(__dirname, materialFolderName))) {
-                    fs.mkdirSync(path.join(__dirname, materialFolderName));
-                }
+                console.log('***************** busboy on file, does folder exist?', path.join(__dirname, materialFolderName), fs.existsSync(path.join(__dirname, materialFolderName)));
 
                 file.pipe(fs.createWriteStream(tempLocation));
             });
@@ -155,6 +156,8 @@ module.exports = {
                 }
             });
             busboy.on('finish', () => {
+                console.log('************* busboy finished!');
+
                 MaterialItem.findOne({}).where('_id').equals(materialId).exec()
                     .then(item => {
 

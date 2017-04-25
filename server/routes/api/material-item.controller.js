@@ -3,6 +3,8 @@ const path = require('path');
 const mime = require('mime');
 const jwt = require('jwt-simple');
 const Busboy = require('busboy');
+const contentDisposition = require('content-disposition');
+const aws = require('aws-sdk');
 
 const config  = require('../../config')();
 
@@ -18,11 +20,6 @@ const auth = require('../../auth');
 const util = require('../../util');
 
 const materialFolderName = '../../../materials';
-
-if (!fs.existsSync(path.join(__dirname, materialFolderName))) {
-    console.log('Creating the materials directory!');
-    fs.mkdirSync(path.join(__dirname, materialFolderName));
-}
 
 module.exports = {
 
@@ -131,22 +128,66 @@ module.exports = {
     },
 
     version: (req, res) => {
+        const s3 = new aws.S3();
+
         if (req.method == 'POST') {
+
             let busboy = new Busboy({ headers: req.headers }),
                 fileData,
                 ver,
                 description,
-                tempLocation,
+                destinationFileName,
                 fileExtension,
-                materialId = req.params.id;
+                materialId = req.params.id,
+
+                fileIsUploaded,
+                materialItemIsReady,
+
+                finishFile = () => {
+                    s3.copyObject({
+                        Bucket: config.s3_buckets.materials,
+                        CopySource: encodeURI(config.s3_buckets.materials + '/' + destinationFileName),
+                        Key: destinationFileName.replace(fileExtension, '.' + ver + fileExtension)
+                    }, (err, data) => {
+                        if (err) {
+                            console.error('AWS Error on copy', err);
+                        } else {
+                            s3.deleteObject({
+                                Bucket: config.s3_buckets.materials,
+                                Key: destinationFileName
+                            }, (err, data) => {
+                                if (err) {
+                                    console.error('AWS Error on delete', err);
+                                } else {
+                                    console.log('New version file ready!');
+                                }
+                            })
+                        }
+                    })
+                };
 
             busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
                 fileExtension = filename.substr(filename.lastIndexOf('.'), filename.length);
-                tempLocation = path.join(__dirname, materialFolderName, materialId + fileExtension);
+                // tempLocation = path.join(__dirname, materialFolderName, materialId + fileExtension);
+                // tempLocation = filename;
+                destinationFileName = materialId + fileExtension;
 
-                console.log('***************** busboy on file, does folder exist?', path.join(__dirname, materialFolderName), fs.existsSync(path.join(__dirname, materialFolderName)));
-
-                file.pipe(fs.createWriteStream(tempLocation));
+                // file.pipe(fs.createWriteStream(tempLocation));
+                let params = {
+                    Bucket: config.s3_buckets.materials,
+                    Key: destinationFileName,
+                    Body: file
+                };
+                s3.upload(params, function(err, data) {
+                    if (err) {
+                        console.error('AWS Error on upload', err);
+                    } else {
+                        fileIsUploaded = true;
+                        if (materialItemIsReady) {
+                            finishFile();
+                        }
+                    }
+                })
             });
             busboy.on('field', (fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) => {
                 if (fieldname == 'ver' && val != 'undefined') {
@@ -156,7 +197,6 @@ module.exports = {
                 }
             });
             busboy.on('finish', () => {
-                console.log('************* busboy finished!');
 
                 MaterialItem.findOne({}).where('_id').equals(materialId).exec()
                     .then(item => {
@@ -171,7 +211,10 @@ module.exports = {
                             ver++;
                         }
 
-                        fs.rename(tempLocation, tempLocation.replace(fileExtension, '.' + ver + fileExtension));
+                        materialItemIsReady = true;
+                        if (fileIsUploaded) {
+                            finishFile();
+                        }
 
                         item.versions.push({
                             ver: ver,
@@ -184,6 +227,7 @@ module.exports = {
                     .then(item => {
                         res.json(item);
                     })
+
             });
             req.pipe(busboy);
 
@@ -196,12 +240,22 @@ module.exports = {
                 .then(item => {
                     let version = item.versions[util.indexOfObjectId(item.versions, versionId)];
 
-                    let filename = path.join(__dirname, materialFolderName, materialId + '.' + version.ver + '.' + version.extension);
-                    try {
-                        fs.unlink(filename);
-                    } catch(e) {
-                        console.log('Trying to delete version, but file does not exist');
-                    }
+                    // let filename = path.join(__dirname, materialFolderName, materialId + '.' + version.ver + '.' + version.extension);
+                    let filename = materialId + '.' + version.ver + '.' + version.extension;
+
+                    // try {
+                    //     fs.unlink(filename);
+                    // } catch(e) {
+                    //     console.log('Trying to delete version, but file does not exist');
+                    // }
+                    s3.deleteObject({
+                        Bucket: config.s3_buckets.materials,
+                        Key: filename
+                    }, (err, data) => {
+                        if (err) {
+                            console.error('AWS Error on delete', err);
+                        }
+                    })
 
                     item.versions = util.removeFromObjectIdArray(item.versions, versionId);
                     return item.save();
@@ -214,6 +268,8 @@ module.exports = {
     },
 
     download: (req, res, next) => {
+        const s3 = new aws.S3();
+
         let token = req.params.token,
             decoded = jwt.decode(token, config.token),
             id = decoded.iss;
@@ -227,8 +283,17 @@ module.exports = {
                 })
                 .then(m => {
                     // the user has access to the file!
-                    let file = path.join(__dirname, materialFolderName) + m.filename();
-                    res.download(file, m.dlfilename());
+                    // let file = path.join(__dirname, materialFolderName) + m.filename();
+                    // res.download(file, m.dlfilename());
+
+                    let filename = m.dlfilename();
+
+                    res.setHeader('Content-Disposition', contentDisposition(filename));
+
+                    s3.getObject({
+                        Bucket: config.s3_buckets.materials,
+                        Key: m.filename()
+                    }).createReadStream().pipe(res);
                 });
         } else {
             auth.unauthorized(req,res);
@@ -237,7 +302,6 @@ module.exports = {
 
     backup: (req, res) => {
         return MeterialItem.find({})
-            .select('-versions') // we don't want to back up the actual files
             .exec()
             .then(i => {
                 res.json(i);

@@ -24,6 +24,9 @@ module.exports = function () {
             sendgrid: {
                 key: process.env.SENDGRID_API_KEY
             },
+            s3_buckets: {
+                materials: 'improvplus.materials'
+            },
             port: 1919,
             saltRounds: 10,
 

@@ -139,6 +139,8 @@ module.exports = {
                 fileExtension = filename.substr(filename.lastIndexOf('.'), filename.length);
                 tempLocation = path.join(__dirname, materialFolderName, materialId + fileExtension);
 
+                console.log('busboy on file, does folder exist?', path.join(__dirname, materialFolderName), fs.existsSync(path.join(__dirname, materialFolderName)));
+
                 if (!fs.existsSync(path.join(__dirname, materialFolderName))) {
                     fs.mkdirSync(path.join(__dirname, materialFolderName));
                 }

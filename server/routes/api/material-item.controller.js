@@ -67,27 +67,19 @@ module.exports = {
                     return userController.fetchMaterials(req.user._id);
                 }).then(user => {
 
-                    let access = false,
-                        hasMaterial = function(materials) {
-                            if (!materials || !materials.length) {
-                                return false;
-                            }
-                            let has = false;
-                            materials.forEach(thismat => {
-                                if (thismat._id.equals(materialItem._id)) {
-                                    has = true;
-                                }
-                            });
-                            return has;
-                        };
+                    let access = false;
 
-                    access = hasMaterial(user.materials);
+                    access = util.indexOfObjectId(user.materials, materialItem._id) > -1;
 
                     if (!access) {
-                        let teams = [].concat(req.user.adminOfTeams, req.user.memberOfTeams);
+                        let teams = [];
+                        // a neat trick to concatenate object arrays
+                        teams.push.apply(teams, user.adminOfTeams);
+                        teams.push.apply(teams, user.memberOfTeams);
+
                         teams.forEach(team => {
-                            if (team) {
-                                access = hasMaterial(team.materials);
+                            if (team && team.materials) {
+                                access = util.indexOfObjectId(team.materials, materialItem._id) > -1;
                             }
                         });
                     }
@@ -215,6 +207,8 @@ module.exports = {
         let token = req.params.token,
             decoded = jwt.decode(token, config.token),
             id = decoded.iss;
+
+        console.log(decoded.exp, Date.now());
 
         if (decoded.exp > Date.now()) {
             MaterialItem.findOne({})

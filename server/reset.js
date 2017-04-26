@@ -17,7 +17,7 @@ const Package = require('./models/package.model');
 const Preference = require('./models/preference.model');
 
 const userBackupTime = 1493140912105,
-    materialsBackupTime = 1493140912105,
+    materialsBackupTime = 1493175922371,
     packageBackupTime = 1492176592742,
     purchaseBackupTime = 1493140912105,
     subscriptionBackupTime = 1493140912105;

@@ -1,15 +1,12 @@
 [
   {
-      "name": "Hidden Item",
-      "description": "This should not show up. If you can see me, something has gone wrong. Uh oh.",
-      "visible": false
-  },
-  {
-    "_id": "58d3e622b385ee0238d3d8b2",
-    "name": "Facilitation Tips",
-    "description": "Use these universal tips to make the most of your facilitation.",
-    "price": 100,
-    "visible": true
+    "_id": "58ff863b4e9ad7001ca8fcda",
+    "name": "Hidden Item",
+    "description": "This should not show up. If you can see me, something has gone wrong. Uh oh.",
+    "__v": 0,
+    "visible": false,
+    "versions": [],
+    "tags": []
   },
   {
     "_id": "58d3e622b385ee0238d3d8b4",
@@ -17,8 +14,20 @@
     "description": "Learn how to master (and teach others to master) the handshake and get the most out of their networking opportunities.",
     "price": 100,
     "color": "blue",
+    "__v": 3,
     "visible": true,
-    "tags": ["Improv+Networking", "Breakout Activity"]
+    "versions": [
+      {
+        "ver": 1,
+        "extension": "pdf",
+        "_id": "58ffd98567ec75003beb9af6",
+        "dateAdded": "2017-04-25T23:19:33.435Z"
+      }
+    ],
+    "tags": [
+      "Improv+Networking",
+      "Breakout Activity"
+    ]
   },
   {
     "_id": "58d3e622b385ee0238d3d8b8",
@@ -26,8 +35,20 @@
     "description": "The participant handout packet for Improv+Leadership.",
     "price": 100,
     "color": "orange",
+    "__v": 3,
     "visible": true,
-    "tags": ["Improv+Leadership", "Participant Handouts"]
+    "versions": [
+      {
+        "ver": 1,
+        "extension": "pdf",
+        "_id": "58ffd99767ec75003beb9af8",
+        "dateAdded": "2017-04-25T23:19:51.644Z"
+      }
+    ],
+    "tags": [
+      "Improv+Leadership",
+      "Participant Handouts"
+    ]
   },
   {
     "_id": "58d3e622b385ee0238d3d8b6",
@@ -35,17 +56,20 @@
     "description": "The handbook for leading our most powerful Improv session.",
     "price": 100,
     "color": "orange",
+    "__v": 3,
     "visible": true,
-    "tags": ["Improv+Leadership", "Program Guide"]
-  },
-  {
-    "_id": "58d3e622b385ee0238d3d8ba",
-    "name": "Your Improv+Leadership ROI",
-    "description": "Get the most out of your Improv+ experience.",
-    "price": 100,
-    "color": "orange",
-    "visible": true,
-    "tags": ["Improv+Leadership"]
+    "versions": [
+      {
+        "ver": 1,
+        "extension": "pdf",
+        "_id": "58ffd98f67ec75003beb9af7",
+        "dateAdded": "2017-04-25T23:19:43.182Z"
+      }
+    ],
+    "tags": [
+      "Improv+Leadership",
+      "Program Guide"
+    ]
   },
   {
     "_id": "58d3e622b385ee0238d3d8be",
@@ -53,8 +77,20 @@
     "description": "The participant handout packet for Improv+Networking.",
     "price": 100,
     "color": "blue",
+    "__v": 3,
     "visible": true,
-    "tags": ["Improv+Networking", "Participant Handouts"]
+    "versions": [
+      {
+        "ver": 1,
+        "extension": "pdf",
+        "_id": "58ffd9aa67ec75003beb9afa",
+        "dateAdded": "2017-04-25T23:20:10.402Z"
+      }
+    ],
+    "tags": [
+      "Improv+Networking",
+      "Participant Handouts"
+    ]
   },
   {
     "_id": "58d3e622b385ee0238d3d8bc",
@@ -62,7 +98,56 @@
     "description": "The handbook for leading the Improv+Networking session.",
     "price": 100,
     "color": "blue",
+    "__v": 3,
     "visible": true,
-    "tags": ["Improv+Networking", "Program Guide"]
+    "versions": [
+      {
+        "ver": 1,
+        "extension": "pdf",
+        "_id": "58ffd9a367ec75003beb9af9",
+        "dateAdded": "2017-04-25T23:20:03.176Z"
+      }
+    ],
+    "tags": [
+      "Improv+Networking",
+      "Program Guide"
+    ]
+  },
+  {
+    "_id": "58d3e622b385ee0238d3d8b2",
+    "name": "Facilitation Tips",
+    "description": "Use these universal tips to make the most of your facilitation.",
+    "price": 100,
+    "__v": 13,
+    "visible": true,
+    "versions": [
+      {
+        "ver": 1,
+        "extension": "pdf",
+        "_id": "58ffd97767ec75003beb9af5",
+        "dateAdded": "2017-04-25T23:19:19.085Z"
+      }
+    ],
+    "tags": []
+  },
+  {
+    "_id": "58d3e622b385ee0238d3d8ba",
+    "name": "Your Improv+Leadership ROI",
+    "description": "Get the most out of your Improv+ experience.",
+    "price": 100,
+    "color": "orange",
+    "__v": 3,
+    "visible": true,
+    "versions": [
+      {
+        "ver": 1,
+        "extension": "pdf",
+        "_id": "58ffd9b067ec75003beb9afb",
+        "dateAdded": "2017-04-25T23:20:16.434Z"
+      }
+    ],
+    "tags": [
+      "Improv+Leadership"
+    ]
   }
 ]

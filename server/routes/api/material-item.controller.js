@@ -301,7 +301,7 @@ module.exports = {
     },
 
     backup: (req, res) => {
-        return MeterialItem.find({})
+        return MaterialItem.find({})
             .exec()
             .then(i => {
                 res.json(i);

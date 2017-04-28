@@ -160,19 +160,29 @@ module.exports = {
                                     count++;
                                     if (count >= materialArray.length) {
                                         
-                                        let pdfMerge = new PDFMerge(filenames, config.pdftkPath);
-
-                                        pdfMerge.asReadStream().merge((error, finishedStream) => {
-                                            if (error) {
-                                                res.status(500).json(error);
+                                        fs.readdir(directory, (err, items) => {
+                                            if (err) {
+                                                res.status(500).json(err);
                                             } else {
-                                                finishedStream.pipe(res);
-
-                                                finishedStream.on('finish', () => {
-                                                    cleanup();
-                                                });
+                                                res.json(items);
                                             }
-                                        });
+                                        })
+
+                                        // let pdfMerge = new PDFMerge(filenames, config.pdftkPath);
+
+                                        // pdfMerge.asReadStream().merge((error, finishedStream) => {
+                                        //     if (error) {
+                                        //         res.status(500).json(error);
+                                        //     } else {
+                                        //         finishedStream.pipe(res);
+
+                                        //         finishedStream.on('finish', () => {
+                                        //             cleanup();
+                                        //         });
+                                        //     }
+                                        // });
+
+
 
                                     }
                                 })

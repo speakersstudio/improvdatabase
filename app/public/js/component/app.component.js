@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 require("rxjs/Subject");
@@ -15,17 +18,20 @@ require("rxjs/add/operator/filter");
 var common_1 = require("@angular/common");
 var Subject_1 = require("rxjs/Subject");
 var router_1 = require("@angular/router");
+var constants_1 = require("../constants");
+var app_http_1 = require("../data/app-http");
+var config_1 = require("../model/config");
 var user_service_1 = require("../service/user.service");
 var auth_guard_service_1 = require("../service/auth-guard.service");
 var anim_util_1 = require("../util/anim.util");
 var AppComponent = (function () {
-    function AppComponent(_renderer, router, userService, authGuard, pathLocationStrategy) {
+    function AppComponent(config, _renderer, router, userService, authGuard, pathLocationStrategy, http) {
         this._renderer = _renderer;
         this.router = router;
         this.userService = userService;
         this.authGuard = authGuard;
         this.pathLocationStrategy = pathLocationStrategy;
-        this.version = "1.1.0";
+        this.http = http;
         this.scrollpos = 0;
         this.showToolbarScrollPosition = 20;
         this.scrollSource = new Subject_1.Subject();
@@ -42,10 +48,15 @@ var AppComponent = (function () {
         this.dialogConfirm = "";
         this.dialogHideCancel = true;
         this.toastMessageQueue = [];
+        this.config = config;
     }
     AppComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.hideLoader();
+        // this.http.get('/config').toPromise().then(response => {
+        //     console.log('config ready!');
+        //     this.config = response.json() as Config;
+        // });
         this.router.events.filter(function (event) { return event instanceof router_1.NavigationStart; }).subscribe(function (event) {
             _this.showBackground(false);
             _this.showWhiteBrackets(false);
@@ -79,8 +90,11 @@ var AppComponent = (function () {
             }
             if (!user) {
                 // we just logged out
-                _this.router.navigate(['/']);
-                _this.hideLoader();
+                setTimeout(function () {
+                    _this.router.navigate(['/']);
+                    window.scrollTo(0, 0);
+                    _this.hideLoader();
+                });
             }
             _this.setUser(user);
         });
@@ -295,11 +309,14 @@ AppComponent = __decorate([
             anim_util_1.FadeAnim.fade
         ]
     }),
-    __metadata("design:paramtypes", [core_1.Renderer2,
+    __param(0, core_1.Inject(constants_1.CONFIG_TOKEN)),
+    __metadata("design:paramtypes", [config_1.Config,
+        core_1.Renderer2,
         router_1.Router,
         user_service_1.UserService,
         auth_guard_service_1.AuthGuard,
-        common_1.PathLocationStrategy])
+        common_1.PathLocationStrategy,
+        app_http_1.AppHttp])
 ], AppComponent);
 exports.AppComponent = AppComponent;
 

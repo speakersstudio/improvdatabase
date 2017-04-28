@@ -10,7 +10,7 @@
 
 <landing-hero [showContent]="false" [video]="false"></landing-hero>
 
-<div class="page">
+<div class="page" #page>
 
     <div class="blackbox center">
         <h2><span class="light">find your path to</span> <strong>plus</strong></h2>
@@ -187,6 +187,8 @@
                         (input)="teamInput($event)"
                         type="text" />
                     <span class="error" *ngIf="teamError">{{teamError}}</span>
+
+                    <p *ngIf="userType == 'facilitator'"><em>Feel free to use your company name here, and be as specific as possible. Think "Encom, Inc. HR Department" instead of just "HR Department."</em></p>
                     
                 </div>
             </div>
@@ -213,7 +215,7 @@
         <div class="card-list">
 
             <div class="card brackets clickable {{package.color}}" bracketCard
-                *ngFor="let package of packages"
+                *ngFor="let package of options"
                 (click)="selectPackage($event, package, packageCard)"
                 #packageCard>
 
@@ -222,6 +224,12 @@
 
                     <ul>
                         <li *ngFor="let desc of package.description">{{desc}}</li>
+
+                        <li *ngIf="package._id != 'sub' && userType=='facilitator' && teamOption=='individual'">Includes a one-year subscription to the app.</li>
+                        <li *ngIf="package._id != 'sub' && userType=='facilitator' && teamOption=='team'">Includes {{config.fac_team_sub_count}} user subscriptions for you and your team.</li>
+
+                        <li *ngIf="package._id != 'sub' && userType=='improviser' && teamOption=='individual'">Includes a one-year subscription to the app.</li>
+                        <li *ngIf="package._id != 'sub' && userType=='improviser' && teamOption=='team'">Includes {{config.improv_team_sub_count}} user subscriptions to share the love your team.</li>
                     </ul>
 
                     <h4>${{package.price}}</h4>
@@ -265,6 +273,12 @@
 
     </div>
 
+    <div class="block center" *ngIf="selectedPackage && !isFormValid()" [@dialogSlow]>
+        <div class="card">
+            Make sure you have entered all of the information above, and we'll be ready to roll.
+        </div>
+    </div>
+
     <!-- step 4: GO! -->
     <div class="block center" *ngIf="isFormValid()" [@dialogSlow]>
 
@@ -287,7 +301,7 @@
 
                 <h4>Activate your Account</h4>
 
-                <p>You're just one click away from <span class="light">improv</span><strong>plus</strong>...</p>
+                <p>Click here to enter <span class="light">improv</span><strong>plus</strong>...</p>
             </div>
 
         </div>

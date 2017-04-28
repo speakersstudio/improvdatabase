@@ -1,7 +1,8 @@
 import {
     Component,
     OnInit,
-    Renderer2
+    Renderer2,
+    Inject
 } from '@angular/core';
 import 'rxjs/Subject';
 import 'rxjs/add/operator/filter';
@@ -10,13 +11,16 @@ import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { Router, RoutesRecognized, NavigationStart, NavigationEnd } from '@angular/router';
 
+import { CONFIG_TOKEN } from '../constants';
+
+import { AppHttp } from '../data/app-http';
+
 import { User } from "../model/user";
+import { Config } from '../model/config';
 import { UserService } from '../service/user.service';
 import { AuthGuard } from '../service/auth-guard.service';
 
 import { DialogAnim, FadeAnim } from '../util/anim.util';
-
-
 
 @Component({
     moduleId: module.id,
@@ -29,7 +33,7 @@ import { DialogAnim, FadeAnim } from '../util/anim.util';
 })
 export class AppComponent implements OnInit {
 
-    version: string = "1.1.0";
+    config: Config;
 
     scrollpos: number = 0;
     showToolbarScrollPosition: number = 20;
@@ -73,15 +77,25 @@ export class AppComponent implements OnInit {
     private toastMessageQueue: string[] = [];
 
     constructor(
+        @Inject(CONFIG_TOKEN) config: Config,
+
         private _renderer: Renderer2,
         private router: Router,
         private userService: UserService,
         private authGuard: AuthGuard,
-        private pathLocationStrategy: PathLocationStrategy
-    ) { }
+        private pathLocationStrategy: PathLocationStrategy,
+        private http: AppHttp
+    ) {
+        this.config = config;
+     }
 
     ngOnInit() {
         this.hideLoader();
+
+        // this.http.get('/config').toPromise().then(response => {
+        //     console.log('config ready!');
+        //     this.config = response.json() as Config;
+        // });
 
         this.router.events.filter(event => event instanceof NavigationStart).subscribe(event => {
             this.showBackground(false);
@@ -118,8 +132,11 @@ export class AppComponent implements OnInit {
             }
             if (!user) {
                 // we just logged out
-                this.router.navigate(['/']);
-                this.hideLoader();
+                setTimeout(() => {
+                    this.router.navigate(['/']);
+                    window.scrollTo(0,0);
+                    this.hideLoader();
+                });
             }
             this.setUser(user);
         });

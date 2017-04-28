@@ -6,7 +6,9 @@ const DBInfoSchema = new mongoose.Schema({
     package: Date,
     materials: Date,
     game: Date,
-    note: Date
+    note: Date,
+    config: Date,
+    packageConfig: Date
 });
 
 const DBInfo = mongoose.model('DBInfo', DBInfoSchema);

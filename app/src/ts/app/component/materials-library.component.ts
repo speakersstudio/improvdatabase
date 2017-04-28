@@ -6,13 +6,13 @@ import {AppComponent    } from '../../component/app.component';
 import { Tool, SearchResult } from '../view/toolbar.view';
 
 import { LibraryService } from '../../service/library.service';
+import { UserService } from '../../service/user.service';
 
 import { Subscription } from '../../model/subscription';
 import { Package } from '../../model/package';
 import { MaterialItem } from '../../model/material-item';
 import { Team } from '../../model/team';
-
-import { UserService } from '../../service/user.service';
+import { Library } from '../../model/library';
 
 @Component({
     moduleId: module.id,
@@ -26,15 +26,16 @@ export class MaterialsLibraryComponent implements OnInit {
     filter: boolean; // TODO
     searchResults: SearchResult[] = [];
 
-    ownedMaterials: MaterialItem[] = [];
-    teams: Team[] = [];
+    ownedMaterials: Library;
     adminTeams: Team[] = [];
+    teams: Team[] = [];
 
     constructor(
         private _app: AppComponent,
         private router: Router,
         private route: ActivatedRoute,
         private libraryService: LibraryService,
+        private userService: UserService,
         private pathLocationStrategy: PathLocationStrategy
     ) { }
 
@@ -58,15 +59,26 @@ export class MaterialsLibraryComponent implements OnInit {
                 this.ownedMaterials = materials;
             });
 
-        this.libraryService.getTeamMaterials()
-            .then(teams => {
-                this.teams = teams;
+        this.userService.fetchTeams().then(user => {
+            let adminOfTeams = user.adminOfTeams,
+                memberOfTeams = user.memberOfTeams;
+
+            (<Team[]> adminOfTeams).forEach(team => {
+                this.libraryService.getTeamMaterials(team._id).then(library => {
+                    team.library = library;
+                    this.adminTeams.push(team);
+                });
             });
 
-        this.libraryService.getAdminTeamMaterials()
-            .then(teams => {
-                this.adminTeams = teams;
+            (<Team[]> memberOfTeams).forEach(team => {
+                this.libraryService.getTeamMaterials(team._id).then(library => {
+                    team.library = library;
+                    this.teams.push(team);
+                })
             });
+        })
+
+        
     }
 
     onNoVersionsSelected(): void {

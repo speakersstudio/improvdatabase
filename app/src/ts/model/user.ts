@@ -1,7 +1,7 @@
 import {Purchase} from './purchase';
-import {MaterialItem} from './material-item';
 import {Subscription} from './subscription';
 import {Team} from './team';
+import {Library} from './library';
 
 export class Preference {
     _id?: string;
@@ -40,7 +40,8 @@ export class User {
     adminOfTeams?: Team[]|string[];
 
     purchases?: Purchase[];
-    materials?: MaterialItem[];
     subscription?: Subscription;
     preferences?: Preference[];
+
+    library?: Library;
 }

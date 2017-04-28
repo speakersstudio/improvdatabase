@@ -5,6 +5,9 @@ export class Subscription {
     start: Date;
     role: number;
     roleName: string;
+
+    type: string; // 'facilitator' or 'improviser'
+
     expiration: Date;
 
     team: string|Team; // the _id of the team with this sub

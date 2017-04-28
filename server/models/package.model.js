@@ -10,12 +10,11 @@ const PackageSchema = new mongoose.Schema({
     price: Number, // decimal
     dateAdded: { type: Date, default: Date.now },
     dateModified: { type: Date, default: Date.now },
+
     materials: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MaterialItem' }],
+    packages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Package' }],
 
     type: String, // either 'facilitator' or 'improviser'
-    team: { type: Boolean, default: false },
-    subscriptions: { type: Number, default: 1 }, // how many subscriptions do you get
-    role: Number // the role of subscription that you will get with this package
 });
 
 PackageSchema.query.byName = function(name) {

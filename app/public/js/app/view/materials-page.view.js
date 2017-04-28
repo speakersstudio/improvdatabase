@@ -12,17 +12,36 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var app_component_1 = require("../../component/app.component");
 var library_service_1 = require("../../service/library.service");
+var library_1 = require("../../model/library");
 var team_1 = require("../../model/team");
 var MaterialsPageView = (function () {
     function MaterialsPageView(_app, libraryService) {
         this._app = _app;
         this.libraryService = libraryService;
-        this.materials = [];
+        this.tabs = [
+            {
+                name: 'Packages',
+                id: 'packages',
+                icon: 'book'
+            },
+            {
+                name: 'Materials',
+                id: 'materials',
+                icon: 'file-text'
+            }
+        ];
+        this.selectedTab = 'packages';
     }
     MaterialsPageView.prototype.ngOnInit = function () {
-        if (this.team && this.materials) {
-            this.materials = this.team.materials;
+        if (this.team && !this.library) {
+            this.library = this.team.library || new library_1.Library();
         }
+        if (!this.library.packages.length) {
+            this.selectedTab = 'materials';
+        }
+    };
+    MaterialsPageView.prototype.selectTab = function (tab) {
+        this.selectedTab = tab.id;
     };
     MaterialsPageView.prototype.selectMaterial = function (material) {
         if (material.versions.length > 0) {
@@ -31,6 +50,10 @@ var MaterialsPageView = (function () {
         else {
             this._app.dialog('Whoops', 'We seem to have not published any versions of that Material Item. Hopefully we\'re actively working to fix it. Try again in a few minutes, and if you still get this message, please let us know. You can email us at contact@improvpl.us or use the "Report a Bug" feature in the App menu.', 'Okay Then', null, true);
         }
+    };
+    MaterialsPageView.prototype.selectPackage = function (pkg) {
+        // TODO
+        this._app.toast('Some day you will be able to download whole packages. Today is not that day.');
     };
     MaterialsPageView.prototype.versionTag = function (m) {
         var v = this.libraryService.getLatestVersionForMaterialItem(m);
@@ -46,8 +69,8 @@ var MaterialsPageView = (function () {
 }());
 __decorate([
     core_1.Input(),
-    __metadata("design:type", Array)
-], MaterialsPageView.prototype, "materials", void 0);
+    __metadata("design:type", library_1.Library)
+], MaterialsPageView.prototype, "library", void 0);
 __decorate([
     core_1.Input(),
     __metadata("design:type", team_1.Team)

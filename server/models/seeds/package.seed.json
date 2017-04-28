@@ -1,116 +1,61 @@
 [
   {
-    "_id": "58d814593d8da4419cdbc0f1",
-    "slug": "ultimate",
-    "name": "Improv+Ultimate",
-    "description": [
-      "Own all of the ImprovPlus materials currently available.",
-      "Access our unbeatable hands-on support and coaching.",
-      "Includes a one-year subscription."
-    ],
-    "color": "red",
-    "price": 1500,
-    "__v": 1,
-    "subscriptions": 1,
-    "role": 5,
-    "team": false,
-    "type": "facilitator",
-    "materials": [
-      "58d3e622b385ee0238d3d8b6",
-      "58d3e622b385ee0238d3d8b8",
-      "58d3e622b385ee0238d3d8bc",
-      "58d3e622b385ee0238d3d8be",
-      "58d3e622b385ee0238d3d8b2",
-      "58d3e622b385ee0238d3d8b4",
-      "58d3e622b385ee0238d3d8ba"
-    ],
-    "dateAdded": "2017-03-26T19:19:53.010Z"
-  },
-  {
-    "_id": "58d814593d8da4419cdbc0f2",
-    "slug": "facilitator_subscription",
-    "name": "Facilitator Subscription",
-    "description": [
-      "Gain access to the the app for one year.",
-      "Browse and purchase from our catalogue of facilitation materials."
-    ],
-    "price": 99,
+    "_id": "5900f255c46b2b06542f5f64",
+    "slug": "networking",
+    "name": "Improv + Networking",
+    "color": "blue",
+    "price": 750,
     "__v": 0,
-    "subscriptions": 1,
-    "role": 5,
-    "team": false,
-    "type": "facilitator",
-    "dateAdded": "2017-03-26T19:19:53.038Z"
-  },
-  {
-    "slug": "team_ultimate",
-    "name": "Improv+Ultimate Team",
-    "description": [
-      "Own all of the ImprovPlus materials currently available.",
-      "Access our unbeatable hands-on support and coaching.",
-      "Includes three one-year subscriptions for you and your team."
-    ],
-    "color": "red",
-    "price": 1695,
-    "__v": 1,
-    "subscriptions": 3,
-    "role": 6,
-    "team": true,
-    "type": "facilitator",
+    "packages": [],
     "materials": [
-      "58d3e622b385ee0238d3d8b6",
-      "58d3e622b385ee0238d3d8b8",
-      "58d3e622b385ee0238d3d8bc",
-      "58d3e622b385ee0238d3d8be",
-      "58d3e622b385ee0238d3d8b2",
       "58d3e622b385ee0238d3d8b4",
-      "58d3e622b385ee0238d3d8ba"
+      "58d3e622b385ee0238d3d8be",
+      "58d3e622b385ee0238d3d8bc",
+      "58d3e622b385ee0238d3d8b2"
+    ],
+    "dateModified": "2017-04-26T19:17:41.551Z",
+    "dateAdded": "2017-04-26T19:19:53.010Z",
+    "description": [
+      "Train your participants to present themselves with confidence."
     ]
   },
   {
-    "slug": "facilitator_team_subscription",
-    "name": "Facilitator Team Subscription",
-    "description": [
-      "Your team can share and collaborate with the ImprovPlus app.",
-      "Browse and purchase from our catalogue of facilitation materials.",
-      "Includes three one-year subscriptions for you and your team."
-    ],
-    "price": 295,
+    "_id": "5900f255c46b2b06542f5f65",
+    "slug": "leadership",
+    "name": "Improv + Leadership",
+    "color": "orange",
+    "price": 1500,
     "__v": 0,
-    "subscriptions": 3,
-    "role": 6,
-    "type": "facilitator",
-    "team": true
-  },
-
-  {
-    "slug": "improviser_subscription",
-    "name": "Improviser Subscription",
-    "description": [
-      "Gain access to the app for one year.",
-      "Browse the database of over 200 Improv games and exercises.",
-      "Join the ever-growing ImprovPlus community."
+    "packages": [],
+    "materials": [
+      "58d3e622b385ee0238d3d8b8",
+      "58d3e622b385ee0238d3d8b6",
+      "58d3e622b385ee0238d3d8b2",
+      "58d3e622b385ee0238d3d8ba"
     ],
-    "price": 45,
-    "__v": 0,
-    "subscriptions": 1,
-    "role": 7,
-    "type": "improviser",
-    "team": false
+    "dateModified": "2017-04-26T19:17:41.558Z",
+    "dateAdded": "2017-04-26T19:19:53.010Z",
+    "description": [
+      "Help your participants be better Collaborators, Speakers, Creators, and Problem-Solvers."
+    ]
   },
   {
-    "slug": "improviser_team_subscription",
-    "name": "Improv Team Subscription",
-    "description": [
-      "Access powerful marketing and collaboration tools.",
-      "Browse the database of over 200 Improv games and exercises.",
-      "Includes five subscriptions so you can share the love with your team."
+    "_id": "58d814593d8da4419cdbc0f1",
+    "slug": "ultimate",
+    "name": "Improv + Ultimate",
+    "color": "red",
+    "price": 2000,
+    "__v": 1,
+    "packages": [
+      "5900f255c46b2b06542f5f64",
+      "5900f255c46b2b06542f5f65"
     ],
-    "price": 295,
-    "__v": 0,
-    "subscriptions": 5,
-    "role": 8,
-    "type": "improviser",
-    "team": true
+    "materials": [],
+    "dateModified": "2017-04-26T19:17:41.558Z",
+    "dateAdded": "2017-03-26T19:19:53.010Z",
+    "description": [
+      "Own all of the ImprovPlus materials currently available.",
+      "Access our unbeatable hands-on support and coaching."
+    ]
   }
 ]

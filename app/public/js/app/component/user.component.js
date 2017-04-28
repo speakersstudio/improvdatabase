@@ -63,7 +63,6 @@ var UserComponent = (function () {
         });
         this.userService.fetchSubscription().then(function (u) {
             _this.subscription = u.subscription;
-            console.log(_this.subscription);
         });
     };
     UserComponent.prototype.ngOnDestroy = function () {

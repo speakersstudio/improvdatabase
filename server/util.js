@@ -125,15 +125,6 @@ module.exports = {
                 select: '-stripeCustomerId'
             }
         },
-        purchases: {
-            path: 'purchases',
-            populate: {
-                path: 'package materialItem'
-            },
-            options: {
-                sort: 'date'
-            }
-        },
         materials: {
             path: 'materials',
             options: {

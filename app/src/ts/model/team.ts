@@ -2,6 +2,7 @@ import {Purchase} from './purchase';
 import {MaterialItem} from './material-item';
 import {Subscription} from './subscription';
 import {User} from './user';
+import {Library} from './library';
 
 export class Team {
     _id: string;
@@ -26,6 +27,7 @@ export class Team {
     members: string[];
 
     subscription: Subscription;
-    materials: MaterialItem[];
     purchases: Purchase[];
+
+    library?: Library;
 }

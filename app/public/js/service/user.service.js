@@ -120,7 +120,6 @@ var UserService = (function () {
             _this.http.setToken(null, 0);
             // this.token = null;
             _this.loggedInUser = null;
-            _this._materialPromise = null;
             _this._purchasePromise = null;
             _this._subscriptionPromise = null;
             _this.announceLoginState();
@@ -137,6 +136,12 @@ var UserService = (function () {
         else {
             return null;
         }
+    };
+    UserService.prototype.getAdminTeams = function () {
+        return this.getLoggedInUser().adminOfTeams;
+    };
+    UserService.prototype.getTeams = function () {
+        return this.getLoggedInUser().memberOfTeams;
     };
     UserService.prototype.getUserName = function () {
         return this.loggedInUser.firstName + ' ' + this.loggedInUser.lastName;
@@ -222,16 +227,6 @@ var UserService = (function () {
                 return '';
             }
         });
-    };
-    UserService.prototype.fetchMaterials = function () {
-        if (!this._materialPromise) {
-            this._materialPromise = this.http.get(this.userUrl + this.loggedInUser._id + '/materials')
-                .toPromise()
-                .then(function (response) {
-                return response.json();
-            });
-        }
-        return this._materialPromise;
     };
     UserService.prototype.fetchPurchases = function () {
         if (!this._purchasePromise) {

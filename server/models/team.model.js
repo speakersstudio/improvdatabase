@@ -26,7 +26,6 @@ const TeamSchema = new mongoose.Schema({
     members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 
     subscription: { type: mongoose.Schema.Types.ObjectId, ref: 'Subscription' },
-    materials: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MaterialItem' }],
     purchases: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Purchase' }]
 });
 
@@ -43,38 +42,13 @@ TeamSchema.methods.addSubscription = function(role, stripeCustomerId, subCount, 
         team: this._id,
         role: role,
         expiration: expiration,
-        subscriptions: subCount,
+        subscriptions: subCount || 1,
         stripeCustomerId: stripeCustomerId
     }).then(sub => {
         this.subscription = sub;
 
         return this.save();
     })
-}
-
-TeamSchema.methods.addMaterial = function(materials) {
-    if (!materials || !materials.length) {
-        return Promise.resolve(this);
-    }
-
-    materials = [].concat(materials);
-    materials.forEach(mat => {
-        let id = typeof(mat) == 'object' ? mat._id : mat,
-            exists = false;
-        
-        this.materials.forEach(thismat => {
-            if (thismat == id || thismat._id == id) {
-                exists = true;
-                return false;
-            }
-        });
-
-        if (!exists) {
-            this.materials.push(mat);
-        }
-    });
-
-    return this.save();
 }
 
 TeamSchema.methods.addUser = function(user) {

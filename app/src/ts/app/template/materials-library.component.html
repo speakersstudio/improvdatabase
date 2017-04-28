@@ -15,15 +15,14 @@
 
 <div class="page">
 
-    <div class="materials-page paper has-brackets" *ngIf="ownedMaterials && ownedMaterials.length" [materials]="ownedMaterials"></div>
+    <div class="materials-page" *ngIf="ownedMaterials" [library]="ownedMaterials"></div>
 
-    <div class="materials-page paper has-brackets" *ngFor="let team of adminTeams" [team]="team"></div>
+    <div class="materials-page" *ngFor="let team of adminTeams" [team]="team"></div>
 
-    <div class="materials-page paper has-brackets" *ngFor="let team of teams" [team]="team"></div>
+    <div class="materials-page" *ngFor="let team of teams" [team]="team"></div>
 
-    <div class="paper has-brackets" *ngIf="!ownedMaterials.length && !teams.length && !adminTeams.length">
+    <!--<div class="paper has-brackets" *ngIf="!ownedMaterials.length && !teams.length && !adminTeams.length">
         <div class="content">
-            <!--<h4 class="right">Your Materials</h4>-->
 
             <p>You do not have access to any Materials yet. You will soon be able to do something about that, but for now you'll have to just be patient.</p>
 
@@ -34,6 +33,6 @@
         <div class="right-bracket">
             <h1 *ngIf="!team">Materials</h1>
         </div>
-    </div>
+    </div>-->
 
 </div>

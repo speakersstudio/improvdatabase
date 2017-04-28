@@ -14,18 +14,19 @@ var common_1 = require("@angular/common");
 var router_1 = require("@angular/router");
 var app_component_1 = require("../../component/app.component");
 var library_service_1 = require("../../service/library.service");
+var user_service_1 = require("../../service/user.service");
 var MaterialsLibraryComponent = (function () {
-    function MaterialsLibraryComponent(_app, router, route, libraryService, pathLocationStrategy) {
+    function MaterialsLibraryComponent(_app, router, route, libraryService, userService, pathLocationStrategy) {
         this._app = _app;
         this.router = router;
         this.route = route;
         this.libraryService = libraryService;
+        this.userService = userService;
         this.pathLocationStrategy = pathLocationStrategy;
         this.title = '<span class="light">materials</span><strong>library</strong>';
         this.searchResults = [];
-        this.ownedMaterials = [];
-        this.teams = [];
         this.adminTeams = [];
+        this.teams = [];
         this._tools = [];
     }
     MaterialsLibraryComponent.prototype.ngOnInit = function () {
@@ -41,13 +42,20 @@ var MaterialsLibraryComponent = (function () {
             _this._app.hideLoader();
             _this.ownedMaterials = materials;
         });
-        this.libraryService.getTeamMaterials()
-            .then(function (teams) {
-            _this.teams = teams;
-        });
-        this.libraryService.getAdminTeamMaterials()
-            .then(function (teams) {
-            _this.adminTeams = teams;
+        this.userService.fetchTeams().then(function (user) {
+            var adminOfTeams = user.adminOfTeams, memberOfTeams = user.memberOfTeams;
+            adminOfTeams.forEach(function (team) {
+                _this.libraryService.getTeamMaterials(team._id).then(function (library) {
+                    team.library = library;
+                    _this.adminTeams.push(team);
+                });
+            });
+            memberOfTeams.forEach(function (team) {
+                _this.libraryService.getTeamMaterials(team._id).then(function (library) {
+                    team.library = library;
+                    _this.teams.push(team);
+                });
+            });
         });
     };
     MaterialsLibraryComponent.prototype.onNoVersionsSelected = function () {
@@ -66,6 +74,7 @@ MaterialsLibraryComponent = __decorate([
         router_1.Router,
         router_1.ActivatedRoute,
         library_service_1.LibraryService,
+        user_service_1.UserService,
         common_1.PathLocationStrategy])
 ], MaterialsLibraryComponent);
 exports.MaterialsLibraryComponent = MaterialsLibraryComponent;

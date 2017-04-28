@@ -20,21 +20,50 @@ var CartService = (function () {
         this.userService = userService;
         this.chargeUrl = "/charge";
         this.signupUrl = "/signup";
-        this.cart = [];
+        this.configUrl = "/packageconfig";
+        this.purchase = new purchase_1.Purchase();
     }
     CartService.prototype.reset = function () {
-        this.cart = [];
+        this.purchase = new purchase_1.Purchase();
+        this.purchase.packages = [];
+        this.purchase.materials = [];
+        this.purchase.other = [];
+    };
+    CartService.prototype.getConfig = function () {
+        var _this = this;
+        if (this.config) {
+            return new Promise(function (resolve, reject) {
+                resolve(_this.config);
+            });
+        }
+        else {
+            return this.http.get(this.configUrl)
+                .toPromise()
+                .then(function (result) {
+                _this.config = result.json();
+                return _this.config;
+            });
+        }
     };
     CartService.prototype.addPackage = function (pack) {
-        var purchase = new purchase_1.Purchase();
-        if (this.userService.isLoggedIn()) {
-            purchase.user = this.userService.getLoggedInUser()._id;
-        }
-        purchase.type = 'package';
-        purchase.total = pack.price;
-        purchase.package = pack;
-        this.cart.push(purchase);
-        return this.cart;
+        this.purchase.packages.push(pack);
+        this.purchase.total += pack.price;
+        return this.purchase;
+    };
+    CartService.prototype.addSubscription = function (role) {
+        var sub = new purchase_1.PurchaseOther();
+        sub.key = "subscription";
+        sub.params = {
+            role: role
+        };
+        // don't duplicate the subscription item
+        var index = -1;
+        this.purchase.other.forEach(function (o, i) {
+            if (o.key == 'subscription') {
+                index = i;
+            }
+        });
+        this.purchase.other.splice(index, 1, sub);
     };
     CartService.prototype.setUser = function (user) {
         this.user = user;
@@ -42,25 +71,31 @@ var CartService = (function () {
     CartService.prototype.charge = function (token) {
         return this.http.post(this.chargeUrl, {
             stripeToken: token,
-            cart: this.cart,
+            purchase: this.purchase,
             user: this.user
         }).toPromise()
             .then(function (result) {
             return result.json();
         });
     };
-    CartService.prototype.signup = function (token, email, password, pack, userName, teamName) {
-        this.addPackage(pack);
+    CartService.prototype.signup = function (token, email, password, userName, teamName) {
+        // if (pack && pack._id !== 'sub') {
+        //     this.addPackage(pack);
+        // }
+        // if (role) {
+        //     this.addSubscription(role);
+        // }
         return this.http.post(this.signupUrl, {
             stripeToken: token,
-            cart: this.cart,
+            purchase: this.purchase,
             email: email,
             password: password,
             userName: userName,
             teamName: teamName
         }).toPromise()
             .then(function (result) {
-            return result.json();
+            // return result.json() as User;
+            return null;
         });
     };
     return CartService;

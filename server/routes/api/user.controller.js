@@ -195,14 +195,24 @@ module.exports = {
      * Get all of a user's purchases, including teams they are admin of
      */
     purchases: (req, res) => {
+        let populate = {
+            path: 'purchases',
+            populate: {
+                path: 'packages materials'
+            },
+            options: {
+                sort: 'date'
+            }
+        };
+
         return User.findOne({}).where('_id').equals(req.user._id)
             .select('purchases adminOfTeams')
             .populate({
                 path: 'adminOfTeams',
                 select: 'purchases name',
-                populate: util.populations.purchases
+                populate: populate
             })
-            .populate(util.populations.purchases)
+            .populate(populate)
             .then(u => {
                 res.json(u);
             })
@@ -222,24 +232,98 @@ module.exports = {
 
     // fetched with a GET call to /api/user/:_id/materials
     materials: (req, res) => {
-        return module.exports.fetchMaterials(req.user._id)
+        let userId = req.params.id,
+            query = User.findOne({}).where('_id').equals(userId);
+
+        return module.exports.collectMaterials(query, req, res);
+    },
+
+    collectMaterials: (query, req, res) => {
+        return query.select('purchases')
+            .populate({
+                path: 'purchases',
+                populate: {
+                    path: 'materials packages',
+                    populate: {
+                        path: 'materials packages',
+                        populate: {
+                            path: 'materials'
+                            // lets only allow packages to include packages one level deep, because this is getting silly
+                            // so a package that includes packages can't be included in a package
+                        }
+                    }
+                }
+            })
+            .exec()
             .then(u => {
+                let userData = u.toObject(),
+                    packages = [],
+                    materials = [],
+
+                    // TODO: some day - instead of selecting it all at once to begin with, we can do this with a recursive function that selects a thing and then selects all of the materials / packages inside the thing?
+
+                    addItems = array => {
+                        if (array && array.length) {
+                            array.forEach(item => {
+                                if (item.name) {
+                                    // if it has a name, it's a package
+                                    // just add the data without adding the actual package because we don't want to cause any crazy recursiveness
+                                    packages = util.addToObjectIdArray(packages, {
+                                        _id: item._id.toString(),
+                                        slug: item.slug,
+                                        name: item.name,
+                                        color: item.color,
+                                        price: item.price,
+                                        dateAdded: item.dateAdded,
+                                        dateModified: item.dateModified,
+                                        description: item.description,
+                                        materials: item.materials
+                                    });
+                                }
+                                if (item.materials && item.materials.length) {
+                                    item.materials.forEach(m => {
+                                        materials = util.addToObjectIdArray(materials, m);
+                                    });
+                                }
+                                addItems(item.packages);
+                            });
+                        }
+                    };
+
+                addItems(userData.purchases);
+
+                packages = packages.sort((a, b) => {
+                    return a.name.localeCompare(b.name);
+                });
+
+                materials = materials.sort((a, b) => {
+                    return a.name.localeCompare(b.name);
+                })
+
+                let data = {
+                    packages: packages,
+                    materials: materials
+                }
+
                 if (res) {
-                    res.json(u);
+                    res.json(data);
+                } else {
+                    return Promise.resolve(data);
                 }
             })
     },
 
-    fetchMaterials: (userId) => {
-        return User.findOne({}).where('_id').equals(userId)
-            .select('materials memberOfTeams adminOfTeams')
-            .populate({
-                path: 'adminOfTeams memberOfTeams',
-                populate: util.populations.materials
-            })
-            .populate(util.populations.materials)
-            .exec();
-    },
+    // fetchMaterials: (userId) => {
+    //     return User.findOne({}).where('_id').equals(userId)
+    //         .select('purchases')
+    //         .populate({
+    //             path: 'purchases',
+    //             populate: {
+    //                 path: 'materials packages'
+    //             }
+    //         })
+    //         .exec()
+    // },
 
     subscription: (req, res) => {
         return User.findOne({}).where('_id').equals(req.user._id)

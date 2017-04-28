@@ -13,6 +13,8 @@ const SubscriptionSchema = new mongoose.Schema({
     role: Number,
     stripeCustomerId: String,
 
+    type: String, // either 'facilitator' or 'improviser'
+
     // for team subscriptions
     team: { type: mongoose.Schema.Types.ObjectId, ref: 'Team' },
     subscriptions: Number, // the number of users purchased

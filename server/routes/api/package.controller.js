@@ -160,25 +160,19 @@ module.exports = {
                                     count++;
                                     if (count >= materialArray.length) {
 
-                                        let readStream = fs.createReadStream(filenames[0]);
+                                        let pdfMerge = new PDFMerge(filenames, config.pdftkPath);
 
-                                        readStream.pipe(res);
+                                        pdfMerge.asReadStream().merge((error, finishedStream) => {
+                                            if (error) {
+                                                res.status(500).json(error);
+                                            } else {
+                                                finishedStream.pipe(res);
 
-                                        // let pdfMerge = new PDFMerge(filenames, config.pdftkPath);
-
-                                        // pdfMerge.asReadStream().merge((error, finishedStream) => {
-                                        //     if (error) {
-                                        //         res.status(500).json(error);
-                                        //     } else {
-                                        //         finishedStream.pipe(res);
-
-                                        //         finishedStream.on('finish', () => {
-                                        //             cleanup();
-                                        //         });
-                                        //     }
-                                        // });
-
-
+                                                finishedStream.on('finish', () => {
+                                                    cleanup();
+                                                });
+                                            }
+                                        });
 
                                     }
                                 })

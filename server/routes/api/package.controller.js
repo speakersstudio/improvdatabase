@@ -160,7 +160,7 @@ module.exports = {
                                     count++;
                                     if (count >= materialArray.length) {
 
-                                        let pdfMerge = new PDFMerge(filenames, config.pdftkPath);
+                                        let pdfMerge = new PDFMerge(filenames);
 
                                         pdfMerge.asReadStream().merge((error, finishedStream) => {
                                             if (error) {

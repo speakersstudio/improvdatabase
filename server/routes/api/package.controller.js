@@ -142,7 +142,7 @@ module.exports = {
                         } else {
 
                             materialArray.forEach(m => {
-                                let name = path.join(directory, m.filename()),
+                                let name = path.join('https://s3.amazonaws.com/improvplus.materials/', m.filename()),
                                     file = fs.createWriteStream(name);
 
                                 let stream = s3.getObject({
@@ -156,22 +156,21 @@ module.exports = {
                                     count++;
                                     if (count >= materialArray.length) {
                                         
-                                        // let pdfMerge = new PDFMerge(filenames, config.pdftkPath);
+                                        let pdfMerge = new PDFMerge(filenames, config.pdftkPath);
 
-                                        // pdfMerge.asReadStream().merge((error, finishedStream) => {
-                                        //     if (error) {
-                                        //         res.status(500).json(error);
-                                        //     } else {
-                                        //         finishedStream.pipe(res);
+                                        pdfMerge.asReadStream().merge((error, finishedStream) => {
+                                            if (error) {
+                                                res.status(500).json(error);
+                                            } else {
+                                                finishedStream.pipe(res);
 
-                                        //         finishedStream.on('finish', () => {
-                                        //             filenames.forEach(name => {
-                                        //                 fs.unlink(name);
-                                        //             });
-                                        //         });
-                                        //     }
-                                        // });
-                                        res.json(filenames);
+                                                finishedStream.on('finish', () => {
+                                                    filenames.forEach(name => {
+                                                        fs.unlink(name);
+                                                    });
+                                                });
+                                            }
+                                        });
 
                                     }
                                 })

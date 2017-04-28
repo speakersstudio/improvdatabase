@@ -99,8 +99,6 @@ export class UserComponent implements OnInit, OnDestroy {
 
         this.userService.fetchSubscription().then(u => {
             this.subscription = u.subscription;
-
-            console.log(this.subscription);
         });
     }
 

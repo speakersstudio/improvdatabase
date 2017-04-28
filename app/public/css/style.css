@@ -829,12 +829,19 @@ button,
     line-height: 14px; }
   .tag.grey, .taglist li.grey {
     background-color: #606060; }
+  .tag.orange, .taglist li.orange {
+    background-color: #ffa70f; }
   .tag.flat, .taglist li.flat {
     background: none;
     box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
     color: #d32f2f;
     opacity: 0;
     transition: opacity 200ms; }
+  .tag.clickable, .taglist li.clickable {
+    transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: box-shadow; }
+    .tag.clickable:hover, .taglist li.clickable:hover {
+      box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12); }
   .tag input, .taglist li input {
     padding: 0;
     border: 0;
@@ -861,8 +868,23 @@ button,
 
 .taglist {
   padding: 0; }
+  .taglist.files {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; }
+    .taglist.files li {
+      max-width: 170px;
+      padding: 8px;
+      flex: 1; }
+      .taglist.files li .fa {
+        font-size: 24px;
+        display: block;
+        margin-bottom: 8px;
+        line-height: 24px; }
   .taglist.grey .tag, .taglist.grey li {
     background-color: #606060; }
+  .taglist.orange .tag, .taglist.orange li {
+    background-color: #ffa70f; }
   .taglist:hover .flat {
     opacity: 1; }
 

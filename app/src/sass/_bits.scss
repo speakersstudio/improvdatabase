@@ -731,12 +731,24 @@ button,
         background-color: $color-text;
     }
 
+    &.orange {
+        background-color: $color-orange;
+    }
+
     &.flat {
         background: none;
         @include md-elevation(0);
         color: $color-primary;
         opacity: 0;
         transition: opacity 200ms;
+    }
+
+    &.clickable {
+        @include md-elevation-transition();
+
+        &:hover {
+            @include md-elevation(4);
+        }
     }
 
     input {
@@ -778,9 +790,34 @@ button,
         @extend .tag;
     }
 
+    &.files {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+
+        li {
+            max-width: 170px;
+            padding: $small;
+            flex: 1;
+
+            .fa {
+                font-size: $large;
+                display: block;
+                margin-bottom: $small;
+                line-height: $large;
+            }
+        }
+    }
+
     &.grey {
         .tag {
             background-color: $color-text;
+        }
+    }
+
+    &.orange {
+        .tag {
+            background-color: $color-orange;
         }
     }
 

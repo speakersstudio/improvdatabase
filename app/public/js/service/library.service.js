@@ -20,8 +20,10 @@ var LibraryService = (function () {
         this.packageUrl = '/api/package';
         this.materialsUrl = '/api/material/';
         this.ownedMaterialsUrl = '/api/user/:_id/materials';
+        this.userUrl = '/api/user/';
+        this.teamUrl = '/api/team/';
     }
-    LibraryService.prototype._getPackages = function () {
+    LibraryService.prototype.getPackages = function () {
         var _this = this;
         if (!this._packagePromise) {
             this._packagePromise = this.http.get(this.packageUrl)
@@ -35,52 +37,23 @@ var LibraryService = (function () {
         return this._packagePromise;
     };
     /**
-     * Get all available packages
-     * @param type filter by a specific type (facilitator or improviser)
-     * @param team filter by team-oriented packages or individual packages
+     * Get the materials that you own
      */
-    LibraryService.prototype.getPackages = function (type, team) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this._getPackages().then(function (allPackages) {
-                if (type != undefined || team != undefined) {
-                    var selectedPackages_1 = [];
-                    allPackages.forEach(function (p) {
-                        if ((team == undefined || p.team == team) &&
-                            (type == undefined || p.type == type)) {
-                            selectedPackages_1.push(p);
-                        }
-                    });
-                    resolve(selectedPackages_1);
-                }
-                else {
-                    resolve(allPackages);
-                }
-            });
-        });
-    };
     LibraryService.prototype.getOwnedMaterials = function () {
-        var _this = this;
-        return new Promise(function (res, rej) {
-            _this.userService.fetchMaterials().then(function (user) {
-                res(user.materials);
-            });
+        return this.http.get(this.userUrl + this.userService.getLoggedInUser()._id + '/materials')
+            .toPromise()
+            .then(function (response) {
+            return response.json();
         });
     };
-    LibraryService.prototype.getTeamMaterials = function () {
-        var _this = this;
-        return new Promise(function (res, rej) {
-            _this.userService.fetchMaterials().then(function (user) {
-                res(user.memberOfTeams);
-            });
-        });
-    };
-    LibraryService.prototype.getAdminTeamMaterials = function () {
-        var _this = this;
-        return new Promise(function (res, rej) {
-            _this.userService.fetchMaterials().then(function (user) {
-                res(user.adminOfTeams);
-            });
+    /**
+     * Get the materials that a team owns (will die )
+     */
+    LibraryService.prototype.getTeamMaterials = function (teamId) {
+        return this.http.get(this.teamUrl + teamId + '/materials')
+            .toPromise()
+            .then(function (response) {
+            return response.json();
         });
     };
     LibraryService.prototype.downloadMaterial = function (id) {

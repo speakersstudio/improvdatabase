@@ -14,8 +14,6 @@ import { TeamService } from '../service/team.service';
 import { LibraryService } from '../service/library.service';
 import { CartService } from '../service/cart.service';
 
-import { Config } from '../config';
-
 import { User } from '../model/user';
 import { Team } from '../model/team';
 import { Package } from '../model/package';
@@ -23,6 +21,8 @@ import { Package } from '../model/package';
 import { FadeAnim, DialogAnim } from '../util/anim.util';
 
 import { BracketCardDirective } from '../view/bracket-card.directive';
+
+import { PackageConfig } from '../model/config';
 
 declare var Stripe: any;
 
@@ -37,11 +37,15 @@ declare var Stripe: any;
 })
 export class SignupComponent implements OnInit {
 
+    @ViewChild('page') pageElement;
+
     @ViewChild('facilitatorCard', {read: BracketCardDirective}) facilitatorCard: BracketCardDirective;
     @ViewChild('improviserCard', {read: BracketCardDirective}) improviserCard: BracketCardDirective;
     @ViewChild('yourselfCard', {read: BracketCardDirective}) yourselfCard: BracketCardDirective;
     @ViewChild('yourTeamCard', {read: BracketCardDirective}) yourTeamCard: BracketCardDirective;
     @ViewChildren('packageCard', {read: BracketCardDirective}) packageCards: QueryList<BracketCardDirective>;
+
+    private config: PackageConfig = new PackageConfig();
 
     userType: string;
     teamOption: string;
@@ -52,6 +56,7 @@ export class SignupComponent implements OnInit {
     userName: string;
 
     packages: Package[];
+    options: Package[];
     selectedPackage: Package;
     isLoadingPackages: boolean = false;
 
@@ -81,6 +86,17 @@ export class SignupComponent implements OnInit {
             this.router.navigate(['/app/dashboard'], {replaceUrl: true});
         }
 
+        this._app.showLoader();
+
+        this.cartService.getConfig().then(config => {
+            this.config = config;
+            this.setup();
+        })
+
+    }
+
+    setup(): void {
+
         this._app.showBackground(true);
 
         this.isLoadingPackages = true;
@@ -88,7 +104,7 @@ export class SignupComponent implements OnInit {
             this.isLoadingPackages = false;
         });
 
-        this.stripe = Stripe(Config.STRIPE_KEY);
+        this.stripe = Stripe(this._app.config.stripe);
         let elements = this.stripe.elements();
         this.creditCard = elements.create('card', {
             // value: {postalCode: this.user.zip},
@@ -121,6 +137,13 @@ export class SignupComponent implements OnInit {
                 this.cardError = '';
             }
         });
+
+
+        this.libraryService.getPackages().then(p => {
+            this.packages = p;
+        });
+
+        this._app.hideLoader();
 
     }
 
@@ -166,10 +189,22 @@ export class SignupComponent implements OnInit {
         });
     }
 
+    setPageHeight(): void {
+        let page = <HTMLElement> this.pageElement.nativeElement,
+            height = page.offsetHeight,
+            currentMinHeight = page.style.minHeight ? parseInt(page.style.minHeight.replace('px', '')) : 0;
+
+        if (height > currentMinHeight) {
+            page.style.minHeight = page.offsetHeight + 'px';
+        }
+    }
+
     selectCard(option: string, value: string, cardToOpen: BracketCardDirective, cardToClose: BracketCardDirective): void {
         if (this[option] == value) {
             return;
         }
+
+        this.setPageHeight();
 
         this[option] = '';
         if (option == 'userType') {
@@ -196,6 +231,7 @@ export class SignupComponent implements OnInit {
 
     reset(): void {
         this._app.scrollTo(0);
+        this.cartService.reset();
 
         setTimeout(() => {
             this.userType = '';
@@ -235,15 +271,77 @@ export class SignupComponent implements OnInit {
     showPackages(team: boolean): void {
         this.selectedPackage = null;
 
-        this.libraryService.getPackages(this.userType, team).then(p => {
-            this.packages = p;
-        });
+        // add a subscription option to the list
+        let subOption = new Package();
+        subOption._id = 'sub';
+        this.options = [];
+
+        if (this.userType == 'facilitator') {
+            if (!team) {
+                subOption.name = 'Individual Facilitator Subscription';
+                subOption.price = this.config.fac_sub_price;
+
+                subOption.description = [
+                    "Gain access to the the app for one year.",
+                    "Browse and purchase from our catalogue of facilitation materials.",
+                    "Utilize the database of over 200 Improv Exercises."
+                ]
+
+                this.packages.forEach(p => {
+                    let copy = Object.assign({}, p);
+                    this.options.push(copy);
+                });
+
+            } else {
+                subOption.name = 'Facilitator Team Subscription';
+                subOption.price = this.config.fac_team_sub_price;
+
+                subOption.description = [
+                    "Your team can share and collaborate with the ImprovPlus app.",
+                    "Browse and purchase from our catalogue of facilitation materials.",
+                    "Utilize the database of over 200 Improv Exercises."
+                ];
+
+                this.packages.forEach(p => {
+                    let copy = Object.assign({}, p);
+                    // the facilitator team packages are more expensive
+                    copy.price += this.config.fac_team_package_markup;
+                    this.options.push(copy);
+                });
+            }
+        } else {
+            if (!team) {
+                subOption.name = 'Individual Improviser Subscription';
+                subOption.price = this.config.improv_sub_price;
+
+                subOption.description = [
+                    "Gain access to the app for one year.",
+                    "Browse the database of over 200 Improv Games.",
+                    "Join the ever-growing ImprovPlus community."
+                ]
+            } else {
+                subOption.name = 'Improviser Team Subscription';
+                subOption.price = this.config.improv_team_sub_price;
+
+                subOption.description = [
+                    'Access powerful marketing and collaboration tools.',
+                    'Browse the database of over 200 Improv Games.',
+                    "Join the ever-growing ImprovPlus community."
+                ]
+            }
+        }
+
+        this.options.push(subOption);
     }
 
     selectPackage($event, pack: Package, cardClicked: HTMLElement): void {
         if (pack == this.selectedPackage) {
             return;
         }
+
+        this.cartService.reset();
+
+        this.setPageHeight();
 
         this.selectedPackage = null;
 
@@ -257,6 +355,8 @@ export class SignupComponent implements OnInit {
 
         setTimeout(() => {
             this.selectedPackage = pack;
+
+            this.cartService.addPackage(this.selectedPackage);
 
             // setup the stripe credit card input
             this.creditCard.unmount();
@@ -315,7 +415,25 @@ export class SignupComponent implements OnInit {
             } else {
                 this.cartService.setUser(user);
 
-                this.cartService.signup(result.token, this.email, this.password, this.selectedPackage, this.userName, this.teamName)
+                let pack, role;
+
+                if (this.selectedPackage._id !== 'sub') {
+                    pack = this.selectedPackage;
+                } else if (this.userType == 'facilitator') {
+                    if (this.teamOption == 'team') {
+                        role = this.config.role_facilitator_team;
+                    } else {
+                        role = this.config.role_facilitator;
+                    }
+                } else if (this.userType == 'improviser') {
+                    if (this.teamOption == 'team') {
+                        role = this.config.role_improviser_team;
+                    } else {
+                        role = this.config.role_improviser;
+                    }
+                }
+
+                this.cartService.signup(result.token, this.email, this.password, this.userName, this.teamName)
                     .catch(response => {
                         this._app.hideLoader();
                         this.isPosting = false;
@@ -324,6 +442,8 @@ export class SignupComponent implements OnInit {
                             this.emailError = "That email address is already registered.";
                             // let card: HTMLElement = this.facilitatorCard.nativeElement;
                             // this._app.scrollTo(card.offsetTop);
+                        } else if (msg.error) {
+                            this._app.dialog('An error has occurred.', 'We are so sorry. Something happened, and we can\'t be sure what. Please try again, and if this keeps happening, reach out to us by emailing contact@improvpl.us. Have a nice day, dude.', 'Okay bye', null, true);
                         }
                     })
                     .then(u => {

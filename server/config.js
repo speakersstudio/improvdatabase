@@ -25,15 +25,10 @@ module.exports = function () {
                 key: process.env.SENDGRID_API_KEY
             },
             s3_buckets: {
-                materials: 'improvplus.materials'
+                materials: 'improvplus.dev.materials'
             },
             port: 1919,
-            saltRounds: 10,
-
-            settings: {
-                facilitator_team_sub_count: 3,
-                improviser_team_sub_count: 5
-            }
+            saltRounds: 10
         };
     } else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'qa') {
         return {
@@ -62,12 +57,7 @@ module.exports = function () {
                 materials: 'improvplus.materials'
             },
             port: process.env.PORT || 5000,
-            saltRounds: 10,
-
-            settings: {
-                facilitator_team_sub_count: 3,
-                improviser_team_sub_count: 5
-            }
+            saltRounds: 10
         };
     }
 };

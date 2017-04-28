@@ -30,7 +30,6 @@ const UserSchema = new mongoose.Schema({
     adminOfTeams: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Team' }],
 
     purchases: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Purchase' }],
-    materials: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MaterialItem' }],
     subscription: { type: mongoose.Schema.Types.ObjectId, ref: 'Subscription' },
     preferences: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Preference' }]
 });
@@ -57,31 +56,6 @@ UserSchema.methods.addSubscription = function(role, stripeCustomerId, expires) {
 }
 
 // TODO: create a renewSubscription method?
-
-UserSchema.methods.addMaterial = function(materials) {
-    if (!materials || !materials.length) {
-        return Promise.resolve(this);
-    }
-
-    materials = [].concat(materials);
-    materials.forEach(mat => {
-        let id = typeof(mat) == 'object' ? mat._id : mat,
-            exists = false;
-        
-        this.materials.forEach(thismat => {
-            if (thismat == id || thismat._id == id) {
-                exists = true;
-                return false;
-            }
-        });
-
-        if (!exists) {
-            this.materials.push(mat);
-        }
-    });
-
-    return this.save();
-}
 
 UserSchema.methods.setPreference = function(key, value) {
     return Preference.findOne({})

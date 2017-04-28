@@ -1,6 +1,11 @@
-var express = require('express');
-var router = express.Router();
-var config = require('../config')();
+const express = require('express'),
+      router = express.Router(),
+      mongoose = require('mongoose'),
+
+      PackageConfig = require('../models/packageconfig.model'),
+      roles = require('../roles'),
+      
+      config = require('../config')();
 
 // AUTH
 var auth = require('../auth');
@@ -14,6 +19,33 @@ router.post('/changePassword', auth.changePassword);
 
 router.all('/api/*', auth.checkToken, auth.checkAuth);
 
+// APP CONFIG
+router.get('/config', (req, res) => {
+  // ConfigModel.find({}).exec()
+  //   .then(c => {
+      let data = {}; //c[0].toObject();
+      data.version = require('../../package.json').version;
+
+      data.stripe = config.stripe.publishable;
+      
+      res.json(data);
+    // })
+});
+
+// CONFIG STUFF FOR SIGNUP PROCESS / SUBSCRIPTIONS
+router.get('/packageconfig', (req, res) => {
+  PackageConfig.find({}).exec()
+    .then(c => {
+      let data = c[0].toObject();
+
+      data.role_facilitator = roles.ROLE_FACILITATOR;
+      data.role_facilitator_team = roles.ROLE_FACILITATOR_TEAM;
+      data.role_improviser = roles.ROLE_IMPROVISER;
+      data.role_improviser_team = roles.ROLE_IMPROVISER_TEAM;
+
+      res.json(data);
+    });
+});
 
 // CHECKOUT PROCESS
 var charge = require('./charge');

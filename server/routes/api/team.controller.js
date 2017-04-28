@@ -8,6 +8,8 @@ const   mongoose = require('mongoose'),
         roles = require('../../roles'),
         util = require('../../util'),
 
+        userController = require('./user.controller'),
+
         Subscription = require('../../models/subscription.model'),
         Team = require('../../models/team.model'),
 
@@ -89,6 +91,21 @@ module.exports = {
                     res.json({});
                 }
             });
+    },
+
+    materials: (req, res) => {
+        // first, make sure the user is a member of this team
+        if (!req.user.superAdmin) {
+            if (util.indexOfObjectId(req.user.memberOfTeams, req.params.id) == -1 &&
+                util.indexOfObjectId(req.user.adminOfTeams, req.params.id) == -1) {
+                    auth.unauthorized(req, res);
+                    return;
+                }
+        }
+
+        let query = Team.findOne({}).where('_id').equals(req.params.id);
+
+        return userController.collectMaterials(query, req, res);
     }
 
 }

@@ -12,6 +12,7 @@ const mongoose = require('mongoose');
 const MaterialItem = require('../../models/material-item.model');
 const Package = require('../../models/package.model');
 const Subscription = require('../../models/subscription.model');
+const Team = require('../../models/team.model');
 const userController = require('./user.controller');
 
 const subCtrl = require('./subscription.controller');
@@ -66,26 +67,39 @@ module.exports = {
                         return;
                     }
                     // we have to load up the user's materials, to make sure they own this one
-                    return userController.fetchMaterials(req.user._id);
-                }).then(user => {
+                    // return userController.fetchMaterials(req.user._id);
+                    
+                    return userController.collectMaterials(User.findOne({}).where('_id').equals(req.user._id.toString()));
 
-                    let access = false;
+                }).then(usersStuff => {
+                    if (util.indexOfObjectId(usersStuff.materials, materialItem._id) > -1) {
+                        // the user owns this item directly - woohoo!
+                        return Promise.resolve(true);
+                    } else {
 
-                    access = util.indexOfObjectId(user.materials, materialItem._id) > -1;
-
-                    if (!access) {
-                        let teams = [];
-                        // a neat trick to concatenate object arrays
-                        teams.push.apply(teams, user.adminOfTeams);
-                        teams.push.apply(teams, user.memberOfTeams);
-
-                        teams.forEach(team => {
-                            if (team && team.materials) {
-                                access = util.indexOfObjectId(team.materials, materialItem._id) > -1;
+                        let teamIds = util.unionArrays(req.user.memberOfTeams, req.user.adminOfTeams),
+                            checkTeamStuff = index => {
+                                return userController.collectMaterials(Team.findOne({}).where('_id').equals(teamIds[index].toString()))
+                                    .then(stuff => {
+                                        if (util.indexOfObjectId(stuff.materials, materialItem._id) > -1) {
+                                            // this team owns the item! hooray!
+                                            return Promise.resolve(true);
+                                        } else {
+                                            // move on to the next one
+                                            index++;
+                                            if (teamIds[index]) {
+                                                return checkTeamStuff(index);
+                                            } else {
+                                                return Promise.resolve(false);
+                                            }
+                                        }
+                                    })
                             }
-                        });
-                    }
 
+                        return checkTeamStuff(0);
+                    }
+                }).then(access => {
+                    
                     if (access && materialItem) {
 
                         var dateObj = new Date();
@@ -104,6 +118,7 @@ module.exports = {
                         // the user either doesn't have access, or the file doesn't exist
                         auth.unauthorized(req, res);
                     }
+
                 });
 
         }

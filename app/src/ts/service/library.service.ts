@@ -13,26 +13,30 @@ import { Team } from '../model/team';
 import { User } from '../model/user';
 import { UserService } from './user.service';
 
+import { Library } from '../model/library';
+
 @Injectable()
 export class LibraryService {
     private packageUrl = '/api/package';
     private materialsUrl = '/api/material/';
     private ownedMaterialsUrl = '/api/user/:_id/materials';
 
+    private userUrl = '/api/user/';
+    private teamUrl = '/api/team/';
+
     private subscriptions: Subscription[];
     private packages: Package[];
-
-    private materials: MaterialItem[];
-    private teams: Team[];
-    private adminTeams: Team[];
 
     constructor(
         private http: AppHttp,
         private userService: UserService
         ) { }
 
+    /**
+     * Get all of the available packages!
+     */
     private _packagePromise: Promise<Package[]>;
-    private _getPackages(): Promise<Package[]> {
+    getPackages(): Promise<Package[]> {
         if (!this._packagePromise) {
             this._packagePromise = this.http.get(this.packageUrl)
                 .toPromise()
@@ -46,51 +50,25 @@ export class LibraryService {
     }
 
     /**
-     * Get all available packages
-     * @param type filter by a specific type (facilitator or improviser)
-     * @param team filter by team-oriented packages or individual packages
+     * Get the materials that you own
      */
-    getPackages(type?: string, team?: boolean): Promise<Package[]> {
-        return new Promise<Package[]>((resolve, reject) => {
-            this._getPackages().then(allPackages => {
-                if (type != undefined || team != undefined) {
-                    let selectedPackages = [];
-                    allPackages.forEach(p => {
-                        if ((team == undefined || p.team == team) &&
-                            (type == undefined || p.type == type)) {
-                                selectedPackages.push(p);
-                            }
-                    });
-                    resolve(selectedPackages);
-                } else {
-                    resolve(allPackages);
-                }
-            })
-        })
+    getOwnedMaterials(): Promise<Library> {
+        return this.http.get(this.userUrl + this.userService.getLoggedInUser()._id + '/materials')
+            .toPromise()
+            .then(response => {
+                return response.json() as Library;
+            });
     }
 
-    getOwnedMaterials(): Promise<MaterialItem[]> {
-        return new Promise<MaterialItem[]>((res, rej) => {
-            this.userService.fetchMaterials().then(user => {
-                res(user.materials);
+    /**
+     * Get the materials that a team owns (will die )
+     */
+    getTeamMaterials(teamId: string): Promise<Library> {
+        return this.http.get(this.teamUrl + teamId + '/materials')
+            .toPromise()
+            .then(response => {
+                return response.json() as Library;
             });
-        });
-    }
-
-    getTeamMaterials(): Promise<Team[]> {
-        return new Promise<Team[]>((res, rej) => {
-            this.userService.fetchMaterials().then(user => {
-                res(<Team[]> user.memberOfTeams);
-            });
-        });
-    }
-
-    getAdminTeamMaterials(): Promise<Team[]> {
-        return new Promise<Team[]>((res, rej) => {
-            this.userService.fetchMaterials().then(user => {
-                res(<Team[]> user.adminOfTeams);
-            });
-        });
     }
 
     downloadMaterial(id: string): void {

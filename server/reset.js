@@ -15,12 +15,14 @@ const User = require('./models/user.model');
 const MaterialItem = require('./models/material-item.model');
 const Package = require('./models/package.model');
 const Preference = require('./models/preference.model');
+const PackageConfig = require('./models/packageconfig.model');
 
-const userBackupTime = 1493140912105,
+const userBackupTime = 1493217409986,
     materialsBackupTime = 1493175922371,
-    packageBackupTime = 1492176592742,
-    purchaseBackupTime = 1493140912105,
-    subscriptionBackupTime = 1493140912105;
+    packageBackupTime = 1493217409986,
+    purchaseBackupTime = 1493217409986,
+    subscriptionBackupTime = 1493140912105,
+    packageConfigBackupTime = 1493233082882;
 
 mongoose.Promise = Promise;
 mongoose.connect(config.mongodb.uri);
@@ -74,6 +76,21 @@ function seedPackages() {
     const packages = require('./models/seeds/package.seed.json');
 
     return Package.create(packages)
+        // only necessary if we don't have ids for everything
+        // .then(ps => {
+        //     let ids = [],
+        //         ultimate;
+        //     ps.forEach(p => {
+        //         if (p.slug != 'ultimate') {
+        //             ids.push(p._id);
+        //         } else {
+        //             ultimate = p;
+        //         }
+        //     });
+
+        //     ultimate.packages = ids;
+        //     return ultimate.save();
+        // })
         .then(() => {
             console.log('packages seeded');
             console.log(' -- ');
@@ -100,6 +117,21 @@ function seedPurchases(callback) {
             console.log('Subscriptions and purchases seeded');
             console.log(' -- ');
         });
+}
+
+function deletePackageConfig() {
+    console.log('deleting package Config data');
+    return PackageConfig.find({}).remove().exec();
+}
+
+function seedPackageConfig() {
+    const data = require('./models/seeds/packageconfig.seed.json');
+
+    return PackageConfig.create(data)
+        .then(() => {
+            console.log('Package Config data seeded');
+            console.log('--');
+        })
 }
 
 const DBInfo = require('./models/dbinfo.model');
@@ -162,6 +194,24 @@ module.exports = {
             });
     },
 
+    resetPackageConfig: function (done) {
+        console.log('Resetting package Config data');
+        return deletePackageConfig()
+            .then(seedPackageConfig)
+            .then(() => {
+                return DBInfo.findOne({}).exec();
+            })
+            .then(dbi => {
+                dbi.packageConfig = Date.now();
+                return dbi.save();
+            })
+            .then(() => {
+                if (done) {
+                    process.exit(0);
+                }
+            });
+    },
+
     clear: function() {
         return deleteItems()
             .then(deletePackages)
@@ -174,7 +224,8 @@ module.exports = {
     checkForSeed: function() {
         let dbUserTime,
             dbPackageTime,
-            dbMaterialsTime;
+            dbMaterialsTime,
+            dbPackageConfigTime;
 
         return DBInfo.count({}).exec()
             .then(count => {
@@ -190,6 +241,7 @@ module.exports = {
                 dbUserTime = dbi.user ? dbi.user.getTime() : 0;
                 dbPackageTime = dbi.package ? dbi.package.getTime() : 0;
                 dbMaterialsTime = dbi.materials ? dbi.materials.getTime() : 0;
+                dbPackageConfigTime = dbi.packageConfig ? dbi.packageConfig.getTime() : 0;
 
                 if (!dbUserTime || 
                         dbUserTime < userBackupTime ||
@@ -219,6 +271,16 @@ module.exports = {
                         return this.resetPackages(false);
                     } else {
                         console.log('No need to reset package database...');
+                        return Promise.resolve(true);
+                    }
+            })
+            .then(() => {
+                if (!dbPackageConfigTime ||
+                    dbPackageConfigTime < packageConfigBackupTime) {
+                        console.log('PackageConfig backup is more recent than package config database!');
+                        return this.resetPackageConfig(false);
+                    } else {
+                        console.log('No need to reset package config database...');
                         return Promise.resolve(true);
                     }
             })

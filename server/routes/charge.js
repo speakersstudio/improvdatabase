@@ -11,20 +11,24 @@ let util = require('../util'),
 let userController = require('./api/user.controller'),
     teamController = require('./api/team.controller'),
     auth = require('../auth'),
-    roles = require('../roles');
+    roles = require('../roles'),
+    PackageConfig = require('../models/packageconfig.model');
 
 let User = require('../models/user.model'),
     Team = require('../models/team.model'),
     Purchase = require('../models/purchase.model'),
-    Subscription = require('../models/subscription.model');
+    Subscription = require('../models/subscription.model'),
+    Package = require('../models/package.model');
+
 
 module.exports = {
 
     signup: (req, res) => {
+
         let stripe = require('stripe')(config.stripe.secret),
             
             tokenVal = req.body.stripeToken,
-            cart = req.body.cart,
+            purchase = req.body.purchase,
             email = req.body.email,
             password = req.body.password,
             userName = req.body.userName,
@@ -42,11 +46,23 @@ module.exports = {
 
             token,
             stripeCustomerId,
-            error;
+            error,
+
+            packageConfig;
 
         // make sure stripe token is the actual string
         if (typeof tokenVal == 'object' && tokenVal.id) {
             token = tokenVal.id;
+        }
+
+        if (!purchase.packages) {
+            purchase.packages = [];
+        }
+        if (!purchase.materials) {
+            purchase.materials = [];
+        }
+        if (!purchase.other) {
+            purchase.other = [];
         }
 
         if (!email) {
@@ -55,13 +71,12 @@ module.exports = {
             error = 'password';
         } else if (!token) {
             error = 'token';
-        } else if (!cart || !cart.length) {
-            error = 'cart';
+        } else if (!purchase) {
+            error = 'purchase';
         }
 
         if (error) {
-            console.log('No ' + error + ' supplied to signup route!');
-            res.status(500).json({error: "No " + error});
+            res.status(500).json({error: 'No ' + error});
             return;
         }
 
@@ -69,13 +84,16 @@ module.exports = {
         User.findOne({}).where('email').equals(email).exec()
             .then(user => {
                 if (user) {
-                    res.status(401).json({
-                        error: 'email already exists'
-                    });
                     return Promise.reject('email already exists');
                 }
             })
             .then(() => {
+                // get the package config data
+                return PackageConfig.find({}).exec();
+            })
+            .then(c => {
+                packageConfig = c[0];
+
                 // step 2: charge the credit card
                 // first create a stripe customer ID
                 return stripe.customers.create({
@@ -88,24 +106,115 @@ module.exports = {
                 stripeCustomerId = stripeCustomer.id;
 
                 let total = 0,
-                    desc = "New purchase - ";
+                    desc = "Signup - ",
+                    packageIds = [],
+                    packagePromise;
 
-                cart.forEach((cartItem, i) => {
-                    total += cartItem.total;
-                    if (cartItem.package) {
-                        desc += ' - ' + cartItem.package.name;
-                    }
+                purchase.packages.forEach(p => {
+                    packageIds.push(p._id);
                 });
+                // let's face it, a signup won't have material items
 
-                // stripe expects the price in cents
-                total *= 100;
+                // fetch all of the selected packages, so we can get their prices and whatnot
+                if (packageIds.length) {
+                    packagePromise = Package.find({}).where('_id').in(packageIds).exec()
+                } else {
+                    packagePromise = Promise.resolve(null);
+                }
+                
+                return packagePromise
+                    .then(packages => {
 
-                return stripe.charges.create({
-                    amount: total,
-                    currency: "usd",
-                    description: desc,
-                    customer: stripeCustomerId
-                });
+                        let isSubFree = false;
+
+                        if (packages) {
+                            packages.forEach(p => {
+                                total += p.price;
+                                if (teamName) {
+                                    // team packages are more expensive than for individuals
+                                    total += packageConfig.fac_team_package_markup;
+                                }
+                                desc += p.name;
+                            });
+                            // if they chose a package, we will throw in a subscription
+                            purchase.other.push({
+                                key: 'subscription',
+                                params: {
+                                    role: teamName ? roles.ROLE_FACILITATOR_TEAM : roles.ROLE_FACILITATOR
+                                }
+                            });
+                            isSubFree = true;
+                        }
+
+                        // filter out unknown or dangerous "other" items
+                        let newOthers = [],
+                            subscriptionOther;
+
+                        purchase.other.forEach(other => {
+                            if (other.key == 'subscription') {
+                                switch(other.params.role) {
+                                    case roles.ROLE_FACILITATOR:
+                                        other.price = packageConfig.fac_sub_price;
+                                        other.description = 'Individual Facilitator Subscription';
+                                        break;
+                                    case roles.ROLE_FACILITATOR_TEAM:
+                                        other.price = packageConfig.fac_team_sub_price;
+                                        other.description = 'Facilitator Team Subscription';
+                                        other.params.subscriptions = packageConfig.fac_team_sub_count;
+                                        break;
+                                    case roles.ROLE_IMPROVISER:
+                                        other.price = packageConfig.improv_sub_price;
+                                        other.description = 'Individual Improviser Subscription';
+                                        break;
+                                    case roles.ROLE_IMPROVISER_TEAM:
+                                        other.price = packageConfig.improv_team_sub_price;
+                                        other.description = 'Improv Team Subscription';
+                                        other.params.subscriptions = packageConfig.improv_team_sub_count;
+                                        break;
+                                    default:
+                                        error = 'unknown role ID';
+                                        break;
+                                }
+
+                                if (isSubFree) {
+                                    other.price = 0;
+                                    other.description += ' (included with purchase)';
+                                }
+
+                                // we will only accept one subscription, so we'll just take the last just in case multiple subscriptions were passed on the route somehow
+                                subscriptionOther = other;
+                            } else {
+                                newOthers.push(other);
+                            }
+                        });
+
+                        // add the subscription now, so we only add it once
+                        if (subscriptionOther) {
+                            newOthers.push(subscriptionOther);
+                            if (!isSubFree) {
+                                total += subscriptionOther.price;
+                                desc += ' ' + subscriptionOther.description;
+                            }
+                        }
+
+                        // store this cleaned up array to use moving forward
+                        purchase.other = newOthers;
+
+                        if (total == 0 || res.headersSent || error) {
+                            return Promise.reject(error || 'nothing purchased');
+                        }
+
+                        // calculate the total here, because we don't want to trust what the client has sent us
+                        purchase.total = total;
+
+                        return stripe.charges.create({
+                            amount: purchase.total * 100, // stripe expects the price in cents
+                            currency: "usd",
+                            description: desc,
+                            customer: stripeCustomerId
+                        });
+
+                    }); // end of package fetch
             })
             .then(charge => {
                 // I don't think we need to keep track of the charge object, because that will be stored on Stripe already
@@ -155,7 +264,7 @@ module.exports = {
                 // owner will be a team (if we created one) or a user
 
                 // step 6: create the purchase model (and the subscription)
-                return module.exports.createPurchase(owner, cart, stripeCustomerId);
+                return module.exports.createPurchase(owner, purchase, stripeCustomerId);
             })
             .then(owner => {
                 // step 7: if we created a team, give the new user a child subscription
@@ -176,24 +285,75 @@ module.exports = {
                 }
             })
             .then(user => {
+
+                // send the confirmation / welcome email!
+
                 let body = `
                     <p>Congratulations on making your first step to a more awesome you!</p>
                     <p>Your subscription is now active. You can log into the ImprovPlus app and browse all of our fabulous features. </p>
 
+                    <p>Please enjoy the following summary of your purchase:</p>
+
+                    <table cellpadding="0" cellspacing="0">
+                        <tr>
+                            <th align="left">Item</th><th align="right">Price</th>
+                        </tr>
                 `;
+
+                let hasMaterials = false, freeSub = false;
+                
+                purchase.packages.forEach(p => {
+                    body += `
+                        <tr>
+                            <td>${p.name}</td><td align="right">$${p.price}</td>
+                        </tr>
+                    `
+                    hasMaterials = true;
+                    freeSub = true;
+                });
+                
+                purchase.materials.forEach(m => {
+                    body += `
+                        <tr>
+                            <td>${m.name}</td><td align="right">$${m.price}</td>
+                        </tr>
+                    `
+                    hasMaterials = true;
+                });
+                
+                purchase.other.forEach(o => {
+                    if (o.key == 'subscription') {
+                        body += `
+                            <tr>
+                                <td>${o.description}</td><td align="right">$${o.price}</td>
+                            </tr>
+                            `;
+                    }
+                });
+
+                body += `
+                        <tr>
+                            <th align="right">Total: </th><th align="right">$${purchase.total}</th>
+                        </tr>
+                    </table>
+                `
+                
+                if (hasMaterials && !teamName) {
+                    body += `
+                        <p>Visit the Materials Library to download your new Materials - they're officially yours to keep!</p>
+                    `
+                }
 
                 if (teamName) {
                     body += `
                         <p>Your team, ${teamName}, is ready to go, and you can share your additional subscriptions with members of your Team through the app. See your Team details by visiting the "Your Team" link in the app menu.</p>
-                    `
-                }
-                
-                // TODO: insert a purchase summary / receipt sort of thing here
-                
-                if (cart[0].materialItem || (cart[0].package.materials && cart[0].package.materials.length)) {
-                    body += `
-                        <p>Visit the Materials Library to download your new Materials - they're officially yours to keep!</p>
-                    `
+                    `;
+
+                    if (hasMaterials) {
+                        body += `
+                            <p>Visit the Materials Library to download your new Materials - they belong to your team now (and forever)!</p>
+                        `
+                    }
                 }
 
                 emailUtil.send({
@@ -222,8 +382,54 @@ module.exports = {
 
                 })
             })
+            .catch(error => {
+                console.error('signup error!', error);
+                res.status(500).json({error: error});
+            })
     },
 
+    createPurchase: (owner, purchase, stripeCustomerId) => {
+
+        let data = {
+                total: purchase.total,
+                materials: purchase.materials, // these should just be the ids
+                packages: purchase.packages,
+                other: purchase.other
+            };
+
+        if (owner.isThisAUser) {
+            data.user = owner._id;
+        } else {
+            data.team = owner._id;
+        }
+
+        return Purchase.create(data)
+            .then(purchaseModel => {
+                owner.purchases.push(purchaseModel);
+
+                let subRole, subCount;
+
+                data.other.forEach(other => {
+                    if (other.key == 'subscription') {
+                        subRole = other.params.role;
+                        subCount = other.params.subscriptions;
+                    }
+                });
+
+                if (subRole && owner.isThisAUser) {
+                    return owner.addSubscription(subRole, stripeCustomerId);
+                } else if (subRole) {
+                    return owner.addSubscription(subRole, stripeCustomerId, subCount);
+                } else {
+                    return owner.save();
+                }
+            });
+        
+    },
+
+    /**
+     * This is probably totally broken right now!
+     */
     doCharge: (req, res) => {
 
         let stripe = require('stripe')(config.stripe.secret);
@@ -329,74 +535,6 @@ module.exports = {
                 res.json(u);
             })
 
-    },
-
-    createPurchase: (owner, items, stripeCustomerId) => {
-        items = [].concat(items);
-
-        let doCreate = (index) => {
-            let item = items[index],
-                purchase = {
-                    type: item.type,
-                    total: item.total,
-
-                    materialItem: item.materialItem, // these should just be the ids
-                    package: item.package
-                },
-                purchaseModel;
-
-            if (owner.isThisAUser) {
-                purchase.user = owner._id;
-            } else {
-                purchase.team = owner._id;
-            }
-
-            return Purchase.create(purchase)
-                // if this purchase is a package, add the items and subscription to the owner
-                .then(purch => {
-                    purchaseModel = purch;
-                    if (purch.type == 'package') {
-                        return purch.getPackage('materials')
-                            .then(package => {
-                                if (package) {
-                                    // add all the materials
-                                    return owner.addMaterial(package.materials)
-                                        .then(() => {
-                                            // add a subscription, if this package includes one
-                                            if (package.subscriptions) {
-                                                let roleId = package.role;
-
-                                                if (owner.superAdmin) {
-                                                    roleId = roles.ROLE_SUPER_ADMIN;
-                                                }
-
-                                                if (owner.isThisAUser) {
-                                                    return owner.addSubscription(roleId, stripeCustomerId);
-                                                } else {
-                                                    return owner.addSubscription(roleId, stripeCustomerId, package.subscriptions);
-                                                }
-                                            }
-                                        });
-                                }
-                            });
-                    } else if (purch.type == 'materialItem') {
-                        // if this purchase is an item, add it
-                        return owner.addMaterial(purch.materialItem);
-
-                    }
-                })
-                .then(() => {
-                    owner.purchases.push(purchaseModel);
-                    index++;
-                    if (items.length > index) {
-                        return doCreate(index);
-                    } else {
-                        return owner.save();
-                    }
-                })
-        }
-
-        return doCreate(0);
     }
 
 }

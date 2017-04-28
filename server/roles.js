@@ -388,7 +388,11 @@ const actionmap = {
             let admin;
             switch(method) {
                 case "get":
-                    admin = 'team_view';
+                    if (url.indexOf('materials') > -1) {
+                        admin = 'material_view';
+                    } else {
+                        admin = 'team_view';
+                    }
                     break;
                 case "put":
                     admin = 'team_edit';

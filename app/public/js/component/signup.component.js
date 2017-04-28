@@ -16,11 +16,12 @@ var user_service_1 = require("../service/user.service");
 var team_service_1 = require("../service/team.service");
 var library_service_1 = require("../service/library.service");
 var cart_service_1 = require("../service/cart.service");
-var config_1 = require("../config");
 var user_1 = require("../model/user");
 var team_1 = require("../model/team");
+var package_1 = require("../model/package");
 var anim_util_1 = require("../util/anim.util");
 var bracket_card_directive_1 = require("../view/bracket-card.directive");
+var config_1 = require("../model/config");
 var SignupComponent = (function () {
     function SignupComponent(_app, router, userService, libraryService, cartService, teamService) {
         this._app = _app;
@@ -29,6 +30,7 @@ var SignupComponent = (function () {
         this.libraryService = libraryService;
         this.cartService = cartService;
         this.teamService = teamService;
+        this.config = new config_1.PackageConfig();
         this.isLoadingPackages = false;
         this.isPosting = false;
         this.cardComplete = false;
@@ -38,12 +40,20 @@ var SignupComponent = (function () {
         if (this.userService.isLoggedIn()) {
             this.router.navigate(['/app/dashboard'], { replaceUrl: true });
         }
+        this._app.showLoader();
+        this.cartService.getConfig().then(function (config) {
+            _this.config = config;
+            _this.setup();
+        });
+    };
+    SignupComponent.prototype.setup = function () {
+        var _this = this;
         this._app.showBackground(true);
         this.isLoadingPackages = true;
         this.libraryService.getPackages().then(function (packages) {
             _this.isLoadingPackages = false;
         });
-        this.stripe = Stripe(config_1.Config.STRIPE_KEY);
+        this.stripe = Stripe(this._app.config.stripe);
         var elements = this.stripe.elements();
         this.creditCard = elements.create('card', {
             // value: {postalCode: this.user.zip},
@@ -73,6 +83,10 @@ var SignupComponent = (function () {
                 _this.cardError = '';
             }
         });
+        this.libraryService.getPackages().then(function (p) {
+            _this.packages = p;
+        });
+        this._app.hideLoader();
     };
     SignupComponent.prototype.emailInput = function () {
         var _this = this;
@@ -111,11 +125,18 @@ var SignupComponent = (function () {
             _this.teamError = message;
         });
     };
+    SignupComponent.prototype.setPageHeight = function () {
+        var page = this.pageElement.nativeElement, height = page.offsetHeight, currentMinHeight = page.style.minHeight ? parseInt(page.style.minHeight.replace('px', '')) : 0;
+        if (height > currentMinHeight) {
+            page.style.minHeight = page.offsetHeight + 'px';
+        }
+    };
     SignupComponent.prototype.selectCard = function (option, value, cardToOpen, cardToClose) {
         var _this = this;
         if (this[option] == value) {
             return;
         }
+        this.setPageHeight();
         this[option] = '';
         if (option == 'userType') {
             this.teamOption = '';
@@ -138,6 +159,7 @@ var SignupComponent = (function () {
     SignupComponent.prototype.reset = function () {
         var _this = this;
         this._app.scrollTo(0);
+        this.cartService.reset();
         setTimeout(function () {
             _this.userType = '';
             _this.teamOption = '';
@@ -165,15 +187,69 @@ var SignupComponent = (function () {
     SignupComponent.prototype.showPackages = function (team) {
         var _this = this;
         this.selectedPackage = null;
-        this.libraryService.getPackages(this.userType, team).then(function (p) {
-            _this.packages = p;
-        });
+        // add a subscription option to the list
+        var subOption = new package_1.Package();
+        subOption._id = 'sub';
+        this.options = [];
+        if (this.userType == 'facilitator') {
+            if (!team) {
+                subOption.name = 'Individual Facilitator Subscription';
+                subOption.price = this.config.fac_sub_price;
+                subOption.description = [
+                    "Gain access to the the app for one year.",
+                    "Browse and purchase from our catalogue of facilitation materials.",
+                    "Utilize the database of over 200 Improv Exercises."
+                ];
+                this.packages.forEach(function (p) {
+                    var copy = Object.assign({}, p);
+                    _this.options.push(copy);
+                });
+            }
+            else {
+                subOption.name = 'Facilitator Team Subscription';
+                subOption.price = this.config.fac_team_sub_price;
+                subOption.description = [
+                    "Your team can share and collaborate with the ImprovPlus app.",
+                    "Browse and purchase from our catalogue of facilitation materials.",
+                    "Utilize the database of over 200 Improv Exercises."
+                ];
+                this.packages.forEach(function (p) {
+                    var copy = Object.assign({}, p);
+                    // the facilitator team packages are more expensive
+                    copy.price += _this.config.fac_team_package_markup;
+                    _this.options.push(copy);
+                });
+            }
+        }
+        else {
+            if (!team) {
+                subOption.name = 'Individual Improviser Subscription';
+                subOption.price = this.config.improv_sub_price;
+                subOption.description = [
+                    "Gain access to the app for one year.",
+                    "Browse the database of over 200 Improv Games.",
+                    "Join the ever-growing ImprovPlus community."
+                ];
+            }
+            else {
+                subOption.name = 'Improviser Team Subscription';
+                subOption.price = this.config.improv_team_sub_price;
+                subOption.description = [
+                    'Access powerful marketing and collaboration tools.',
+                    'Browse the database of over 200 Improv Games.',
+                    "Join the ever-growing ImprovPlus community."
+                ];
+            }
+        }
+        this.options.push(subOption);
     };
     SignupComponent.prototype.selectPackage = function ($event, pack, cardClicked) {
         var _this = this;
         if (pack == this.selectedPackage) {
             return;
         }
+        this.cartService.reset();
+        this.setPageHeight();
         this.selectedPackage = null;
         this.packageCards.forEach(function (card) {
             if (card.card != cardClicked) {
@@ -185,6 +261,7 @@ var SignupComponent = (function () {
         });
         setTimeout(function () {
             _this.selectedPackage = pack;
+            _this.cartService.addPackage(_this.selectedPackage);
             // setup the stripe credit card input
             _this.creditCard.unmount();
             setTimeout(function () {
@@ -238,7 +315,27 @@ var SignupComponent = (function () {
             }
             else {
                 _this.cartService.setUser(user);
-                _this.cartService.signup(result.token, _this.email, _this.password, _this.selectedPackage, _this.userName, _this.teamName)
+                var pack = void 0, role = void 0;
+                if (_this.selectedPackage._id !== 'sub') {
+                    pack = _this.selectedPackage;
+                }
+                else if (_this.userType == 'facilitator') {
+                    if (_this.teamOption == 'team') {
+                        role = _this.config.role_facilitator_team;
+                    }
+                    else {
+                        role = _this.config.role_facilitator;
+                    }
+                }
+                else if (_this.userType == 'improviser') {
+                    if (_this.teamOption == 'team') {
+                        role = _this.config.role_improviser_team;
+                    }
+                    else {
+                        role = _this.config.role_improviser;
+                    }
+                }
+                _this.cartService.signup(result.token, _this.email, _this.password, _this.userName, _this.teamName)
                     .catch(function (response) {
                     _this._app.hideLoader();
                     _this.isPosting = false;
@@ -247,6 +344,9 @@ var SignupComponent = (function () {
                         _this.emailError = "That email address is already registered.";
                         // let card: HTMLElement = this.facilitatorCard.nativeElement;
                         // this._app.scrollTo(card.offsetTop);
+                    }
+                    else if (msg.error) {
+                        _this._app.dialog('An error has occurred.', 'We are so sorry. Something happened, and we can\'t be sure what. Please try again, and if this keeps happening, reach out to us by emailing contact@improvpl.us. Have a nice day, dude.', 'Okay bye', null, true);
                     }
                 })
                     .then(function (u) {
@@ -263,6 +363,10 @@ var SignupComponent = (function () {
     };
     return SignupComponent;
 }());
+__decorate([
+    core_1.ViewChild('page'),
+    __metadata("design:type", Object)
+], SignupComponent.prototype, "pageElement", void 0);
 __decorate([
     core_1.ViewChild('facilitatorCard', { read: bracket_card_directive_1.BracketCardDirective }),
     __metadata("design:type", bracket_card_directive_1.BracketCardDirective)

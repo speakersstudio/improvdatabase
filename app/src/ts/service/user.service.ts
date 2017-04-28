@@ -12,6 +12,8 @@ import { Team } from '../model/team';
 import { TeamService } from './team.service';
 import { LocalStorage } from "../util/webstorage.util";
 
+import { Library } from '../model/library';
+
 class LoginResponse {
     user: User;
     token: string;
@@ -138,7 +140,6 @@ export class UserService {
                 // this.token = null;
                 this.loggedInUser = null;
                 
-                this._materialPromise = null;
                 this._purchasePromise = null;
                 this._subscriptionPromise = null;
 
@@ -157,6 +158,14 @@ export class UserService {
         } else {
             return null;
         }
+    }
+
+    getAdminTeams(): Team[] | string[] {
+        return this.getLoggedInUser().adminOfTeams;
+    }
+
+    getTeams(): Team[] | string[] {
+        return this.getLoggedInUser().memberOfTeams;
     }
 
     getUserName(): string {
@@ -252,18 +261,6 @@ export class UserService {
                     return '';
                 }
             })
-    }
-
-    private _materialPromise: Promise<User>;
-    fetchMaterials(): Promise<User> {
-        if (!this._materialPromise) {
-            this._materialPromise = this.http.get(this.userUrl + this.loggedInUser._id + '/materials')
-                .toPromise()
-                .then(response => {
-                    return response.json() as User;
-                });
-        }
-        return this._materialPromise;
     }
 
     private _purchasePromise: Promise<User>;

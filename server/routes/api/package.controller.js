@@ -133,17 +133,13 @@ module.exports = {
                     });
 
                     let filenames = [],
-                        // directory = path.join(__dirname, '../../temp'),
                         count = 0;
 
-                    // util.checkDirectory(directory, err => {
                     tmp.dir((err, directory, cleanup) => {
 
                         if (err) {
                             res.status(500).send({msg: "tmp dir creation", error: err});
                         } else {
-
-                            console.log('Created directory ', directory);
 
                             materialArray.forEach(m => {
                                 let name = path.join(directory, m.filename()),
@@ -160,12 +156,14 @@ module.exports = {
                                     count++;
                                     if (count >= materialArray.length) {
 
-                                        let pdfMerge = new PDFMerge(filenames);
+                                        let pdfMerge = new PDFMerge(filenames, config.pdftkPath);
 
                                         pdfMerge.asReadStream().merge((error, finishedStream) => {
                                             if (error) {
                                                 res.status(500).json(error);
                                             } else {
+                                                res.setHeader('Content-Disposition', contentDisposition(filename));
+                                                
                                                 finishedStream.pipe(res);
 
                                                 finishedStream.on('finish', () => {

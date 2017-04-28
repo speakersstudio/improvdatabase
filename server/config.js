@@ -27,6 +27,7 @@ module.exports = function () {
             s3_buckets: {
                 materials: 'improvplus.dev.materials'
             },
+            pdftkPath: 'C:\\Program Files (x86)\\PDFtk Server\\bin\\pdftk.exe',
             port: 1919,
             saltRounds: 10
         };
@@ -56,6 +57,7 @@ module.exports = function () {
             s3_buckets: {
                 materials: 'improvplus.materials'
             },
+            pdftkPath: process.env.LD_LIBRARY_PATH,
             port: process.env.PORT || 5000,
             saltRounds: 10
         };

@@ -17,7 +17,7 @@ import { Library } from '../model/library';
 
 @Injectable()
 export class LibraryService {
-    private packageUrl = '/api/package';
+    private packageUrl = '/api/package/';
     private materialsUrl = '/api/material/';
     private ownedMaterialsUrl = '/api/user/:_id/materials';
 
@@ -78,6 +78,15 @@ export class LibraryService {
                 let url = response.json().url;
                 window.open(location.origin + url);
             });
+    }
+
+    downloadPackage(id: string): void {
+        this.http.get(this.packageUrl + id)
+            .toPromise()
+            .then(response => {
+                let url = response.json().url;
+                window.open(location.origin + url);
+            })
     }
 
     /**

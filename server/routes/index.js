@@ -61,8 +61,10 @@ let api = require('./api');
 router.use('/api', api);
 
 // DOWNLOAD MATERIALS
-let materialCtrl = require('./api/material-item.controller');
+let materialCtrl = require('./api/material-item.controller'),
+    packageCtrl = require('./api/package.controller');
 router.get('/download/:token', materialCtrl.download);
+router.get('/downloadPackage/:token', packageCtrl.download);
 
 
 // MAIN HOME PAGE HTML

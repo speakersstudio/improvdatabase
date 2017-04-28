@@ -66,38 +66,8 @@ module.exports = {
                         res.status(404).end();
                         return;
                     }
-                    // we have to load up the user's materials, to make sure they own this one
-                    // return userController.fetchMaterials(req.user._id);
                     
-                    return userController.collectMaterials(User.findOne({}).where('_id').equals(req.user._id.toString()));
-
-                }).then(usersStuff => {
-                    if (util.indexOfObjectId(usersStuff.materials, materialItem._id) > -1) {
-                        // the user owns this item directly - woohoo!
-                        return Promise.resolve(true);
-                    } else {
-
-                        let teamIds = util.unionArrays(req.user.memberOfTeams, req.user.adminOfTeams),
-                            checkTeamStuff = index => {
-                                return userController.collectMaterials(Team.findOne({}).where('_id').equals(teamIds[index].toString()))
-                                    .then(stuff => {
-                                        if (util.indexOfObjectId(stuff.materials, materialItem._id) > -1) {
-                                            // this team owns the item! hooray!
-                                            return Promise.resolve(true);
-                                        } else {
-                                            // move on to the next one
-                                            index++;
-                                            if (teamIds[index]) {
-                                                return checkTeamStuff(index);
-                                            } else {
-                                                return Promise.resolve(false);
-                                            }
-                                        }
-                                    })
-                            }
-
-                        return checkTeamStuff(0);
-                    }
+                    return userController.doesUserOwn(req.user, materialItem._id.toString());
                 }).then(access => {
                     
                     if (access && materialItem) {
@@ -156,13 +126,15 @@ module.exports = {
                 materialId = req.params.id,
 
                 fileIsUploaded,
-                materialItemIsReady,
+                finalFileName,
+
+                updatedItem,
 
                 finishFile = () => {
                     s3.copyObject({
                         Bucket: config.s3_buckets.materials,
                         CopySource: encodeURI(config.s3_buckets.materials + '/' + destinationFileName),
-                        Key: destinationFileName.replace(fileExtension, '.' + ver + fileExtension)
+                        Key: finalFileName
                     }, (err, data) => {
                         if (err) {
                             console.error('AWS Error on copy', err);
@@ -173,8 +145,13 @@ module.exports = {
                             }, (err, data) => {
                                 if (err) {
                                     console.error('AWS Error on delete', err);
+
+                                    res.status(500).json(err);
+                                    return;
                                 } else {
                                     console.log('New version file ready!');
+
+                                    res.json(updatedItem);
                                 }
                             })
                         }
@@ -198,7 +175,7 @@ module.exports = {
                         console.error('AWS Error on upload', err);
                     } else {
                         fileIsUploaded = true;
-                        if (materialItemIsReady) {
+                        if (finalFileName) {
                             finishFile();
                         }
                     }
@@ -226,11 +203,6 @@ module.exports = {
                             ver++;
                         }
 
-                        materialItemIsReady = true;
-                        if (fileIsUploaded) {
-                            finishFile();
-                        }
-
                         item.versions.push({
                             ver: ver,
                             extension: fileExtension.replace('.', ''),
@@ -240,7 +212,15 @@ module.exports = {
                         return item.save();
                     })
                     .then(item => {
-                        res.json(item);
+                        updatedItem = item;
+                        
+                        let lastVersionId = item.versions[item.versions.length - 1]._id.toString();
+
+                        finalFileName = lastVersionId + fileExtension;
+                        if (fileIsUploaded) {
+                            finishFile();
+                        }
+
                     })
 
             });
@@ -255,14 +235,8 @@ module.exports = {
                 .then(item => {
                     let version = item.versions[util.indexOfObjectId(item.versions, versionId)];
 
-                    // let filename = path.join(__dirname, materialFolderName, materialId + '.' + version.ver + '.' + version.extension);
                     let filename = materialId + '.' + version.ver + '.' + version.extension;
 
-                    // try {
-                    //     fs.unlink(filename);
-                    // } catch(e) {
-                    //     console.log('Trying to delete version, but file does not exist');
-                    // }
                     s3.deleteObject({
                         Bucket: config.s3_buckets.materials,
                         Key: filename

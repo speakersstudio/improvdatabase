@@ -40,7 +40,7 @@ MaterialItemSchema.methods.version = function(ver) {
 
 MaterialItemSchema.methods.filename = function(ver) {
     let version = this.version(ver);
-    return this._id.toString() + '.' + version.ver + '.' + version.extension;
+    return version._id.toString() + '.' + version.extension;
 };
 
 MaterialItemSchema.methods.dlfilename = function() {

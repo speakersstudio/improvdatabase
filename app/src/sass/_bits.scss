@@ -735,6 +735,18 @@ button,
         background-color: $color-orange;
     }
 
+    &.blue {
+        background-color: $color-blue;
+    }
+
+    &.yellow {
+        background-color: $color-yellow;
+    }
+
+    &.red {
+        background-color: $color-red;
+    }
+
     &.flat {
         background: none;
         @include md-elevation(0);

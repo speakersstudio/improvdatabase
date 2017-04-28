@@ -17,7 +17,7 @@ var LibraryService = (function () {
     function LibraryService(http, userService) {
         this.http = http;
         this.userService = userService;
-        this.packageUrl = '/api/package';
+        this.packageUrl = '/api/package/';
         this.materialsUrl = '/api/material/';
         this.ownedMaterialsUrl = '/api/user/:_id/materials';
         this.userUrl = '/api/user/';
@@ -58,6 +58,14 @@ var LibraryService = (function () {
     };
     LibraryService.prototype.downloadMaterial = function (id) {
         this.http.get(this.materialsUrl + id)
+            .toPromise()
+            .then(function (response) {
+            var url = response.json().url;
+            window.open(location.origin + url);
+        });
+    };
+    LibraryService.prototype.downloadPackage = function (id) {
+        this.http.get(this.packageUrl + id)
             .toPromise()
             .then(function (response) {
             var url = response.json().url;

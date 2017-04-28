@@ -65,6 +65,12 @@
                 </ul>
 
                 <ul class="taglist files">
+                    <li *ngFor="let packageId of package.packages" class="grey clickable"
+                        (click)="selectPackageById(packageId)">
+                        <i class="fa fa-book"></i>
+                        {{findPackageById(packageId).name}}
+                    </li>
+
                     <li *ngFor="let material of package.materials" class="grey clickable"
                         (click)="selectMaterial(material)">
                         <i *ngIf="material.versions[0] && material.versions[0].extension == 'pdf'" class="fa fa-file-pdf-o large" title="PDF"></i>

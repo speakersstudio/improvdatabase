@@ -198,6 +198,18 @@ module.exports = {
             hours = rawHours > 12 ? rawHours - 12 : rawHours;
 
         return hours + ':' + mins + ' ' + ampm;
+    },
+
+    checkDirectory: (directory, callback) => {
+        let fs = require('fs');
+
+        fs.stat(directory, (err, stats) => {
+            if (err && err.errno === 34) {
+                fs.mkdir(directory, callback);
+            } else {
+                callback(err);
+            }
+        });
     }
 
 }

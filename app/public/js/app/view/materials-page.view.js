@@ -51,9 +51,21 @@ var MaterialsPageView = (function () {
             this._app.dialog('Whoops', 'We seem to have not published any versions of that Material Item. Hopefully we\'re actively working to fix it. Try again in a few minutes, and if you still get this message, please let us know. You can email us at contact@improvpl.us or use the "Report a Bug" feature in the App menu.', 'Okay Then', null, true);
         }
     };
+    MaterialsPageView.prototype.findPackageById = function (id) {
+        var pkg;
+        this.library.packages.forEach(function (thispkg) {
+            if (thispkg._id == id) {
+                pkg = thispkg;
+                return false;
+            }
+        });
+        return pkg;
+    };
     MaterialsPageView.prototype.selectPackage = function (pkg) {
-        // TODO
-        this._app.toast('Some day you will be able to download whole packages. Today is not that day.');
+        this.selectPackageById(pkg._id);
+    };
+    MaterialsPageView.prototype.selectPackageById = function (id) {
+        this.libraryService.downloadPackage(id);
     };
     MaterialsPageView.prototype.versionTag = function (m) {
         var v = this.libraryService.getLatestVersionForMaterialItem(m);

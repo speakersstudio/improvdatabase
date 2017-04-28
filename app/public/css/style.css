@@ -831,6 +831,12 @@ button,
     background-color: #606060; }
   .tag.orange, .taglist li.orange {
     background-color: #ffa70f; }
+  .tag.blue, .taglist li.blue {
+    background-color: #64b5f6; }
+  .tag.yellow, .taglist li.yellow {
+    background-color: #F9D423; }
+  .tag.red, .taglist li.red {
+    background-color: #d32f2f; }
   .tag.flat, .taglist li.flat {
     background: none;
     box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);

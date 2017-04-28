@@ -268,7 +268,7 @@ module.exports = {
                                 if (item.name) {
                                     // if it has a name, it's a package
                                     // just add the data without adding the actual package because we don't want to cause any crazy recursiveness
-                                    packages = util.addToObjectIdArray(packages, {
+                                    let packageData = {
                                         _id: item._id.toString(),
                                         slug: item.slug,
                                         name: item.name,
@@ -277,8 +277,15 @@ module.exports = {
                                         dateAdded: item.dateAdded,
                                         dateModified: item.dateModified,
                                         description: item.description,
-                                        materials: item.materials
+                                        materials: item.materials,
+                                        packages: []
+                                    };
+
+                                    item.packages.forEach(p => {
+                                        packageData.packages.push(p._id.toString());
                                     });
+
+                                    packages = util.addToObjectIdArray(packages, packageData);
                                 }
                                 if (item.materials && item.materials.length) {
                                     item.materials.forEach(m => {
@@ -393,6 +400,40 @@ module.exports = {
                 res.json(user);
             });
 
+    },
+
+    doesUserOwn: (user, materialId, packageId) => {
+        let itemKey = materialId ? 'materials' : 'packages',
+            searchId = materialId ? materialId : packageId;
+
+        return module.exports.collectMaterials(User.findOne({}).where('_id').equals(user._id.toString()))
+            .then(usersStuff => {
+                if (util.indexOfObjectId(usersStuff[itemKey], searchId) > -1) {
+                    // the user owns this item directly - woohoo!
+                    return Promise.resolve(true);
+                } else {
+                    let teamIds = util.unionArrays(user.memberOfTeams, user.adminOfTeams),
+                        checkTeamStuff = index => {
+                            return userController.collectMaterials(Team.findOne({}).where('_id').equals(teamIds[index].toString()))
+                                .then(stuff => {
+                                    if (util.indexOfObjectId(stuff[itemKey], searchId) > -1) {
+                                        // this team owns the item! hooray!
+                                        return Promise.resolve(true);
+                                    } else {
+                                        // move on to the next one
+                                        index++;
+                                        if (teamIds[index]) {
+                                            return checkTeamStuff(index);
+                                        } else {
+                                            return Promise.resolve(false);
+                                        }
+                                    }
+                                })
+                        }
+
+                    return checkTeamStuff(0);
+                }
+            });
     }
 
 }

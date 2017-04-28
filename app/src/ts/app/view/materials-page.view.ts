@@ -3,7 +3,8 @@ import {
     OnInit,
     Input,
     Output,
-    EventEmitter
+    EventEmitter,
+    Pipe
 } from '@angular/core';
 
 import {AppComponent    } from '../../component/app.component';
@@ -65,9 +66,23 @@ export class MaterialsPageView implements OnInit {
         }
     }
 
+    findPackageById(id: string): Package {
+        let pkg: Package;
+        this.library.packages.forEach(thispkg => {
+            if (thispkg._id == id) {
+                pkg = thispkg;
+                return false;
+            }
+        });
+        return pkg;
+    }
+
     selectPackage(pkg: Package): void {
-        // TODO
-        this._app.toast('Some day you will be able to download whole packages. Today is not that day.');
+        this.selectPackageById(pkg._id);
+    }
+
+    selectPackageById(id: string): void {
+        this.libraryService.downloadPackage(id);
     }
 
     versionTag(m: MaterialItem): string {

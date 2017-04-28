@@ -105,6 +105,7 @@ module.exports = {
     download: (req, res, next) => {
         const s3 = new aws.S3();
         const PDFMerge = require('pdf-merge');
+        const tmp = require('tmp');
 
         let token = req.params.token,
             decoded = jwt.decode(token, config.token),
@@ -132,17 +133,20 @@ module.exports = {
                     });
 
                     let filenames = [],
-                        directory = path.join(__dirname, '../../temp'),
+                        // directory = path.join(__dirname, '../../temp'),
                         count = 0;
 
-                    util.checkDirectory(directory, err => {
+                    // util.checkDirectory(directory, err => {
+                    tmp.dir((err, directory, cleanup) => {
 
                         if (err) {
-                            res.status(500).send({error: err});
+                            res.status(500).send({msg: "tmp dir creation", error: err});
                         } else {
 
+                            console.log('Created directory ', directory);
+
                             materialArray.forEach(m => {
-                                let name = path.join('https://s3.amazonaws.com/improvplus.materials/', m.filename()),
+                                let name = path.join(directory, m.filename()),
                                     file = fs.createWriteStream(name);
 
                                 let stream = s3.getObject({
@@ -165,9 +169,7 @@ module.exports = {
                                                 finishedStream.pipe(res);
 
                                                 finishedStream.on('finish', () => {
-                                                    filenames.forEach(name => {
-                                                        fs.unlink(name);
-                                                    });
+                                                    cleanup();
                                                 });
                                             }
                                         });

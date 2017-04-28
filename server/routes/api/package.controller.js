@@ -3,6 +3,7 @@ const jwt = require('jwt-simple');
 const aws = require('aws-sdk');
 const path = require('path');
 const fs = require('fs');
+const contentDisposition = require('content-disposition');
 
 const config  = require('../../config')();
 const auth = require('../../auth');

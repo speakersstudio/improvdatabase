@@ -204,7 +204,7 @@ module.exports = {
         let fs = require('fs');
 
         fs.stat(directory, (err, stats) => {
-            if (err && err.errno === 34) {
+            if (err && err.code == 'ENOENT') {
                 fs.mkdir(directory, callback);
             } else {
                 callback(err);

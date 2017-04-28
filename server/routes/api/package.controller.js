@@ -159,14 +159,10 @@ module.exports = {
                                 stream.on('finish', () => {
                                     count++;
                                     if (count >= materialArray.length) {
-                                        
-                                        fs.readdir(directory, (err, items) => {
-                                            if (err) {
-                                                res.status(500).json(err);
-                                            } else {
-                                                res.json(items);
-                                            }
-                                        })
+
+                                        let readStream = fs.createReadStream(filenames[0]);
+
+                                        readStream.pipe(res);
 
                                         // let pdfMerge = new PDFMerge(filenames, config.pdftkPath);
 

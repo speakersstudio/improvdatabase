@@ -20,7 +20,7 @@
         </div>
 
         <!-- user doesn't have permission -->
-        <div class="content" *ngIf="!userService.isExpired()">
+        <div class="content" *ngIf="userService.isExpired()">
             <h4 class="right">Subscription Expired</h4>
 
             <p>We are so terrifically sorry, but you cannot access that content with an expired subscription, which you have. That's nothing to be ashamed of, you can renew it right now!</p>

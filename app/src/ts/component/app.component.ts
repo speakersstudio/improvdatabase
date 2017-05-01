@@ -9,7 +9,7 @@ import 'rxjs/add/operator/filter';
 import { PathLocationStrategy } from '@angular/common';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
-import { Router, RoutesRecognized, NavigationStart, NavigationEnd } from '@angular/router';
+import { Router, ActivatedRoute, ActivatedRouteSnapshot, RoutesRecognized, NavigationStart, NavigationEnd } from '@angular/router';
 
 import { CONFIG_TOKEN } from '../constants';
 
@@ -20,7 +20,7 @@ import { Config } from '../model/config';
 import { UserService } from '../service/user.service';
 import { AuthGuard } from '../service/auth-guard.service';
 
-import { DialogAnim, FadeAnim } from '../util/anim.util';
+import { DialogAnim, ToggleAnim } from '../util/anim.util';
 
 @Component({
     moduleId: module.id,
@@ -28,7 +28,7 @@ import { DialogAnim, FadeAnim } from '../util/anim.util';
     templateUrl: '../template/app.component.html',
     animations: [
         DialogAnim.dialog,
-        FadeAnim.fade
+        ToggleAnim.fade
     ]
 })
 export class AppComponent implements OnInit {
@@ -81,6 +81,7 @@ export class AppComponent implements OnInit {
 
         private _renderer: Renderer2,
         private router: Router,
+        private _route: ActivatedRoute,
         private userService: UserService,
         private authGuard: AuthGuard,
         private pathLocationStrategy: PathLocationStrategy,
@@ -138,6 +139,7 @@ export class AppComponent implements OnInit {
                     this.hideLoader();
                 });
             }
+
             this.setUser(user);
         });
 

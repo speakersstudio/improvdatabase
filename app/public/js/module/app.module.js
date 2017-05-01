@@ -12,7 +12,6 @@ var http_1 = require("@angular/http");
 var forms_1 = require("@angular/forms");
 var common_1 = require("@angular/common");
 var animations_1 = require("@angular/platform-browser/animations");
-var webstorage_util_1 = require("../util/webstorage.util");
 var app_http_1 = require("../data/app-http");
 // main components
 // import { MarketingSiteComponent } from '../component/ms.component';
@@ -39,7 +38,6 @@ AppModule = __decorate([
             forms_1.FormsModule,
             http_1.HttpModule,
             animations_1.BrowserAnimationsModule,
-            webstorage_util_1.WebStorageModule,
             shared_module_1.SharedModule,
             app_routing_module_1.AppRoutingModule,
             improvplus_module_1.ImprovPlusModule
@@ -54,7 +52,6 @@ AppModule = __decorate([
         bootstrap: [app_component_1.AppComponent],
         providers: [
             common_1.PathLocationStrategy,
-            webstorage_util_1.LocalStorageService,
             app_http_1.AppHttp
         ]
     })

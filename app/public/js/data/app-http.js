@@ -13,12 +13,28 @@ var core_1 = require("@angular/core");
 var http_1 = require("@angular/http");
 var router_1 = require("@angular/router");
 var Observable_1 = require("rxjs/Observable");
-var webstorage_util_1 = require("../util/webstorage.util");
 var AppHttp = (function () {
     function AppHttp(http, router) {
         this.http = http;
         this.router = router;
+        this.TOKEN_STORAGE_KEY = 'improvplus_token';
+        this.EXPIRATION_STORAGE_KEY = 'improvplus_tokenExpires';
+        this.loadValues();
     }
+    AppHttp.prototype.loadValues = function () {
+        this.token = localStorage.getItem(this.TOKEN_STORAGE_KEY);
+        this.tokenExpires = parseInt(localStorage.getItem(this.EXPIRATION_STORAGE_KEY) || '0');
+    };
+    AppHttp.prototype.saveValues = function (token, exp) {
+        this.token = token;
+        this.tokenExpires = exp;
+        localStorage.setItem(this.TOKEN_STORAGE_KEY, this.token);
+        localStorage.setItem(this.EXPIRATION_STORAGE_KEY, '' + this.tokenExpires);
+    };
+    AppHttp.prototype.clearValues = function () {
+        localStorage.removeItem(this.TOKEN_STORAGE_KEY);
+        localStorage.removeItem(this.EXPIRATION_STORAGE_KEY);
+    };
     AppHttp.prototype.checkTokenExpiration = function () {
         if (!this.token || !this.tokenExpires || this.tokenExpires <= Date.now()) {
             this.token = '';
@@ -30,8 +46,10 @@ var AppHttp = (function () {
         }
     };
     AppHttp.prototype.setToken = function (token, expires) {
-        this.token = token;
-        this.tokenExpires = expires;
+        this.saveValues(token, expires);
+    };
+    AppHttp.prototype.reset = function () {
+        this.clearValues();
     };
     AppHttp.prototype.getToken = function () {
         return this.token;
@@ -89,14 +107,6 @@ var AppHttp = (function () {
     };
     return AppHttp;
 }());
-__decorate([
-    webstorage_util_1.LocalStorage(),
-    __metadata("design:type", String)
-], AppHttp.prototype, "token", void 0);
-__decorate([
-    webstorage_util_1.LocalStorage(),
-    __metadata("design:type", Number)
-], AppHttp.prototype, "tokenExpires", void 0);
 AppHttp = __decorate([
     core_1.Injectable(),
     __metadata("design:paramtypes", [http_1.Http,

@@ -17,13 +17,15 @@ var LoginView = (function () {
     function LoginView(userService) {
         this.userService = userService;
         this.done = new core_1.EventEmitter();
+        // weGood: boolean;
+        this.state = 'default';
     }
     LoginView.prototype.ngOnInit = function () {
         this.errorCount = 0;
-        this.weGood = true;
     };
     LoginView.prototype.submitLogin = function () {
         var _this = this;
+        this.state = 'default';
         this.loginError = "";
         this.isPosting = true;
         this.userService.login(this.email, this.password)
@@ -35,6 +37,7 @@ var LoginView = (function () {
             _this.isPosting = false;
         })
             .catch(function (reason) {
+            _this.state = 'shake';
             _this.isPosting = false;
             _this.errorCount++;
             if (reason.status == 500) {
@@ -58,10 +61,11 @@ var LoginView = (function () {
                 }
                 else {
                     _this.loginError = "That's it, I'm out of here.";
-                    _this.runaway = true;
+                    _this.state = 'runaway';
                     setTimeout(function () {
-                        _this.weGood = false;
                         _this.show = false;
+                    }, 100);
+                    setTimeout(function () {
                         _this.done.emit(null);
                     }, 7100);
                 }
@@ -131,7 +135,9 @@ LoginView = __decorate([
         templateUrl: "../template/view/login.view.html",
         animations: [
             anim_util_1.DialogAnim.dialog,
-            anim_util_1.FadeAnim.fadeAbsolute
+            anim_util_1.DialogAnim.starburst,
+            anim_util_1.ToggleAnim.fade,
+            anim_util_1.ToggleAnim.fadeAbsolute
         ],
         styles: ["\n        .password-recover-link {\n            \n        }\n    "]
     }),

@@ -32,6 +32,7 @@ var create_metadata_view_1 = require("../view/create-metadata.view");
 var materials_page_view_1 = require("../view/materials-page.view");
 var user_card_view_1 = require("../view/user-card.view");
 var editable_metadata_view_1 = require("../view/editable-metadata.view");
+var dashboard_message_list_view_1 = require("../view/dashboard-message-list.view");
 var shared_module_1 = require("../../module/shared.module");
 var improvplus_routing_module_1 = require("./improvplus-routing.module");
 // utils
@@ -69,7 +70,8 @@ ImprovPlusModule = __decorate([
             create_metadata_view_1.CreateMetadataView,
             materials_page_view_1.MaterialsPageView,
             user_card_view_1.UserCardView,
-            editable_metadata_view_1.EditableMetadataView
+            editable_metadata_view_1.EditableMetadataView,
+            dashboard_message_list_view_1.DashboardMessageListView
         ],
         // bootstrap: [ AppComponent ],
         providers: []

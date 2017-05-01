@@ -12,7 +12,7 @@ import { UserService } from "../../service/user.service";
 
 import { User } from "../../model/user";
 
-import { DialogAnim, FadeAnim } from '../../util/anim.util';
+import { DialogAnim, ToggleAnim } from '../../util/anim.util';
 
 const MAX_ATTEMPTS = 5;
 
@@ -22,7 +22,7 @@ const MAX_ATTEMPTS = 5;
     templateUrl: "../template/view/create-metadata.view.html",
     animations: [
         DialogAnim.dialog,
-        FadeAnim.fade
+        ToggleAnim.fade
     ]
 })
 export class CreateMetadataView implements OnInit {

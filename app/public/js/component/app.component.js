@@ -25,9 +25,10 @@ var user_service_1 = require("../service/user.service");
 var auth_guard_service_1 = require("../service/auth-guard.service");
 var anim_util_1 = require("../util/anim.util");
 var AppComponent = (function () {
-    function AppComponent(config, _renderer, router, userService, authGuard, pathLocationStrategy, http) {
+    function AppComponent(config, _renderer, router, _route, userService, authGuard, pathLocationStrategy, http) {
         this._renderer = _renderer;
         this.router = router;
+        this._route = _route;
         this.userService = userService;
         this.authGuard = authGuard;
         this.pathLocationStrategy = pathLocationStrategy;
@@ -306,13 +307,14 @@ AppComponent = __decorate([
         templateUrl: '../template/app.component.html',
         animations: [
             anim_util_1.DialogAnim.dialog,
-            anim_util_1.FadeAnim.fade
+            anim_util_1.ToggleAnim.fade
         ]
     }),
     __param(0, core_1.Inject(constants_1.CONFIG_TOKEN)),
     __metadata("design:paramtypes", [config_1.Config,
         core_1.Renderer2,
         router_1.Router,
+        router_1.ActivatedRoute,
         user_service_1.UserService,
         auth_guard_service_1.AuthGuard,
         common_1.PathLocationStrategy,

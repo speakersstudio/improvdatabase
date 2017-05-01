@@ -78,7 +78,7 @@ WelcomeComponent = __decorate([
         templateUrl: "../template/ms.welcome.component.html",
         animations: [
             anim_util_1.DialogAnim.dialog,
-            anim_util_1.FadeAnim.fade
+            anim_util_1.ToggleAnim.fade
         ]
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,

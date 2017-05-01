@@ -1,7 +1,6 @@
 <div class="dialog-dismiss"></div>
 
-<div class="dialog login-form" *ngIf="show && !showRecoverPassword && !recoverPasswordDone" 
-    [class.shake]="loginError" [class.runaway]="runaway" [@dialog]>
+<div class="dialog login-form" *ngIf="show && !showRecoverPassword && !recoverPasswordDone" [@dialog]="state">
 
     <form class="block" name="login" (ngSubmit)="submitLogin()" #loginForm="ngForm">
         <div class="dialog-content">
@@ -15,7 +14,7 @@
             <div class="error" *ngIf="loginError" [innerHTML]="loginError"></div>
         </div>
 
-        <div class="button-group" *ngIf="!isPosting">
+        <div class="button-group" *ngIf="!isPosting && state != 'runaway'">
             <a (click)="cancel()" class="button">Cancel</a>
             <input type="submit" class="button raised" value="LOGIN" [disabled]="!loginForm.form.valid" />
         </div>
@@ -31,8 +30,7 @@
 
 </div>
 
-<div class="dialog login-form" *ngIf="show && showRecoverPassword" 
-    [class.shake]="loginError" [class.runaway]="runaway" [@dialog]>
+<div class="dialog login-form" *ngIf="show && showRecoverPassword" [@dialog]="state">
 
     <form class="block" name="login" (ngSubmit)="submitRecoverPassword()" #recoverPasswordForm="ngForm">
         <div class="dialog-content">
@@ -57,8 +55,7 @@
 
 </div>
 
-<div class="dialog login-form" *ngIf="show && recoverPasswordDone" 
-    [class.shake]="loginError" [class.runaway]="runaway" [@dialog]>
+<div class="dialog login-form" *ngIf="show && recoverPasswordDone" [@dialog]="state">
 
     <form class="block" name="login" (ngSubmit)="submitRecoverPassword()" #recoverPasswordForm="ngForm">
         <div class="dialog-content">
@@ -74,4 +71,4 @@
 
 </div>
 
-<i class="fa fa-star starburst" *ngIf="runaway"></i>
+<i class="fa fa-star starburst" *ngIf="state=='runaway'" [@starburst]></i>

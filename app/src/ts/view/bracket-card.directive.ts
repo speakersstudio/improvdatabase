@@ -11,6 +11,7 @@ import {
 export class BracketCardDirective implements OnInit {
 
     @Input() error: string;
+    @Input() key: string;
 
     card: HTMLElement;
     isOpen: boolean;

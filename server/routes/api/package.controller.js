@@ -59,6 +59,8 @@ module.exports = {
             Package.find({}).sort('name').exec()
                 .then(p => {
                     res.json(p);
+                }, error => {
+                    util.handleError(req, res, error);
                 });
 
         } else {
@@ -76,6 +78,8 @@ module.exports = {
                     }
                     
                     return userController.doesUserOwn(req.user, null, packageId);
+                }, error => {
+                    util.handleError(req, res, error);
                 }).then(access => {
                     
                     if (access && pkg) {
@@ -163,7 +167,7 @@ module.exports = {
                                             if (error) {
                                                 res.status(500).json(error);
                                             } else {
-                                                res.setHeader('Content-Disposition', contentDisposition(filename));
+                                                res.setHeader('Content-Disposition', contentDisposition(pkg.dlfilename()));
                                                 
                                                 finishedStream.pipe(res);
 

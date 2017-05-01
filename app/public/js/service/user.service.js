@@ -13,9 +13,7 @@ var core_1 = require("@angular/core");
 var Rx_1 = require("rxjs/Rx");
 require("rxjs/add/operator/toPromise");
 var app_http_1 = require("../data/app-http");
-var user_1 = require("../model/user");
 var team_service_1 = require("./team.service");
-var webstorage_util_1 = require("../util/webstorage.util");
 var LoginResponse = (function () {
     function LoginResponse() {
     }
@@ -25,6 +23,7 @@ var UserService = (function () {
     function UserService(http, teamService) {
         this.http = http;
         this.teamService = teamService;
+        this.USER_STORAGE_KEY = 'improvplus_user';
         this.loginUrl = '/login';
         this.passwordRecoveryUrl = '/recoverPassword';
         this.passwordRecoveryTokenCheckUrl = '/checkPasswordToken';
@@ -35,10 +34,32 @@ var UserService = (function () {
         this.validateUrl = this.userUrl + 'validate';
         this.logginStateSource = new Rx_1.Subject();
         this.loginState$ = this.logginStateSource.asObservable();
+        this.loadUserData();
     }
+    UserService.prototype.loadUserData = function () {
+        var data = localStorage.getItem(this.USER_STORAGE_KEY);
+        if (data) {
+            this.loggedInUser = JSON.parse(data);
+        }
+        else {
+            this.loggedInUser = null;
+        }
+    };
+    UserService.prototype.saveUserData = function (newUser) {
+        this.loggedInUser = newUser;
+        // don't save the password
+        this.loggedInUser.password = "";
+        localStorage.setItem(this.USER_STORAGE_KEY, JSON.stringify(this.loggedInUser));
+    };
+    UserService.prototype.clearUserData = function () {
+        this.loggedInUser = null;
+        this._purchasePromise = null;
+        this._subscriptionPromise = null;
+        localStorage.removeItem(this.USER_STORAGE_KEY);
+    };
     UserService.prototype.checkTokenExpiration = function () {
         if (!this.http.checkTokenExpiration()) {
-            this.loggedInUser = null;
+            this.clearUserData();
             return false;
         }
         else {
@@ -51,11 +72,12 @@ var UserService = (function () {
     UserService.prototype.login = function (email, password) {
         var _this = this;
         this.isLoggingIn = true;
-        return this.http.post(this.loginUrl, {
+        this.loginPromise = this.http.post(this.loginUrl, {
             email: email,
             password: password
         }).toPromise()
             .then(function (response) { return _this._handleLoginRequest(response); });
+        return this.loginPromise;
     };
     UserService.prototype.recoverPassword = function (email) {
         return this.http.post(this.passwordRecoveryUrl, {
@@ -97,17 +119,16 @@ var UserService = (function () {
         var _this = this;
         if (this.checkTokenExpiration()) {
             this.isLoggingIn = true;
-            return this.http.post(this.refreshUrl, {})
+            this.loginPromise = this.http.post(this.refreshUrl, {})
                 .toPromise()
                 .then(function (response) { return _this._handleLoginRequest(response); });
+            return this.loginPromise;
         }
     };
     UserService.prototype._handleLoginRequest = function (response) {
         var responseData = response.json();
         this.http.setToken(responseData.token, responseData.expires);
-        this.loggedInUser = responseData.user;
-        // don't save the password
-        this.loggedInUser.password = "";
+        this.saveUserData(responseData.user);
         this.isLoggingIn = false;
         this.announceLoginState();
         return this.loggedInUser;
@@ -117,11 +138,8 @@ var UserService = (function () {
         return this.http.post(this.logoutUrl, {})
             .toPromise()
             .then(function () {
-            _this.http.setToken(null, 0);
-            // this.token = null;
-            _this.loggedInUser = null;
-            _this._purchasePromise = null;
-            _this._subscriptionPromise = null;
+            _this.http.reset();
+            _this.clearUserData();
             _this.announceLoginState();
             return true;
         });
@@ -155,7 +173,7 @@ var UserService = (function () {
             .toPromise()
             .then(function (response) {
             var user = response.json();
-            Object.assign(_this.loggedInUser, user);
+            _this.saveUserData(user);
             return _this.loggedInUser;
         });
     };
@@ -167,7 +185,7 @@ var UserService = (function () {
         }).toPromise()
             .then(function (response) {
             var user = response.json();
-            Object.assign(_this.loggedInUser, user);
+            _this.saveUserData(user);
             return _this.loggedInUser;
         });
     };
@@ -264,10 +282,6 @@ var UserService = (function () {
     };
     return UserService;
 }());
-__decorate([
-    webstorage_util_1.LocalStorage(),
-    __metadata("design:type", user_1.User)
-], UserService.prototype, "loggedInUser", void 0);
 UserService = __decorate([
     core_1.Injectable(),
     __metadata("design:paramtypes", [app_http_1.AppHttp,

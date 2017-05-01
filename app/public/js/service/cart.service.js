@@ -94,8 +94,7 @@ var CartService = (function () {
             teamName: teamName
         }).toPromise()
             .then(function (result) {
-            // return result.json() as User;
-            return null;
+            return result.json();
         });
     };
     return CartService;

@@ -52,6 +52,11 @@ PackageSchema.methods.addMaterial = function(items) {
     return addItem(0);
 };
 
+PackageSchema.methods.dlfilename = function() {
+    let version = this.materials[0].version();
+    return this.name + '.' + version.extension;
+};
+
 const Package = mongoose.model('Package', PackageSchema);
 
 module.exports = Package;

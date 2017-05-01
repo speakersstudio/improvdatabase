@@ -5,7 +5,6 @@ var PreferenceUtil = (function () {
     }
     return PreferenceUtil;
 }());
-PreferenceUtil.hide_welcome_message = 'hide_welcome_message';
 exports.PreferenceUtil = PreferenceUtil;
 
 //# sourceMappingURL=preference.util.js.map

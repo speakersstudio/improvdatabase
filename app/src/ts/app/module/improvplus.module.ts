@@ -27,6 +27,7 @@ import { CreateMetadataView } from '../view/create-metadata.view';
 import { MaterialsPageView } from '../view/materials-page.view';
 import { UserCardView } from '../view/user-card.view';
 import { EditableMetadataView } from '../view/editable-metadata.view';
+import { DashboardMessageListView } from '../view/dashboard-message-list.view';
 
 import { SharedModule } from '../../module/shared.module';
 import { ImprovPlusRoutingModule } from './improvplus-routing.module';
@@ -62,7 +63,8 @@ import { ImprovPlusRoutingModule } from './improvplus-routing.module';
         CreateMetadataView,
         MaterialsPageView,
         UserCardView,
-        EditableMetadataView
+        EditableMetadataView,
+        DashboardMessageListView
     ],
     // bootstrap: [ AppComponent ],
     providers: [

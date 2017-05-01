@@ -55,10 +55,10 @@ iplus {
         transform: scale(1.5);
 
         .i {
-            top: 0px;
+            top: 11px;
         }
         .plus {
-            top: -4px;
+            top: 8px;
         }
     }
 
@@ -67,7 +67,10 @@ iplus {
         font-weight: bold;
 
         .i {
-            top: 0px;
+            top: 12px;
+        }
+        .plus {
+            top: 9px;
         }
     }
 
@@ -78,11 +81,12 @@ iplus {
 
     & > * {
         position: absolute;
+        line-height: 0px;
     }
 
     .bracket {
         font-size: 100%;
-        top: -2px;
+        top: 10px;
         left: 2px;
 
         &:last-child {
@@ -94,14 +98,14 @@ iplus {
         font-size: 83%;
         font-weight: bold;
         left: 6px;
-        top: 1px;
+        top: 12.5px;
         transition: color 300ms;
         text-transform: lowercase;
     }
     .plus {
         font-size: 70%;
         font-weight: bold;
-        top: -3px;
+        top: 9px;
         left: 10px;
         opacity: 1;
         transition: color 300ms, opacity 300ms;
@@ -407,9 +411,10 @@ iplus {
 
 .form-input {
     position: relative;
+    padding: $small 0;
 
     label {
-        @include abs(18px, null, null, null, 1);
+        @include abs(25px, null, null, null, 1);
         cursor: text;
         font-size: 16px;
         transition: all 200ms;
@@ -417,13 +422,17 @@ iplus {
         pointer-events: none;
 
         &.active {
-            transform: translateY(-140%);
+            transform: translateY(-165%);
             font-size: 12px;
         }
     }
 
+    input {
+        margin: 0;
+    }
+
     .help {
-        @include abs(18px, $small, null, null, 2);
+        @include abs(25px, $small, null, null, 2);
         cursor: pointer;
         text-decoration: none;
         transition: opacity 250ms;
@@ -518,7 +527,7 @@ button,
             border-width: 3px 3px 3px 0;
         }
         
-        &:hover {
+        &:hover:not([disabled]) {
             @include md-elevation($raised-button-elevation);
 
             &:before,

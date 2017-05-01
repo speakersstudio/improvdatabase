@@ -66,7 +66,7 @@ CreateMetadataView = __decorate([
         templateUrl: "../template/view/create-metadata.view.html",
         animations: [
             anim_util_1.DialogAnim.dialog,
-            anim_util_1.FadeAnim.fade
+            anim_util_1.ToggleAnim.fade
         ]
     }),
     __metadata("design:paramtypes", [user_service_1.UserService,

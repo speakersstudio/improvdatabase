@@ -118,6 +118,10 @@ __decorate([
     core_1.Input(),
     __metadata("design:type", String)
 ], BracketCardDirective.prototype, "error", void 0);
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", String)
+], BracketCardDirective.prototype, "key", void 0);
 BracketCardDirective = __decorate([
     core_1.Directive({
         selector: '[bracketCard]'

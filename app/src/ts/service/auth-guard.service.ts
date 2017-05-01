@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivateChild, Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlSegment } from '@angular/router';
+import { CanActivateChild, Router, ActivatedRoute, ActivatedRouteSnapshot, RouterStateSnapshot, UrlSegment } from '@angular/router';
 
 import { AppComponent } from '../component/app.component';
 
@@ -16,8 +16,17 @@ export class AuthGuard implements CanActivateChild {
         private userService: UserService
     ) {}
 
-    canActivateChild (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    canActivateChild (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean>|boolean {
         //console.log(this.userService.getLoggedInUser());
+
+        console.log('is user refreshing?', this.userService.isLoggingIn);
+
+        if (this.userService.isLoggingIn) {
+            console.log('Waiting for user refresh');
+            return this.userService.loginPromise.then(() => {
+                return Promise.resolve(this.canActivateChild(route, state));
+            });
+        }
 
         if (this.userService.getLoggedInUser()) {
             let data:any = route.data;
@@ -35,4 +44,6 @@ export class AuthGuard implements CanActivateChild {
         }
         return false;
     }
+
+
 }

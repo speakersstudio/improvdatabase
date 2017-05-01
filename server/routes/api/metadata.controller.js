@@ -86,6 +86,8 @@ module.exports = {
                 .exec()
                 .then(m => {
                     res.json(m);
+                }, error => {
+                    util.handleError(req, res, error);
                 });
 
         } else {
@@ -95,6 +97,8 @@ module.exports = {
                 .exec()
                 .then(dur => {
                     res.json(dur);
+                }, error => {
+                    util.handleError(req, res, error);
                 });
 
         }

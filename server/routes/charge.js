@@ -111,7 +111,9 @@ module.exports = {
                     packagePromise;
 
                 purchase.packages.forEach(p => {
-                    packageIds.push(p._id);
+                    if (p._id !== 'sub') {
+                        packageIds.push(p._id);
+                    }
                 });
                 // let's face it, a signup won't have material items
 

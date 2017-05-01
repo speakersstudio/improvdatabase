@@ -10,7 +10,6 @@ import { User } from "../model/user";
 import { Team } from '../model/team';
 
 import { TeamService } from './team.service';
-import { LocalStorage } from "../util/webstorage.util";
 
 import { Library } from '../model/library';
 
@@ -23,6 +22,8 @@ class LoginResponse {
 @Injectable()
 export class UserService {
 
+    private USER_STORAGE_KEY = 'improvplus_user';
+
     private loginUrl = '/login';
     private passwordRecoveryUrl = '/recoverPassword';
     private passwordRecoveryTokenCheckUrl = '/checkPasswordToken';
@@ -32,11 +33,10 @@ export class UserService {
     private userUrl = '/api/user/';
     private validateUrl = this.userUrl + 'validate';
 
-    // @LocalStorage() token: string;
-    // @LocalStorage() tokenExpires: number;
-    @LocalStorage() loggedInUser: User;
+    loggedInUser: User;
 
-    private isLoggingIn: boolean;
+    isLoggingIn: boolean;
+    loginPromise: Promise<User>;
 
     private logginStateSource = new Subject<User>();
 
@@ -46,11 +46,37 @@ export class UserService {
         private http: AppHttp,
         private teamService: TeamService
     ) {
+        this.loadUserData();
+    }
+
+    private loadUserData(): void {
+        let data = localStorage.getItem(this.USER_STORAGE_KEY);
+        if (data) {
+            this.loggedInUser = JSON.parse(data) as User;
+        } else {
+            this.loggedInUser = null;
+        }
+    }
+
+    private saveUserData(newUser: User): void {
+        this.loggedInUser = newUser;
+
+        // don't save the password
+        this.loggedInUser.password = "";
+        
+        localStorage.setItem(this.USER_STORAGE_KEY, JSON.stringify(this.loggedInUser));
+    }
+
+    private clearUserData(): void {
+        this.loggedInUser = null;
+        this._purchasePromise = null;
+        this._subscriptionPromise = null;
+        localStorage.removeItem(this.USER_STORAGE_KEY);
     }
 
     checkTokenExpiration(): boolean {
         if (!this.http.checkTokenExpiration()) {
-            this.loggedInUser = null;
+            this.clearUserData();
             return false;
         } else {
             return true;
@@ -63,11 +89,13 @@ export class UserService {
 
     login(email: string, password: string): Promise<User> {
         this.isLoggingIn = true;
-        return this.http.post(this.loginUrl, {
+        this.loginPromise = this.http.post(this.loginUrl, {
                 email: email,
                 password: password
             }).toPromise()
             .then(response => this._handleLoginRequest(response));
+        
+        return this.loginPromise;
     }
 
     recoverPassword(email: string): Promise<boolean> {
@@ -110,9 +138,11 @@ export class UserService {
     refreshToken(): Promise<User> {
         if (this.checkTokenExpiration()) {
             this.isLoggingIn = true;
-            return this.http.post(this.refreshUrl, {})
+            this.loginPromise = this.http.post(this.refreshUrl, {})
                 .toPromise()
                 .then(response => this._handleLoginRequest(response));
+            
+            return this.loginPromise;
         }
     }
 
@@ -121,10 +151,7 @@ export class UserService {
 
         this.http.setToken(responseData.token, responseData.expires);
 
-        this.loggedInUser = responseData.user;
-
-        // don't save the password
-        this.loggedInUser.password = "";
+        this.saveUserData(responseData.user);
 
         this.isLoggingIn = false;
         this.announceLoginState();
@@ -136,13 +163,8 @@ export class UserService {
         return this.http.post(this.logoutUrl, {})
             .toPromise()
             .then(() => {
-                this.http.setToken(null, 0);
-                // this.token = null;
-                this.loggedInUser = null;
-                
-                this._purchasePromise = null;
-                this._subscriptionPromise = null;
-
+                this.http.reset();
+                this.clearUserData();
                 this.announceLoginState();
                 return true;
             });
@@ -180,7 +202,7 @@ export class UserService {
             .toPromise()
             .then((response) => {
                 let user = response.json() as User;
-                Object.assign(this.loggedInUser, user);
+                this.saveUserData(user);
                 return this.loggedInUser;
             });
     }
@@ -192,8 +214,7 @@ export class UserService {
         }).toPromise()
             .then((response) => {
                 let user = response.json() as User;
-                Object.assign(this.loggedInUser, user);
-                
+                this.saveUserData(user);
                 return this.loggedInUser;
             });
     }
@@ -263,6 +284,9 @@ export class UserService {
             })
     }
 
+    /**
+     * The following functions get various expanded properties on the user object. They don't change the logged in user data
+     */
     private _purchasePromise: Promise<User>;
     fetchPurchases(): Promise<User> {
         if (!this._purchasePromise) {

@@ -51,6 +51,8 @@ module.exports = {
             .exec()
             .then(name => {
                 res.json(name);
+            }, error => {
+                util.handleError(req, res, error);
             });
     },
 
@@ -66,9 +68,13 @@ module.exports = {
                 name.dateModified = Date.now();
 
                 return name.save();
+            }, error => {
+                util.handleError(req, res, error);
             })
             .then(name => {
                 res.json(name);
+            }, error => {
+                util.handleError(req, res, error);
             });
     },
 

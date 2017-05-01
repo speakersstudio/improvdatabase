@@ -11,7 +11,7 @@ import { UserService } from "../service/user.service";
 
 import { User } from "../model/user";
 
-import { DialogAnim, FadeAnim } from '../util/anim.util';
+import { DialogAnim, ToggleAnim } from '../util/anim.util';
 
 const MAX_ATTEMPTS = 5;
 
@@ -21,7 +21,9 @@ const MAX_ATTEMPTS = 5;
     templateUrl: "../template/view/login.view.html",
     animations: [
         DialogAnim.dialog,
-        FadeAnim.fadeAbsolute
+        DialogAnim.starburst,
+        ToggleAnim.fade,
+        ToggleAnim.fadeAbsolute
     ],
     styles: [`
         .password-recover-link {
@@ -50,7 +52,9 @@ export class LoginView implements OnInit {
 
     isPosting: boolean;
 
-    weGood: boolean;
+    // weGood: boolean;
+
+    state: string = 'default';
 
     constructor(
         private userService: UserService
@@ -58,10 +62,11 @@ export class LoginView implements OnInit {
 
     ngOnInit(): void {
         this.errorCount = 0;
-        this.weGood = true;
     }
 
     submitLogin(): void {
+        this.state = 'default';
+
         this.loginError = "";
         this.isPosting = true;
         this.userService.login(this.email, this.password)
@@ -74,6 +79,8 @@ export class LoginView implements OnInit {
                 this.isPosting = false;
             })
             .catch((reason) => {
+                this.state = 'shake';
+
                 this.isPosting = false;
                 this.errorCount++;
                 if (reason.status == 500) {
@@ -92,11 +99,13 @@ export class LoginView implements OnInit {
                     } else {
                         this.loginError = "That's it, I'm out of here.";
 
-                        this.runaway = true;
+                        this.state = 'runaway';
 
                         setTimeout(() => {
-                            this.weGood = false;
                             this.show = false;
+                        }, 100);
+
+                        setTimeout(() => {
                             this.done.emit(null);
                         }, 7100);
                     }

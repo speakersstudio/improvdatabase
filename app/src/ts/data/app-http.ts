@@ -11,23 +11,40 @@ import {
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
-import { LocalStorage } from "../util/webstorage.util";
-
 import { UserService } from '../service/user.service';
 
 @Injectable()
 export class AppHttp {
 
-    @LocalStorage()
-    private token: string;
+    private TOKEN_STORAGE_KEY = 'improvplus_token';
+    private EXPIRATION_STORAGE_KEY = 'improvplus_tokenExpires';
 
-    @LocalStorage()
+    private token: string;
     private tokenExpires: number;
 
     constructor(
         private http: Http,
         private router: Router
-    ) {}
+    ) {
+        this.loadValues();
+    }
+
+    private loadValues(): void {
+        this.token = localStorage.getItem(this.TOKEN_STORAGE_KEY);
+        this.tokenExpires = parseInt(localStorage.getItem(this.EXPIRATION_STORAGE_KEY) || '0');
+    }
+
+    private saveValues(token: string, exp: number): void {
+        this.token = token;
+        this.tokenExpires = exp;
+        localStorage.setItem(this.TOKEN_STORAGE_KEY, this.token);
+        localStorage.setItem(this.EXPIRATION_STORAGE_KEY, '' + this.tokenExpires);
+    }
+
+    private clearValues(): void {
+        localStorage.removeItem(this.TOKEN_STORAGE_KEY);
+        localStorage.removeItem(this.EXPIRATION_STORAGE_KEY);
+    }
 
     checkTokenExpiration(): boolean {
         if (!this.token || !this.tokenExpires || this.tokenExpires <= Date.now()) {
@@ -40,8 +57,11 @@ export class AppHttp {
     }
 
     setToken(token: string, expires: number): void {
-        this.token = token;
-        this.tokenExpires = expires;
+        this.saveValues(token, expires);
+    }
+
+    reset(): void {
+        this.clearValues();
     }
 
     getToken(): string {

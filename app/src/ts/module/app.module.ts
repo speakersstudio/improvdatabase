@@ -5,8 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PathLocationStrategy } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { WebStorageModule, LocalStorageService } from "../util/webstorage.util";
-
 import { AppHttp } from '../data/app-http';
 
 // main components
@@ -34,7 +32,6 @@ import { ChangePasswordComponent } from '../component/change-password.component'
         FormsModule,
         HttpModule,
         BrowserAnimationsModule,
-        WebStorageModule,
         SharedModule,
         AppRoutingModule,
         ImprovPlusModule
@@ -49,7 +46,6 @@ import { ChangePasswordComponent } from '../component/change-password.component'
     bootstrap: [ AppComponent ],
     providers: [
         PathLocationStrategy,
-        LocalStorageService,
         AppHttp
     ]
 })

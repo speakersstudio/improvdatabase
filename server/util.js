@@ -10,9 +10,12 @@ module.exports = {
     },
 
     handleError: function (req, res, err) {
-        console.error("Handle error:", err);
-        res.status(500).json(err);
-        throw new Error(err);
+        if (err.name && err.name == 'CastError') {
+            res.status(500).json({error: 'Invalid data'});
+        } else {
+            console.error("Unknown error:", err);
+            res.status(500).json(err);
+        }
     },
 
     getObjectIdAsString: function (item) {

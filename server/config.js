@@ -18,8 +18,8 @@ module.exports = function () {
                 uri: 'mongodb://localhost/improvplus'
             },
             stripe: {
-                secret: 'sk_test_a4RI3mC0rwHl2CyayrMedpk1', // these are the test keys, obv
-                publishable: 'pk_test_o2Kb3Is8AdQuSP8a4UjrvRyK'
+                secret: 'sk_test_hGyzBs8AVgTLppbLtZxGoCOx', // these are the test keys, obv
+                publishable: 'pk_test_MKfJ3V5exd4ecf0fonYsJ1wy'
             },
             sendgrid: {
                 key: process.env.SENDGRID_API_KEY

@@ -93,6 +93,12 @@
                 <i class="fa fa-motorcycle"></i> <span>Admin</span>
             </a>
 
+            <hr />
+            
+            <a *ngIf="user" (click)="logout()" class="nav-item">
+                <i class="fa fa-sign-out"></i> <span>Log Out</span>
+            </a>
+
         </div>
 
         <footer>

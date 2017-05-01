@@ -107,8 +107,7 @@ export class CartService {
             teamName: teamName
         }).toPromise()
             .then(result => {
-                // return result.json() as User;
-                return null;
+                return result.json() as User;
             })
     }
 }

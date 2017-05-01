@@ -261,7 +261,29 @@ var SignupComponent = (function () {
         });
         setTimeout(function () {
             _this.selectedPackage = pack;
-            _this.cartService.addPackage(_this.selectedPackage);
+            if (_this.selectedPackage._id == 'sub') {
+                var role = void 0;
+                if (_this.userType == 'facilitator') {
+                    if (_this.teamOption == 'team') {
+                        role = _this.config.role_facilitator_team;
+                    }
+                    else {
+                        role = _this.config.role_facilitator;
+                    }
+                }
+                else if (_this.userType == 'improviser') {
+                    if (_this.teamOption == 'team') {
+                        role = _this.config.role_improviser_team;
+                    }
+                    else {
+                        role = _this.config.role_improviser;
+                    }
+                }
+                _this.cartService.addSubscription(role);
+            }
+            else {
+                _this.cartService.addPackage(_this.selectedPackage);
+            }
             // setup the stripe credit card input
             _this.creditCard.unmount();
             setTimeout(function () {
@@ -315,26 +337,6 @@ var SignupComponent = (function () {
             }
             else {
                 _this.cartService.setUser(user);
-                var pack = void 0, role = void 0;
-                if (_this.selectedPackage._id !== 'sub') {
-                    pack = _this.selectedPackage;
-                }
-                else if (_this.userType == 'facilitator') {
-                    if (_this.teamOption == 'team') {
-                        role = _this.config.role_facilitator_team;
-                    }
-                    else {
-                        role = _this.config.role_facilitator;
-                    }
-                }
-                else if (_this.userType == 'improviser') {
-                    if (_this.teamOption == 'team') {
-                        role = _this.config.role_improviser_team;
-                    }
-                    else {
-                        role = _this.config.role_improviser;
-                    }
-                }
                 _this.cartService.signup(result.token, _this.email, _this.password, _this.userName, _this.teamName)
                     .catch(function (response) {
                     _this._app.hideLoader();
@@ -393,8 +395,8 @@ SignupComponent = __decorate([
         selector: "signup",
         templateUrl: '../template/signup.component.html',
         animations: [
-            anim_util_1.FadeAnim.fadeAbsolute,
-            anim_util_1.DialogAnim.dialogSlow
+            anim_util_1.ToggleAnim.fadeAbsolute,
+            anim_util_1.ToggleAnim.bubble
         ]
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,

@@ -18,7 +18,7 @@ import { User } from '../model/user';
 import { Team } from '../model/team';
 import { Package } from '../model/package';
 
-import { FadeAnim, DialogAnim } from '../util/anim.util';
+import { ToggleAnim } from '../util/anim.util';
 
 import { BracketCardDirective } from '../view/bracket-card.directive';
 
@@ -31,8 +31,8 @@ declare var Stripe: any;
     selector: "signup",
     templateUrl: '../template/signup.component.html',
     animations: [
-        FadeAnim.fadeAbsolute,
-        DialogAnim.dialogSlow
+        ToggleAnim.fadeAbsolute,
+        ToggleAnim.bubble
     ]
 })
 export class SignupComponent implements OnInit {
@@ -356,7 +356,25 @@ export class SignupComponent implements OnInit {
         setTimeout(() => {
             this.selectedPackage = pack;
 
-            this.cartService.addPackage(this.selectedPackage);
+            if (this.selectedPackage._id == 'sub') {
+                let role;
+                if (this.userType == 'facilitator') {
+                    if (this.teamOption == 'team') {
+                        role = this.config.role_facilitator_team;
+                    } else {
+                        role = this.config.role_facilitator;
+                    }
+                } else if (this.userType == 'improviser') {
+                    if (this.teamOption == 'team') {
+                        role = this.config.role_improviser_team;
+                    } else {
+                        role = this.config.role_improviser;
+                    }
+                }
+                this.cartService.addSubscription(role);
+            } else {
+                this.cartService.addPackage(this.selectedPackage);
+            }
 
             // setup the stripe credit card input
             this.creditCard.unmount();
@@ -414,24 +432,6 @@ export class SignupComponent implements OnInit {
                 this.cardError = result.error.message;
             } else {
                 this.cartService.setUser(user);
-
-                let pack, role;
-
-                if (this.selectedPackage._id !== 'sub') {
-                    pack = this.selectedPackage;
-                } else if (this.userType == 'facilitator') {
-                    if (this.teamOption == 'team') {
-                        role = this.config.role_facilitator_team;
-                    } else {
-                        role = this.config.role_facilitator;
-                    }
-                } else if (this.userType == 'improviser') {
-                    if (this.teamOption == 'team') {
-                        role = this.config.role_improviser_team;
-                    } else {
-                        role = this.config.role_improviser;
-                    }
-                }
 
                 this.cartService.signup(result.token, this.email, this.password, this.userName, this.teamName)
                     .catch(response => {

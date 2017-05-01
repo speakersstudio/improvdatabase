@@ -51,6 +51,8 @@ module.exports = {
             MaterialItem.find({}).sort('name').exec()
                 .then(m => {
                     res.json(m);
+                }, error => {
+                    util.handleError(req, res, error);
                 });
 
         } else {
@@ -89,6 +91,8 @@ module.exports = {
                         auth.unauthorized(req, res);
                     }
 
+                }, error => {
+                    util.handleError(req, res, error);
                 });
 
         }
@@ -109,6 +113,8 @@ module.exports = {
             })
             .then(m => {
                 res.json(m);
+            }, error => {
+                util.handleError(req, res, error);
             })
     },
 

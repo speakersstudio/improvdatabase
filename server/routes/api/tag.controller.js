@@ -28,6 +28,8 @@ module.exports = {
             .exec()
             .then(tag => {
                 res.json(tag);
+            }, error => {
+                util.handleError(req, res, error);
             });
     },
 
@@ -44,6 +46,8 @@ module.exports = {
                 tag.dateModified = Date.now();
 
                 return tag.save();
+            }, error => {
+                util.handleError(req, res, error);
             })
             .then(tag => {
                 res.json(tag);

@@ -19,7 +19,7 @@
 
 
     <!-- step 1: who are you? -->
-    <div class="block center" [@dialogSlow]>
+    <div class="block center" [@bubble]>
         
         <div class="card">
             1. How do you describe yourself?
@@ -105,17 +105,17 @@
 
         <i class="fa fa-chevron-down huge text-shadow-2"
             [class.text-red]="userType == 'facilitator'" 
-            [class.text-blue]="userType == 'improviser'" *ngIf="userType" [@dialogSlow]></i>
+            [class.text-blue]="userType == 'improviser'" *ngIf="userType" [@bubble]></i>
     </div>
 
     <!-- step 2: yourself or your team -->
-    <div class="block center" *ngIf="userType" [@dialogSlow]>
+    <div class="block center" *ngIf="userType" [@bubble]>
         
         <div class="card">
             2. Who do you represent?
         </div>
 
-        <div class="card clickable" (click)="reset()" *ngIf="!teamOption" [@dialogSlow]>
+        <div class="card clickable" (click)="reset()" *ngIf="!teamOption" [@bubble]>
             <i class="fa fa-caret-up"></i> Start over?
         </div>
 
@@ -197,12 +197,12 @@
 
         <i class="fa fa-chevron-down huge text-shadow-2"
             [class.text-red]="userType == 'facilitator'" 
-            [class.text-blue]="userType == 'improviser'" *ngIf="teamOption" [@dialogSlow]></i>
+            [class.text-blue]="userType == 'improviser'" *ngIf="teamOption" [@bubble]></i>
 
     </div>
 
     <!-- step 3: choose your package -->
-    <div class="block center" *ngIf="teamOption" [@dialogSlow]>
+    <div class="block center" *ngIf="teamOption" [@bubble]>
 
         <div class="card">
             3. Which option is for you?
@@ -269,18 +269,18 @@
         <i class="fa fa-chevron-down huge text-shadow-2"
             [class.text-red]="userType == 'facilitator'" 
             [class.text-blue]="userType == 'improviser'"
-            *ngIf="isFormValid()" [@dialogSlow]></i>
+            *ngIf="isFormValid()" [@bubble]></i>
 
     </div>
 
-    <div class="block center" *ngIf="selectedPackage && !isFormValid()" [@dialogSlow]>
+    <div class="block center" *ngIf="selectedPackage && !isFormValid()" [@bubble]>
         <div class="card">
             Make sure you have entered all of the information above, and we'll be ready to roll.
         </div>
     </div>
 
     <!-- step 4: GO! -->
-    <div class="block center" *ngIf="isFormValid()" [@dialogSlow]>
+    <div class="block center" *ngIf="isFormValid()" [@bubble]>
 
         <div class="card">
             4. Let's do this.

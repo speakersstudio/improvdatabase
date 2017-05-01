@@ -9,7 +9,7 @@ import 'rxjs/add/operator/toPromise';
 // import { MarketingSiteComponent } from './ms.component';
 import { AppComponent } from './app.component';
 
-import { DialogAnim, FadeAnim } from '../util/anim.util';
+import { DialogAnim, ToggleAnim } from '../util/anim.util';
 
 @Component({
     moduleId: module.id,
@@ -17,7 +17,7 @@ import { DialogAnim, FadeAnim } from '../util/anim.util';
     templateUrl: "../template/ms.welcome.component.html",
     animations: [
         DialogAnim.dialog,
-        FadeAnim.fade
+        ToggleAnim.fade
     ]
 })
 export class WelcomeComponent implements OnInit {

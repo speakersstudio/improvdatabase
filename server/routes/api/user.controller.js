@@ -63,7 +63,7 @@ module.exports = {
         }
         
         promise.then(hash => {
-             return User.findOne({}).where('_id').equals(req.params.id).exec()
+             return module.exports.findUser(req.params.id, null, null, true)
                 .then(user => {
                     user = util.smartUpdate(user, formData, WHITELIST);
 
@@ -75,9 +75,7 @@ module.exports = {
                         if (err) {
                             util.handleError(req, res, err);
                         } else {
-                            saved = saved.toObject();
-                            delete saved.password;
-                            saved.actions = roles.getActionsForRole(saved.role);
+                            saved = module.exports.prepUserObject(saved);
 
                             if (res) {
                                 res.json(saved);
@@ -136,30 +134,38 @@ module.exports = {
             })
             .then(user => {
                 if (user && !raw) {
-                    user = user.toObject();
-
-                    if (!user.superAdmin) {
-                        delete user.superAdmin;
-                    }
-                    
-                    // make sure the user has an active subscription
-                    if (user.locked) {
-                        user.actions = roles.getActionsForRole(roles.ROLE_LOCKED);
-                    } else if (user.subscription &&
-                         typeof(user.subscription) == 'object' &&
-                            (
-                                // user.subscription.role == roles.ROLE_SUPER_ADMIN ||
-                                user.subscription.expiration > Date.now()
-                            )) {
-
-                        user.actions = roles.getActionsForRole(user.subscription.role);
-                    } else {
-                        user.actions = roles.getActionsForRole(roles.ROLE_USER);
-                    }
+                    user = module.exports.prepUserObject(user);
                 }
 
                 return Promise.resolve(user);
             });
+    },
+
+    prepUserObject: (user) => {
+        if (user.toObject) {
+            user = user.toObject();
+        }
+
+        if (!user.superAdmin) {
+            delete user.superAdmin;
+        }
+        
+        // make sure the user has an active subscription
+        if (user.locked) {
+            user.actions = roles.getActionsForRole(roles.ROLE_LOCKED);
+        } else if (user.subscription &&
+                typeof(user.subscription) == 'object' &&
+                (
+                    // user.subscription.role == roles.ROLE_SUPER_ADMIN ||
+                    user.subscription.expiration > Date.now()
+                )) {
+
+            user.actions = roles.getActionsForRole(user.subscription.role);
+        } else {
+            user.actions = roles.getActionsForRole(roles.ROLE_USER);
+        }
+
+        return user;
     },
 
     validateUser: (email, password, callback) => {

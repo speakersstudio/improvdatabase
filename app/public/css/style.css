@@ -314,21 +314,24 @@ iplus {
   .large .iplus {
     transform: scale(1.5); }
     .large .iplus .i {
-      top: 0px; }
+      top: 11px; }
     .large .iplus .plus {
-      top: -4px; }
+      top: 8px; }
   .huge .iplus {
     transform: scale(3);
     font-weight: bold; }
     .huge .iplus .i {
-      top: 0px; }
+      top: 12px; }
+    .huge .iplus .plus {
+      top: 9px; }
   .iplus.white {
     color: #FFFFFF; }
   .iplus > * {
-    position: absolute; }
+    position: absolute;
+    line-height: 0px; }
   .iplus .bracket {
     font-size: 100%;
-    top: -2px;
+    top: 10px;
     left: 2px; }
     .iplus .bracket:last-child {
       left: auto;
@@ -337,13 +340,13 @@ iplus {
     font-size: 83%;
     font-weight: bold;
     left: 6px;
-    top: 1px;
+    top: 12.5px;
     transition: color 300ms;
     text-transform: lowercase; }
   .iplus .plus {
     font-size: 70%;
     font-weight: bold;
-    top: -3px;
+    top: 9px;
     left: 10px;
     opacity: 1;
     transition: color 300ms, opacity 300ms; }
@@ -574,10 +577,11 @@ iplus {
     margin-right: 0; }
 
 .form-input {
-  position: relative; }
+  position: relative;
+  padding: 8px 0; }
   .form-input label {
     position: absolute;
-    top: 18px;
+    top: 25px;
     z-index: 1;
     cursor: text;
     font-size: 16px;
@@ -585,11 +589,13 @@ iplus {
     margin: 0;
     pointer-events: none; }
     .form-input label.active {
-      transform: translateY(-140%);
+      transform: translateY(-165%);
       font-size: 12px; }
+  .form-input input {
+    margin: 0; }
   .form-input .help {
     position: absolute;
-    top: 18px;
+    top: 25px;
     right: 8px;
     z-index: 2;
     cursor: pointer;
@@ -676,12 +682,12 @@ button,
       right: 0;
       bottom: 0;
       border-width: 3px 3px 3px 0; }
-    button.brackets:hover,
-    .button.brackets:hover {
+    button.brackets:hover:not([disabled]),
+    .button.brackets:hover:not([disabled]) {
       box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12); }
-      button.brackets:hover:before, button.brackets:hover:after,
-      .button.brackets:hover:before,
-      .button.brackets:hover:after {
+      button.brackets:hover:not([disabled]):before, button.brackets:hover:not([disabled]):after,
+      .button.brackets:hover:not([disabled]):before,
+      .button.brackets:hover:not([disabled]):after {
         width: 50%; }
     button.brackets:active,
     .button.brackets:active {
@@ -1567,12 +1573,12 @@ footer {
     cursor: pointer; }
 
 login .login-form {
-  max-width: 300px; }
+  max-width: 350px; }
   login .login-form.shake {
     animation: shake 300ms both; }
   login .login-form.runaway {
     position: relative;
-    animation: runaway 3000ms 2s both, runaway-motion 3s 2s both linear; }
+    animation: runaway 3s 2s both, runaway-motion 3s 2s both linear; }
 
 login .fa-star {
   position: absolute;

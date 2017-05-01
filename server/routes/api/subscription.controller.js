@@ -55,9 +55,6 @@ module.exports = {
             subscriptions;
 
         getSubs(req.user.id, false)
-            .catch(err => {
-                res.status(500).json(err);
-            })
             .then(subs => {
                 subscriptions = subs;
                 let subbedIds = [];
@@ -70,11 +67,9 @@ module.exports = {
                     .where('_id').in(subbedIds)
                     .populate('materials.materialItem')
                     .exec();
-            })
-            .catch(err => {
-                res.status(500).json(err);
-            })
-            .then(package => {
+            }, error => {
+                util.handleError(req, res, error);
+            }).then(package => {
                 let selectedSub;
                 subscriptions.forEach(sub => {
                     if (sub.package.toString().trim() == package.id.toString().trim()) {
@@ -87,6 +82,8 @@ module.exports = {
                 } else {
                     auth.unauthorized(req, res);
                 }
+            }, error => {
+                util.handleError(req, res, error);
             });
 
     },

@@ -1,6 +1,6 @@
 login {
     .login-form {
-        max-width: 300px;
+        max-width: 350px;
 
         &.shake {
             animation: shake $anim-duration both;
@@ -8,7 +8,7 @@ login {
 
         &.runaway {
             position: relative;
-            animation: runaway 3000ms 2s both, runaway-motion 3s 2s both linear;
+            animation: runaway 3s 2s both, runaway-motion 3s 2s both linear;
         }
     }
 

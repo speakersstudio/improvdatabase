@@ -19,6 +19,8 @@ module.exports = {
         updateGame(Game.create(gameData), data, userId)
             .then(game => {
                 res.json(game);
+            }, error => {
+                util.handleError(req, res, error);
             });
 
     },
@@ -29,6 +31,8 @@ module.exports = {
 
         Game.remove({ _id: gameId }).then(() => {
             res.send('Success');
+        }, error => {
+            util.handleError(req, res, error);
         });
 
     },
@@ -50,26 +54,27 @@ module.exports = {
             })
             .then(game => {
                 res.json(game);
+            }, error => {
+                util.handleError(req, res, error);
             });
 
     },
 
     getAll: (req, res) => {
         getGames(req.user)
-            .catch(err => {
-                util.handleError(req, res, err);
-            }).then(games => {
+            .then(games => {
                 res.json(games);
+            }, error => {
+                util.handleError(req, res, error);
             });
-
     },
 
     get: (req, res) => {
         getGames(req.user, req.params.id)
-            .catch(err => {
-                util.handleError(req, res, err);
-            }).then(games => {
+            .then(games => {
                 res.json(games[0]);
+            }, error => {
+                util.handleError(req, res, error);
             });
     },
 
@@ -82,7 +87,9 @@ module.exports = {
             return game.addTag(null, tagId, req.user._id);
         }).then(game => {
             res.json(game);
-        });
+        }, error => {
+                util.handleError(req, res, error);
+            });
     },
 
     removeTag: (req, res) => {
@@ -94,7 +101,9 @@ module.exports = {
             return game.removeTag(tagId, req.user._id);
         }).then(game => {
             res.json(game);
-        })
+        }, error => {
+                util.handleError(req, res, error);
+            })
     },
 
     createTag: (req, res) => {
@@ -106,7 +115,9 @@ module.exports = {
             return game.addTag(tag, null, req.user._id);
         }).then(game => {
             res.json(game);
-        });
+        }, error => {
+                util.handleError(req, res, error);
+            });
         
         // }).then(game => {
         //     return Tag.findOne({}).where('name').equals(tag).exec();
@@ -141,51 +152,6 @@ function updateGame(gamePromise, data, userId) {
                 return game;
             }
         })
-        // .then(game => {
-        //     gameModel = game;
-        //     if (data.tags && data.tags.length) {
-        //         let handleTag = (tagIndex) => {
-        //             return game.addTag(data.tags[tagIndex].tag.name, userId)
-        //                 .then(() => {
-        //                     tagIndex++;
-        //                     if (data.tags[tagIndex]) {
-        //                         return handleTag(tagIndex);
-        //                     }
-        //                 });
-        //         }
-        //         return handleTag(0);
-        //     }
-        // })
-        // .then(game => {
-        //     if (data.names && data.names.length != game.names.length) {
-        //         let handleName = (nameIndex) => {
-        //             let name = data.names[nameIndex],
-        //                 newname = true;
-        //             game.names.forEach(n => {
-        //                 if (n.name == name) {
-        //                     newname = false;
-        //                     return false;
-        //                 }
-        //             });
-        //             let promise;
-        //             if (newname) {
-        //                 promise = game.addName(data.names[nameIndex].name, userId);
-        //             } else {
-        //                 promise = game;
-        //             }
-        //             return promise
-        //                     .then(game => {
-        //                         nameIndex++;
-        //                         if (data.names[nameIndex]) {
-        //                             return handleName(nameIndex);
-        //                         }
-        //                     });
-        //         }
-        //         return handleName(0);
-        //     } else {
-        //         return game;
-        //     }
-        // });
 }
 
 function getGames(user, id) {

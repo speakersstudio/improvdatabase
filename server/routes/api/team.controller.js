@@ -14,6 +14,7 @@ const   mongoose = require('mongoose'),
         Subscription = require('../../models/subscription.model'),
         Team = require('../../models/team.model'),
         Invite = require('../../models/invite.model'),
+        Purchase = require('../../models/purchase.model'),
 
         WHITELIST = [
             'email',
@@ -123,6 +124,21 @@ module.exports = {
         let query = Team.findOne({}).where('_id').equals(req.params.id);
 
         return userController.collectMaterials(query, req, res);
+    },
+
+    purchases: (req, res) => {
+        // only team admins can do this
+        if (req.user.adminOfTeams.indexOf(req.params.id) == -1) {
+            return auth.unauthorized(req, res);
+        }
+
+        return Purchase.find({})
+            .where('team').equals(req.params.id)
+            .populate('user packages.package materials.material')
+            .exec()
+            .then(p => {
+                res.json(p);
+            })
     },
 
     invite: (req, res) => {

@@ -8,6 +8,7 @@ import { AppHttp } from '../data/app-http';
 
 import { User } from "../model/user";
 import { Team } from '../model/team';
+import { Purchase } from '../model/purchase';
 
 @Injectable()
 export class TeamService {
@@ -100,6 +101,14 @@ export class TeamService {
 
                 return data.msg;
             })
+    }
+    
+    fetchPurchases(team: Team): Promise<Purchase[]> {
+        return this.http.get(this.teamUrl + team._id + '/purchases')
+            .toPromise()
+            .then(response => {
+                return response.json() as Purchase[];
+            });
     }
 
 }

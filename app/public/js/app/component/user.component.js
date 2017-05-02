@@ -57,9 +57,8 @@ var UserComponent = (function () {
         this.errorCount = 0;
         this.weGood = true;
         this.user = this._app.user;
-        this.userService.fetchPurchases().then(function (u) {
-            _this.purchases = u.purchases;
-            _this.teamPurchases = u.adminOfTeams;
+        this.userService.fetchPurchases().then(function (p) {
+            _this.purchases = p;
         });
         this.userService.fetchSubscription().then(function (u) {
             _this.subscription = u.subscription;

@@ -105,7 +105,7 @@ var LibraryService = (function () {
             return;
         }
         var formData = new FormData();
-        formData.append('ver', version.ver);
+        formData.append('ver', version.ver + '');
         formData.append('description', version.description);
         formData.append('file', file, file.name);
         return this.http.postFormData(this.materialsUrl + materialItemId + '/version', formData).toPromise()

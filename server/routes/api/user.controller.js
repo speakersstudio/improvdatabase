@@ -8,6 +8,7 @@ const   mongoose = require('mongoose'),
 
         Subscription = require('../../models/subscription.model'),
         User = require('../../models/user.model'),
+        Purchase = require('../../models/purchase.model'),
         HistoryModel = require('../../models/history.model'),
 
         WHITELIST = [
@@ -217,30 +218,27 @@ module.exports = {
     },
 
     /**
-     * Get all of a user's purchases, including teams they are admin of
+     * Get all of a user's purchases
      */
     purchases: (req, res) => {
-        let populate = {
-            path: 'purchases',
-            populate: {
-                path: 'packages.package materials.materialItem'
-            },
-            options: {
-                sort: 'date'
-            }
-        };
+        // let populate = {
+        //     path: 'purchases',
+        //     populate: {
+        //         path: 'packages.package materials.materialItem'
+        //     },
+        //     options: {
+        //         sort: 'date'
+        //     }
+        // };
 
-        return User.findOne({}).where('_id').equals(req.user._id)
-            .select('purchases adminOfTeams')
-            .populate({
-                path: 'adminOfTeams',
-                select: 'purchases name',
-                populate: populate
+        return Purchase.find({})
+            .where('user').equals(req.user._id)
+            .populate('team packages.package materials.material')
+            .exec()
+            .then(p => {
+                res.json(p);
             })
-            .populate(populate)
-            .then(u => {
-                res.json(u);
-            })
+
     },
 
     teams: (req, res) => {

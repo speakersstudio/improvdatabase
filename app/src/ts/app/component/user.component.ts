@@ -67,7 +67,6 @@ export class UserComponent implements OnInit, OnDestroy {
 
     subscription: Subscription;
     purchases: Purchase[];
-    teamPurchases: Team[];
 
     constructor(
         private userService: UserService,
@@ -92,9 +91,8 @@ export class UserComponent implements OnInit, OnDestroy {
 
         this.user = this._app.user;
 
-        this.userService.fetchPurchases().then(u => {
-            this.purchases = u.purchases;
-            this.teamPurchases = <Team[]> u.adminOfTeams;
+        this.userService.fetchPurchases().then(p => {
+            this.purchases = p;
         });
 
         this.userService.fetchSubscription().then(u => {

@@ -126,7 +126,7 @@ export class LibraryService {
         }
 
         let formData = new FormData();
-        formData.append('ver', version.ver);
+        formData.append('ver', version.ver + '');
         formData.append('description', version.description);
         formData.append('file', file, file.name);
 

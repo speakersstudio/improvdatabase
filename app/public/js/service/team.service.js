@@ -94,6 +94,13 @@ var TeamService = (function () {
             return data.msg;
         });
     };
+    TeamService.prototype.fetchPurchases = function (team) {
+        return this.http.get(this.teamUrl + team._id + '/purchases')
+            .toPromise()
+            .then(function (response) {
+            return response.json();
+        });
+    };
     return TeamService;
 }());
 TeamService = __decorate([

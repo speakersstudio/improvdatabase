@@ -53,7 +53,6 @@ var UserService = (function () {
     };
     UserService.prototype.clearUserData = function () {
         this.loggedInUser = null;
-        this._purchasePromise = null;
         this._subscriptionPromise = null;
         localStorage.removeItem(this.USER_STORAGE_KEY);
     };
@@ -246,15 +245,15 @@ var UserService = (function () {
             }
         });
     };
+    /**
+     * The following functions get various expanded properties on the user object. They don't change the logged in user data
+     */
     UserService.prototype.fetchPurchases = function () {
-        if (!this._purchasePromise) {
-            this._purchasePromise = this.http.get(this.userUrl + this.loggedInUser._id + '/purchases')
-                .toPromise()
-                .then(function (response) {
-                return response.json();
-            });
-        }
-        return this._purchasePromise;
+        return this.http.get(this.userUrl + this.loggedInUser._id + '/purchases')
+            .toPromise()
+            .then(function (response) {
+            return response.json();
+        });
     };
     UserService.prototype.fetchSubscription = function () {
         if (!this._subscriptionPromise) {

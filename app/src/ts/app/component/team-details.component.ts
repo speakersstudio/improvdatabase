@@ -7,6 +7,7 @@ import { Tool } from '../view/toolbar.view';
 import { User } from '../../model/user';
 import { Team } from '../../model/team';
 import { Address } from '../../model/address';
+import { Purchase } from '../../model/purchase';
 
 import { UserService } from '../../service/user.service';
 import { TeamService } from '../../service/team.service';
@@ -26,6 +27,20 @@ export class TeamDetailsComponent implements OnInit {
     @Input() team: Team;
     user: User;
 
+    tabs = [
+        {
+            name: 'Team Details',
+            id: 'team',
+            icon: 'users'
+        },
+        {
+            name: 'Purchase History',
+            id: 'purchases',
+            icon: 'money'
+        }
+    ];
+    selectedTab: string = 'user';
+
     private adminActions = [
         'team_edit'
     ]
@@ -37,6 +52,8 @@ export class TeamDetailsComponent implements OnInit {
     selectedUser: User;
 
     isPosting: boolean;
+
+    purchases: Purchase[];
 
     constructor(
         private _app: AppComponent,
@@ -81,10 +98,12 @@ export class TeamDetailsComponent implements OnInit {
     setTeam(team: Team): void {
         this.team = team;
 
-        console.log(this.team);
-
         this.remainingSubs = team.subscription.subscriptions - team.subscription.children.length;
         this.pendingInvites = team.subscription.invites.length;
+
+        this.teamService.fetchPurchases(this.team).then(p => {
+            this.purchases = p;
+        })
     }
 
     saveEditName(name: string): void {

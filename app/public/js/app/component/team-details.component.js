@@ -23,6 +23,19 @@ var TeamDetailsComponent = (function () {
         this.route = route;
         this.userService = userService;
         this.teamService = teamService;
+        this.tabs = [
+            {
+                name: 'Team Details',
+                id: 'team',
+                icon: 'users'
+            },
+            {
+                name: 'Purchase History',
+                id: 'purchases',
+                icon: 'money'
+            }
+        ];
+        this.selectedTab = 'user';
         this.adminActions = [
             'team_edit'
         ];
@@ -55,10 +68,13 @@ var TeamDetailsComponent = (function () {
         return this.userService.isAdminOfTeam(this.team);
     };
     TeamDetailsComponent.prototype.setTeam = function (team) {
+        var _this = this;
         this.team = team;
-        console.log(this.team);
         this.remainingSubs = team.subscription.subscriptions - team.subscription.children.length;
         this.pendingInvites = team.subscription.invites.length;
+        this.teamService.fetchPurchases(this.team).then(function (p) {
+            _this.purchases = p;
+        });
     };
     TeamDetailsComponent.prototype.saveEditName = function (name) {
         this.team.name = name;

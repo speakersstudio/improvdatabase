@@ -107,6 +107,7 @@ module.exports = {
                 'team_invite', // user has to be admin of team
                 'team_edit', // user has to be admin of team
                 'team_user_promote', // user has to be admin of team
+                'team_purchases_view', // admins only baby
                 'team_leave'
             ]
         },
@@ -390,6 +391,8 @@ const actionmap = {
                 case "get":
                     if (url.indexOf('materials') > -1) {
                         action = 'material_view';
+                    } else if (url.indexOf('purchases')) {
+                        action = 'team_purchases_view';
                     } else {
                         action = 'team_view';
                     }

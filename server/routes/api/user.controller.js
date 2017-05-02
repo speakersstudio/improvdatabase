@@ -8,6 +8,9 @@ const   mongoose = require('mongoose'),
 
         Subscription = require('../../models/subscription.model'),
         User = require('../../models/user.model'),
+        Team = require('../../models/team.model'),
+        Purchase = require('../../models/purchase.model'),
+        Invite = require('../../models/invite.model'),
         HistoryModel = require('../../models/history.model'),
 
         WHITELIST = [
@@ -33,6 +36,113 @@ module.exports = {
 
     create: (req, res) => {
         
+        let email = req.body.email,
+            password = req.body.password,
+            inviteId = req.body.invite,
+            userName = req.body.name;
+
+        if (!email || !password || !inviteId || !userName) {
+            return res.status(500).json({error: 'Please enter all of the information.'})
+        }
+
+        return Invite.findOne({})
+            .where('_id').equals(inviteId)
+            .exec()
+            .then(invite => {
+                if (!invite) {
+                    return res.status(500).json({error: 'unknown invite'});
+                } else if (invite.accepted) {
+                    return res.status(500).json({error: 'invite taken'});
+                } else {
+
+                    if (invite.email != email) {
+                        // we will require the email as a sort of validation
+                        return res.status(500).json({error: 'wrong email'});
+                    } else {
+
+                        let inviteTeam = util.getObjectIdAsString(invite.team),
+                            role = invite.role,
+                            firstName = '',
+                            lastName = '';
+
+                        if (userName) {
+                            firstName = userName.substr(0, (userName+' ').indexOf(' ')).trim();
+                            lastName = userName.substr((userName+' ').indexOf(' '), userName.length).trim();
+                        }
+
+                        invite.accepted = true;
+                        invite.dateAccepted = Date.now();
+
+                        invite.save();
+
+                        bcrypt.hash(password, config.saltRounds).then(hash => {
+                            return User.create({
+                                email: email,
+                                password: hash,
+                                firstName: firstName,
+                                lastName: lastName
+                            });
+                        })
+                        .then(user => {
+
+                            HistoryModel.create({
+                                user: user._id,
+                                action: 'invite_accept',
+                                reference: invite._id.toString()
+                            });
+
+                            if (inviteTeam) {
+                                Team.findOne({}).where('_id').equals(inviteTeam).exec()
+                                    .then(team => {
+                                        team.members = util.addToObjectIdArray(team.members, user._id);
+                                        return team.save();
+                                    })
+                                    .then(team => {
+                                        user.memberOfTeams = util.addToObjectIdArray(user.memberOfTeams, team._id);
+                                        return user.save();
+                                    })
+                                    .then(user => {
+                                        return Subscription.findOne({})
+                                            .where('team').equals(inviteTeam)
+                                            .exec()
+                                    })
+                                    .then(subscription => {
+                                        // create a subscription for the new user
+                                        return subscription.createChildSubscription(user)
+                                    })
+                                    .then(subscription => {
+                                        if (!subscription) {
+                                            // if the promise returns false, there were no available subs left
+                                            // TODO: adding a user to a team without using a subscription
+
+                                        } else {
+                                            // remove the invite from team's subscription, so it won't count against anything anymore
+                                            subscription.invites = util.removeFromObjectIdArray(subscription.invites, invite);
+                                            return subscription.save();
+                                        }
+                                    })
+                                    .then(subscription => {
+                                        // we should be done, but we want to return the new user
+                                        return User.findOne({}).where('_id').equals(user._id.toString()).exec()
+                                    })
+                                    .then(newUser => {
+                                        res.json(module.exports.prepUserObject(newUser));
+                                    })
+                            } else {
+                                // this user was invited as a regular user
+                                // TODO: this
+                            }
+
+                        }, error => {
+                            console.error(error);
+                            res.status(500).json({error: 'There was an error creating your account.'});
+                        });
+
+                    }
+
+                }
+            })
+
     },
 
     getAll: (req, res) => {
@@ -75,6 +185,8 @@ module.exports = {
                     if (hash) {
                         user.password = hash;
                     }
+
+                    user.dateModified = Date.now();
 
                     return user.save((err, saved) => {
                         if (err) {
@@ -217,30 +329,27 @@ module.exports = {
     },
 
     /**
-     * Get all of a user's purchases, including teams they are admin of
+     * Get all of a user's purchases
      */
     purchases: (req, res) => {
-        let populate = {
-            path: 'purchases',
-            populate: {
-                path: 'packages.package materials.materialItem'
-            },
-            options: {
-                sort: 'date'
-            }
-        };
+        // let populate = {
+        //     path: 'purchases',
+        //     populate: {
+        //         path: 'packages.package materials.materialItem'
+        //     },
+        //     options: {
+        //         sort: 'date'
+        //     }
+        // };
 
-        return User.findOne({}).where('_id').equals(req.user._id)
-            .select('purchases adminOfTeams')
-            .populate({
-                path: 'adminOfTeams',
-                select: 'purchases name',
-                populate: populate
+        return Purchase.find({})
+            .where('user').equals(req.user._id)
+            .populate('team packages.package materials.material')
+            .exec()
+            .then(p => {
+                res.json(p);
             })
-            .populate(populate)
-            .then(u => {
-                res.json(u);
-            })
+
     },
 
     teams: (req, res) => {

@@ -12,6 +12,7 @@ var ms_welcome_component_1 = require("../component/ms.welcome.component");
 var login_screen_component_1 = require("../component/login-screen.component");
 var signup_component_1 = require("../component/signup.component");
 var change_password_component_1 = require("../component/change-password.component");
+var invite_component_1 = require("../component/invite.component");
 var routes = [
     {
         path: '',
@@ -29,6 +30,10 @@ var routes = [
     {
         path: 'signup',
         component: signup_component_1.SignupComponent
+    },
+    {
+        path: 'invite/:id',
+        component: invite_component_1.InviteComponent
     },
     {
         path: 'resetMyPassword/:token',

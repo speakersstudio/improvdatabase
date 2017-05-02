@@ -7,6 +7,8 @@ import { Tool } from '../view/toolbar.view';
 import { User } from '../../model/user';
 import { Team } from '../../model/team';
 import { Address } from '../../model/address';
+import { Purchase } from '../../model/purchase';
+import { Invite } from '../../model/invite';
 
 import { UserService } from '../../service/user.service';
 import { TeamService } from '../../service/team.service';
@@ -26,8 +28,15 @@ export class TeamDetailsComponent implements OnInit {
     @Input() team: Team;
     user: User;
 
+    tabs;
+    selectedTab: string = 'team';
+
     private adminActions = [
-        'team_edit'
+        'team_subscription_invite',
+        'team_invite',
+        'team_edit',
+        'team_user_promote',
+        'team_purchases_view'
     ]
 
     address: string;
@@ -37,6 +46,8 @@ export class TeamDetailsComponent implements OnInit {
     selectedUser: User;
 
     isPosting: boolean;
+
+    purchases: Purchase[];
 
     constructor(
         private _app: AppComponent,
@@ -57,6 +68,18 @@ export class TeamDetailsComponent implements OnInit {
             let id = params['id'];
             this.getTeam(id);
         });
+    }
+
+    selectTab(tab): void {
+        this.selectedTab = tab.id;
+    }
+
+    getDate(date: string): string {
+        return TimeUtil.simpleDate(date);
+    }
+
+    getTime(date: string): string {
+        return TimeUtil.simpleTime(date);
     }
 
     getTeam(id: string): void {
@@ -81,10 +104,37 @@ export class TeamDetailsComponent implements OnInit {
     setTeam(team: Team): void {
         this.team = team;
 
-        console.log(this.team);
+        this.calculateSubs();
 
-        this.remainingSubs = team.subscription.subscriptions - team.subscription.children.length;
-        this.pendingInvites = team.subscription.invites.length;
+        this.teamService.fetchPurchases(this.team).then(p => {
+            this.purchases = p;
+        });
+
+        this.tabs = [
+            {
+                name: 'Team Details',
+                id: 'team',
+                icon: 'users'
+            },
+            {
+                name: 'Members',
+                id: 'members',
+                icon: 'user-plus'
+            }
+        ];
+
+        if (this.can('team_purchases_view')) {
+            this.tabs.push({
+                name: 'Purchase History',
+                id: 'purchases',
+                icon: 'money'
+            })
+        }
+    }
+
+    calculateSubs(): void {
+        this.pendingInvites = this.team.subscription.invites.length;
+        this.remainingSubs = this.team.subscription.subscriptions - this.team.subscription.children.length - this.team.subscription.invites.length;
     }
 
     saveEditName(name: string): void {
@@ -153,6 +203,8 @@ export class TeamDetailsComponent implements OnInit {
     inviteEmail: string;
     inviteStatus: string;
 
+    selectedInvite: Invite;
+
     invite(): void {
         this._app.backdrop(true);
 
@@ -160,7 +212,7 @@ export class TeamDetailsComponent implements OnInit {
         this.inviteEmail = '';
     }
 
-    cancelInvite(): void {
+    cancelInviteDialog(): void {
         this._app.backdrop(false);
         
         this.showInviteDialog = false;
@@ -171,18 +223,49 @@ export class TeamDetailsComponent implements OnInit {
         this.isPosting = true;
 
         this.teamService.invite(this.team, this.inviteEmail)
-            .then(msg => {
+            .then(invite => {
                 this.isPosting = false;
                 this.inviteStatus = 'wait';
-                setTimeout(() => {
-                    this.inviteStatus = msg;
-                    this.getTeam(this.team._id);
-                }, 300);
+                if (invite) {
+                    this.team.subscription.invites.push(invite);
+                    this.calculateSubs();
+
+                    setTimeout(() => {
+                        this.inviteStatus = 'sent';
+                    }, 300);
+                }
             })
+    }
+
+    selectInvite(invite: Invite): void {
+        if (this.selectedInvite && this.selectedInvite._id == invite._id) {
+            this.selectedInvite = null;
+        } else {
+            this.selectedInvite = invite;
+        }
+    }
+
+    cancelInvite(invite: Invite): void {
+        this.selectedInvite = invite;
+        this._app.dialog('Cancel an Invitation', 'Are you sure you want to revoke your invitation to ' + invite.email + '? We already sent them the invite, but the link inside will no longer work. We will not notify them that it was cancelled.', 'Yes',
+            () => {
+                this.userService.cancelInvite(invite).then(done => {
+                    if (done) {
+                        let index = this.team.subscription.invites.indexOf(invite);
+                        this.team.subscription.invites.splice(index, 1);
+
+                        this.calculateSubs();
+                    }
+                })
+            });
     }
 
     leave(): void {
         this._app.toast("This button doesn't work yet. I'm afraid you're stuck for now.");
+    }
+
+    buySubscription(): void {
+        this._app.toast("This button doesn't work yet. Soon, though. Soon.");
     }
 
 }

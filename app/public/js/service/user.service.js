@@ -32,6 +32,7 @@ var UserService = (function () {
         this.refreshUrl = '/refreshToken';
         this.userUrl = '/api/user/';
         this.validateUrl = this.userUrl + 'validate';
+        this.inviteUrl = '/api/invite/';
         this.logginStateSource = new Rx_1.Subject();
         this.loginState$ = this.logginStateSource.asObservable();
         this.loadUserData();
@@ -53,7 +54,6 @@ var UserService = (function () {
     };
     UserService.prototype.clearUserData = function () {
         this.loggedInUser = null;
-        this._purchasePromise = null;
         this._subscriptionPromise = null;
         localStorage.removeItem(this.USER_STORAGE_KEY);
     };
@@ -246,15 +246,33 @@ var UserService = (function () {
             }
         });
     };
+    UserService.prototype.cancelInvite = function (invite) {
+        return this.http.delete(this.inviteUrl + invite._id)
+            .toPromise()
+            .then(function (response) {
+            return true;
+        });
+    };
+    UserService.prototype.acceptInvite = function (inviteId, email, password, name) {
+        return this.http.post(this.userUrl, {
+            email: email,
+            password: password,
+            invite: inviteId,
+            name: name
+        }).toPromise()
+            .then(function (response) {
+            return response.json();
+        });
+    };
+    /**
+     * The following functions get various expanded properties on the user object. They don't change the logged in user data
+     */
     UserService.prototype.fetchPurchases = function () {
-        if (!this._purchasePromise) {
-            this._purchasePromise = this.http.get(this.userUrl + this.loggedInUser._id + '/purchases')
-                .toPromise()
-                .then(function (response) {
-                return response.json();
-            });
-        }
-        return this._purchasePromise;
+        return this.http.get(this.userUrl + this.loggedInUser._id + '/purchases')
+            .toPromise()
+            .then(function (response) {
+            return response.json();
+        });
     };
     UserService.prototype.fetchSubscription = function () {
         if (!this._subscriptionPromise) {

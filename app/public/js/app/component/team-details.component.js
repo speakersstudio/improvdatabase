@@ -23,8 +23,13 @@ var TeamDetailsComponent = (function () {
         this.route = route;
         this.userService = userService;
         this.teamService = teamService;
+        this.selectedTab = 'team';
         this.adminActions = [
-            'team_edit'
+            'team_subscription_invite',
+            'team_invite',
+            'team_edit',
+            'team_user_promote',
+            'team_purchases_view'
         ];
         this._tools = [];
         this._timeUtil = time_util_1.TimeUtil;
@@ -36,6 +41,15 @@ var TeamDetailsComponent = (function () {
             var id = params['id'];
             _this.getTeam(id);
         });
+    };
+    TeamDetailsComponent.prototype.selectTab = function (tab) {
+        this.selectedTab = tab.id;
+    };
+    TeamDetailsComponent.prototype.getDate = function (date) {
+        return time_util_1.TimeUtil.simpleDate(date);
+    };
+    TeamDetailsComponent.prototype.getTime = function (date) {
+        return time_util_1.TimeUtil.simpleTime(date);
     };
     TeamDetailsComponent.prototype.getTeam = function (id) {
         var _this = this;
@@ -55,10 +69,35 @@ var TeamDetailsComponent = (function () {
         return this.userService.isAdminOfTeam(this.team);
     };
     TeamDetailsComponent.prototype.setTeam = function (team) {
+        var _this = this;
         this.team = team;
-        console.log(this.team);
-        this.remainingSubs = team.subscription.subscriptions - team.subscription.children.length;
-        this.pendingInvites = team.subscription.invites.length;
+        this.calculateSubs();
+        this.teamService.fetchPurchases(this.team).then(function (p) {
+            _this.purchases = p;
+        });
+        this.tabs = [
+            {
+                name: 'Team Details',
+                id: 'team',
+                icon: 'users'
+            },
+            {
+                name: 'Members',
+                id: 'members',
+                icon: 'user-plus'
+            }
+        ];
+        if (this.can('team_purchases_view')) {
+            this.tabs.push({
+                name: 'Purchase History',
+                id: 'purchases',
+                icon: 'money'
+            });
+        }
+    };
+    TeamDetailsComponent.prototype.calculateSubs = function () {
+        this.pendingInvites = this.team.subscription.invites.length;
+        this.remainingSubs = this.team.subscription.subscriptions - this.team.subscription.children.length - this.team.subscription.invites.length;
     };
     TeamDetailsComponent.prototype.saveEditName = function (name) {
         this.team.name = name;
@@ -115,7 +154,7 @@ var TeamDetailsComponent = (function () {
         this.showInviteDialog = true;
         this.inviteEmail = '';
     };
-    TeamDetailsComponent.prototype.cancelInvite = function () {
+    TeamDetailsComponent.prototype.cancelInviteDialog = function () {
         this._app.backdrop(false);
         this.showInviteDialog = false;
         this.inviteStatus = '';
@@ -124,17 +163,44 @@ var TeamDetailsComponent = (function () {
         var _this = this;
         this.isPosting = true;
         this.teamService.invite(this.team, this.inviteEmail)
-            .then(function (msg) {
+            .then(function (invite) {
             _this.isPosting = false;
             _this.inviteStatus = 'wait';
-            setTimeout(function () {
-                _this.inviteStatus = msg;
-                _this.getTeam(_this.team._id);
-            }, 300);
+            if (invite) {
+                _this.team.subscription.invites.push(invite);
+                _this.calculateSubs();
+                setTimeout(function () {
+                    _this.inviteStatus = 'sent';
+                }, 300);
+            }
+        });
+    };
+    TeamDetailsComponent.prototype.selectInvite = function (invite) {
+        if (this.selectedInvite && this.selectedInvite._id == invite._id) {
+            this.selectedInvite = null;
+        }
+        else {
+            this.selectedInvite = invite;
+        }
+    };
+    TeamDetailsComponent.prototype.cancelInvite = function (invite) {
+        var _this = this;
+        this.selectedInvite = invite;
+        this._app.dialog('Cancel an Invitation', 'Are you sure you want to revoke your invitation to ' + invite.email + '? We already sent them the invite, but the link inside will no longer work. We will not notify them that it was cancelled.', 'Yes', function () {
+            _this.userService.cancelInvite(invite).then(function (done) {
+                if (done) {
+                    var index = _this.team.subscription.invites.indexOf(invite);
+                    _this.team.subscription.invites.splice(index, 1);
+                    _this.calculateSubs();
+                }
+            });
         });
     };
     TeamDetailsComponent.prototype.leave = function () {
         this._app.toast("This button doesn't work yet. I'm afraid you're stuck for now.");
+    };
+    TeamDetailsComponent.prototype.buySubscription = function () {
+        this._app.toast("This button doesn't work yet. Soon, though. Soon.");
     };
     return TeamDetailsComponent;
 }());

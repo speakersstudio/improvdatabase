@@ -106,7 +106,7 @@ ToggleAnim.STYLE_ABSOLUTE_OUT = {
 };
 ToggleAnim.fade = animations_1.trigger('fade', basicInOut(ToggleAnim.STYLE_IN, ToggleAnim.STYLE_OUT));
 ToggleAnim.fadeAbsolute = animations_1.trigger('fadeAbsolute', basicInOut(ToggleAnim.STYLE_IN, ToggleAnim.STYLE_ABSOLUTE_OUT));
-ToggleAnim.bubble = animations_1.trigger('dialogSlow', basicInOut(DialogAnim.instyle, DialogAnim.outstyle, DEFAULT_DURATION * 2, EASE_IN_BACK, EASE_OUT_BACK));
+ToggleAnim.bubble = animations_1.trigger('bubble', basicInOut(DialogAnim.instyle, DialogAnim.outstyle, DEFAULT_DURATION * 2, EASE_IN_BACK, EASE_OUT_BACK));
 exports.ToggleAnim = ToggleAnim;
 var ShrinkAnim = (function () {
     function ShrinkAnim() {

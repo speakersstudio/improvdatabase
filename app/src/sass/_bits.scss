@@ -866,7 +866,7 @@ button,
     justify-content: center;
     align-items: center;
     @include fixed(0, 0, 0, 0, 0);
-    transition: z-index 1ms $anim-duration;
+    transition: z-index 1ms 1s;
 
     &.show {
         z-index: 500;

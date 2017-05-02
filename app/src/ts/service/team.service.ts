@@ -8,6 +8,8 @@ import { AppHttp } from '../data/app-http';
 
 import { User } from "../model/user";
 import { Team } from '../model/team';
+import { Purchase } from '../model/purchase';
+import { Invite } from '../model/invite';
 
 @Injectable()
 export class TeamService {
@@ -88,18 +90,26 @@ export class TeamService {
             });
     }
 
-    invite(team: Team, email: string): Promise<string> {
+    invite(team: Team, email: string): Promise<Invite> {
         return this.http.post(this.teamUrl + team._id + '/invite', {email: email})
             .toPromise()
             .then(response => {
-                let data = response.json();
-                if (data.subscription) {
-                    let teamId = data.subscription.team._id ? data.subscription.team._id : data.subscription.team;
-                    this.findTeamById(teamId).subscription = data.subscription;
+                let invite = response.json() as Invite;
+                let teamToUpdate = this.findTeamById(team._id);
+                if (teamToUpdate) {
+                    teamToUpdate.subscription.invites.push(invite);
                 }
-
-                return data.msg;
+                
+                return invite;
             })
+    }
+    
+    fetchPurchases(team: Team): Promise<Purchase[]> {
+        return this.http.get(this.teamUrl + team._id + '/purchases')
+            .toPromise()
+            .then(response => {
+                return response.json() as Purchase[];
+            });
     }
 
 }

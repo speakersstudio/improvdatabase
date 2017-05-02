@@ -33,6 +33,7 @@ module.exports = {
             password = req.body.password,
             userName = req.body.userName,
             teamName = req.body.teamName,
+            userId,
 
             /**
              * Payload: {
@@ -254,6 +255,7 @@ module.exports = {
                 };
                 return userController.createUser(userData)
                     .then(user => {
+                        userId = user._id;
                         if (team) {
                             user.adminOfTeams = util.addToObjectIdArray(user.adminOfTeams, team);
                             return user.save();
@@ -274,7 +276,7 @@ module.exports = {
                 // owner will be a team (if we created one) or a user
 
                 // step 6: create the purchase model (and the subscription)
-                return module.exports.createPurchase(owner, purchase, stripeCustomerId);
+                return module.exports.createPurchase(owner, purchase, stripeCustomerId, userId);
             })
             .then(owner => {
                 // step 7: if we created a team, give the new user a child subscription
@@ -398,7 +400,7 @@ module.exports = {
             })
     },
 
-    createPurchase: (owner, purchase, stripeCustomerId) => {
+    createPurchase: (owner, purchase, stripeCustomerId, userId) => {
 
         let data = {
                 total: purchase.total,
@@ -411,6 +413,7 @@ module.exports = {
             data.user = owner._id;
         } else {
             data.team = owner._id;
+            data.user = userId;
         }
 
         return Purchase.create(data)

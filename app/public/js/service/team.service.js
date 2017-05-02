@@ -86,12 +86,19 @@ var TeamService = (function () {
         return this.http.post(this.teamUrl + team._id + '/invite', { email: email })
             .toPromise()
             .then(function (response) {
-            var data = response.json();
-            if (data.subscription) {
-                var teamId = data.subscription.team._id ? data.subscription.team._id : data.subscription.team;
-                _this.findTeamById(teamId).subscription = data.subscription;
+            var invite = response.json();
+            var teamToUpdate = _this.findTeamById(team._id);
+            if (teamToUpdate) {
+                teamToUpdate.subscription.invites.push(invite);
             }
-            return data.msg;
+            return invite;
+        });
+    };
+    TeamService.prototype.fetchPurchases = function (team) {
+        return this.http.get(this.teamUrl + team._id + '/purchases')
+            .toPromise()
+            .then(function (response) {
+            return response.json();
         });
     };
     return TeamService;

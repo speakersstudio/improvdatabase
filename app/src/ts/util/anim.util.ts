@@ -115,7 +115,7 @@ export class ToggleAnim {
 
     static fade = trigger('fade', basicInOut(ToggleAnim.STYLE_IN, ToggleAnim.STYLE_OUT));
     static fadeAbsolute = trigger('fadeAbsolute', basicInOut(ToggleAnim.STYLE_IN, ToggleAnim.STYLE_ABSOLUTE_OUT));
-    static bubble = trigger('dialogSlow', basicInOut(DialogAnim.instyle, DialogAnim.outstyle, DEFAULT_DURATION * 2, EASE_IN_BACK, EASE_OUT_BACK));
+    static bubble = trigger('bubble', basicInOut(DialogAnim.instyle, DialogAnim.outstyle, DEFAULT_DURATION * 2, EASE_IN_BACK, EASE_OUT_BACK));
 }
 
 export class ShrinkAnim {

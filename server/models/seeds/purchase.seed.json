@@ -4,7 +4,13 @@
     "user": "58c6e5bcd036281f4ce07e01",
     "type": "package",
     "total": 0,
-    "packages": ["58d814593d8da4419cdbc0f1"],
+    "packages": [
+      {
+        "package": "58d814593d8da4419cdbc0f1",
+        "price": 0,
+        "_id": "59023d730013c370d0919e47"
+      }
+    ],
     "subscriptions": ["58d814593d8da4419cdbc0f4"],
     "__v": 0,
     "refunded": false,
@@ -15,7 +21,13 @@
     "user": "58c6e5bcd036281f4ce07dff",
     "type": "package",
     "total": 0,
-    "packages": ["58d814593d8da4419cdbc0f1"],
+    "packages": [
+      {
+        "package": "58d814593d8da4419cdbc0f1",
+        "price": 0,
+        "_id": "59023d730013c370d0919e46"
+      }
+    ],
     "subscriptions": ["58d814593d8da4419cdbc0f6"],
     "__v": 0,
     "refunded": false,

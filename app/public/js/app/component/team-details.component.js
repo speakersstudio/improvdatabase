@@ -15,6 +15,8 @@ var app_component_1 = require("../../component/app.component");
 var team_1 = require("../../model/team");
 var user_service_1 = require("../../service/user.service");
 var team_service_1 = require("../../service/team.service");
+var time_util_1 = require("../../util/time.util");
+var anim_util_1 = require("../../util/anim.util");
 var TeamDetailsComponent = (function () {
     function TeamDetailsComponent(_app, route, userService, teamService) {
         this._app = _app;
@@ -25,15 +27,20 @@ var TeamDetailsComponent = (function () {
             'team_edit'
         ];
         this._tools = [];
+        this._timeUtil = time_util_1.TimeUtil;
     }
     TeamDetailsComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.user = this.userService.getLoggedInUser();
         this.route.params.forEach(function (params) {
             var id = params['id'];
-            _this.teamService.getTeam(id)
-                .then(function (team) { return _this.setTeam(team); });
+            _this.getTeam(id);
         });
+    };
+    TeamDetailsComponent.prototype.getTeam = function (id) {
+        var _this = this;
+        this.teamService.getTeam(id)
+            .then(function (team) { return _this.setTeam(team); });
     };
     TeamDetailsComponent.prototype.can = function (action) {
         var can = this.userService.can(action);
@@ -49,7 +56,9 @@ var TeamDetailsComponent = (function () {
     };
     TeamDetailsComponent.prototype.setTeam = function (team) {
         this.team = team;
+        console.log(this.team);
         this.remainingSubs = team.subscription.subscriptions - team.subscription.children.length;
+        this.pendingInvites = team.subscription.invites.length;
     };
     TeamDetailsComponent.prototype.saveEditName = function (name) {
         this.team.name = name;
@@ -102,7 +111,27 @@ var TeamDetailsComponent = (function () {
         }
     };
     TeamDetailsComponent.prototype.invite = function () {
-        this._app.toast("This button doesn't work yet. Sorry.");
+        this._app.backdrop(true);
+        this.showInviteDialog = true;
+        this.inviteEmail = '';
+    };
+    TeamDetailsComponent.prototype.cancelInvite = function () {
+        this._app.backdrop(false);
+        this.showInviteDialog = false;
+        this.inviteStatus = '';
+    };
+    TeamDetailsComponent.prototype.submitInvite = function () {
+        var _this = this;
+        this.isPosting = true;
+        this.teamService.invite(this.team, this.inviteEmail)
+            .then(function (msg) {
+            _this.isPosting = false;
+            _this.inviteStatus = 'wait';
+            setTimeout(function () {
+                _this.inviteStatus = msg;
+                _this.getTeam(_this.team._id);
+            }, 300);
+        });
     };
     TeamDetailsComponent.prototype.leave = function () {
         this._app.toast("This button doesn't work yet. I'm afraid you're stuck for now.");
@@ -117,7 +146,8 @@ TeamDetailsComponent = __decorate([
     core_1.Component({
         moduleId: module.id,
         selector: "team-details",
-        templateUrl: "../template/team-details.component.html"
+        templateUrl: "../template/team-details.component.html",
+        animations: [anim_util_1.DialogAnim.dialog]
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,
         router_1.ActivatedRoute,

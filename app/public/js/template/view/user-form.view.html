@@ -131,15 +131,13 @@
                 type="password"
                 placeholder="Password"
                 [required]="newUser ? 'required' : 'false'"
-                formInput
-                type="text" />
+                formInput />
             <input name="change-password-confirm"
                 [(ngModel)]="passwordConfirm"
                 type="password"
                 placeholder="Confirm Password"
                 [required]="newUser ? 'required' : 'false'"
-                formInput
-                type="text" />
+                formInput />
         </div>
         <label *ngIf="!newUser">(Leave the password blank if you don't want to change it)</label>
         <label class="error" *ngIf="passwordMatchError">The two passwords you entered do not match.</label>

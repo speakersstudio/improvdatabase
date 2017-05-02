@@ -284,6 +284,9 @@ sup {
 .text-blue {
   color: #64b5f6; }
 
+.text-orange {
+  color: #ffa70f; }
+
 .text-primary {
   color: #d32f2f; }
 
@@ -772,15 +775,20 @@ button,
           display: none; }
       .list .item .metadata span {
         margin: 0 16px 0 0; }
-    .list .item .action .fa {
-      font-size: 24px; }
-    .list .item .action .button {
-      padding: 0;
-      margin: 0 8px;
-      padding: 0;
-      min-width: 24px;
-      width: 24px;
-      text-align: center; }
+    .list .item .action {
+      opacity: 0;
+      transition: opacity 300ms; }
+      .list .item .action .fa {
+        font-size: 24px; }
+      .list .item .action .button {
+        padding: 0;
+        margin: 0 8px;
+        padding: 0;
+        min-width: 24px;
+        width: 24px;
+        text-align: center; }
+    .list .item:hover .action {
+      opacity: 1; }
 
 .metadata > span {
   display: inline-block;
@@ -939,6 +947,9 @@ button,
     color: #d32f2f;
     font-size: 28px;
     text-align: center; }
+  .dialog h3 {
+    font-size: 1.8em;
+    color: #d32f2f; }
 
 .toast {
   position: fixed;
@@ -1372,6 +1383,9 @@ nav {
     width: 100%; }
   .card-list.span3 .card {
     max-width: calc(30% - 32px); }
+    @media only screen and (max-width: 500px) {
+      .card-list.span3 .card {
+        max-width: 100%; } }
   @media only screen and (max-width: 500px) {
     .card-list {
       flex-direction: column;
@@ -2129,6 +2143,10 @@ welcome .toolbar .toolbar-row, signup .toolbar .toolbar-row {
     cursor: pointer; }
     welcome .toolbar .toolbar-row a i, signup .toolbar .toolbar-row a i {
       margin-left: 8px; }
+  @media only screen and (max-width: 500px) {
+    welcome .toolbar .toolbar-row, signup .toolbar .toolbar-row {
+      justify-content: space-between;
+      padding: 0 16px; } }
 
 welcome .toolbar iplus, signup .toolbar iplus {
   position: absolute;
@@ -2150,7 +2168,7 @@ welcome .page, signup .page {
   box-sizing: border-box;
   position: relative;
   z-index: 4;
-  padding: 0 8.7% 8.7%; }
+  padding-top: 0; }
   welcome .page h4, signup .page h4 {
     font-size: 4em;
     margin-bottom: 72px; }
@@ -2179,7 +2197,8 @@ welcome .page, signup .page {
     margin: 0 26px 16px; }
     @media only screen and (max-width: 500px) {
       welcome .page .paper, signup .page .paper {
-        margin: 0 0 16px; } }
+        margin: 0 0 16px;
+        padding: 72px 16px; } }
     welcome .page .paper.list, signup .page .paper.list {
       padding: 0; }
     welcome .page .paper.has-brackets, signup .page .paper.has-brackets {
@@ -2209,10 +2228,12 @@ welcome .page, signup .page {
     color: #FFFFFF; }
     welcome .page .hero h3, signup .page .hero h3 {
       font-size: 4em;
-      margin: 72px 0 24px 0; }
+      margin: 72px 16px 24px; }
     welcome .page .hero h5, signup .page .hero h5 {
       margin-bottom: 24px;
       font-size: 2em; }
+    welcome .page .hero p, signup .page .hero p {
+      margin: 0 16px 24px; }
     welcome .page .hero .content, signup .page .hero .content {
       padding: 0 0 72px 0; }
 

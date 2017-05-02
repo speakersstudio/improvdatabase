@@ -7,7 +7,7 @@ import { AppHttp } from '../data/app-http';
 import { PackageConfig } from '../model/config';
 
 import { Package } from '../model/package';
-import { Purchase, PurchaseOther } from '../model/purchase';
+import { Purchase, PurchaseOther, PurchaseMaterial, PurchasePackage } from '../model/purchase';
 import { MaterialItem, MaterialItemVersion } from '../model/material-item';
 import { Subscription } from '../model/subscription';
 
@@ -53,7 +53,10 @@ export class CartService {
     }
 
     addPackage(pack: Package): Purchase {
-        (<Package[]> this.purchase.packages).push(pack);
+        this.purchase.packages.push({
+            package: pack,
+            price: pack.price
+        });
         this.purchase.total += pack.price;
 
         return this.purchase;

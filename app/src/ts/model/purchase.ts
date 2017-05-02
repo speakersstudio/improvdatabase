@@ -13,13 +13,25 @@ export class PurchaseOther {
     price: number;
 }
 
+export class PurchasePackage {
+    _id?: string;
+    package: string|Package;
+    price: number;
+}
+
+export class PurchaseMaterial {
+    _id?: string;
+    materialItem: string|MaterialItem;
+    price: number;
+}
+
 export class Purchase {
     _id?: string;
     user?: string|User;
     team?: string|Team;
     date?: Date;
-    materials?: string[]|MaterialItem[];
-    packages?: string[]|Package[];
+    materials?: PurchaseMaterial[];
+    packages?: PurchasePackage[];
     // subscription?: string|Subscription;
     other?: PurchaseOther[];
     

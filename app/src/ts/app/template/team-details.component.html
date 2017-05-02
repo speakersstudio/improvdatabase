@@ -93,16 +93,38 @@
                     [class.selected] = "user === selectedUser"
                     (click)="selectUser(user)">
                 </div>
+
+                <div class="item clickable" *ngFor="let invite of team.subscription.invites"
+                    [class.selected] = "invite === selectedInvite"
+                    (click)="selectInvite(invite)">
+
+                    <div class="badge text-orange"><i class="fa fa-envelope-open-o"></i></div>
+
+                    <div class="metadata">
+                        <div class="row">
+                            <h5>{{invite.email}}</h5>
+                        </div>
+
+                        <div class="row">
+                            <span><i class="fa fa-clock-o"></i> Invite sent: {{_timeUtil.simpleDate(invite.date)}}</span>
+                        </div>
+                    </div>
+
+                    <div class="action">
+                        <div class="button" title="Cancel this invitation?!"><i class="fa fa-times"></i></div>
+                    </div>
+                </div>
             </div>
 
             <div class="right">
                 <p>Total Users: <span class="tag grey">{{team.admins.length + team.members.length}}</span></p>
 
                 <div *ngIf="isUserAdmin()" class="right">
+                    <p *ngIf="pendingInvites">Pending Invites: <span class="tag orange">{{pendingInvites}}</span></p>
                     <p>Remaining Subscriptions: <span class="tag">{{remainingSubs}}</span></p>
 
-                    <p *ngIf="remainingSubs > 0">You can invite {{team.subscription.subscriptions - team.subscription.children.length}} more of your team members to join ImprovPlus for free.</p>
-                    <p *ngIf="remainingSubs == 0">You have no more free invites, but you can buy additional subscriptions for your team members.</p>
+                    <p *ngIf="remainingSubs - pendingInvites > 0">You can invite {{team.subscription.subscriptions - team.subscription.children.length}} more of your team members to join ImprovPlus for free.</p>
+                    <p *ngIf="remainingSubs - pendingInvites == 0">You have no more free invites, but you can buy additional subscriptions for your team members.</p>
 
                     <div class="button-group">
                         <div class="button" (click)="leave()">Leave Team</div>
@@ -121,6 +143,49 @@
 
         <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
         <div class="right-bracket"><h1>members</h1></div>
+    </div>
+
+</div>
+
+<div class="dialog-container" [class.show]="showInviteDialog">
+    <div class="dialog-dismiss" (click)="cancelInvite()"></div>
+
+    <div class="dialog invite-form" *ngIf="showInviteDialog && !inviteStatus" [@dialog]>
+
+        <form class="block" name="invite" (ngSubmit)="submitInvite()" #inviteForm="ngForm">
+            <div class="dialog-content">
+                <h3>Invite Someone to {{team.name}}</h3>
+
+                <p>Enter the email address of one of your colleagues here, and they will get a magic code in their inbox to join up. This will use one of the available subscriptions on your Team profile.</p>
+
+                <input name="email" formInput [asterisk]="false" [(ngModel)]="inviteEmail" required type="text" placeholder="Email" />
+
+            </div>
+
+            <div class="button-group" *ngIf="!isPosting">
+                <a (click)="cancelInvite()" class="button">Cancel</a>
+                <input type="submit" class="button raised" value="Send" [disabled]="!inviteForm.form.valid" />
+            </div>
+
+            <div class="button-group" *ngIf="isPosting">
+                <div class="button"><i class="loading"></i></div>
+            </div>
+        </form>
+
+    </div>
+
+    <div class="dialog invite-form" *ngIf="showInviteDialog && inviteStatus=='sent'" [@dialog]>
+
+        <div class="dialog-content">
+            <h3>Invite Sent!</h3>
+
+            <p>Your invite is on its way. When your colleague has accepted your invitation, they will take one of {{team.name}}'s user subscriptions. We will let you know when this happens. You can also check the status of your invite (and cancel it) here on your team's profile.</p>
+        </div>
+
+        <div class="button-group">
+            <a (click)="cancelInvite()" class="button">Okay Bye</a>
+        </div>
+
     </div>
 
 </div>

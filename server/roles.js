@@ -385,35 +385,37 @@ const actionmap = {
     },
     team: {
         default: function(url, method, user) {
-            let admin;
+            let action;
             switch(method) {
                 case "get":
                     if (url.indexOf('materials') > -1) {
-                        admin = 'material_view';
+                        action = 'material_view';
                     } else {
-                        admin = 'team_view';
+                        action = 'team_view';
                     }
                     break;
                 case "put":
-                    admin = 'team_edit';
+                    action = 'team_edit';
                     break;
                 case "delete":
-                    admin = 'team_delete';
+                    action = 'team_delete';
                     break;
                 case "post":
                     if (url.indexOf('team/validate') > -1) {
-                        admin = 'team_validate';
+                        action = 'team_validate';
+                    } else if (url.indexOf('/invite') > -1) {
+                        action = 'team_invite';
                     } else {
-                        admin = 'users_create';
+                        action = 'users_create';
                     }
                     break;
                 default:
-                    admin = "nothing";
+                    action = "nothing";
                     break;
             }
 
             // admins can view and edit anybody
-            if (module.exports.doesUserHaveAction(user, admin)) {
+            if (module.exports.doesUserHaveAction(user, action)) {
                 return true;
             }
 

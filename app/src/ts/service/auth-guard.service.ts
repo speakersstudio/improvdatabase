@@ -19,10 +19,7 @@ export class AuthGuard implements CanActivateChild {
     canActivateChild (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean>|boolean {
         //console.log(this.userService.getLoggedInUser());
 
-        console.log('is user refreshing?', this.userService.isLoggingIn);
-
         if (this.userService.isLoggingIn) {
-            console.log('Waiting for user refresh');
             return this.userService.loginPromise.then(() => {
                 return Promise.resolve(this.canActivateChild(route, state));
             });

@@ -88,4 +88,18 @@ export class TeamService {
             });
     }
 
+    invite(team: Team, email: string): Promise<string> {
+        return this.http.post(this.teamUrl + team._id + '/invite', {email: email})
+            .toPromise()
+            .then(response => {
+                let data = response.json();
+                if (data.subscription) {
+                    let teamId = data.subscription.team._id ? data.subscription.team._id : data.subscription.team;
+                    this.findTeamById(teamId).subscription = data.subscription;
+                }
+
+                return data.msg;
+            })
+    }
+
 }

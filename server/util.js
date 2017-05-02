@@ -120,14 +120,6 @@ module.exports = {
     },
 
     populations: {
-        team: {
-            path: 'admins members subscription',
-            select: '-stripeCustomerId -password',
-            populate: {
-                path: 'subscription',
-                select: '-stripeCustomerId'
-            }
-        },
         materials: {
             path: 'materials',
             options: {
@@ -213,6 +205,32 @@ module.exports = {
                 callback(err);
             }
         });
+    },
+
+    findChanges: (oldObject, newObject) => {
+
+        let oldKeys = Object.keys(oldObject),
+            newKeys = Object.keys(newObject),
+            ignore = ['date', 'dateModified', 'password', 'user', 'team', 'subscription', 'purchases', '_id', 'adminOfTeams', 'memberOfTeams', 'dateAdded', 'preferences'],
+            changes = [];
+
+        oldKeys.forEach(key => {
+            if (ignore.indexOf(key) == -1) {
+                let oldval = oldObject[key],
+                    newval = newObject[key];
+
+                if (oldval != newval) {
+                    changes.push({
+                        property: key,
+                        old: oldval,
+                        new: newval
+                    });
+                }
+            }
+        });
+
+        return changes;
+
     }
 
 }

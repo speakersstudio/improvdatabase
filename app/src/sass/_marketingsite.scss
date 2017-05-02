@@ -154,6 +154,11 @@ welcome, signup {
                     margin-left: $small;
                 }
             }
+
+            @media #{$media-mobile} {
+                justify-content: space-between;
+                padding: 0 $std;
+            }
         }
 
         iplus {
@@ -179,7 +184,7 @@ welcome, signup {
         box-sizing: border-box;
         position: relative;
         z-index: 4;
-        padding: 0 $page-bracket-width $page-bracket-width;
+        padding-top: 0;
 
         h4 {
             font-size: 4em;
@@ -227,6 +232,7 @@ welcome, signup {
 
             @media #{$media-mobile} {
                 margin: 0 0 $std;
+                padding: $home-page-spacing $std;
             }
 
             &.list {
@@ -277,12 +283,16 @@ welcome, signup {
 
             h3 {
                 font-size: 4em;
-                margin: $home-page-spacing 0 $large 0;
+                margin: $home-page-spacing $std $large;
             }
 
             h5 {
                 margin-bottom: $large;
                 font-size: 2em;
+            }
+
+            p {
+                margin: 0 $std $large;
             }
 
             .content {

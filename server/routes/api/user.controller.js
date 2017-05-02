@@ -8,6 +8,7 @@ const   mongoose = require('mongoose'),
 
         Subscription = require('../../models/subscription.model'),
         User = require('../../models/user.model'),
+        HistoryModel = require('../../models/history.model'),
 
         WHITELIST = [
             'email',
@@ -54,7 +55,8 @@ module.exports = {
     update: (req, res) => {
         let formData = req.body,
             password = req.body.password,
-            promise;
+            promise,
+            oldUser;
 
         if (password) {
             promise = bcrypt.hash(password, config.saltRounds);
@@ -65,6 +67,9 @@ module.exports = {
         promise.then(hash => {
              return module.exports.findUser(req.params.id, null, null, true)
                 .then(user => {
+                    oldUser = user.toObject();
+                    delete oldUser.password;
+
                     user = util.smartUpdate(user, formData, WHITELIST);
 
                     if (hash) {
@@ -75,6 +80,20 @@ module.exports = {
                         if (err) {
                             util.handleError(req, res, err);
                         } else {
+                            let changes = util.findChanges(oldUser, saved);
+
+                            if (hash) {
+                                changes.push({
+                                    property: 'password'
+                                });
+                            }
+
+                            HistoryModel.create({
+                                user: saved,
+                                action: 'account_edit',
+                                changes: changes
+                            });
+
                             saved = module.exports.prepUserObject(saved);
 
                             if (res) {
@@ -204,7 +223,7 @@ module.exports = {
         let populate = {
             path: 'purchases',
             populate: {
-                path: 'packages materials'
+                path: 'packages.package materials.materialItem'
             },
             options: {
                 sort: 'date'
@@ -249,7 +268,7 @@ module.exports = {
             .populate({
                 path: 'purchases',
                 populate: {
-                    path: 'materials packages',
+                    path: 'materials.materialItem packages.package',
                     populate: {
                         path: 'materials packages',
                         populate: {
@@ -270,7 +289,8 @@ module.exports = {
 
                     addItems = array => {
                         if (array && array.length) {
-                            array.forEach(item => {
+                            array.forEach(arrayItem => {
+                                let item = arrayItem.package || arrayItem;
                                 if (item.name) {
                                     // if it has a name, it's a package
                                     // just add the data without adding the actual package because we don't want to cause any crazy recursiveness

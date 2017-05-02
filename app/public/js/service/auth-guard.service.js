@@ -20,9 +20,7 @@ var AuthGuard = (function () {
     AuthGuard.prototype.canActivateChild = function (route, state) {
         //console.log(this.userService.getLoggedInUser());
         var _this = this;
-        console.log('is user refreshing?', this.userService.isLoggingIn);
         if (this.userService.isLoggingIn) {
-            console.log('Waiting for user refresh');
             return this.userService.loginPromise.then(function () {
                 return Promise.resolve(_this.canActivateChild(route, state));
             });

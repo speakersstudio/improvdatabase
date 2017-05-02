@@ -81,6 +81,19 @@ var TeamService = (function () {
             }
         });
     };
+    TeamService.prototype.invite = function (team, email) {
+        var _this = this;
+        return this.http.post(this.teamUrl + team._id + '/invite', { email: email })
+            .toPromise()
+            .then(function (response) {
+            var data = response.json();
+            if (data.subscription) {
+                var teamId = data.subscription.team._id ? data.subscription.team._id : data.subscription.team;
+                _this.findTeamById(teamId).subscription = data.subscription;
+            }
+            return data.msg;
+        });
+    };
     return TeamService;
 }());
 TeamService = __decorate([

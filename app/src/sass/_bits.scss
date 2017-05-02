@@ -16,6 +16,9 @@
     &blue {
         color: $color-blue;
     }
+    &orange {
+        color: $color-orange;
+    }
     &primary {
         color: $color-primary;
     }
@@ -648,6 +651,9 @@ button,
         }
 
         .action {
+            opacity: 0;
+            transition: opacity $anim-duration;
+
             .fa {
                 font-size: $icon-size;
             }
@@ -659,6 +665,12 @@ button,
                 min-width: $icon-size;
                 width: $icon-size;
                 text-align: center;
+            }
+        }
+
+        &:hover {
+            .action {
+                opacity: 1;
             }
         }
     }
@@ -891,6 +903,11 @@ button,
         color: $color-primary;
         font-size: 28px;
         text-align: center;
+    }
+
+    h3 {
+        font-size: 1.8em;
+        color: $color-primary;
     }
 }
 

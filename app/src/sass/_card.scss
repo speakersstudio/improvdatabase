@@ -33,6 +33,10 @@
     &.span3 {
         .card {
             max-width: calc(30% - #{$std * 2});
+
+            @media #{$media-mobile} {
+                max-width: 100%;
+            }
         }
     }
 

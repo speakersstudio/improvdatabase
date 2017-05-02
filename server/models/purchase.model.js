@@ -8,8 +8,14 @@ const PurchaseSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     team: { type: mongoose.Schema.Types.ObjectId, ref: 'Team' },
     date: { type: Date, default: Date.now },
-    materials: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MaterialItem' }],
-    packages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Package' }],
+    materials: [{
+        materialItem: { type: mongoose.Schema.Types.ObjectId, ref: 'MaterialItem' },
+        price: Number
+    }],
+    packages: [{
+        package: { type: mongoose.Schema.Types.ObjectId, ref: 'Package' },
+        price: Number
+    }],
     
     // subscription: { type: mongoose.Schema.Types.ObjectId, ref: 'Subscription' },
     other: [

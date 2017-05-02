@@ -46,7 +46,10 @@ var CartService = (function () {
         }
     };
     CartService.prototype.addPackage = function (pack) {
-        this.purchase.packages.push(pack);
+        this.purchase.packages.push({
+            package: pack,
+            price: pack.price
+        });
         this.purchase.total += pack.price;
         return this.purchase;
     };

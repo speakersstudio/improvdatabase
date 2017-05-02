@@ -111,8 +111,8 @@ module.exports = {
                     packagePromise;
 
                 purchase.packages.forEach(p => {
-                    if (p._id !== 'sub') {
-                        packageIds.push(p._id);
+                    if (p.package._id !== 'sub') {
+                        packageIds.push(p.package._id);
                     }
                 });
                 // let's face it, a signup won't have material items
@@ -129,15 +129,23 @@ module.exports = {
 
                         let isSubFree = false;
 
+                        purchase.packages = []
                         if (packages) {
                             packages.forEach(p => {
-                                total += p.price;
+                                let price = p.price;
                                 if (teamName) {
                                     // team packages are more expensive than for individuals
-                                    total += packageConfig.fac_team_package_markup;
+                                    price += packageConfig.fac_team_package_markup;
                                 }
+                                total += price;
                                 desc += p.name;
+
+                                purchase.packages.push({
+                                    package: p,
+                                    price: price
+                                });
                             });
+
                             // if they chose a package, we will throw in a subscription
                             purchase.other.push({
                                 key: 'subscription',

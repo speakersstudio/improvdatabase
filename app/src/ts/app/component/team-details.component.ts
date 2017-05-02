@@ -13,10 +13,13 @@ import { TeamService } from '../../service/team.service';
 
 import { TimeUtil } from '../../util/time.util';
 
+import { DialogAnim, ToggleAnim } from '../../util/anim.util';
+
 @Component({
     moduleId: module.id,
     selector: "team-details",
-    templateUrl: "../template/team-details.component.html"
+    templateUrl: "../template/team-details.component.html",
+    animations: [DialogAnim.dialog]
 })
 export class TeamDetailsComponent implements OnInit {
 
@@ -29,8 +32,11 @@ export class TeamDetailsComponent implements OnInit {
 
     address: string;
     remainingSubs: number;
+    pendingInvites: number;
 
     selectedUser: User;
+
+    isPosting: boolean;
 
     constructor(
         private _app: AppComponent,
@@ -42,14 +48,20 @@ export class TeamDetailsComponent implements OnInit {
     private _tools: Tool[] = [
     ]
 
+    _timeUtil = TimeUtil;
+
     ngOnInit(): void {
         this.user = this.userService.getLoggedInUser();
 
         this.route.params.forEach((params: Params) => {
-            let id = params['id']
-            this.teamService.getTeam(id)
-                .then(team => this.setTeam(team));
+            let id = params['id'];
+            this.getTeam(id);
         });
+    }
+
+    getTeam(id: string): void {
+        this.teamService.getTeam(id)
+            .then(team => this.setTeam(team));
     }
 
     can(action: string): boolean {
@@ -69,7 +81,10 @@ export class TeamDetailsComponent implements OnInit {
     setTeam(team: Team): void {
         this.team = team;
 
-        this.remainingSubs = team.subscription.subscriptions - team.subscription.children.length
+        console.log(this.team);
+
+        this.remainingSubs = team.subscription.subscriptions - team.subscription.children.length;
+        this.pendingInvites = team.subscription.invites.length;
     }
 
     saveEditName(name: string): void {
@@ -134,8 +149,36 @@ export class TeamDetailsComponent implements OnInit {
         }
     }
 
+    showInviteDialog: boolean;
+    inviteEmail: string;
+    inviteStatus: string;
+
     invite(): void {
-        this._app.toast("This button doesn't work yet. Sorry.");
+        this._app.backdrop(true);
+
+        this.showInviteDialog = true;
+        this.inviteEmail = '';
+    }
+
+    cancelInvite(): void {
+        this._app.backdrop(false);
+        
+        this.showInviteDialog = false;
+        this.inviteStatus = '';
+    }
+
+    submitInvite(): void {
+        this.isPosting = true;
+
+        this.teamService.invite(this.team, this.inviteEmail)
+            .then(msg => {
+                this.isPosting = false;
+                this.inviteStatus = 'wait';
+                setTimeout(() => {
+                    this.inviteStatus = msg;
+                    this.getTeam(this.team._id);
+                }, 300);
+            })
     }
 
     leave(): void {

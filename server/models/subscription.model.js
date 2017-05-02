@@ -5,6 +5,7 @@ const mongoose = require('mongoose'),
 
     Team = require('./team.model');
     User = require('./user.model');
+    Invite = require('./invite.model');
 
 // track a user's account status in the app
 const SubscriptionSchema = new mongoose.Schema({
@@ -19,6 +20,7 @@ const SubscriptionSchema = new mongoose.Schema({
     team: { type: mongoose.Schema.Types.ObjectId, ref: 'Team' },
     subscriptions: Number, // the number of users purchased
     children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Subscription' }], // users that have inherited from this
+    invites: [{type: mongoose.Schema.Types.ObjectId, ref: 'Invite' }],
 
     // for user subscriptions
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

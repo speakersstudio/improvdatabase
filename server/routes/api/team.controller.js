@@ -7,11 +7,13 @@ const   mongoose = require('mongoose'),
         config = require('../../config')(),
         roles = require('../../roles'),
         util = require('../../util'),
+        emailUtil = require('../../email'),
 
         userController = require('./user.controller'),
 
         Subscription = require('../../models/subscription.model'),
         Team = require('../../models/team.model'),
+        Invite = require('../../models/invite.model'),
 
         WHITELIST = [
             'email',
@@ -32,7 +34,22 @@ module.exports = {
     get: (req, res) => {
         let id = req.params.id;
         return Team.findOne({}).where('_id').equals(id)
-            .populate(util.populations.team)
+            .populate({
+                path: 'admins members',
+                select: '-password',
+                populate: {
+                    path: 'subscription',
+                    select: '-stripeCustomerId'
+                }
+            })
+            .populate({
+                path: 'subscription',
+                select:'-stripeCustomerId',
+                populate: {
+                    path: 'invites',
+                    match: { accepted: false }
+                }
+            })
             .exec()
             .then(t => {
                 res.json(t);
@@ -106,6 +123,93 @@ module.exports = {
         let query = Team.findOne({}).where('_id').equals(req.params.id);
 
         return userController.collectMaterials(query, req, res);
+    },
+
+    invite: (req, res) => {
+
+        let user = req.user,
+            teamId = req.params.id,
+            email = req.body.email;
+
+        // first, see that the user requesting this is an admin of the team
+        if (util.indexOfObjectId(user.adminOfTeams, teamId) > -1) {
+            return Subscription.findOne({})
+                .where('team').equals(teamId)
+                .populate('team')
+                .exec()
+                .then(subscription => {
+
+                    // TODO: check to see if the user has already been invited
+
+                    // check if the email address entered is already a user
+                    User.findOne({}).where('email').equals(email).exec()
+                        .then(addUser => {
+                            if (addUser) {
+                                // the user does exist! 
+
+                                // . . . what happens now??
+                                res.json({msg: 'exists'});
+                            } else {
+                                // Make sure the team has any available subscriptions to use
+
+
+                                // if they aren't a user, create a new invite object
+                                return Invite.create({
+                                        user: req.user._id,
+                                        email: email,
+                                        role: subscription.role,
+                                        team: subscription.team._id
+                                    })
+                                    .then(invite => {
+                                        // send an email to the user using the new invite's _id
+                                        let inviteId = invite._id.toString(),
+                                            name = user.firstName + ' ' + user.lastName,
+                                            nameText = name ? 'Your colleague, ' + name + ', ' : 'Your colleague';
+
+                                        emailUtil.send({
+                                            to: email,
+                                            subject: 'You have been invited to join ImprovPlus',
+                                            content: {
+                                                type: 'text',
+                                                greeting: 'ImprovPlus Awaits!',
+                                                body: `
+                                                    <p>${nameText} has invited you to join ${subscription.team.name} on ImprovPlus.</p>
+
+                                                    <p>ImprovPlus is an online community for the world of Improv, helping Facilitators and Improvisers connect, share, and develop themselves and their techniques. By joining ImprovPlus, you will be on your way to making your world more Awesome.</p>
+
+                                                    <p>You will be able to use the subscription already set up for ${subscription.team.name}, which means you will gain full access to the app and all of your team's resources right away.</p>
+                                                `,
+                                                action: 'https://improvpl.us/invite/' + inviteId,
+                                                actionText: 'Join Now',
+                                                afterAction: `
+                                                    <p>If that button doesn't work for you (or your email account messed up the contents of this message and you don't see any button), you can accept this invite by visiting https://improvpl.us/invite/${inviteId} in your browser.</p>
+
+                                                    <p>Be excellent to each other, and party on.</p>
+
+                                                    <p>Sincerely,</p>
+
+                                                    <p>The Proprietors of <span class="light">improv</span><strong>plus</strong>.</p>
+                                                `
+                                            }
+                                        }, (error, response) => {
+
+                                            subscription.invites.push(invite);
+
+                                            subscription.save().then(subscription => {
+                                                res.json({msg: 'sent', subscription: subscription});
+                                            });
+
+                                        })
+                                    })
+                            }
+                        })
+
+                })
+
+        } else {
+            auth.unauthorized(req, res);
+        }
+
     }
 
 }

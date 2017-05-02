@@ -90,7 +90,7 @@
 
         <div class="card-list" *ngFor="let team of teamPurchases">
 
-            <div class="card small"
+            <div class="card"
                 *ngFor="let purchase of team.purchases">
 
                 <div class="top">
@@ -103,7 +103,7 @@
                 </div>
                 <div class="body">
                     <div class="columns fill" *ngFor="let package of purchase.packages">
-                        <span>{{package.name}}</span>
+                        <span>{{package.package.name}}</span>
                         <span>${{package.price}}</span>
                     </div>
                     <div class="columns fill" *ngFor="let o of purchase.other">
@@ -111,7 +111,7 @@
                         <span>${{o.price}}</span>
                     </div>
 
-                    <div class="columns fill" *ngIf="purchase.packages">
+                    <!--<div class="columns fill" *ngIf="purchase.packages">
                         <div>
                             <p><strong>{{purchase.package.name}}</strong></p>
                             <p *ngIf="purchase.package.subscriptions == 1"><em>One-year App Subscription</em></p>
@@ -119,6 +119,15 @@
                             <p *ngIf="purchase.package.materials.length > 1"><em>{{purchase.package.materials.length}} Materials</em></p>
                         </div>
                         <p>${{purchase.package.price}}</p>
+                    </div>-->
+
+                    <div class="columns fill">
+                        <div>---</div>
+                    </div>
+
+                    <div class="columns fill">
+                        <span>Total:</span>
+                        <strong>${{purchase.total}}</strong>
                     </div>
                 </div>
             </div>

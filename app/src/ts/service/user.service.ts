@@ -9,6 +9,7 @@ import { AppHttp } from '../data/app-http';
 import { User } from "../model/user";
 import { Team } from '../model/team';
 import { Purchase } from '../model/purchase';
+import { Invite } from '../model/invite';
 
 import { TeamService } from './team.service';
 
@@ -33,6 +34,7 @@ export class UserService {
     private refreshUrl = '/refreshToken';
     private userUrl = '/api/user/';
     private validateUrl = this.userUrl + 'validate';
+    private inviteUrl = '/api/invite/';
 
     loggedInUser: User;
 
@@ -282,6 +284,26 @@ export class UserService {
                     return '';
                 }
             })
+    }
+
+    cancelInvite(invite: Invite): Promise<boolean> {
+        return this.http.delete(this.inviteUrl + invite._id)
+            .toPromise()
+            .then(response => {
+                return true;
+            })
+    }
+
+    acceptInvite(inviteId: string, email: string, password: string, name: string): Promise<User> {
+        return this.http.post(this.userUrl, {
+            email: email,
+            password: password,
+            invite: inviteId,
+            name: name
+        }).toPromise()
+        .then(response => {
+            return response.json() as User;
+        });
     }
 
     /**

@@ -8,6 +8,7 @@ import { WelcomeComponent } from '../component/ms.welcome.component';
 import { LoginScreenComponent } from '../component/login-screen.component';
 import { SignupComponent } from '../component/signup.component';
 import { ChangePasswordComponent } from '../component/change-password.component';
+import { InviteComponent } from '../component/invite.component';
 
 const routes: Routes = [
     {
@@ -26,6 +27,10 @@ const routes: Routes = [
     {
         path: 'signup',
         component: SignupComponent
+    },
+    {
+        path: 'invite/:id',
+        component: InviteComponent
     },
     {
         path: 'resetMyPassword/:token',

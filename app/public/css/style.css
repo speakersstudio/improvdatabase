@@ -918,7 +918,7 @@ button,
   bottom: 0;
   left: 0;
   z-index: 0;
-  transition: z-index 1ms 300ms; }
+  transition: z-index 1ms 1s; }
   .dialog-container.show {
     z-index: 500;
     transition: z-index 1ms 0ms; }

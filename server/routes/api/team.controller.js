@@ -15,6 +15,7 @@ const   mongoose = require('mongoose'),
         Team = require('../../models/team.model'),
         Invite = require('../../models/invite.model'),
         Purchase = require('../../models/purchase.model'),
+        HistoryModel = require('../../models/history.model'),
 
         WHITELIST = [
             'email',
@@ -128,13 +129,13 @@ module.exports = {
 
     purchases: (req, res) => {
         // only team admins can do this
-        if (req.user.adminOfTeams.indexOf(req.params.id) == -1) {
+        if (util.indexOfObjectId(req.user.adminOfTeams, req.params.id) == -1) {
             return auth.unauthorized(req, res);
         }
 
         return Purchase.find({})
             .where('team').equals(req.params.id)
-            .populate('user packages.package materials.material')
+            .populate('packages.package materials.material')
             .exec()
             .then(p => {
                 res.json(p);
@@ -211,8 +212,14 @@ module.exports = {
 
                                             subscription.invites.push(invite);
 
+                                            HistoryModel.create({
+                                                user: req.user._id,
+                                                action: 'team_subscription_invite',
+                                                reference: email
+                                            });
+
                                             subscription.save().then(subscription => {
-                                                res.json({msg: 'sent', subscription: subscription});
+                                                res.json(invite);
                                             });
 
                                         })

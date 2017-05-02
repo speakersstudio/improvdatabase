@@ -16,7 +16,8 @@
         </span>
     </div>
 
-    <div class="paper has-brackets" *ngIf-"selectedTab == 'team'">
+    <!-- team details -->
+    <div class="paper has-brackets" *ngIf="selectedTab == 'team'">
 
         <div class="content" *ngIf="team">
 
@@ -93,45 +94,8 @@
         <div class="right-bracket"><h1>team details</h1></div>
     </div>
 
-    <!--<div class="paper has-brackets" *ngIf="selectedTab == 'purchases'">
-        <div class="card-list">
-
-            <div class="card"
-                *ngFor="let purchase of purchases">
-
-                <div class="top">
-                    <i class="fa fa-users" *ngIf="purchase.team" title="This purchase was made for your team."></i>
-                    <div class="content">
-                        <h4 *ngIf="purchase.team">{{purchase.team.name}}</h4>
-                        <h3>{{getDate(purchase.date)}}</h3>
-                        <h4>{{getTime(purchase.date)}}</h4>
-                    </div>
-                </div>
-                <div class="body">
-                    <div class="columns fill" *ngFor="let package of purchase.packages">
-                        <span>{{package.package.name}}</span>
-                        <span>${{package.price}}</span>
-                    </div>
-                    <div class="columns fill" *ngFor="let o of purchase.other">
-                        <span>{{o.description}}</span>
-                        <span>${{o.price}}</span>
-                    </div>
-
-                    <div class="columns fill">
-                        <div>---</div>
-                    </div>
-
-                    <div class="columns fill">
-                        <span>Total:</span>
-                        <strong>${{purchase.total}}</strong>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>-->
-<!--
-    <div class="paper has-brackets">
+    <!-- member list -->
+    <div class="paper has-brackets" *ngIf="selectedTab == 'members'">
 
         <div class="content" *ngIf="team">
             <div class="list">
@@ -159,7 +123,7 @@
                     </div>
 
                     <div class="action">
-                        <div class="button" title="Cancel this invitation?!"><i class="fa fa-times"></i></div>
+                        <div class="button" title="Cancel this invitation?!" *ngIf="isUserAdmin()" (click)="cancelInvite(invite)"><i class="fa fa-times"></i></div>
                     </div>
                 </div>
             </div>
@@ -169,14 +133,16 @@
 
                 <div *ngIf="isUserAdmin()" class="right">
                     <p *ngIf="pendingInvites">Pending Invites: <span class="tag orange">{{pendingInvites}}</span></p>
-                    <p>Remaining Subscriptions: <span class="tag">{{remainingSubs}}</span></p>
+                    <p>Remaining Subscriptions: <span class="tag">{{remainingSubs}} of {{team.subscription.subscriptions}}</span></p>
 
-                    <p *ngIf="remainingSubs - pendingInvites > 0">You can invite {{team.subscription.subscriptions - team.subscription.children.length}} more of your team members to join ImprovPlus for free.</p>
-                    <p *ngIf="remainingSubs - pendingInvites == 0">You have no more free invites, but you can buy additional subscriptions for your team members.</p>
+                    <p *ngIf="remainingSubs > 0">You can invite {{remainingSubs}} more of your team members to join ImprovPlus for free.</p>
+                    <p *ngIf="remainingSubs == 0">You have no more free invites, but you can buy additional user subscriptions for your team members.</p>
 
                     <div class="button-group">
                         <div class="button" (click)="leave()">Leave Team</div>
-                        <div class="button raised" (click)="invite()">Invite Someone</div>
+
+                        <div class="button raised" (click)="invite()" *ngIf="remainingSubs > 0">Invite Someone</div>
+                        <div class="button raised" (click)="buySubscription()" *ngIf="remainingSubs == 0">Buy Subscriptions</div>
                     </div>
                 </div>
 
@@ -191,12 +157,57 @@
 
         <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
         <div class="right-bracket"><h1>members</h1></div>
-    </div>-->
+    </div>
+
+    <!-- team purchases -->
+    <div class="paper has-brackets" *ngIf="can('team_purchases_view') && selectedTab == 'purchases'">
+        <div class="card-list">
+
+            <div class="card"
+                *ngFor="let purchase of purchases">
+
+                <div class="top">
+                    <i class="fa fa-users" *ngIf="purchase.team" title="This purchase was made for your team."></i>
+                    <div class="content">
+                        <h4 *ngIf="purchase.team">{{purchase.team.name}}</h4>
+                        <h3>{{getDate(purchase.date)}}</h3>
+                        <h4>{{getTime(purchase.date)}}</h4>
+                    </div>
+                </div>
+                <div class="body">
+                    <p>Made by {{purchase.user.firstName ? purchase.user.firstName + ' ' + purchase.user.lastName : purchase.user.email}}</p>
+
+                    <div class="columns fill">
+                        <div>---</div>
+                    </div>
+
+                    <div class="columns fill" *ngFor="let package of purchase.packages">
+                        <span>{{package.package.name}}</span>
+                        <span>${{package.price}}</span>
+                    </div>
+                    <div class="columns fill" *ngFor="let o of purchase.other">
+                        <span>{{o.description}}</span>
+                        <span>${{o.price}}</span>
+                    </div>
+
+                    <div class="columns fill">
+                        <div>---</div>
+                    </div>
+
+                    <div class="columns fill">
+                        <span>Total:</span>
+                        <strong>${{purchase.total}}</strong>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
 
 </div>
 
 <div class="dialog-container" [class.show]="showInviteDialog">
-    <div class="dialog-dismiss" (click)="cancelInvite()"></div>
+    <div class="dialog-dismiss" (click)="cancelInviteDialog()"></div>
 
     <div class="dialog invite-form" *ngIf="showInviteDialog && !inviteStatus" [@dialog]>
 
@@ -211,7 +222,7 @@
             </div>
 
             <div class="button-group" *ngIf="!isPosting">
-                <a (click)="cancelInvite()" class="button">Cancel</a>
+                <a (click)="cancelInviteDialog()" class="button">Cancel</a>
                 <input type="submit" class="button raised" value="Send" [disabled]="!inviteForm.form.valid" />
             </div>
 
@@ -231,7 +242,7 @@
         </div>
 
         <div class="button-group">
-            <a (click)="cancelInvite()" class="button">Okay Bye</a>
+            <a (click)="cancelInviteDialog()" class="button">Okay Bye</a>
         </div>
 
     </div>

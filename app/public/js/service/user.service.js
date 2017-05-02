@@ -32,6 +32,7 @@ var UserService = (function () {
         this.refreshUrl = '/refreshToken';
         this.userUrl = '/api/user/';
         this.validateUrl = this.userUrl + 'validate';
+        this.inviteUrl = '/api/invite/';
         this.logginStateSource = new Rx_1.Subject();
         this.loginState$ = this.logginStateSource.asObservable();
         this.loadUserData();
@@ -243,6 +244,24 @@ var UserService = (function () {
             else {
                 return '';
             }
+        });
+    };
+    UserService.prototype.cancelInvite = function (invite) {
+        return this.http.delete(this.inviteUrl + invite._id)
+            .toPromise()
+            .then(function (response) {
+            return true;
+        });
+    };
+    UserService.prototype.acceptInvite = function (inviteId, email, password, name) {
+        return this.http.post(this.userUrl, {
+            email: email,
+            password: password,
+            invite: inviteId,
+            name: name
+        }).toPromise()
+            .then(function (response) {
+            return response.json();
         });
     };
     /**

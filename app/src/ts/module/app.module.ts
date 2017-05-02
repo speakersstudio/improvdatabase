@@ -22,7 +22,8 @@ import { ImprovPlusModule } from '../app/module/improvplus.module';
 
 import { LoginScreenComponent } from '../component/login-screen.component';
 import { SignupComponent } from '../component/signup.component';
-import { ChangePasswordComponent } from '../component/change-password.component';
+import { ChangePasswordComponent } from '../component/change-password.component'
+import { InviteComponent } from '../component/invite.component';
 
 // import { FormInputDirective } from '../view/form-input.directive';
 
@@ -41,7 +42,8 @@ import { ChangePasswordComponent } from '../component/change-password.component'
         AppComponent,
         WelcomeComponent,
         SignupComponent,
-        ChangePasswordComponent
+        ChangePasswordComponent,
+        InviteComponent
     ],
     bootstrap: [ AppComponent ],
     providers: [

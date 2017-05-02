@@ -36,7 +36,8 @@ module.exports = {
             actions: [
                 'package_view',
                 'user_validate',
-                'team_validate'
+                'team_validate',
+                'user_create' // with a valid invite
             ]
         },
         {
@@ -88,7 +89,9 @@ module.exports = {
 
                 'team_page_view',
                 'team_view', // get teams
-                'team_create' // users can create teams!
+                'team_create', // users can create teams!
+
+                'invite_delete' // users can cancel invites that they sent
             ]
         },
         {
@@ -363,7 +366,7 @@ const actionmap = {
                     if (url.indexOf('user/validate') > -1) {
                         admin = 'user_validate';
                     } else {
-                        admin = 'users_create';
+                        admin = 'user_create';
                     }
                     break;
                 default:
@@ -391,7 +394,7 @@ const actionmap = {
                 case "get":
                     if (url.indexOf('materials') > -1) {
                         action = 'material_view';
-                    } else if (url.indexOf('purchases')) {
+                    } else if (url.indexOf('purchases') > -1) {
                         action = 'team_purchases_view';
                     } else {
                         action = 'team_view';
@@ -409,7 +412,7 @@ const actionmap = {
                     } else if (url.indexOf('/invite') > -1) {
                         action = 'team_invite';
                     } else {
-                        action = 'users_create';
+                        action = 'team_create';
                     }
                     break;
                 default:
@@ -422,7 +425,7 @@ const actionmap = {
                 return true;
             }
 
-            // TODO: members and admins can view a team's materials
+            // TODO: validate team admin stuff here?
         }
     },
     contact: {

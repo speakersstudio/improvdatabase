@@ -7,11 +7,14 @@
     "packages": [
       {
         "package": "58d814593d8da4419cdbc0f1",
-        "price": 0,
-        "_id": "59023d730013c370d0919e47"
+        "price": 0
       }
     ],
-    "subscriptions": ["58d814593d8da4419cdbc0f4"],
+    "other":[{
+      "key": "subscription",
+      "description": "Hi Kate! You found me!",
+      "price": 0
+    }],
     "__v": 0,
     "refunded": false,
     "date": "2017-03-26T19:19:53.063Z"
@@ -24,11 +27,14 @@
     "packages": [
       {
         "package": "58d814593d8da4419cdbc0f1",
-        "price": 0,
-        "_id": "59023d730013c370d0919e46"
+        "price": 0
       }
     ],
-    "subscriptions": ["58d814593d8da4419cdbc0f6"],
+    "other":[{
+      "key": "subscription",
+      "description": "Hi Shauvon!",
+      "price": 0
+    }],
     "__v": 0,
     "refunded": false,
     "date": "2017-03-26T19:19:53.088Z"

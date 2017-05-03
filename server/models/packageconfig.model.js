@@ -10,6 +10,6 @@ const PackageConfigSchema = new mongoose.Schema({
     fac_team_package_markup: Number
 });
 
-const PackageConfigModel = mongoose.model('Config', PackageConfigSchema);
+const PackageConfigModel = mongoose.model('PackageConfig', PackageConfigSchema);
 
 module.exports = PackageConfigModel;

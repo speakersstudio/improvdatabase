@@ -9,280 +9,257 @@ var config = require('./config')();
 const charge = require('./routes/charge'),
     roles = require('./roles');
 
+const Contact = require('./models/contact.model.js');
+const InviteModel = require('./models/invite.model');
 const Subscription = require('./models/subscription.model');
 const Purchase = require('./models/purchase.model');
 const User = require('./models/user.model');
+const Team = require('./models/team.model');
 const MaterialItem = require('./models/material-item.model');
 const Package = require('./models/package.model');
 const Preference = require('./models/preference.model');
 const PackageConfig = require('./models/packageconfig.model');
 
-const userBackupTime = 1493217409986,
-    materialsBackupTime = 1493175922371,
-    packageBackupTime = 1493217409986,
-    purchaseBackupTime = 1493217409986,
-    subscriptionBackupTime = 1493140912105,
-    packageConfigBackupTime = 1493233082882;
+const   databases = {
+            'Invite': 1493838843811,
+            'MaterialItem': 1493838843811,
+            'Package': 1493838843811,
+            'Preference': 1493838843811,
+            'Purchase': 1493838843811,
+            'Subscription': 1493838843811,
+            'Team': 1493838843811,
+            'User': 1493838843811
+        }
 
 mongoose.Promise = Promise;
 mongoose.connect(config.mongodb.uri);
 
-function deleteUsers() {
-    console.log('deleting users');
-    return User.find({}).remove().exec()
-        .then(() => {
-            return Preference.find({}).remove().exec();
-        });
+// functions to delete all of the things
+deleteMethods = {
+
+    Invite: () => {
+        console.log('deleting invites')
+        return InviteModel.find({}).remove().exec();
+    },
+
+    MaterialItem: () =>{
+        console.log('deleting material items');
+        return MaterialItem.find({}).remove().exec();
+    },
+
+    PackageConfig: () =>{
+        console.log('deleting package config');
+        return PackageConfig.find({}).remove().exec();
+    },
+
+    Package: () =>{
+        console.log('deleting packages');
+        return Package.find({}).remove().exec();
+    },
+
+    Preference: () =>{
+        console.log('deleting preferences');
+        return Preference.find({}).remove().exec();
+    },
+
+    Purchase: () =>{
+        console.log('deleting purchases');
+        return Purchase.find({}).remove().exec();
+    },
+
+    Subscription: () =>{
+        console.log('deleting subscriptions');
+        return Subscription.find({}).remove().exec();
+    },
+
+    Team: () =>{
+        console.log('deleting teams');
+        return Team.find({}).remove().exec();
+    },
+
+    User: () =>{
+        console.log('deleting users');
+        return User.find({}).remove().exec();
+    }
+
 }
 
-function seedUsers() {
-    const users = require('./models/seeds/user.seed.json');
 
-    users.forEach(user => {
-        if (user.password.substr(0,2) !== '$2') {
-            let salt = bcrypt.genSaltSync(config.saltRounds),
-                password = user.password;
-            user.password = bcrypt.hashSync(password, salt);
-        }
-    });
+// functions to seed everything
+function doSeed(key, Model, dataProcess, afterCreate, cancelCreate) {
+    let seedData;
+    
+    try {
+        seedData = require('./models/seeds/' + key + '.seed.json');
+    } catch (e) {
+        seedData = [];
+    }
 
-    return User.create(users)
-        .then(() => {
-            console.log('users seeded');
-            console.log(' -- ');
-        });
+    if (typeof(dataProcess) == 'function') {
+        seedData = dataProcess(seedData);
+    }
+
+    if (seedData.length && !cancelCreate) {
+        return Model.create(seedData)
+            .then(models => {
+                if (typeof(afterCreate) == 'function') {
+                     return afterCreate(models);
+                } else {
+                    return Promise.resolve();
+                }
+            }).then(() => {
+                console.log(key + ' seeded');
+                console.log(' -- ');
+            });
+    }
 }
 
-function deleteItems() {
-    console.log('deleting material items');
-    return MaterialItem.find({}).remove().exec();
-}
+seedMethods = {
 
-function seedItems() {
-    const materialItems = require('./models/seeds/material-item.seed.json');
-    return MaterialItem.create(materialItems)
-        .then(() => {
-            console.log('items seeded');
-            console.log(' -- ');
-        });
-}
+    Invite: () =>{
+        return doSeed('invite', InviteModel);
+    },
 
-function deletePackages() {
-    console.log('deleting packages');
-    return Package.find({}).remove().exec();
-}
+    MaterialItem: () =>{
+        return doSeed('material-item', MaterialItem);
+    },
 
-function seedPackages() {
-    const packages = require('./models/seeds/package.seed.json');
+    PackageConfig: () =>{
+        return doSeed('package-config', PackageConfig);
+    },
 
-    return Package.create(packages)
-        // only necessary if we don't have ids for everything
-        // .then(ps => {
-        //     let ids = [],
-        //         ultimate;
-        //     ps.forEach(p => {
-        //         if (p.slug != 'ultimate') {
-        //             ids.push(p._id);
-        //         } else {
-        //             ultimate = p;
-        //         }
-        //     });
+    Package: () =>{
+        return doSeed('package', Package, null, (packages) => {
+            // let ids = [],
+            //     ultimate;
+            // packages.forEach(p => {
+            //     if (p.slug != 'ultimate') {
+            //         ids.push(p._id);
+            //     } else {
+            //         ultimate = p;
+            //     }
+            // });
 
-        //     ultimate.packages = ids;
-        //     return ultimate.save();
-        // })
-        .then(() => {
-            console.log('packages seeded');
-            console.log(' -- ');
-        });
-}
-
-function deleteSubscriptions() {
-    console.log('deleting subscriptions and purchases');
-    return Subscription.find({}).remove().exec()
-        .then(() => {
-            return Purchase.find({}).remove().exec();
-        });
-}
-
-function seedPurchases(callback) {
-    const purchases = require('./models/seeds/purchase.seed.json'),
-        subscriptions = require('./models/seeds/subscription.seed.json');
-
-    return Purchase.create(purchases)
-        .then(() => {
-            return Subscription.create(subscriptions);
+            // ultimate.packages = ids;
+            // return ultimate.save();
         })
-        .then(() => {
-            console.log('Subscriptions and purchases seeded');
-            console.log(' -- ');
+    },
+
+    Preference: () =>{
+        return doSeed('preference', Preference);
+    },
+
+    Purchase: () =>{
+        return doSeed('purchase', Purchase);
+    },
+
+    Subscription: () =>{
+        return doSeed('subscription', Subscription);
+    },
+
+    Team: () =>{
+        return doSeed('team', Team);
+    },
+
+    User: () =>{
+        return doSeed('user', User, (users) => {
+            users.forEach(user => {
+                // hash the password if it isn't already
+                if (user.password.substr(0,2) !== '$2') {
+                    let salt = bcrypt.genSaltSync(config.saltRounds),
+                        password = user.password;
+                    user.password = bcrypt.hashSync(password, salt);
+                }
+            });
+            return users;
         });
+    }
+
 }
 
-function deletePackageConfig() {
-    console.log('deleting package Config data');
-    return PackageConfig.find({}).remove().exec();
+
+
+function resetAllTimes() {
+    return DBInfo.find({}).remove();
 }
 
-function seedPackageConfig() {
-    const data = require('./models/seeds/packageconfig.seed.json');
-
-    return PackageConfig.create(data)
-        .then(() => {
-            console.log('Package Config data seeded');
-            console.log('--');
-        })
-}
 
 const DBInfo = require('./models/dbinfo.model');
 
 module.exports = {
 
-    resetUsers: function (done) {
-        console.log("Re-seeding users. Hopefully you know what you're doing!");
-        return deleteUsers()
-            .then(seedUsers)
-            .then(() => {
-                return DBInfo.findOne({}).exec();
-            })
-            .then(dbi => {
-                dbi.user = Date.now();
-                return dbi.save();
-            })
-            .then(() => {
-                if (done) {
-                    process.exit(0);
-                }
-            });
-    },
-
-    resetMaterials: function (done) {
-        console.log('Re-seeding material items');
-        return deleteItems()
-            .then(seedItems)
-            .then(() => {
-                return DBInfo.findOne({}).exec();
-            })
-            .then(dbi => {
-                dbi.materials = Date.now();
-                return dbi.save();
-            })
-            .then(() => {
-                if (done) {
-                    process.exit(0);
-                }
-            });
-    },
-    
-    resetPackages: function (done) {
-        console.log('Re-seeding packages, subscriptions, and purchases');
-        return deletePackages()
-            .then(seedPackages)
-            .then(deleteSubscriptions)
-            .then(seedPurchases)
-            .then(() => {
-                return DBInfo.findOne({}).exec();
-            })
-            .then(dbi => {
-                dbi.package = Date.now();
-                return dbi.save();
-            })
-            .then(() => {
-                if (done) {
-                    process.exit(0);
-                }
-            });
-    },
-
-    resetPackageConfig: function (done) {
-        console.log('Resetting package Config data');
-        return deletePackageConfig()
-            .then(seedPackageConfig)
-            .then(() => {
-                return DBInfo.findOne({}).exec();
-            })
-            .then(dbi => {
-                dbi.packageConfig = Date.now();
-                return dbi.save();
-            })
-            .then(() => {
-                if (done) {
-                    process.exit(0);
-                }
-            });
-    },
-
     clear: function() {
-        return deleteItems()
-            .then(deletePackages)
-            .then(deleteSubscriptions)
+        return deleteMethods.Invite()
+            .then(deleteMethods.MaterialItem)
+            .then(deleteMethods.PackageConfig)
+            .then(deleteMethods.Package)
+            .then(deleteMethods.Preference)
+            .then(deleteMethods.Purchase)
+            .then(deleteMethods.Subscription)
+            .then(deleteMethods.Team)
+            .then(deleteMethods.User)
+            .then(resetAllTimes)
             .then(() => {
                 process.exit(0);
             });
     },
 
     checkForSeed: function() {
-        let dbUserTime,
-            dbPackageTime,
-            dbMaterialsTime,
-            dbPackageConfigTime;
+
+        let keys = Object.keys(databases);
+
+        let checkDatabase = function(index) {
+            let key = keys[index];
+            return DBInfo.findOne({})
+                .where('key').equals(key).exec()
+                .then(info => {
+                    if (!info) {
+                        return DBInfo.create({
+                            key: key,
+                            latest: 0
+                        });
+                    } else {
+                        return Promise.resolve(info);
+                    }
+                })
+                .then(info => {
+                    if (!deleteMethods[key]) {
+                        console.log(' ALERT ALERT NO DELETE METHOD SPECIFIED FOR ' + key);
+                        return Promise.resolve(false);
+                    }
+                    if (!seedMethods[key]) {
+                        console.log(' ALERT ALERT NO SEED METHOD SPECIFIED FOR ' + key);
+                        return Promise.resolve(false);
+                    }
+                    if (info.latest < databases[key]) {
+                        console.log(key + ' backup is more recent than database!');
+                        return deleteMethods[key]().then(seedMethods[key])
+                            .then(() => {
+                                info.latest = Date.now();
+                                return info.save();
+                            });
+                    } else {
+                        console.log('No need to reset ' + key + ' database');
+                        return Promise.resolve(true);
+                    }
+                })
+                .then(() => {
+                    index++;
+                    if (keys[index]) {
+                        return checkDatabase(index);
+                    }
+                })
+        }
+
 
         return DBInfo.count({}).exec()
             .then(count => {
-                if (count == 0) {
-                    return DBInfo.create({});
+                if (count == 1) {
+                    return resetAllTimes();
                 }
             })
             .then(() => {
-                return DBInfo.findOne({}).exec()
-            })
-            .then(dbi => {
-
-                dbUserTime = dbi.user ? dbi.user.getTime() : 0;
-                dbPackageTime = dbi.package ? dbi.package.getTime() : 0;
-                dbMaterialsTime = dbi.materials ? dbi.materials.getTime() : 0;
-                dbPackageConfigTime = dbi.packageConfig ? dbi.packageConfig.getTime() : 0;
-
-                if (!dbUserTime || 
-                        dbUserTime < userBackupTime ||
-                        dbUserTime < purchaseBackupTime ||
-                        dbUserTime < subscriptionBackupTime) {
-                    console.log("User backup is more recent than user database!", dbUserTime, userBackupTime);
-                    return this.resetUsers(false);
-                } else {
-                    console.log('No need to reset user database...');
-                    return Promise.resolve(true);
-                }
-            })
-            .then(() => {
-                if (!dbMaterialsTime || 
-                    dbMaterialsTime < materialsBackupTime) {
-                        console.log("Material Item backup is more recent than material item database!");
-                        return this.resetMaterials(false);
-                    } else {
-                        console.log('No need to reset material item database...');
-                        return Promise.resolve(true);
-                    }
-            })
-            .then(() => {
-                if (!dbPackageTime || 
-                    dbPackageTime < packageBackupTime) {
-                        console.log("Package backup is more recent than package database!");
-                        return this.resetPackages(false);
-                    } else {
-                        console.log('No need to reset package database...');
-                        return Promise.resolve(true);
-                    }
-            })
-            .then(() => {
-                if (!dbPackageConfigTime ||
-                    dbPackageConfigTime < packageConfigBackupTime) {
-                        console.log('PackageConfig backup is more recent than package config database!');
-                        return this.resetPackageConfig(false);
-                    } else {
-                        console.log('No need to reset package config database...');
-                        return Promise.resolve(true);
-                    }
+                return checkDatabase(0);
             })
             .then(() => {
                 process.exit(0);

@@ -13,11 +13,11 @@ const Game = require('./models/game.model'),
     Tag = require('./models/tag.model'),
 
     // set these to a Date.now() value to trigger a re-seed
-    metadataBackupTime = 1493140912105,
-    gameBackupTime = 1493140912105,
-    nameBackupTime = 1493140912105,
-    tagBackupTime = 1493140912105,
-    noteBackupTime = 1492176592742;
+    metadataBackupTime = 1493844345382,
+    gameBackupTime = 1493844345382,
+    nameBackupTime = 1493844345382,
+    tagBackupTime = 1493844345382,
+    noteBackupTime = 1493844345382;
 
 const ShauvonID = "58c6e5bcd036281f4ce07dff";
 
@@ -119,11 +119,18 @@ module.exports = {
             .then(deleteGames)
             .then(seedGames)
             .then(() => {
-                return DBInfo.findOne({}).exec();
+                return DBInfo.findOne({}).where('key').equals('game').exec();
             })
             .then(dbi => {
-                dbi.game = Date.now();
-                return dbi.save();
+                if (!dbi) {
+                    return DBInfo.create({
+                        key: 'game',
+                        latest: Date.now()
+                    });
+                } else {
+                    dbi.latest = Date.now();
+                    return dbi.save();
+                }
             })
             .then(() => {
                 if (done) {
@@ -136,11 +143,18 @@ module.exports = {
         return deleteNotes()
             .then(seedNotes)
             .then(() => {
-                return DBInfo.findOne({}).exec();
+                return DBInfo.findOne({}).where('key').equals('note').exec();
             })
             .then(dbi => {
-                dbi.note = Date.now();
-                return dbi.save();
+                if (!dbi) {
+                    return DBInfo.create({
+                        key: 'note',
+                        latest: Date.now()
+                    });
+                } else {
+                    dbi.latest = Date.now();
+                    return dbi.save();
+                }
             })
             .then(() => {
                 if (done) {
@@ -161,9 +175,6 @@ module.exports = {
     },
 
     checkForSeed: function() {
-        let dbGameTime,
-            dbNoteTime;
-
         return DBInfo.count({}).exec()
             .then(count => {
                 if (count == 0) {
@@ -171,12 +182,22 @@ module.exports = {
                 }
             })
             .then(() => {
-                return DBInfo.findOne({}).exec()
+                return DBInfo.findOne({}).where('key').equals('game').exec()
             })
-            .then(dbi => {
+            .then(info => {
+                if (!info) {
+                    return DBInfo.create({
+                        key: 'game',
+                        latest: 0
+                    });
+                } else {
+                        return Promise.resolve(info);
+                    }
+            })
+            .then(info => {
 
-                dbGameTime = dbi.game;
-                dbNoteTime = dbi.note;
+                let dbGameTime = info.latest;
+                // dbNoteTime = dbi.note;
 
                 if (!dbGameTime || 
                         dbGameTime < metadataBackupTime ||
@@ -191,6 +212,21 @@ module.exports = {
                 }
             })
             .then(() => {
+                return DBInfo.findOne({}).where('key').equals('note').exec()
+            })
+            .then(info => {
+                if (!info) {
+                    return DBInfo.create({
+                        key: 'note',
+                        latest: 0
+                    });
+                } else {
+                        return Promise.resolve(info);
+                    }
+            })
+            .then(info => {
+
+                let dbNoteTime = info.latest;
                 if (!dbNoteTime || 
                     dbNoteTime < noteBackupTime) {
                         console.log("Note backup is more recent than note database!");

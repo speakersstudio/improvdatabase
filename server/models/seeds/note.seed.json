@@ -1,15 +1,5 @@
 [
   {
-    "_id": "58d19421c60aaf499cf80ed1",
-    "description": "Feel free to \"walk on\" to a scene to support (if it needs support), turning a two-person scene into a three-, four-, five-, or whatever-person one. When you freeze a scene with more than two people, you can tag as many people as you want to get rid of to bring it back down. Get a feel for the pace, and keep it reasonable - there's no reason to have tons of people on stage for long.",
-    "addedUser": "58c6e5bcd036281f4ce07dff",
-    "tag": "58d1941dc60aaf499cf809f2",
-    "__v": 0,
-    "dateModified": "2017-03-21T20:59:13.300Z",
-    "dateAdded": "2014-12-03T18:31:42.209Z",
-    "public": true
-  },
-  {
     "_id": "58d19421c60aaf499cf80ed2",
     "description": "Don't wait until you have a good idea for a scene, because that will never work out. Just wait for a high moment in a scene, or for somebody in the scene to have a crazy position - then freeze it. You'll come up with something once you get into position.",
     "addedUser": "58c6e5bcd036281f4ce07dff",
@@ -30,6 +20,16 @@
     "public": true
   },
   {
+    "_id": "58d19421c60aaf499cf80ed1",
+    "description": "Feel free to \"walk on\" to a scene to support (if it needs support), turning a two-person scene into a three-, four-, five-, or whatever-person one. When you freeze a scene with more than two people, you can tag as many people as you want to get rid of to bring it back down. Get a feel for the pace, and keep it reasonable - there's no reason to have tons of people on stage for long.",
+    "addedUser": "58c6e5bcd036281f4ce07dff",
+    "tag": "58d1941dc60aaf499cf809f2",
+    "__v": 0,
+    "dateModified": "2017-03-21T20:59:13.300Z",
+    "dateAdded": "2014-12-03T18:31:42.209Z",
+    "public": true
+  },
+  {
     "_id": "58d19421c60aaf499cf80ed4",
     "description": "Please don't just pull a note out of your pocket and say \"well, my grandma always said, 'herp derp plerp whatever.'\" That's a cop-out and super lame. Own the lines, because having to justify them is the fun part.",
     "game": "58d1941fc60aaf499cf80c41",
@@ -37,16 +37,6 @@
     "__v": 0,
     "dateModified": "2017-03-21T20:59:13.313Z",
     "dateAdded": "2014-12-03T12:34:23.933Z",
-    "public": true
-  },
-  {
-    "_id": "58d19421c60aaf499cf80ed5",
-    "description": "Anti-Freeze is a good way to \"ease into\" doing long form.",
-    "game": "58d1941ec60aaf499cf80ac3",
-    "addedUser": "58c6e5bcd036281f4ce07dff",
-    "__v": 0,
-    "dateModified": "2017-03-21T20:59:13.318Z",
-    "dateAdded": "2014-12-03T18:24:10.514Z",
     "public": true
   },
   {
@@ -60,13 +50,13 @@
     "public": true
   },
   {
-    "_id": "58d19421c60aaf499cf80ed8",
-    "description": "You don't have to play this with lines from the audience. Give each actor a different book or script or whatever, and they can open to a random page and read a sentence from there. That's super fun and helps you avoid the inevitable audience member who thinks writing \"look at my penis\" or something is the funniest thing (pro tip: it isn't).",
-    "game": "58d1941fc60aaf499cf80c41",
+    "_id": "58d19421c60aaf499cf80ed5",
+    "description": "Anti-Freeze is a good way to \"ease into\" doing long form.",
+    "game": "58d1941ec60aaf499cf80ac3",
     "addedUser": "58c6e5bcd036281f4ce07dff",
     "__v": 0,
-    "dateModified": "2017-03-21T20:59:13.329Z",
-    "dateAdded": "2014-12-15T17:39:22.959Z",
+    "dateModified": "2017-03-21T20:59:13.318Z",
+    "dateAdded": "2014-12-03T18:24:10.514Z",
     "public": true
   },
   {
@@ -80,6 +70,16 @@
     "public": true
   },
   {
+    "_id": "58d19421c60aaf499cf80ed8",
+    "description": "You don't have to play this with lines from the audience. Give each actor a different book or script or whatever, and they can open to a random page and read a sentence from there. That's super fun and helps you avoid the inevitable audience member who thinks writing \"look at my penis\" or something is the funniest thing (pro tip: it isn't).",
+    "game": "58d1941fc60aaf499cf80c41",
+    "addedUser": "58c6e5bcd036281f4ce07dff",
+    "__v": 0,
+    "dateModified": "2017-03-21T20:59:13.329Z",
+    "dateAdded": "2014-12-15T17:39:22.959Z",
+    "public": true
+  },
+  {
     "_id": "58d19421c60aaf499cf80eda",
     "description": "A good way to practice editing and scene development at the same time.  Try mixing several of the variations for extreme challenge.",
     "game": "58d1941ec60aaf499cf80a97",
@@ -90,16 +90,6 @@
     "public": true
   },
   {
-    "_id": "58d19421c60aaf499cf80edb",
-    "description": "EDITORS NOTE: I'm not sure if this is really relevant to be included in the database, since it isn't really a game on its own. This might be more appropriate for more of a Wiki style \"dictionary\" of Improv concepts.",
-    "game": "58d19420c60aaf499cf80de5",
-    "addedUser": "58c6e5bcd036281f4ce07dff",
-    "__v": 0,
-    "dateModified": "2017-03-21T20:59:13.338Z",
-    "dateAdded": "2016-02-04T19:58:26.412Z",
-    "public": true
-  },
-  {
     "_id": "58d19421c60aaf499cf80edc",
     "description": "This would be a fun way to start a show, by just getting a suggestion from the audience (maybe even ahead of time before the show starts) and telling proverbs, one word at a time, based on that suggestion. It's simple enough that it needs no explanation, and it would be a fun way to get the ball rolling, instead of just saying the boring old \"welcome to the show, who has seen Improv before, blah blah.\"",
     "game": "58d19420c60aaf499cf80dab",
@@ -107,6 +97,16 @@
     "__v": 0,
     "dateModified": "2017-03-21T20:59:13.341Z",
     "dateAdded": "2016-02-01T22:27:14.132Z",
+    "public": true
+  },
+  {
+    "_id": "58d19421c60aaf499cf80edb",
+    "description": "EDITORS NOTE: I'm not sure if this is really relevant to be included in the database, since it isn't really a game on its own. This might be more appropriate for more of a Wiki style \"dictionary\" of Improv concepts.",
+    "game": "58d19420c60aaf499cf80de5",
+    "addedUser": "58c6e5bcd036281f4ce07dff",
+    "__v": 0,
+    "dateModified": "2017-03-21T20:59:13.338Z",
+    "dateAdded": "2016-02-04T19:58:26.412Z",
     "public": true
   },
   {

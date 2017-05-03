@@ -330,12 +330,12 @@ iplus {
         margin-bottom: 0px;
     }
 
-    & > input[name="state"] {
+    & > .form-input-state {
         width: 3em;
         text-align: center;
     }
 
-    & > input[name="zip"] {
+    & > .form-input-zip {
         width: 5em;
     }
 

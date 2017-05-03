@@ -317,7 +317,7 @@ module.exports = {
                 purchase.packages.forEach(p => {
                     body += `
                         <tr>
-                            <td>${p.name}</td><td align="right">$${p.price}</td>
+                            <td>${p.package.name}</td><td align="right">$${p.price}</td>
                         </tr>
                     `
                     hasMaterials = true;
@@ -327,7 +327,7 @@ module.exports = {
                 purchase.materials.forEach(m => {
                     body += `
                         <tr>
-                            <td>${m.name}</td><td align="right">$${m.price}</td>
+                            <td>${m.materialItem.name}</td><td align="right">$${m.price}</td>
                         </tr>
                     `
                     hasMaterials = true;

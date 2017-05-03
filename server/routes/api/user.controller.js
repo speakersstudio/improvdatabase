@@ -549,7 +549,7 @@ module.exports = {
                 } else {
                     let teamIds = util.unionArrays(user.memberOfTeams, user.adminOfTeams),
                         checkTeamStuff = index => {
-                            return userController.collectMaterials(Team.findOne({}).where('_id').equals(teamIds[index].toString()))
+                            return module.exports.collectMaterials(Team.findOne({}).where('_id').equals(teamIds[index].toString()))
                                 .then(stuff => {
                                     if (util.indexOfObjectId(stuff[itemKey], searchId) > -1) {
                                         // this team owns the item! hooray!

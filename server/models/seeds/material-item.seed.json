@@ -14,14 +14,14 @@
     "description": "Learn how to master (and teach others to master) the handshake and get the most out of their networking opportunities.",
     "price": 100,
     "color": "blue",
-    "__v": 3,
+    "__v": 2,
     "visible": true,
     "versions": [
       {
         "ver": 1,
         "extension": "pdf",
-        "_id": "58ffd98567ec75003beb9af6",
-        "dateAdded": "2017-04-25T23:19:33.435Z"
+        "_id": "590a4cdd022185003bfc5191",
+        "dateAdded": "2017-05-03T21:34:21.682Z"
       }
     ],
     "tags": [
@@ -35,14 +35,14 @@
     "description": "The participant handout packet for Improv+Leadership.",
     "price": 100,
     "color": "orange",
-    "__v": 3,
+    "__v": 2,
     "visible": true,
     "versions": [
       {
         "ver": 1,
         "extension": "pdf",
-        "_id": "58ffd99767ec75003beb9af8",
-        "dateAdded": "2017-04-25T23:19:51.644Z"
+        "_id": "590a4ced022185003bfc5193",
+        "dateAdded": "2017-05-03T21:34:37.564Z"
       }
     ],
     "tags": [
@@ -56,14 +56,14 @@
     "description": "The handbook for leading our most powerful Improv session.",
     "price": 100,
     "color": "orange",
-    "__v": 3,
+    "__v": 2,
     "visible": true,
     "versions": [
       {
         "ver": 1,
         "extension": "pdf",
-        "_id": "58ffd98f67ec75003beb9af7",
-        "dateAdded": "2017-04-25T23:19:43.182Z"
+        "_id": "590a4ce5022185003bfc5192",
+        "dateAdded": "2017-05-03T21:34:29.891Z"
       }
     ],
     "tags": [
@@ -77,14 +77,14 @@
     "description": "The participant handout packet for Improv+Networking.",
     "price": 100,
     "color": "blue",
-    "__v": 3,
+    "__v": 2,
     "visible": true,
     "versions": [
       {
         "ver": 1,
         "extension": "pdf",
-        "_id": "58ffd9aa67ec75003beb9afa",
-        "dateAdded": "2017-04-25T23:20:10.402Z"
+        "_id": "590a4cfd022185003bfc5195",
+        "dateAdded": "2017-05-03T21:34:53.714Z"
       }
     ],
     "tags": [
@@ -98,14 +98,14 @@
     "description": "The handbook for leading the Improv+Networking session.",
     "price": 100,
     "color": "blue",
-    "__v": 3,
+    "__v": 2,
     "visible": true,
     "versions": [
       {
         "ver": 1,
         "extension": "pdf",
-        "_id": "58ffd9a367ec75003beb9af9",
-        "dateAdded": "2017-04-25T23:20:03.176Z"
+        "_id": "590a4cf5022185003bfc5194",
+        "dateAdded": "2017-05-03T21:34:45.585Z"
       }
     ],
     "tags": [
@@ -118,14 +118,14 @@
     "name": "Facilitation Tips",
     "description": "Use these universal tips to make the most of your facilitation.",
     "price": 100,
-    "__v": 13,
+    "__v": 2,
     "visible": true,
     "versions": [
       {
         "ver": 1,
         "extension": "pdf",
-        "_id": "58ffd97767ec75003beb9af5",
-        "dateAdded": "2017-04-25T23:19:19.085Z"
+        "_id": "590a4cc0022185003bfc5190",
+        "dateAdded": "2017-05-03T21:33:52.936Z"
       }
     ],
     "tags": []
@@ -136,14 +136,14 @@
     "description": "Get the most out of your Improv+ experience.",
     "price": 100,
     "color": "orange",
-    "__v": 3,
+    "__v": 2,
     "visible": true,
     "versions": [
       {
         "ver": 1,
         "extension": "pdf",
-        "_id": "58ffd9b067ec75003beb9afb",
-        "dateAdded": "2017-04-25T23:20:16.434Z"
+        "_id": "590a4d04022185003bfc5196",
+        "dateAdded": "2017-05-03T21:35:00.201Z"
       }
     ],
     "tags": [

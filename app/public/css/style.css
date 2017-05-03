@@ -521,10 +521,10 @@ iplus {
   .columns > input {
     margin-top: 0px;
     margin-bottom: 0px; }
-  .columns > input[name="state"] {
+  .columns > .form-input-state {
     width: 3em;
     text-align: center; }
-  .columns > input[name="zip"] {
+  .columns > .form-input-zip {
     width: 5em; }
   @media only screen and (max-width: 500px) {
     .columns.responsive {

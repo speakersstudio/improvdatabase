@@ -42,6 +42,11 @@ export class FormInputDirective implements OnInit {
 
         this.divElement = document.createElement('div');
         this.divElement.className = 'form-input';
+
+        if (this.inputElement.name) {
+            this.divElement.className += ' form-input-' + this.inputElement.name;
+        }
+
         this.inputElement.parentElement.insertBefore(this.divElement, this.inputElement.nextSibling);
         this.divElement.appendChild(this.inputElement);
 

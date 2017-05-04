@@ -97,7 +97,15 @@ var AppHttp = (function () {
         var _this = this;
         return observable.catch(function (err, source) {
             if (err.status == 401 && err.url.indexOf('/login') == -1) {
-                _this.router.navigate(['/app/unauthorized']);
+                if (err.url.indexOf('/refreshToken') > -1) {
+                    // if the token refresh doesn't work, the user account has become invalid
+                    _this.reset();
+                    _this.router.navigate(['/welcome']);
+                }
+                else {
+                    // redirect the user to the unauthorized page?
+                    _this.router.navigate(['/app/unauthorized']);
+                }
                 return Observable_1.Observable.empty();
             }
             else {

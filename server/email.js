@@ -17,6 +17,7 @@ const config = require('./config')(),
  * Standard Text:
  * {
  *      type: 'text',
+ *      baseUrl: string (https://localhost:1919)
  *      greeting: string (Dear blank,)
  *      body: string (html markup)
  *      action?: string (url for button)
@@ -46,13 +47,12 @@ module.exports = {
             content = sendObject.content,
             renderPromise;
 
+        if (!content.baseUrl) {
+            content.baseUrl = 'https://improvpl.us';
+        }
+
         switch(content.type) {
             case 'text':
-                if (process.env.NODE_ENV === 'production') {
-                    content.baseurl = 'https://improvpl.us';
-                } else {
-                    content.baseurl = 'https://improvplus-qa.herokuapp.com';
-                }
                 renderPromise = hbs.render(
                     path.join(__dirname, '/email_templates/text.handlebars'), content);
                 break;

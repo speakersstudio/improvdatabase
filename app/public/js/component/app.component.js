@@ -46,6 +46,7 @@ var AppComponent = (function () {
         this.showDialog = false;
         this.dialogTitle = "";
         this.dialogMessage = "";
+        this.dialogCancel = "";
         this.dialogConfirm = "";
         this.dialogHideCancel = true;
         this.toastMessageQueue = [];
@@ -189,6 +190,7 @@ var AppComponent = (function () {
         this.dialogMessage = body;
         this.dialogConfirm = button;
         this.dialogOnConfirm = onConfirm;
+        this.dialogCancel = button ? button.toLocaleLowerCase() == 'yes' ? 'No' : 'Cancel' : 'Okay then';
         this.dialogHideCancel = hideCancel;
         this.showDialog = true;
         this.showBackdrop = true;

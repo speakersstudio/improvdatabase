@@ -135,7 +135,7 @@ module.exports = {
 
         return Purchase.find({})
             .where('team').equals(req.params.id)
-            .populate('packages.package materials.material')
+            .populate('packages.package materials.material user')
             .exec()
             .then(p => {
                 res.json(p);
@@ -181,13 +181,15 @@ module.exports = {
                                         // send an email to the user using the new invite's _id
                                         let inviteId = invite._id.toString(),
                                             name = user.firstName + ' ' + user.lastName,
-                                            nameText = name ? 'Your colleague, ' + name + ', ' : 'Your colleague';
+                                            nameText = name.trim() ? 'Your colleague, ' + name + ', ' : 'Your colleague',
+                                            link = 'https://' + req.get('host') + '/invite/' + inviteId;
 
                                         emailUtil.send({
                                             to: email,
                                             subject: 'You have been invited to join ImprovPlus',
                                             content: {
                                                 type: 'text',
+                                                baseUrl: 'https://' + req.get('host'),
                                                 greeting: 'ImprovPlus Awaits!',
                                                 body: `
                                                     <p>${nameText} has invited you to join ${subscription.team.name} on ImprovPlus.</p>
@@ -196,10 +198,10 @@ module.exports = {
 
                                                     <p>You will be able to use the subscription already set up for ${subscription.team.name}, which means you will gain full access to the app and all of your team's resources right away.</p>
                                                 `,
-                                                action: 'https://improvpl.us/invite/' + inviteId,
+                                                action: link,
                                                 actionText: 'Join Now',
                                                 afterAction: `
-                                                    <p>If that button doesn't work for you (or your email account messed up the contents of this message and you don't see any button), you can accept this invite by visiting https://improvpl.us/invite/${inviteId} in your browser.</p>
+                                                    <p>If that button doesn't work for you (or your email account messed up the contents of this message and you don't see any button), you can accept this invite by visiting <a href="${link}">${link}</a> in your browser.</p>
 
                                                     <p>Be excellent to each other, and party on.</p>
 

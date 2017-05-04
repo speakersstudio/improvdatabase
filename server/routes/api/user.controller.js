@@ -490,6 +490,86 @@ module.exports = {
             })
     },
 
+    leaveTeam: (req, res) => {
+        if (req.method != 'PUT') {
+            return res.status(404);
+        }
+
+        let userId = req.user._id,
+            teamId = req.params.toId;
+
+        return module.exports.findUser(userId, null, null, true)
+            .then(user => {
+
+                if (util.indexOfObjectId(user.adminOfTeams, teamId) == -1 && util.indexOfObjectId(user.memberOfTeams, teamId) == -1) {
+                    // how can a user leave a team they aren't in?
+                    return res.status(404);
+                }
+
+                return Team.findOne({}).where('_id').equals(teamId).exec()
+                    .then(team => {
+
+                        if (team && user.subscription.parent && user.subscription.parent.toString() == team.subscription.toString()) {
+                            // the user inherited their subscription from the team, which means we have to revoke their subscription
+                            return Subscription.findOne({}).where('_id').equals(user.subscription.parent).exec()
+                                .then(parentSubscription => {
+                                    parentSubscription.children = util.removeFromObjectIdArray(parentSubscription.children, user.subscription._id);
+                                    return parentSubscription.save();
+                                })
+                                .then(() => {
+                                    return Subscription.findOne({}).where('_id').equals(user.subscription._id).exec();
+                                })
+                                .then(userSubscription => {
+                                    userSubscription.remove();
+
+                                    user.subscription = null;
+                                    return user.save();
+                                })
+                                .then(() => {
+                                    return Promise.resolve(team);
+                                });
+                        } else {
+                            return Promise.resolve(team);
+                        }
+
+                    })
+                    .then(team => {
+
+                        // remove the user from team
+                        if (team) {
+                            team.members = util.removeFromObjectIdArray(team.members, userId);
+                            team.admins = util.removeFromObjectIdArray(team.admins, userId);
+
+                            return team.save();
+                        } else {
+                            return Promise.resolve(team);
+                        }
+
+                    })
+                    .then(team => {
+
+                        // remove the team from the user
+                        if (team) {
+                            user.memberOfTeams = util.removeFromObjectIdArray(user.memberOfTeams, teamId);
+                            user.adminOfTeams = util.removeFromObjectIdArray(user.adminOfTeams, teamId);
+
+                            // store a history of this having happened
+                            HistoryModel.create({
+                                user: user,
+                                action: 'team_leave',
+                                reference: team._id
+                            });
+                        }
+
+                        return user.save();
+
+                    })
+                    .then(u => {
+                        res.json(module.exports.prepUserObject(u));
+                    })
+            })
+    },
+
     backup: (req, res) => {
         User.find({}).exec().then(u => {
             res.json(u);

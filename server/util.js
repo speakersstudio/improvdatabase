@@ -231,6 +231,21 @@ module.exports = {
 
         return changes;
 
+    },
+
+    iterate: (objectArray, action) => {
+        let iterateMethod = (index) => {
+            let item = objectArray[index];
+            return action(item).then(() => {
+                index++;
+                if (objectArray[index]) {
+                    return iterateMethod(index);
+                } else {
+                    return Promise.resolve();
+                }
+            })
+        }
+        return iterateMethod(0);
     }
 
 }

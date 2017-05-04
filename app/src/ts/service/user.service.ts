@@ -149,14 +149,18 @@ export class UserService {
     }
 
     _handleLoginRequest(response): User {
-        let responseData = response.json() as LoginResponse;
+        if (response) {
+            let responseData = response.json() as LoginResponse;
 
-        this.http.setToken(responseData.token, responseData.expires);
+            this.http.setToken(responseData.token, responseData.expires);
 
-        this.saveUserData(responseData.user);
+            this.saveUserData(responseData.user);
 
-        this.isLoggingIn = false;
-        this.announceLoginState();
+            this.isLoggingIn = false;
+            this.announceLoginState();
+        } else {
+            this.clearUserData();
+        }
 
         return this.loggedInUser;
     }
@@ -252,7 +256,9 @@ export class UserService {
             return false;
         }
 
-        if ((<Team> user.adminOfTeams[0])._id) {
+        if (!user.adminOfTeams || !user.adminOfTeams.length) {
+            return false;
+        } else if ((<Team> user.adminOfTeams[0])._id) {
             return (<Team[]> user.adminOfTeams).findIndex(t => {
                 return t._id === team._id;
             }) > -1;
@@ -304,6 +310,18 @@ export class UserService {
         .then(response => {
             return response.json() as User;
         });
+    }
+
+    leaveTeam(team: Team): Promise<User> {
+        return this.http.put(this.userUrl + this.loggedInUser._id + '/leaveTeam/' + team._id, {}).toPromise()
+            .then(response => {
+                let user = response.json() as User;
+
+                this.saveUserData(user);
+                this.announceLoginState();
+
+                return this.loggedInUser;
+            })
     }
 
     /**

@@ -118,7 +118,14 @@ export class AppHttp {
     intercept(observable: Observable<Response>): Observable<Response> {
         return observable.catch((err, source) => {
             if (err.status == 401 && err.url.indexOf('/login') == -1) {
-                this.router.navigate(['/app/unauthorized']);
+                if (err.url.indexOf('/refreshToken') > -1) {
+                    // if the token refresh doesn't work, the user account has become invalid
+                    this.reset();
+                    this.router.navigate(['/welcome']);
+                } else {
+                    // redirect the user to the unauthorized page?
+                    this.router.navigate(['/app/unauthorized']);
+                }
                 return Observable.empty();
             } else {
                 return Observable.throw(err);

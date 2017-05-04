@@ -126,11 +126,16 @@ var UserService = (function () {
         }
     };
     UserService.prototype._handleLoginRequest = function (response) {
-        var responseData = response.json();
-        this.http.setToken(responseData.token, responseData.expires);
-        this.saveUserData(responseData.user);
-        this.isLoggingIn = false;
-        this.announceLoginState();
+        if (response) {
+            var responseData = response.json();
+            this.http.setToken(responseData.token, responseData.expires);
+            this.saveUserData(responseData.user);
+            this.isLoggingIn = false;
+            this.announceLoginState();
+        }
+        else {
+            this.clearUserData();
+        }
         return this.loggedInUser;
     };
     UserService.prototype.logout = function () {
@@ -215,7 +220,10 @@ var UserService = (function () {
         if (!user || !team) {
             return false;
         }
-        if (user.adminOfTeams[0]._id) {
+        if (!user.adminOfTeams || !user.adminOfTeams.length) {
+            return false;
+        }
+        else if (user.adminOfTeams[0]._id) {
             return user.adminOfTeams.findIndex(function (t) {
                 return t._id === team._id;
             }) > -1;
@@ -262,6 +270,16 @@ var UserService = (function () {
         }).toPromise()
             .then(function (response) {
             return response.json();
+        });
+    };
+    UserService.prototype.leaveTeam = function (team) {
+        var _this = this;
+        return this.http.put(this.userUrl + this.loggedInUser._id + '/leaveTeam/' + team._id, {}).toPromise()
+            .then(function (response) {
+            var user = response.json();
+            _this.saveUserData(user);
+            _this.announceLoginState();
+            return _this.loggedInUser;
         });
     };
     /**

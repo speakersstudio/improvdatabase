@@ -51,12 +51,19 @@ export class TeamDetailsComponent implements OnInit {
 
     constructor(
         private _app: AppComponent,
+        private router: Router,
         private route: ActivatedRoute,
         private userService: UserService,
         private teamService: TeamService
     ) { }
 
     private _tools: Tool[] = [
+        {
+            icon: "fa-sign-out",
+            name: "leave",
+            text: "Leave Team",
+            active: false
+        }
     ]
 
     _timeUtil = TimeUtil;
@@ -68,6 +75,14 @@ export class TeamDetailsComponent implements OnInit {
             let id = params['id'];
             this.getTeam(id);
         });
+    }
+
+    onToolClicked(tool: Tool): void {
+        switch (tool.name) {
+            case "leave":
+                this.leave();
+                break;
+        }
     }
 
     selectTab(tab): void {
@@ -106,9 +121,11 @@ export class TeamDetailsComponent implements OnInit {
 
         this.calculateSubs();
 
-        this.teamService.fetchPurchases(this.team).then(p => {
-            this.purchases = p;
-        });
+        if (this.isUserAdmin()) {
+            this.teamService.fetchPurchases(this.team).then(p => {
+                this.purchases = p;
+            });
+        }
 
         this.tabs = [
             {
@@ -133,8 +150,8 @@ export class TeamDetailsComponent implements OnInit {
     }
 
     calculateSubs(): void {
-        this.pendingInvites = this.team.subscription.invites.length;
-        this.remainingSubs = this.team.subscription.subscriptions - this.team.subscription.children.length - this.team.subscription.invites.length;
+        this.pendingInvites = this.team.subscription.invites ? this.team.subscription.invites.length : 0;
+        this.remainingSubs = this.team.subscription.subscriptions - this.team.subscription.children.length - this.pendingInvites;
     }
 
     saveEditName(name: string): void {
@@ -261,7 +278,29 @@ export class TeamDetailsComponent implements OnInit {
     }
 
     leave(): void {
-        this._app.toast("This button doesn't work yet. I'm afraid you're stuck for now.");
+        let body = `
+            <p>Are you sure you want to leave this team? You will no longer have access to any of the team's resources.</p>
+        `;
+
+        if (this.user.subscription.parent == this.team.subscription._id) {
+            body += `
+                <p class="error"><strong>Warning: Your subscription is inherited from ${this.team.name}. If you leave the team, you will have to purchase a new subscription to keep using ImprovPlus.</strong></p>
+            `
+        }
+
+        this._app.dialog('Leave ' + this.team.name + '?', body, 'Yes', () => {
+
+            this.userService.leaveTeam(this.team).then(user => {
+
+                this.router.navigate(['/app/dashboard']);
+
+                setTimeout(() => {
+                    this._app.dialog('It is done', 'You have successfully left ' + this.team.name + '.');
+                }, 500);
+
+            });
+
+        });
     }
 
     buySubscription(): void {

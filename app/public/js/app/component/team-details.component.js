@@ -18,8 +18,9 @@ var team_service_1 = require("../../service/team.service");
 var time_util_1 = require("../../util/time.util");
 var anim_util_1 = require("../../util/anim.util");
 var TeamDetailsComponent = (function () {
-    function TeamDetailsComponent(_app, route, userService, teamService) {
+    function TeamDetailsComponent(_app, router, route, userService, teamService) {
         this._app = _app;
+        this.router = router;
         this.route = route;
         this.userService = userService;
         this.teamService = teamService;
@@ -31,7 +32,14 @@ var TeamDetailsComponent = (function () {
             'team_user_promote',
             'team_purchases_view'
         ];
-        this._tools = [];
+        this._tools = [
+            {
+                icon: "fa-sign-out",
+                name: "leave",
+                text: "Leave Team",
+                active: false
+            }
+        ];
         this._timeUtil = time_util_1.TimeUtil;
     }
     TeamDetailsComponent.prototype.ngOnInit = function () {
@@ -41,6 +49,13 @@ var TeamDetailsComponent = (function () {
             var id = params['id'];
             _this.getTeam(id);
         });
+    };
+    TeamDetailsComponent.prototype.onToolClicked = function (tool) {
+        switch (tool.name) {
+            case "leave":
+                this.leave();
+                break;
+        }
     };
     TeamDetailsComponent.prototype.selectTab = function (tab) {
         this.selectedTab = tab.id;
@@ -72,9 +87,11 @@ var TeamDetailsComponent = (function () {
         var _this = this;
         this.team = team;
         this.calculateSubs();
-        this.teamService.fetchPurchases(this.team).then(function (p) {
-            _this.purchases = p;
-        });
+        if (this.isUserAdmin()) {
+            this.teamService.fetchPurchases(this.team).then(function (p) {
+                _this.purchases = p;
+            });
+        }
         this.tabs = [
             {
                 name: 'Team Details',
@@ -96,8 +113,8 @@ var TeamDetailsComponent = (function () {
         }
     };
     TeamDetailsComponent.prototype.calculateSubs = function () {
-        this.pendingInvites = this.team.subscription.invites.length;
-        this.remainingSubs = this.team.subscription.subscriptions - this.team.subscription.children.length - this.team.subscription.invites.length;
+        this.pendingInvites = this.team.subscription.invites ? this.team.subscription.invites.length : 0;
+        this.remainingSubs = this.team.subscription.subscriptions - this.team.subscription.children.length - this.pendingInvites;
     };
     TeamDetailsComponent.prototype.saveEditName = function (name) {
         this.team.name = name;
@@ -197,7 +214,19 @@ var TeamDetailsComponent = (function () {
         });
     };
     TeamDetailsComponent.prototype.leave = function () {
-        this._app.toast("This button doesn't work yet. I'm afraid you're stuck for now.");
+        var _this = this;
+        var body = "\n            <p>Are you sure you want to leave this team? You will no longer have access to any of the team's resources.</p>\n        ";
+        if (this.user.subscription.parent == this.team.subscription._id) {
+            body += "\n                <p class=\"error\"><strong>Warning: Your subscription is inherited from " + this.team.name + ". If you leave the team, you will have to purchase a new subscription to keep using ImprovPlus.</strong></p>\n            ";
+        }
+        this._app.dialog('Leave ' + this.team.name + '?', body, 'Yes', function () {
+            _this.userService.leaveTeam(_this.team).then(function (user) {
+                _this.router.navigate(['/app/dashboard']);
+                setTimeout(function () {
+                    _this._app.dialog('It is done', 'You have successfully left ' + _this.team.name + '.');
+                }, 500);
+            });
+        });
     };
     TeamDetailsComponent.prototype.buySubscription = function () {
         this._app.toast("This button doesn't work yet. Soon, though. Soon.");
@@ -216,6 +245,7 @@ TeamDetailsComponent = __decorate([
         animations: [anim_util_1.DialogAnim.dialog]
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,
+        router_1.Router,
         router_1.ActivatedRoute,
         user_service_1.UserService,
         team_service_1.TeamService])

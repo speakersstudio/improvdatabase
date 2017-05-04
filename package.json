@@ -6,13 +6,11 @@
   "scripts": {
     "start": "npm run checkItems && npm run checkGames && node ./server",
     "quickstart": "node ./server",
-    "clearItems": "node -e \"require('./server/reset').clear()\"",
+    
     "checkItems": "node -e \"require('./server/reset').checkForSeed()\"",
-    "resetItems": "node -e \"require('./server/reset').resetPackages()\"",
-    "resetUsers": "node -e \"require('./server/reset').resetUsers()\"",
-    "clearGames": "node -e \"require('./server/reset-games').clear()\"",
     "checkGames": "node -e \"require('./server/reset-games').checkForSeed()\"",
-    "resetGames": "node -e \"require('./server/reset-games').resetGames()\""
+
+    "reset": "node -e \"require('./server/reset').reset()\""
   },
   "dependencies": {
     "@angular/animations": "^4.0.1",

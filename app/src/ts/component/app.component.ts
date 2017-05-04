@@ -69,6 +69,7 @@ export class AppComponent implements OnInit {
     showDialog: boolean = false;
     dialogTitle: string = "";
     dialogMessage: string = "";
+    dialogCancel: string = "";
     dialogConfirm: string = "";
     dialogOnConfirm: Function;
     dialogHideCancel: boolean = true;
@@ -247,6 +248,8 @@ export class AppComponent implements OnInit {
         this.dialogMessage = body;
         this.dialogConfirm = button;
         this.dialogOnConfirm = onConfirm;
+
+        this.dialogCancel = button ? button.toLocaleLowerCase() == 'yes' ? 'No' : 'Cancel' : 'Okay then';
 
         this.dialogHideCancel = hideCancel;
 

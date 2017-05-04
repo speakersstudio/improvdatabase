@@ -7,7 +7,8 @@ const mongoose = require('mongoose'),
 var config = require('./config')();
 
 const charge = require('./routes/charge'),
-    roles = require('./roles');
+    roles = require('./roles'),
+    util = require('./util');
 
 const Contact = require('./models/contact.model.js');
 const InviteModel = require('./models/invite.model');
@@ -112,6 +113,9 @@ function doSeed(key, Model, dataProcess, afterCreate, cancelCreate) {
                 console.log(key + ' seeded');
                 console.log(' -- ');
             });
+    } else if (!cancelCreate) {
+        console.log(key + ' has no seed file');
+        console.log(' -- ');
     }
 }
 
@@ -178,12 +182,9 @@ seedMethods = {
 
 }
 
-
-
 function resetAllTimes() {
     return DBInfo.find({}).remove();
 }
-
 
 const DBInfo = require('./models/dbinfo.model');
 
@@ -205,53 +206,13 @@ module.exports = {
             });
     },
 
-    checkForSeed: function() {
+    reset: function() {
+        module.exports.checkForSeed(true);
+    },
+
+    checkForSeed: function(force) {
 
         let keys = Object.keys(databases);
-
-        let checkDatabase = function(index) {
-            let key = keys[index];
-            return DBInfo.findOne({})
-                .where('key').equals(key).exec()
-                .then(info => {
-                    if (!info) {
-                        return DBInfo.create({
-                            key: key,
-                            latest: 0
-                        });
-                    } else {
-                        return Promise.resolve(info);
-                    }
-                })
-                .then(info => {
-                    if (!deleteMethods[key]) {
-                        console.log(' ALERT ALERT NO DELETE METHOD SPECIFIED FOR ' + key);
-                        return Promise.resolve(false);
-                    }
-                    if (!seedMethods[key]) {
-                        console.log(' ALERT ALERT NO SEED METHOD SPECIFIED FOR ' + key);
-                        return Promise.resolve(false);
-                    }
-                    if (info.latest < databases[key]) {
-                        console.log(key + ' backup is more recent than database!');
-                        return deleteMethods[key]().then(seedMethods[key])
-                            .then(() => {
-                                info.latest = Date.now();
-                                return info.save();
-                            });
-                    } else {
-                        console.log('No need to reset ' + key + ' database');
-                        return Promise.resolve(true);
-                    }
-                })
-                .then(() => {
-                    index++;
-                    if (keys[index]) {
-                        return checkDatabase(index);
-                    }
-                })
-        }
-
 
         return DBInfo.count({}).exec()
             .then(count => {
@@ -260,7 +221,43 @@ module.exports = {
                 }
             })
             .then(() => {
-                return checkDatabase(0);
+                return util.iterate(keys, (key) => {
+                    return DBInfo.findOne({})
+                        .where('key').equals(key).exec()
+                        .then(info => {
+                            if (!info) {
+                                return DBInfo.create({
+                                    key: key,
+                                    latest: 0
+                                });
+                            } else {
+                                return Promise.resolve(info);
+                            }
+                        })
+                        .then(info => {
+                            if (!deleteMethods[key]) {
+                                console.log(' ALERT ALERT NO DELETE METHOD SPECIFIED FOR ' + key);
+                                return Promise.resolve(false);
+                            }
+                            if (!seedMethods[key]) {
+                                console.log(' ALERT ALERT NO SEED METHOD SPECIFIED FOR ' + key);
+                                return Promise.resolve(false);
+                            }
+                            if (info.latest < databases[key] || force) {
+                                if (!force) {
+                                    console.log(key + ' backup is more recent than database!');
+                                }
+                                return deleteMethods[key]().then(seedMethods[key])
+                                    .then(() => {
+                                        info.latest = Date.now();
+                                        return info.save();
+                                    });
+                            } else {
+                                console.log('No need to reset ' + key + ' database');
+                                return Promise.resolve(true);
+                            }
+                        })
+                })
             })
             .then(() => {
                 process.exit(0);

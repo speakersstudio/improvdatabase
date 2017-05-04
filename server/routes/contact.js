@@ -77,6 +77,7 @@ router.post('/bugreport', function(req, res) {
             subject: 'ImprovPlus Bug Report',
             content: {
                 type: 'text',
+                baseUrl: 'https://' + req.get('host'),
                 greeting: contactGreeting,
                 body: body,
                 afterAction: '<p></p><p>Sincerely,</p><p>' + name + '</p><p>' + email + '</p><p>User ID: ' + req.user._id + '</p>'

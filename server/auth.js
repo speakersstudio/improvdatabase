@@ -76,7 +76,7 @@ module.exports = {
                     name = 'ImprovPlus User';
                 }
 
-                let link = req.protocol + '://' + req.get('host') + '/resetMyPassword/' + token;
+                let link = 'https://' + req.get('host') + '/resetMyPassword/' + token;
 
                 emailUtil.send({
                     to: user.email,
@@ -84,6 +84,7 @@ module.exports = {
                     subject: 'ImprovPlus Password Rescue',
                     content: {
                         type: 'text',
+                        baseUrl: 'https://' + req.get('host'),
                         preheader: 'Did you forget your ImprovPlus password? We can help with that.',
                         greeting: `Dear ${name},`,
                         body: `

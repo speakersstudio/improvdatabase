@@ -374,9 +374,10 @@ module.exports = {
                     subject: 'Welcome to ImprovPlus',
                     content: {
                         type: 'text',
+                        baseUrl: 'https://' + req.headers.host,
                         greeting: 'Welcome to ImprovPlus!',
                         body: body,
-                        action: 'https://improvpl.us/app',
+                        action: 'https://' + req.headers.host + '/app',
                         actionText: 'Log In Now',
                         afterAction: `
                             <p>If you have any questions about how to use the ImprovPlus app, do not hesitate to reach out to us. You can use the "Request a feature" or "Report a Bug" options in the App Menu to send your feedback directly to us, or you can respond directly to this email.</p>

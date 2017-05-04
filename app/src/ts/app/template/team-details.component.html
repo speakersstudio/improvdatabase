@@ -1,6 +1,7 @@
 <div class="toolbar"
     [class.on]="_app.toolbarVisible"
     [tools]="_tools"
+    (toolClicked)="onToolClicked($event)"
     [showBack]="user.memberOfTeams.length + user.adminOfTeams.length > 1"
     ></div>
 
@@ -213,7 +214,7 @@
 
         <form class="block" name="invite" (ngSubmit)="submitInvite()" #inviteForm="ngForm">
             <div class="dialog-content">
-                <h3>Invite Someone to {{team.name}}</h3>
+                <h2>Invite Someone to {{team.name}}</h2>
 
                 <p>Enter the email address of one of your colleagues here, and they will get a magic code in their inbox to join up. This will use one of the available subscriptions on your Team profile.</p>
 
@@ -236,7 +237,7 @@
     <div class="dialog invite-form" *ngIf="showInviteDialog && inviteStatus=='sent'" [@dialog]>
 
         <div class="dialog-content">
-            <h3>Invite Sent!</h3>
+            <h2>Invite Sent!</h2>
 
             <p>Your invite is on its way. When your colleague has accepted your invitation, they will take one of {{team.name}}'s user subscriptions. We will let you know when this happens. You can also check the status of your invite (and cancel it) here on your team's profile.</p>
         </div>

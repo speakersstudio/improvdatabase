@@ -1,4 +1,5 @@
 <div class="toolbar"
+    [title]="title"
     [class.on]="_app.toolbarVisible"
     [tools]="_tools"
     (toolClicked)="onToolClicked($event)"
@@ -104,7 +105,10 @@
                     [user]="user"
                     [team]="team"
                     [class.selected] = "user === selectedUser"
-                    (click)="selectUser(user)">
+                    (click)="selectUser(user)"
+                    (removeUserFromTeam)="removeUserFromTeam($event)"
+                    (promoteUser)="promoteUser($event)"
+                    (demoteUser)="demoteUser($event)">
                 </div>
 
                 <div class="item clickable" *ngFor="let invite of team.subscription.invites"
@@ -134,7 +138,7 @@
 
                 <div *ngIf="isUserAdmin()" class="right">
                     <p *ngIf="pendingInvites">Pending Invites: <span class="tag orange">{{pendingInvites}}</span></p>
-                    <p>Remaining Subscriptions: <span class="tag">{{remainingSubs}} of {{team.subscription.subscriptions}}</span></p>
+                    <p>Remaining User Subscriptions: <span class="tag">{{remainingSubs}} of {{team.subscription.subscriptions}}</span></p>
 
                     <p *ngIf="remainingSubs > 0">You can invite {{remainingSubs}} more of your team members to join ImprovPlus for free.</p>
                     <p *ngIf="remainingSubs == 0">You have no more free invites, but you can buy additional user subscriptions for your team members.</p>
@@ -158,6 +162,37 @@
 
         <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
         <div class="right-bracket"><h1>members</h1></div>
+    </div>
+    
+    <!-- team subscription -->
+    <div class="paper has-brackets" *ngIf="team && team.subscription && selectedTab == 'subscription'">
+
+        <div class="card-list">
+
+            <div class="card">
+                <div class="top">
+                    <i class="fa fa-id-card-o"></i>
+                    <div class="content">
+                        <h4 class="light">{{team.name}}'s Subscription</h4>
+                        <h4 class="light">Expires</h4>
+                        <h3>{{getDate(team.subscription.expiration)}}</h3>
+                    </div>
+                </div>
+                <div class="body">
+                    <p>Activated {{getDate(team.subscription.start)}}</p>
+
+                    <p *ngIf="pendingInvites">Pending Invites: <span class="tag orange">{{pendingInvites}}</span></p>
+                    <p>Remaining User Subscriptions: <span class="tag">{{remainingSubs}} of {{team.subscription.subscriptions}}</span></p>
+                </div>
+                <!--<div class="action">
+                    
+                </div>-->
+            </div>
+
+        </div>
+
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>team subscription</h1></div>
     </div>
 
     <!-- team purchases -->

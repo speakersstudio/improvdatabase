@@ -31,7 +31,8 @@ const UserSchema = new mongoose.Schema({
 
     purchases: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Purchase' }],
     subscription: { type: mongoose.Schema.Types.ObjectId, ref: 'Subscription' },
-    preferences: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Preference' }]
+    preferences: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Preference' }],
+    invites: [{type: mongoose.Schema.Types.ObjectId, ref: 'Invite'}]
 });
 
 UserSchema.methods.addSubscription = function(role, stripeCustomerId, expires) {

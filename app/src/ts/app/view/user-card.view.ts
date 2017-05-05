@@ -2,7 +2,9 @@ import {
     Component,
     OnInit,
     OnDestroy,
-    Input
+    Input,
+    Output,
+    EventEmitter
 } from '@angular/core';
 
 import 'rxjs/Subscription';
@@ -26,6 +28,10 @@ export class UserCardView implements OnInit, OnDestroy {
 
     @Input() user: User;
     @Input() team: Team;
+
+    @Output() removeUserFromTeam: EventEmitter<User> = new EventEmitter();
+    @Output() promoteUser: EventEmitter<User> = new EventEmitter();
+    @Output() demoteUser: EventEmitter<User> = new EventEmitter();
     
     admin: boolean;
     userIsMe: boolean;
@@ -54,4 +60,18 @@ export class UserCardView implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         
     }
+
+    _removeUser(): void {
+        this.removeUserFromTeam.emit(this.user);
+    }
+
+    _promoteUser(): void {
+        this.promoteUser.emit(this.user);
+    }
+
+    _demoteUser(): void {
+        this.demoteUser.emit(this.user);
+    }
+
+
 }

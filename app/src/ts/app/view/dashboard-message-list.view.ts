@@ -12,6 +12,8 @@ import 'rxjs/Subscription';
 import { Subscription } from 'rxjs/Subscription';
 import { Router } from '@angular/router';
 
+import { AppComponent } from '../../component/app.component';
+
 import { UserService } from '../../service/user.service';
 
 import { PreferenceUtil } from '../../util/preference.util';
@@ -20,6 +22,8 @@ import { BracketCardDirective } from '../../view/bracket-card.directive';
 
 import { ShrinkAnim } from '../../util/anim.util';
 
+import { Invite } from '../../model/invite';
+
 class DashboardMessage {
     key: string;
     title?: string;
@@ -27,6 +31,7 @@ class DashboardMessage {
     button?: string;
     action?: Function;
     trigger?: Function;
+    notDismissable?: boolean;
 }
 
 @Component({
@@ -45,6 +50,30 @@ export class DashboardMessageListView implements OnInit, OnDestroy {
 
     messages: DashboardMessage[] = [
         {
+            key: 'invite',
+            trigger: () => {
+                 let invites = this.userService.getInvites();
+                 if (invites.length) {
+                     this.invite = invites[0];
+                 }
+                 return invites.length;
+            }
+        },
+        {
+            key: 'no-subscription',
+            title: 'You don\'t have a subscription!',
+            body: `
+                <p>Your subscription is expired or otherwise invalid. You will need to purchase a new one in order to continue using the app.</p>
+            `,
+            button: 'Purchase Subscription',
+            action: () => {
+                this._app.toast('This feature is coming soon. Please hang on.');
+            },
+            trigger: () => {
+                return !this.userService.getLoggedInUser().subscription;
+            }
+        },
+        {
             key: 'welcome'
         },
         {
@@ -61,9 +90,12 @@ export class DashboardMessageListView implements OnInit, OnDestroy {
     firstName: string;
     lastName: string;
 
+    invite: Invite;
+
     constructor(
         private userService: UserService,
         private router: Router,
+        private _app: AppComponent
     ) { }
 
     ngOnInit(): void {
@@ -108,14 +140,16 @@ export class DashboardMessageListView implements OnInit, OnDestroy {
     }
 
     dismissVisibleMessage(): void {
-        this.userService.setPreference(this.PREFERENCE_KEY_PREFIX + this.visibleMessage.key, 'true')
-            .then(() => {
-                setTimeout(() => {
-                    this.showNextMessage();
-                }, 300);
-            })
+        if (!this.visibleMessage.notDismissable) {
+            this.userService.setPreference(this.PREFERENCE_KEY_PREFIX + this.visibleMessage.key, 'true')
+                .then(() => {
+                    setTimeout(() => {
+                        this.showNextMessage();
+                    }, 300);
+                })
 
-        this.messageElement.close();
+            this.messageElement.close();
+        }
     }
 
     saveUserName(): void {
@@ -131,6 +165,18 @@ export class DashboardMessageListView implements OnInit, OnDestroy {
                     this.showNextMessage();
                 }, 100);
             });
+
+    }
+
+    acceptInvite(): void {
+        this.isPosting = true;
+        this.userService.acceptInvite(this.invite._id).then(() => {
+            this.isPosting = false;
+            this.showNextMessage();
+        });
+    }
+
+    rejectInvite(): void {
 
     }
 }

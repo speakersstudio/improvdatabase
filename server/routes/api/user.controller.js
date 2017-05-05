@@ -5,35 +5,20 @@ const   mongoose = require('mongoose'),
         config = require('../../config')(),
         roles = require('../../roles'),
         util = require('../../util'),
+        findModelUtil = require('./find-model.util'),
 
         Subscription = require('../../models/subscription.model'),
         User = require('../../models/user.model'),
         Team = require('../../models/team.model'),
         Purchase = require('../../models/purchase.model'),
         Invite = require('../../models/invite.model'),
-        HistoryModel = require('../../models/history.model'),
-
-        WHITELIST = [
-            'email',
-            'firstName',
-            'lastName',
-            'title',
-            'company',
-            'phone',
-            'address',
-            'city',
-            'state',
-            'zip',
-            'country',
-            'improvExp',
-            'facilitationExp',
-            'trainingInterest',
-            'url',
-            'description'
-        ];
+        HistoryModel = require('../../models/history.model');
 
 module.exports = {
 
+    /**
+     * POST: /api/user is used to accept an invitation and create a new user
+     */
     create: (req, res) => {
         
         let email = req.body.email,
@@ -153,12 +138,12 @@ module.exports = {
     },
 
     get: (req, res) => {
-        return module.exports.findUser(req.params.id)
+        return findModelUtil.findUser(req.params.id)
             .catch(err => {
                 util.handleError(req, res, err);
             })
             .then(user => {
-                res.json(user);
+                res.json(module.exports.prepUserObject(user));
             });
     },
 
@@ -175,12 +160,12 @@ module.exports = {
         }
         
         promise.then(hash => {
-             return module.exports.findUser(req.params.id, null, null, true)
+             return findModelUtil.findUser(req.params.id, null, null)
                 .then(user => {
                     oldUser = user.toObject();
                     delete oldUser.password;
 
-                    user = util.smartUpdate(user, formData, WHITELIST);
+                    user = util.smartUpdate(user, formData, findModelUtil.USER_WHITELIST);
 
                     if (hash) {
                         user.password = hash;
@@ -229,49 +214,6 @@ module.exports = {
             });
     },
 
-    findUser: (key, select, populate, raw) => {
-        if (!key) {
-            return Promise.reject('no id or email');
-        }
-
-        let query = User.findOne({})
-            .select(WHITELIST.join(' ') + 
-            ' subscription preferences memberOfTeams adminOfTeams role dateAdded dateModified superAdmin locked ' + select);
-
-        // catch a mongoose ObjectID, which looks like a string but isn't really
-        if (typeof(key) == 'object' && key.toString) {
-            key = key.toString();
-        }
-
-        if (key.indexOf && key.indexOf('@') > -1) {
-            query.where('email').equals(key);
-        } else {
-            query.where('_id').equals(key);
-        }
-
-        query.populate('preferences')
-            .populate({
-                path: 'subscription',
-                select: '-stripeCustomerId'
-            })
-
-        if (populate) {
-            query.populate(populate);
-        }
-
-        return query.exec()
-            .catch(error => {
-                return Promise.resolve(null);
-            })
-            .then(user => {
-                if (user && !raw) {
-                    user = module.exports.prepUserObject(user);
-                }
-
-                return Promise.resolve(user);
-            });
-    },
-
     prepUserObject: (user) => {
         if (user.toObject) {
             user = user.toObject();
@@ -300,9 +242,10 @@ module.exports = {
     },
 
     validateUser: (email, password, callback) => {
-        return module.exports.findUser(email, 'password')
+        return findModelUtil.findUser(email, 'password')
             .then(user => {
                 if (user) {
+                    user = module.exports.prepUserObject(user);
                     return bcrypt.compare(password, user.password)
                         .then(res => {
                             if (res) {
@@ -319,7 +262,7 @@ module.exports = {
 
     createUser: (data) => {
         let password = data.password,
-            userData = util.smartUpdate({}, data, WHITELIST);
+            userData = util.smartUpdate({}, data, findModelUtil.USER_WHITELIST);
 
         return bcrypt.hash(password, config.saltRounds)
             .then(hash => {
@@ -484,7 +427,10 @@ module.exports = {
             })
             .then(u => {
                 let user = u.toObject();
-                user.subscription.roleName = roles.findRoleById(user.subscription.role).name;
+
+                if (user.subscription) {
+                    user.subscription.roleName = roles.findRoleById(user.subscription.role).name;
+                }
 
                 res.json(user);
             })
@@ -498,7 +444,15 @@ module.exports = {
         let userId = req.user._id,
             teamId = req.params.toId;
 
-        return module.exports.findUser(userId, null, null, true)
+        module.exports.removeUserFromTeam(userId, teamId).then(user => {
+            res.json(module.exports.prepUserObject(u));
+        });
+
+    },
+
+    removeUserFromTeam: (userId, teamId, returnTeam) => {
+
+        return findModelUtil.findUser(userId)
             .then(user => {
 
                 if (util.indexOfObjectId(user.adminOfTeams, teamId) == -1 && util.indexOfObjectId(user.memberOfTeams, teamId) == -1) {
@@ -506,7 +460,7 @@ module.exports = {
                     return res.status(404);
                 }
 
-                return Team.findOne({}).where('_id').equals(teamId).exec()
+                return findModelUtil.findTeam(teamId)
                     .then(team => {
 
                         if (team && user.subscription.parent && user.subscription.parent.toString() == team.subscription.toString()) {
@@ -561,13 +515,94 @@ module.exports = {
                             });
                         }
 
-                        return user.save();
+                        if (returnTeam) {
+                            return user.save().then(() => {
+                                return Promise.resolve(team);
+                            });
+                        } else {
+                            return user.save();
+                        }
 
                     })
-                    .then(u => {
-                        res.json(module.exports.prepUserObject(u));
-                    })
             })
+    },
+
+    /**
+     * PUT: /api/user/userId/acceptInvitation/inviteId will accept an invitation for an existing user
+     */
+    acceptInvite: (req, res) => {
+        if (req.method != 'PUT') {
+            res.status(404);
+            return;
+        }
+
+        let userId = req.params.id,
+            inviteId = req.params.toId,
+
+            user;
+
+        return findModelUtil.findUser(userId)
+            .then(u => {
+                user = u;
+                return Invite.findOne({}).where('_id').equals(inviteId).exec();
+            })
+            .then(invite => {
+                if (!invite || !user) {
+                    res.status(404);
+                    return Promise.reject('no user or invite found');
+                } else if (invite.email != user.email) {
+                    util.unauthorized(req, res);
+                    return Promise.reject('incorrect user or invite');
+                } else {
+                    invite.accepted = true;
+                    invite.dateAccepted = Date.now();
+
+                    return invite.save();
+                }
+            })
+            .then(invite => {
+                if (invite && invite.team) {
+                    return findModelUtil.findTeam(invite.team.toString());
+                }
+            })
+            .then(team => {
+                if (team) {
+                    team.members = util.addToObjectIdArray(team.members, user._id);
+                    return team.save();
+                }
+            })
+            .then(team => {
+                if (team) {
+                    user.memberOfTeams = util.addToObjectIdArray(user.memberOfTeams, team._id);
+                    user.invites = util.removeFromObjectIdArray(user.invites, inviteId);
+
+                    HistoryModel.create({
+                        user: userId,
+                        action: 'team_join',
+                        reference: team._id
+                    });
+
+                    if (!user.subscription) {
+                        return Subscription.findOne({})
+                            .where('_id').equals(util.getObjectIdAsString(team.subscription))
+                            .exec()
+                            .then(teamSubscription => {
+                                return teamSubscription.createChildSubscription(user);
+                            })
+                            .then(() => {
+                                return findModelUtil.findUser(user._id);
+                            });
+                    } else {
+                        return user.save();
+                    }
+                }
+            })
+            .then(u => {
+                if (u) {
+                    res.json(module.exports.prepUserObject(u));
+                }
+            });
+
     },
 
     backup: (req, res) => {
@@ -610,9 +645,9 @@ module.exports = {
             .then(user => {
                 return user.setPreference(prefKey, prefVal);
             }).then(user => {
-                return module.exports.findUser(userId);
+                return findModelUtil.findUser(userId);
             }).then(user => {
-                res.json(user);
+                res.json(module.exports.prepUserObject(user));
             });
 
     },

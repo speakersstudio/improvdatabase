@@ -9,6 +9,12 @@ module.exports = {
         return model;
     },
 
+    unauthorized: (req, res) => {
+        res.status(401).json({
+            "message": "Unauthorized"
+        });
+    },
+
     handleError: function (req, res, err) {
         if (err.name && err.name == 'CastError') {
             res.status(500).json({error: 'Invalid data'});

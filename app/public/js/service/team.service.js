@@ -94,6 +94,36 @@ var TeamService = (function () {
             return invite;
         });
     };
+    TeamService.prototype.removeUserFromTeam = function (team, user) {
+        var _this = this;
+        return this.http.put(this.teamUrl + team._id + '/removeUser/' + user._id, {})
+            .toPromise()
+            .then(function (response) {
+            var team = response.json();
+            _this.addTeam(team);
+            return team;
+        });
+    };
+    TeamService.prototype.promoteUser = function (team, user) {
+        var _this = this;
+        return this.http.put(this.teamUrl + team._id + '/promote/' + user._id, {})
+            .toPromise()
+            .then(function (response) {
+            var team = response.json();
+            _this.addTeam(team);
+            return team;
+        });
+    };
+    TeamService.prototype.demoteUser = function (team, user) {
+        var _this = this;
+        return this.http.put(this.teamUrl + team._id + '/demote/' + user._id, {})
+            .toPromise()
+            .then(function (response) {
+            var team = response.json();
+            _this.addTeam(team);
+            return team;
+        });
+    };
     TeamService.prototype.fetchPurchases = function (team) {
         return this.http.get(this.teamUrl + team._id + '/purchases')
             .toPromise()

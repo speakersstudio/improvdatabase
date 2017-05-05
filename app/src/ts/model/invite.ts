@@ -1,3 +1,5 @@
+import {User} from './user';
+
 export class Invite {
     _id: string;
     user: string;
@@ -7,4 +9,5 @@ export class Invite {
     email: string;
     role: number;
     team: string;
+    inviteUser: User;
 }

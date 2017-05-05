@@ -25,6 +25,8 @@ import { DialogAnim, ToggleAnim } from '../../util/anim.util';
 })
 export class TeamDetailsComponent implements OnInit {
 
+    title: string;
+
     @Input() team: Team;
     user: User;
 
@@ -127,6 +129,8 @@ export class TeamDetailsComponent implements OnInit {
             });
         }
 
+        this.title = team.name;
+
         this.tabs = [
             {
                 name: 'Team Details',
@@ -141,6 +145,11 @@ export class TeamDetailsComponent implements OnInit {
         ];
 
         if (this.can('team_purchases_view')) {
+            this.tabs.push({
+                name: 'Team Subscription',
+                id: 'subscription',
+                icon: 'id-card-o'
+            })
             this.tabs.push({
                 name: 'Purchase History',
                 id: 'purchases',
@@ -219,6 +228,7 @@ export class TeamDetailsComponent implements OnInit {
     showInviteDialog: boolean;
     inviteEmail: string;
     inviteStatus: string;
+    inviteModel: Invite;
 
     selectedInvite: Invite;
 
@@ -243,6 +253,7 @@ export class TeamDetailsComponent implements OnInit {
             .then(invite => {
                 this.isPosting = false;
                 this.inviteStatus = 'wait';
+                this.inviteModel = invite;
                 if (invite) {
                     this.team.subscription.invites.push(invite);
                     this.calculateSubs();
@@ -305,6 +316,39 @@ export class TeamDetailsComponent implements OnInit {
 
     buySubscription(): void {
         this._app.toast("This button doesn't work yet. Soon, though. Soon.");
+    }
+
+    getUserName(user: User): string {
+        return user.firstName ? user.firstName : 'this user';
+    }
+
+    removeUserFromTeam(user: User): void {
+        this._app.dialog('Remove ' + this.getUserName(user) + ' from the Team?',
+            'Are you sure you want to remove them from the Team?', 'Yes', () => {
+                this.teamService.removeUserFromTeam(this.team, user).then(team => {
+                    this.setTeam(team);
+                });
+            });
+    }
+
+    promoteUser(user: User): void {
+        this._app.dialog('Promote ' + this.getUserName(user) + ' to Team Admin?',
+            'As a Team Admin, they will be able to view the Team\'s purchase history, add or remove users, and make purchases for the Team.', 'Yes',
+            () => {
+                this.teamService.promoteUser(this.team, user).then(team => {
+                    this.setTeam(team);
+                });
+            });
+    }
+
+    demoteUser(user: User): void {
+        this._app.dialog('Demote ' + this.getUserName(user) + '?',
+            'This user will no longer have Team Admin privelages.', 'Yes',
+            () => {
+                this.teamService.demoteUser(this.team, user).then(team => {
+                    this.setTeam(team);
+                });
+            });
     }
 
 }

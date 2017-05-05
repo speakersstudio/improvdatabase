@@ -6,7 +6,8 @@ mongoose.Promise = Promise;
 let config = require('../config')();
 
 let util = require('../util'),
-    emailUtil = require('../email');
+    emailUtil = require('../email'),
+    findModelUtil = require('./api/find-model.util');
 
 let userController = require('./api/user.controller'),
     teamController = require('./api/team.controller'),
@@ -290,7 +291,7 @@ module.exports = {
                             return sub.createChildSubscription(userId);
                         })
                         .then(sub => {
-                            return userController.findUser(userId);
+                            return findModelUtil.findUser(userController.prepUserObject(userId));
                         });
                 } else {
                     return Promise.resolve(owner);

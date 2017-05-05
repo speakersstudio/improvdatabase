@@ -200,6 +200,10 @@ export class UserService {
         return this.loggedInUser.firstName + ' ' + this.loggedInUser.lastName;
     }
 
+    getInvites(): Invite[] {
+        return this.loggedInUser.invites || [];
+    }
+
     /**
      * Change information on the current user
      */
@@ -300,16 +304,26 @@ export class UserService {
             })
     }
 
-    acceptInvite(inviteId: string, email: string, password: string, name: string): Promise<User> {
-        return this.http.post(this.userUrl, {
-            email: email,
-            password: password,
-            invite: inviteId,
-            name: name
-        }).toPromise()
-        .then(response => {
-            return response.json() as User;
-        });
+    acceptInvite(inviteId: string, email?: string, password?: string, name?: string): Promise<User> {
+        if (this.loggedInUser) {
+            return this.http.put(this.userUrl + this.loggedInUser._id + '/acceptInvite/' + inviteId, {}).toPromise()
+                .then(response => {
+                    let user = response.json() as User;
+                    this.saveUserData(user);
+                    this.announceLoginState();
+                    return this.loggedInUser;
+                })
+        } else {
+            return this.http.post(this.userUrl, {
+                email: email,
+                password: password,
+                invite: inviteId,
+                name: name
+            }).toPromise()
+            .then(response => {
+                return response.json() as User;
+            });
+        }
     }
 
     leaveTeam(team: Team): Promise<User> {

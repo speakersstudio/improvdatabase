@@ -110,6 +110,7 @@ module.exports = {
                 'team_invite', // user has to be admin of team
                 'team_edit', // user has to be admin of team
                 'team_user_promote', // user has to be admin of team
+                'team_user_remove', // admins can remove users from a team
                 'team_purchases_view', // admins only baby
                 'team_leave'
             ]
@@ -303,17 +304,14 @@ const actionmap = {
             switch(method) {
                 case 'get':
                     return 'game_view';
-                    break;
                 case 'put':
                     return 'game_edit';
-                    break;
                 case 'delete':
                     if (url.indexOf('removeTag') > -1) {
                         return 'game_tag_remove';
                     } else {
                         return 'game_delete';
                     }
-                    break;
                 case 'post':
                     if (url.indexOf('addTag') > -1) {
                         return 'game_tag_add';
@@ -324,7 +322,6 @@ const actionmap = {
                     } else {
                         return 'game_create';
                     }
-                    break;
             }
         }
     },
@@ -341,11 +338,9 @@ const actionmap = {
                 case 'post':
                     // TODO: allow POST for private notes, when those are a thing
                     return 'note_public_create';
-                    break;
                 case 'put':
                     // TODO: allow PUT on a user's own notes
                     return 'note_public_edit';
-                    break;
             }
         }
     },
@@ -401,7 +396,13 @@ const actionmap = {
                     }
                     break;
                 case "put":
-                    action = 'team_edit';
+                    if (url.indexOf('/removeUser') > -1) {
+                        action = 'team_user_remove';
+                    } else if (url.indexOf('/promote') > -1 || url.indexOf('/demote') > -1) {
+                        action = 'team_user_promote';
+                    } else {
+                        action = 'team_edit';
+                    }
                     break;
                 case "delete":
                     action = 'team_delete';

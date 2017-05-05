@@ -10,7 +10,9 @@
     </div>
 
     <div class="row">
-        <span><i class="fa fa-clock-o"></i> Subscription expires: {{_timeUtil.simpleDate(user.subscription.expiration)}}</span>
+        <span *ngIf="!team || user.subscription.parent != team.subscription._id"><i class="fa fa-id-card-o"></i> Subscription expires: {{_timeUtil.simpleDate(user.subscription.expiration)}}</span>
+
+        <span *ngIf="team && user.subscription.parent == team.subscription._id"><i class="fa fa-id-card-o"></i> Using Team Subscription</span>
     </div>
 </div>
 
@@ -19,10 +21,13 @@
 </div>
 
 <div class="action" *ngIf="!userIsMe">
-    <div class="button" *ngIf="admin && amIAdmin"
+
+    <div class="button" *ngIf="admin && amIAdmin" (click)="_demoteUser()"
         title="Demote {{user.firstName || 'this user'}} to no longer be Admin of this Team"><i class="fa fa-user-o"></i></div>
-    <div class="button" *ngIf="!admin && amIAdmin"
+    <div class="button" *ngIf="!admin && amIAdmin" (click)="_promoteUser()"
         title="Promote {{user.firstName || 'this user'}} to Admin of this Team"><i class="fa fa-black-tie"></i></div>
 
-    <div class="button" title="Send {{user.firstName || 'this user'}} a message"><i class="fa fa-envelope"></i></div>
+    <div class="button" *ngIf="team && amIAdmin" (click)="_removeUser()"
+        title="Remove {{user.firstName || 'this user'}} from the Team"><i class="fa fa-times"></i></div>
+
 </div>

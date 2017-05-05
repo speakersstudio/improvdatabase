@@ -92,6 +92,7 @@ var TeamDetailsComponent = (function () {
                 _this.purchases = p;
             });
         }
+        this.title = team.name;
         this.tabs = [
             {
                 name: 'Team Details',
@@ -105,6 +106,11 @@ var TeamDetailsComponent = (function () {
             }
         ];
         if (this.can('team_purchases_view')) {
+            this.tabs.push({
+                name: 'Team Subscription',
+                id: 'subscription',
+                icon: 'id-card-o'
+            });
             this.tabs.push({
                 name: 'Purchase History',
                 id: 'purchases',
@@ -183,6 +189,7 @@ var TeamDetailsComponent = (function () {
             .then(function (invite) {
             _this.isPosting = false;
             _this.inviteStatus = 'wait';
+            _this.inviteModel = invite;
             if (invite) {
                 _this.team.subscription.invites.push(invite);
                 _this.calculateSubs();
@@ -230,6 +237,33 @@ var TeamDetailsComponent = (function () {
     };
     TeamDetailsComponent.prototype.buySubscription = function () {
         this._app.toast("This button doesn't work yet. Soon, though. Soon.");
+    };
+    TeamDetailsComponent.prototype.getUserName = function (user) {
+        return user.firstName ? user.firstName : 'this user';
+    };
+    TeamDetailsComponent.prototype.removeUserFromTeam = function (user) {
+        var _this = this;
+        this._app.dialog('Remove ' + this.getUserName(user) + ' from the Team?', 'Are you sure you want to remove them from the Team?', 'Yes', function () {
+            _this.teamService.removeUserFromTeam(_this.team, user).then(function (team) {
+                _this.setTeam(team);
+            });
+        });
+    };
+    TeamDetailsComponent.prototype.promoteUser = function (user) {
+        var _this = this;
+        this._app.dialog('Promote ' + this.getUserName(user) + ' to Team Admin?', 'As a Team Admin, they will be able to view the Team\'s purchase history, add or remove users, and make purchases for the Team.', 'Yes', function () {
+            _this.teamService.promoteUser(_this.team, user).then(function (team) {
+                _this.setTeam(team);
+            });
+        });
+    };
+    TeamDetailsComponent.prototype.demoteUser = function (user) {
+        var _this = this;
+        this._app.dialog('Demote ' + this.getUserName(user) + '?', 'This user will no longer have Team Admin privelages.', 'Yes', function () {
+            _this.teamService.demoteUser(_this.team, user).then(function (team) {
+                _this.setTeam(team);
+            });
+        });
     };
     return TeamDetailsComponent;
 }());

@@ -1,4 +1,5 @@
 const   jwt = require('jwt-simple'),
+        findModelUtil = require('./routes/api/find-model.util'),
         userApi = require('./routes/api/user.controller'),
         roles = require('./roles'),
         util = require('./util'),
@@ -57,11 +58,13 @@ module.exports = {
             return;
         }
 
-        userApi.findUser(email).then(user => {
+        findModelUtil.findUser(email).then(user => {
 
             if (!user) {
                 noUser();
             } else {
+
+                user = userApi.prepUserObject(user);
 
                 var dateObj = new Date();
                 dateObj.setHours(dateObj.getHours() + 12); // you have 12 hours to use the link
@@ -232,9 +235,9 @@ module.exports = {
                 if (decoded.exp > Date.now()) {
                     // now make sure the user exists
                     // The iss parameter would be the logged in user's UserID
-                    userApi.findUser(decoded.iss, 'stripeCustomerId')
+                    findModelUtil.findUser(decoded.iss, 'stripeCustomerId')
                         .then(user => {
-                            req.user = user;
+                            req.user = userApi.prepUserObject(user);
                             next();
                         });
                 } else {
@@ -250,9 +253,7 @@ module.exports = {
     },
 
     unauthorized: (req, res) => {
-        res.status(401).json({
-            "message": "Unauthorized"
-        });
+        util.unauthorized(req, res);
     },
 
     /**

@@ -169,6 +169,9 @@ var UserService = (function () {
     UserService.prototype.getUserName = function () {
         return this.loggedInUser.firstName + ' ' + this.loggedInUser.lastName;
     };
+    UserService.prototype.getInvites = function () {
+        return this.loggedInUser.invites || [];
+    };
     /**
      * Change information on the current user
      */
@@ -262,15 +265,27 @@ var UserService = (function () {
         });
     };
     UserService.prototype.acceptInvite = function (inviteId, email, password, name) {
-        return this.http.post(this.userUrl, {
-            email: email,
-            password: password,
-            invite: inviteId,
-            name: name
-        }).toPromise()
-            .then(function (response) {
-            return response.json();
-        });
+        var _this = this;
+        if (this.loggedInUser) {
+            return this.http.put(this.userUrl + this.loggedInUser._id + '/acceptInvite/' + inviteId, {}).toPromise()
+                .then(function (response) {
+                var user = response.json();
+                _this.saveUserData(user);
+                _this.announceLoginState();
+                return _this.loggedInUser;
+            });
+        }
+        else {
+            return this.http.post(this.userUrl, {
+                email: email,
+                password: password,
+                invite: inviteId,
+                name: name
+            }).toPromise()
+                .then(function (response) {
+                return response.json();
+            });
+        }
     };
     UserService.prototype.leaveTeam = function (team) {
         var _this = this;

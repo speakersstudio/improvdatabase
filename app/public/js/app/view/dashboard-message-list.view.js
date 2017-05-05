@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 require("rxjs/Subscription");
 var router_1 = require("@angular/router");
+var app_component_1 = require("../../component/app.component");
 var user_service_1 = require("../../service/user.service");
 var bracket_card_directive_1 = require("../../view/bracket-card.directive");
 var anim_util_1 = require("../../util/anim.util");
@@ -21,12 +22,35 @@ var DashboardMessage = (function () {
     return DashboardMessage;
 }());
 var DashboardMessageListView = (function () {
-    function DashboardMessageListView(userService, router) {
+    function DashboardMessageListView(userService, router, _app) {
         var _this = this;
         this.userService = userService;
         this.router = router;
+        this._app = _app;
         this.PREFERENCE_KEY_PREFIX = 'hide_dash_message_';
         this.messages = [
+            {
+                key: 'invite',
+                trigger: function () {
+                    var invites = _this.userService.getInvites();
+                    if (invites.length) {
+                        _this.invite = invites[0];
+                    }
+                    return invites.length;
+                }
+            },
+            {
+                key: 'no-subscription',
+                title: 'You don\'t have a subscription!',
+                body: "\n                <p>Your subscription is expired or otherwise invalid. You will need to purchase a new one in order to continue using the app.</p>\n            ",
+                button: 'Purchase Subscription',
+                action: function () {
+                    _this._app.toast('This feature is coming soon. Please hang on.');
+                },
+                trigger: function () {
+                    return !_this.userService.getLoggedInUser().subscription;
+                }
+            },
             {
                 key: 'welcome'
             },
@@ -76,13 +100,15 @@ var DashboardMessageListView = (function () {
     };
     DashboardMessageListView.prototype.dismissVisibleMessage = function () {
         var _this = this;
-        this.userService.setPreference(this.PREFERENCE_KEY_PREFIX + this.visibleMessage.key, 'true')
-            .then(function () {
-            setTimeout(function () {
-                _this.showNextMessage();
-            }, 300);
-        });
-        this.messageElement.close();
+        if (!this.visibleMessage.notDismissable) {
+            this.userService.setPreference(this.PREFERENCE_KEY_PREFIX + this.visibleMessage.key, 'true')
+                .then(function () {
+                setTimeout(function () {
+                    _this.showNextMessage();
+                }, 300);
+            });
+            this.messageElement.close();
+        }
     };
     DashboardMessageListView.prototype.saveUserName = function () {
         var _this = this;
@@ -98,6 +124,16 @@ var DashboardMessageListView = (function () {
             }, 100);
         });
     };
+    DashboardMessageListView.prototype.acceptInvite = function () {
+        var _this = this;
+        this.isPosting = true;
+        this.userService.acceptInvite(this.invite._id).then(function () {
+            _this.isPosting = false;
+            _this.showNextMessage();
+        });
+    };
+    DashboardMessageListView.prototype.rejectInvite = function () {
+    };
     return DashboardMessageListView;
 }());
 __decorate([
@@ -112,7 +148,8 @@ DashboardMessageListView = __decorate([
         animations: [anim_util_1.ShrinkAnim.height]
     }),
     __metadata("design:paramtypes", [user_service_1.UserService,
-        router_1.Router])
+        router_1.Router,
+        app_component_1.AppComponent])
 ], DashboardMessageListView);
 exports.DashboardMessageListView = DashboardMessageListView;
 

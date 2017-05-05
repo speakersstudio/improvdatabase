@@ -7,9 +7,30 @@
         <div [innerHTML]="visibleMessage.body"></div>
 
         <div class="action right">
-            <span class="button" (click)="dismissVisibleMessage()">Dismiss</span>
+            <span class="button" (click)="dismissVisibleMessage()" *ngIf="visibleMessage.notDismissable">Dismiss</span>
         </div>
         
+    </div>
+
+    <div class="card full brackets center" bracketCard #dashboardMessage *ngIf="visibleMessage.key == 'invite'">
+
+        <h4>You have a pending Team Invite</h4>
+
+        <p *ngIf="invite.user.firstName">{{invite.user.firstName + ' ' + invite.user.lastName}} has invited you to join {{invite.team.name}}.</p>
+
+        <p *ngIf="!invite.user.firstName">You have been invited to join {{invite.team.name}}</p>
+
+        <p *ngIf="!userService.getLoggedInUser().subscription">You will be able to utilize one of {{invite.team.name}}'s subscriptions, which means you'll get full access to the app.</p>
+
+        <div class="action right" *ngIf="!isPosting">
+            <span class="button" (click)="rejectInvite()">Reject their offer</span>
+            <span class="button brackets" (click)="acceptInvite()">Join {{invite.team.name}}</span>
+        </div>
+
+        <div class="action right" *ngIf="isPosting">
+            <span class="button"><i class="loading"></i></span>
+        </div>
+
     </div>
  
     <div class="card full brackets center" bracketCard #dashboardMessage *ngIf="visibleMessage.key == 'welcome'">

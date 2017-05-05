@@ -103,6 +103,36 @@ export class TeamService {
                 return invite;
             })
     }
+
+    removeUserFromTeam(team: Team, user: User): Promise<Team> {
+        return this.http.put(this.teamUrl + team._id + '/removeUser/' + user._id, {})
+            .toPromise()
+            .then(response => {
+                let team = response.json() as Team;
+                this.addTeam(team);
+                return team;
+            })
+    }
+
+    promoteUser(team: Team, user: User): Promise<Team> {
+        return this.http.put(this.teamUrl + team._id + '/promote/' + user._id, {})
+            .toPromise()
+            .then(response => {
+                let team = response.json() as Team;
+                this.addTeam(team);
+                return team;
+            })
+    }
+
+    demoteUser(team: Team, user: User): Promise<Team> {
+        return this.http.put(this.teamUrl + team._id + '/demote/' + user._id, {})
+            .toPromise()
+            .then(response => {
+                let team = response.json() as Team;
+                this.addTeam(team);
+                return team;
+            })
+    }
     
     fetchPurchases(team: Team): Promise<Purchase[]> {
         return this.http.get(this.teamUrl + team._id + '/purchases')

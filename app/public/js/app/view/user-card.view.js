@@ -20,6 +20,9 @@ var UserCardView = (function () {
     function UserCardView(userService) {
         this.userService = userService;
         this._timeUtil = time_util_1.TimeUtil;
+        this.removeUserFromTeam = new core_1.EventEmitter();
+        this.promoteUser = new core_1.EventEmitter();
+        this.demoteUser = new core_1.EventEmitter();
     }
     UserCardView.prototype.ngOnInit = function () {
         this.descriptionText = text_util_1.TextUtil.stripTags(this.user.description);
@@ -32,6 +35,15 @@ var UserCardView = (function () {
     };
     UserCardView.prototype.ngOnDestroy = function () {
     };
+    UserCardView.prototype._removeUser = function () {
+        this.removeUserFromTeam.emit(this.user);
+    };
+    UserCardView.prototype._promoteUser = function () {
+        this.promoteUser.emit(this.user);
+    };
+    UserCardView.prototype._demoteUser = function () {
+        this.demoteUser.emit(this.user);
+    };
     return UserCardView;
 }());
 __decorate([
@@ -42,6 +54,18 @@ __decorate([
     core_1.Input(),
     __metadata("design:type", team_1.Team)
 ], UserCardView.prototype, "team", void 0);
+__decorate([
+    core_1.Output(),
+    __metadata("design:type", core_1.EventEmitter)
+], UserCardView.prototype, "removeUserFromTeam", void 0);
+__decorate([
+    core_1.Output(),
+    __metadata("design:type", core_1.EventEmitter)
+], UserCardView.prototype, "promoteUser", void 0);
+__decorate([
+    core_1.Output(),
+    __metadata("design:type", core_1.EventEmitter)
+], UserCardView.prototype, "demoteUser", void 0);
 UserCardView = __decorate([
     core_1.Component({
         moduleId: module.id,

@@ -14,7 +14,7 @@
 
     <div class="card-list">
 
-        <div class="paper-label big">
+        <div class="paper-label big" *ngIf="userService.getLoggedInUser() && userService.getLoggedInUser().subscription">
             your features
         </div>
 

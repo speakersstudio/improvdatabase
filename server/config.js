@@ -25,7 +25,8 @@ module.exports = function () {
                 key: process.env.SENDGRID_API_KEY
             },
             s3_buckets: {
-                materials: 'improvplus.dev.materials'
+                materials: 'improvplus.dev.materials',
+                backups: 'improvplus.backups'
             },
             pdftkPath: 'C:\\Program Files (x86)\\PDFtk Server\\bin\\pdftk.exe',
             port: 1919,
@@ -55,7 +56,8 @@ module.exports = function () {
                 key: process.env.SENDGRID_API_KEY
             },
             s3_buckets: {
-                materials: 'improvplus.materials'
+                materials: 'improvplus.materials',
+                backups: 'improvplus.backups'
             },
             port: process.env.PORT || 5000,
             saltRounds: 10

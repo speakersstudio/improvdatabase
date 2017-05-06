@@ -8,6 +8,7 @@
 
         <div class="action right">
             <span class="button" (click)="dismissVisibleMessage()" *ngIf="visibleMessage.notDismissable">Dismiss</span>
+            <button class="button brackets" (click)="visibleMessage.action()" *ngIf="visibleMessage.button">{{visibleMessage.button}}</button>
         </div>
         
     </div>

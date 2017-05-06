@@ -13,6 +13,7 @@ var login_screen_component_1 = require("../component/login-screen.component");
 var signup_component_1 = require("../component/signup.component");
 var change_password_component_1 = require("../component/change-password.component");
 var invite_component_1 = require("../component/invite.component");
+var improvisers_component_1 = require("../component/improvisers.component");
 var routes = [
     {
         path: '',
@@ -26,6 +27,10 @@ var routes = [
     {
         path: 'login',
         component: login_screen_component_1.LoginScreenComponent
+    },
+    {
+        path: 'improvisers',
+        component: improvisers_component_1.ImprovisersComponent
     },
     {
         path: 'signup',

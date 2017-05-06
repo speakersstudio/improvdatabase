@@ -242,7 +242,7 @@ var UserService = (function () {
         return this.loggedInUser.locked;
     };
     UserService.prototype.isExpired = function () {
-        return (new Date(this.loggedInUser.subscription.expiration)).getTime() <= Date.now();
+        return !this.loggedInUser.subscription || (new Date(this.loggedInUser.subscription.expiration)).getTime() <= Date.now();
     };
     UserService.prototype.validate = function (user) {
         return this.http.post(this.validateUrl, user)

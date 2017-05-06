@@ -119,12 +119,10 @@ var AppComponent = (function () {
         this.scrollSource.next(this.scrollpos);
     };
     AppComponent.prototype.showLoader = function () {
-        // this.loader.style.display = "block";
         this.loaderVisible = true;
         this.showBackdrop = true;
     };
     AppComponent.prototype.hideLoader = function () {
-        // this.loader.style.display = "none";
         this.loaderVisible = false;
         this.showBackdrop = false;
     };

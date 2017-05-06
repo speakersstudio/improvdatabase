@@ -8,7 +8,6 @@
     "quickstart": "node ./server",
     
     "checkItems": "node -e \"require('./server/reset').checkForSeed()\"",
-    "checkGames": "node -e \"require('./server/reset-games').checkForSeed()\"",
 
     "reset": "node -e \"require('./server/reset').reset()\""
   },

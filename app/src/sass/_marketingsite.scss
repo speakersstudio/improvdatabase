@@ -140,7 +140,7 @@ landing-hero {
     }
 }
 
-welcome, signup {
+welcome, signup, for-improvisers {
     .toolbar {
         .toolbar-row {
             justify-content: space-around;
@@ -149,6 +149,7 @@ welcome, signup {
                 text-decoration: none;
                 text-transform: uppercase;
                 cursor: pointer;
+                padding: $small $std;
 
                 i {
                     margin-left: $small;
@@ -163,7 +164,7 @@ welcome, signup {
 
         iplus {
             @include abs(0, null, null, 50%, 7);
-            margin-left: -15px;
+            margin-left: -23px;
             padding: $std - 5;
         }
 
@@ -259,6 +260,10 @@ welcome, signup {
             .how-it-works {
                 & > div {
                     margin: $std;
+
+                    @media #{$media-mobile} {
+                        margin: 0;
+                    }
                     
                     img {
                         @include md-elevation(2);

@@ -41,14 +41,14 @@ var DashboardMessageListView = (function () {
             },
             {
                 key: 'no-subscription',
-                title: 'You don\'t have a subscription!',
-                body: "\n                <p>Your subscription is expired or otherwise invalid. You will need to purchase a new one in order to continue using the app.</p>\n            ",
+                title: 'No Subscription',
+                body: "\n                <p>Your subscription is expired or otherwise invalid. If you own any materials or other content, you can still access them, but other areas of the app will be off-limits until you renew your subscription.</p>\n            ",
                 button: 'Purchase Subscription',
                 action: function () {
                     _this._app.toast('This feature is coming soon. Please hang on.');
                 },
                 trigger: function () {
-                    return !_this.userService.getLoggedInUser().subscription;
+                    return _this.userService.isExpired();
                 }
             },
             {

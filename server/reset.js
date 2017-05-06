@@ -21,6 +21,13 @@ const Package = require('./models/package.model');
 const Preference = require('./models/preference.model');
 const PackageConfig = require('./models/packageconfig.model');
 
+const Game = require('./models/game.model'),
+    GameMetadata = require('./models/game-metadata.model'),
+    NameVote = require('./models/name-vote.model'),
+    Name = require('./models/name.model'),
+    Note = require('./models/note.model'),
+    Tag = require('./models/tag.model');
+
 const   databases = {
             'Invite': 1493838843811,
             'MaterialItem': 1493847396156,
@@ -30,7 +37,14 @@ const   databases = {
             'Purchase': 1493838843811,
             'Subscription': 1493846462338,
             'Team': 1493838843811,
-            'User': 1493838843811
+            'User': 1494103814520,
+
+            'GameMetadata': 1494103814520,
+            'Game': 1494103814520,
+            'Name': 1494103814520,
+            'NameVote': 1494103814520,
+            'Note': 1494103814520,
+            'Tag': 1494103814520
         }
 
 mongoose.Promise = Promise;
@@ -82,6 +96,36 @@ deleteMethods = {
     User: () =>{
         console.log('deleting users');
         return User.find({}).remove().exec();
+    },
+
+    GameMetadata: () =>{
+        console.log('deleting Game Metadata');
+        return GameMetadata.find({}).remove().exec();
+    },
+
+    Game: () =>{
+        console.log('deleting Games');
+        return Game.find({}).remove().exec();
+    },
+
+    Name: () =>{
+        console.log('deleting Names');
+        return Name.find({}).remove().exec();
+    },
+
+    NameVote: () =>{
+        console.log('deleting Name Votes');
+        return NameVote.find({}).remove().exec();
+    },
+
+    Note: () =>{
+        console.log('deleting Notes');
+        return Note.find({}).remove().exec();
+    },
+
+    Tag: () =>{
+        console.log('deleting Tags');
+        return Tag.find({}).remove().exec();
     }
 
 }
@@ -178,6 +222,30 @@ seedMethods = {
             });
             return users;
         });
+    },
+
+    GameMetadata: () => {
+        return doSeed('game-metadata', GameMetadata);
+    },
+
+    Game: () => {
+        return doSeed('game', Game);
+    },
+
+    Name: () => {
+        return doSeed('name', Name);
+    },
+
+    NameVote: () => {
+        return doSeed('name-vote', NameVote);
+    },
+
+    Note: () => {
+        return doSeed('note', Note);
+    },
+
+    Tag: () => {
+        return doSeed('tag', Tag);
     }
 
 }
@@ -190,6 +258,8 @@ const DBInfo = require('./models/dbinfo.model');
 
 module.exports = {
 
+    databases: databases,
+
     clear: function() {
         return deleteMethods.Invite()
             .then(deleteMethods.MaterialItem)
@@ -200,6 +270,14 @@ module.exports = {
             .then(deleteMethods.Subscription)
             .then(deleteMethods.Team)
             .then(deleteMethods.User)
+
+            .then(deleteMethods.GameMetadata)
+            .then(deleteMethods.Game)
+            .then(deleteMethods.Name)
+            .then(deleteMethods.NameVote)
+            .then(deleteMethods.Note)
+            .then(deleteMethods.Tag)
+
             .then(resetAllTimes)
             .then(() => {
                 process.exit(0);

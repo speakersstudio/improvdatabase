@@ -280,7 +280,7 @@ export class UserService {
     }
 
     isExpired(): boolean {
-        return (new Date(this.loggedInUser.subscription.expiration)).getTime() <= Date.now();
+        return !this.loggedInUser.subscription || (new Date(this.loggedInUser.subscription.expiration)).getTime() <= Date.now();
     }
 
     validate (user: User): Promise<string> {

@@ -412,11 +412,11 @@ iplus {
   z-index: 5000; }
   .loader .iplus {
     position: absolute;
-    top: 24px;
+    top: 23px;
     left: 50%;
     z-index: 5;
     margin-top: -12px;
-    margin-left: -3px;
+    margin-left: -12px;
     animation: spin 1000ms 1000ms infinite; }
 
 #cornerLogo {
@@ -2135,59 +2135,60 @@ landing-hero {
   .page .blackbox h2 {
     font-size: 50px; }
 
-welcome .toolbar .toolbar-row, signup .toolbar .toolbar-row {
+welcome .toolbar .toolbar-row, signup .toolbar .toolbar-row, for-improvisers .toolbar .toolbar-row {
   justify-content: space-around; }
-  welcome .toolbar .toolbar-row a, signup .toolbar .toolbar-row a {
+  welcome .toolbar .toolbar-row a, signup .toolbar .toolbar-row a, for-improvisers .toolbar .toolbar-row a {
     text-decoration: none;
     text-transform: uppercase;
-    cursor: pointer; }
-    welcome .toolbar .toolbar-row a i, signup .toolbar .toolbar-row a i {
+    cursor: pointer;
+    padding: 8px 16px; }
+    welcome .toolbar .toolbar-row a i, signup .toolbar .toolbar-row a i, for-improvisers .toolbar .toolbar-row a i {
       margin-left: 8px; }
   @media only screen and (max-width: 500px) {
-    welcome .toolbar .toolbar-row, signup .toolbar .toolbar-row {
+    welcome .toolbar .toolbar-row, signup .toolbar .toolbar-row, for-improvisers .toolbar .toolbar-row {
       justify-content: space-between;
       padding: 0 16px; } }
 
-welcome .toolbar iplus, signup .toolbar iplus {
+welcome .toolbar iplus, signup .toolbar iplus, for-improvisers .toolbar iplus {
   position: absolute;
   top: 0;
   left: 50%;
   z-index: 7;
-  margin-left: -15px;
+  margin-left: -23px;
   padding: 11px; }
 
-welcome .toolbar.on a, signup .toolbar.on a {
+welcome .toolbar.on a, signup .toolbar.on a, for-improvisers .toolbar.on a {
   color: #FFFFFF; }
 
-welcome .landing-holder, signup .landing-holder {
+welcome .landing-holder, signup .landing-holder, for-improvisers .landing-holder {
   display: block;
   width: 100vw;
   height: 100vh; }
 
-welcome .page, signup .page {
+welcome .page, signup .page, for-improvisers .page {
   box-sizing: border-box;
   position: relative;
   z-index: 4;
   padding-top: 0; }
-  welcome .page h4, signup .page h4 {
+  welcome .page h4, signup .page h4, for-improvisers .page h4 {
     font-size: 4em;
     margin-bottom: 72px; }
-  welcome .page h5, signup .page h5 {
+  welcome .page h5, signup .page h5, for-improvisers .page h5 {
     font-size: 2em; }
-  welcome .page h2, signup .page h2 {
+  welcome .page h2, signup .page h2, for-improvisers .page h2 {
     margin-top: 24px; }
-  welcome .page p, signup .page p {
+  welcome .page p, signup .page p, for-improvisers .page p {
     margin-bottom: 24px;
     line-height: 2; }
-  welcome .page .block, signup .page .block {
+  welcome .page .block, signup .page .block, for-improvisers .page .block {
     margin-bottom: 72px; }
-    welcome .page .block:last-child, signup .page .block:last-child {
+    welcome .page .block:last-child, signup .page .block:last-child, for-improvisers .page .block:last-child {
       margin-bottom: 0; }
-  welcome .page .card-list h4, signup .page .card-list h4 {
+  welcome .page .card-list h4, signup .page .card-list h4, for-improvisers .page .card-list h4 {
     margin-bottom: 0; }
-  welcome .page .card-list p, signup .page .card-list p {
+  welcome .page .card-list p, signup .page .card-list p, for-improvisers .page .card-list p {
     line-height: 1.5; }
-  welcome .page .paper, signup .page .paper {
+  welcome .page .paper, signup .page .paper, for-improvisers .page .paper {
     border-radius: 0 0 2px 2px;
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
     background: #FFFFFF;
@@ -2196,28 +2197,31 @@ welcome .page, signup .page {
     z-index: 2;
     margin: 0 26px 16px; }
     @media only screen and (max-width: 500px) {
-      welcome .page .paper, signup .page .paper {
+      welcome .page .paper, signup .page .paper, for-improvisers .page .paper {
         margin: 0 0 16px;
         padding: 72px 16px; } }
-    welcome .page .paper.list, signup .page .paper.list {
+    welcome .page .paper.list, signup .page .paper.list, for-improvisers .page .paper.list {
       padding: 0; }
-    welcome .page .paper.has-brackets, signup .page .paper.has-brackets {
+    welcome .page .paper.has-brackets, signup .page .paper.has-brackets, for-improvisers .page .paper.has-brackets {
       padding: 48px 64px; }
       @media only screen and (max-width: 500px) {
-        welcome .page .paper.has-brackets, signup .page .paper.has-brackets {
+        welcome .page .paper.has-brackets, signup .page .paper.has-brackets, for-improvisers .page .paper.has-brackets {
           padding: 48px 52px; } }
-    welcome .page .paper > :not(.left-bracket):not(.right-bracket), signup .page .paper > :not(.left-bracket):not(.right-bracket) {
+    welcome .page .paper > :not(.left-bracket):not(.right-bracket), signup .page .paper > :not(.left-bracket):not(.right-bracket), for-improvisers .page .paper > :not(.left-bracket):not(.right-bracket) {
       position: relative;
       z-index: 6; }
-    welcome .page .paper .description, welcome .page .paper .description p, signup .page .paper .description, signup .page .paper .description p {
+    welcome .page .paper .description, welcome .page .paper .description p, signup .page .paper .description, signup .page .paper .description p, for-improvisers .page .paper .description, for-improvisers .page .paper .description p {
       line-height: 1.25; }
-    welcome .page .paper .how-it-works > div, signup .page .paper .how-it-works > div {
+    welcome .page .paper .how-it-works > div, signup .page .paper .how-it-works > div, for-improvisers .page .paper .how-it-works > div {
       margin: 16px; }
-      welcome .page .paper .how-it-works > div img, signup .page .paper .how-it-works > div img {
+      @media only screen and (max-width: 500px) {
+        welcome .page .paper .how-it-works > div, signup .page .paper .how-it-works > div, for-improvisers .page .paper .how-it-works > div {
+          margin: 0; } }
+      welcome .page .paper .how-it-works > div img, signup .page .paper .how-it-works > div img, for-improvisers .page .paper .how-it-works > div img {
         box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
         border-radius: 2px;
         border: 2px solid #606060; }
-  welcome .page .hero, signup .page .hero {
+  welcome .page .hero, signup .page .hero, for-improvisers .page .hero {
     margin: 72px -8.7vw;
     padding: 24px 4.35vw;
     box-sizing: border-box;
@@ -2226,34 +2230,34 @@ welcome .page, signup .page {
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2) inset, 0px 2px 2px 0px rgba(0, 0, 0, 0.14) inset, 0px 1px 5px 0px rgba(0, 0, 0, 0.12) inset;
     text-align: center;
     color: #FFFFFF; }
-    welcome .page .hero h3, signup .page .hero h3 {
+    welcome .page .hero h3, signup .page .hero h3, for-improvisers .page .hero h3 {
       font-size: 4em;
       margin: 72px 16px 24px; }
-    welcome .page .hero h5, signup .page .hero h5 {
+    welcome .page .hero h5, signup .page .hero h5, for-improvisers .page .hero h5 {
       margin-bottom: 24px;
       font-size: 2em; }
-    welcome .page .hero p, signup .page .hero p {
+    welcome .page .hero p, signup .page .hero p, for-improvisers .page .hero p {
       margin: 0 16px 24px; }
-    welcome .page .hero .content, signup .page .hero .content {
+    welcome .page .hero .content, signup .page .hero .content, for-improvisers .page .hero .content {
       padding: 0 0 72px 0; }
 
-welcome .payment-info, signup .payment-info {
+welcome .payment-info, signup .payment-info, for-improvisers .payment-info {
   max-width: 500px;
   text-align: left;
   margin: 0 auto; }
-  welcome .payment-info .StripeElement, signup .payment-info .StripeElement {
+  welcome .payment-info .StripeElement, signup .payment-info .StripeElement, for-improvisers .payment-info .StripeElement {
     background-color: white;
     padding: 8px 8px 8px;
     margin: 8px -8px 24px;
     border: 1px solid transparent;
     border-bottom: 1px solid #d32f2f;
     border-radius: 2px; }
-  welcome .payment-info .StripeCardErrors, signup .payment-info .StripeCardErrors {
+  welcome .payment-info .StripeCardErrors, signup .payment-info .StripeCardErrors, for-improvisers .payment-info .StripeCardErrors {
     margin: -24px 0 24px 0;
     color: darkred; }
-  welcome .payment-info .StripeElement--invalid, signup .payment-info .StripeElement--invalid {
+  welcome .payment-info .StripeElement--invalid, signup .payment-info .StripeElement--invalid, for-improvisers .payment-info .StripeElement--invalid {
     border-color: darkred; }
-  welcome .payment-info .StripeElement--webkit-autofill, signup .payment-info .StripeElement--webkit-autofill {
+  welcome .payment-info .StripeElement--webkit-autofill, signup .payment-info .StripeElement--webkit-autofill, for-improvisers .payment-info .StripeElement--webkit-autofill {
     background-color: #fefde5 !important; }
 
 signup .page {

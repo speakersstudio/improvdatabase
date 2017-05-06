@@ -462,6 +462,7 @@ findActionForUrl = function(url, method) {
     // /backup requests are restricted to super admins
     if (url.indexOf('/backup') > -1) {
         return function(url, method, user) {
+            console.log('backups require super admin');
             return user.superAdmin;
         }
     } else 

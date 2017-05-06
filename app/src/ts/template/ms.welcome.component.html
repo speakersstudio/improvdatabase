@@ -2,6 +2,10 @@
     <div class="toolbar-row">
         <iplus class="white" (click)="login()" *ngIf="!_app.loaderVisible"></iplus>
 
+        <a routerLink="/improvisers">For Improvisers</a>
+
+        <span></span>
+
         <a routerLink="/signup" *ngIf="!_app.user">Join</a>
         <span *ngIf="_app.user"></span>
 
@@ -36,18 +40,21 @@
         <div class="block">
             <h4>how <iplus class="huge"></iplus> works</h4>
 
-            <div class="columns how-it-works">
+            <div class="columns responsive how-it-works">
                 <div>
-                    <img src="/images/how-it-works-1.png" />
-                    <p><strong>Sign Up</strong> and purchase materials.</p>
+                    <i class="fa fa-user-plus huge"></i>
+                    <h5>Sign Up</h5>
+                    <p>Create an account for your Company or Group (we call them Teams) and purchase our materials.</p>
                 </div>
                 <div>
-                    <img src="/images/how-it-works-2.png" />
-                    <p><strong>Download</strong> the materials.</p>
+                    <i class="fa fa-download huge"></i>
+                    <h5>Download</h5>
+                    <p>The materials are yours to keep, and you can download and print them whenever you want.</p>
                 </div>
                 <div>
-                    <img src="/images/how-it-works-3.png" />
-                    <p><strong>Train</strong> your team.</p>
+                    <i class="fa fa-bullhorn huge"></i>
+                    <h5>Train</h5>
+                    <p>Use the materials and the resources available in the ImprovPlus app to make your people more awesome.</p>
                 </div>
             </div>
 

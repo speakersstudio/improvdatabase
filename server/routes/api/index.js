@@ -102,6 +102,7 @@ let api = {
 }
 
 router.post('/:op', api.create);
+router.get('/backup', require('./backup').backupAll);
 router.get('/:op', api.getAll);
 router.get('/:op/backup', api.backup);
 router.post('/:op/validate', api.validate);

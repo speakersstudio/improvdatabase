@@ -24,6 +24,7 @@ import { LoginScreenComponent } from '../component/login-screen.component';
 import { SignupComponent } from '../component/signup.component';
 import { ChangePasswordComponent } from '../component/change-password.component'
 import { InviteComponent } from '../component/invite.component';
+import { ImprovisersComponent } from '../component/improvisers.component';
 
 // import { FormInputDirective } from '../view/form-input.directive';
 
@@ -43,7 +44,8 @@ import { InviteComponent } from '../component/invite.component';
         WelcomeComponent,
         SignupComponent,
         ChangePasswordComponent,
-        InviteComponent
+        InviteComponent,
+        ImprovisersComponent
     ],
     bootstrap: [ AppComponent ],
     providers: [

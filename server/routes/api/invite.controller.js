@@ -31,6 +31,13 @@ module.exports = {
                 }
             });
 
+    },
+
+    backup: (req, res) => {
+        InviteModel.find({}).exec()
+            .then(i => {
+                res.json(i);
+            })
     }
 
 }

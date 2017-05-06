@@ -278,17 +278,24 @@ module.exports = {
                 })
                 .then(m => {
                     // the user has access to the file!
-                    // let file = path.join(__dirname, materialFolderName) + m.filename();
-                    // res.download(file, m.dlfilename());
 
-                    let filename = m.dlfilename();
+                    let filename = m.dlfilename(),
+                        params = {
+                            Bucket: config.s3_buckets.materials,
+                            Key: m.filename()
+                        },
+                        exists, notExists;
 
-                    res.setHeader('Content-Disposition', contentDisposition(filename));
+                    s3.getObjectTagging(params, function(err, data) {
+                        if (err) {
+                            res.status(err.statusCode).send(err.message);
+                        } else {
+                            res.setHeader('Content-Disposition', contentDisposition(filename));
 
-                    s3.getObject({
-                        Bucket: config.s3_buckets.materials,
-                        Key: m.filename()
-                    }).createReadStream().pipe(res);
+                            s3.getObject(params).createReadStream().pipe(res);
+                        }
+                    })
+
                 });
         } else {
             auth.unauthorized(req,res);

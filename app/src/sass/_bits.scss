@@ -187,9 +187,9 @@ iplus {
     @include fixed(0, 0, 0, 0, 5000);
 
     .iplus {
-        @include abs(($toolbar-height / 2), null, null, 50%, 5);
+        @include abs(($toolbar-height / 2)-1, null, null, 50%, 5);
         margin-top: -12px;
-        margin-left: -3px;
+        margin-left: -12px;
         animation: spin 1000ms 1000ms infinite;
     }
 }

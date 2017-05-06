@@ -12,13 +12,18 @@
 
     <h1><span class="light">improv</span><strong>plus</strong></h1>
 
-    <div class="columns centered block">
+    <div class="columns centered block" *ngIf="!improv">
         <h2>[i]mprov</h2>
         <h2 class="primary">+</h2>
         <div><h3>Develop</h3> <hr /> <h3>Talent</h3></div>
         <h2>=</h2>
         <iplus class="large" [text]="'mprovplus'"></iplus>
     </div>
+
+    <div class="columns centered block" *ngIf="improv">
+        <h2>adding new dimension to the global Improv community</h2>
+    </div>
+
 
 </div>
 

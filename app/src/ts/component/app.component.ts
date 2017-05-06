@@ -169,13 +169,11 @@ export class AppComponent implements OnInit {
     }
 
     showLoader(): void {
-        // this.loader.style.display = "block";
         this.loaderVisible = true;
         this.showBackdrop = true;
     }
 
     hideLoader(): void {
-        // this.loader.style.display = "none";
         this.loaderVisible = false;
         this.showBackdrop = false;
     }

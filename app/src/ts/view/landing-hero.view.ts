@@ -16,6 +16,7 @@ import { AppComponent } from '../component/app.component';
 export class LandingHeroView implements OnInit, OnDestroy {
 
     @Input() showContent: boolean = true;
+    @Input() improv: boolean = false;
     @Input() video: boolean = true;
 
     videoId = "p00Q8pomuc0";

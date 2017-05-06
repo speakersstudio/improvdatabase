@@ -15,6 +15,7 @@ var LandingHeroView = (function () {
     function LandingHeroView(_app) {
         this._app = _app;
         this.showContent = true;
+        this.improv = false;
         this.video = true;
         this.videoId = "p00Q8pomuc0";
         this.YT = window.YT;
@@ -171,6 +172,10 @@ __decorate([
     core_1.Input(),
     __metadata("design:type", Boolean)
 ], LandingHeroView.prototype, "showContent", void 0);
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", Boolean)
+], LandingHeroView.prototype, "improv", void 0);
 __decorate([
     core_1.Input(),
     __metadata("design:type", Boolean)

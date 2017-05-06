@@ -4,7 +4,7 @@
   "description": "Powerful tool to help facilitate Improv for everyone.",
   "private": true,
   "scripts": {
-    "start": "npm run checkItems && npm run checkGames && node ./server",
+    "start": "npm run checkItems && node ./server",
     "quickstart": "node ./server",
     
     "checkItems": "node -e \"require('./server/reset').checkForSeed()\"",

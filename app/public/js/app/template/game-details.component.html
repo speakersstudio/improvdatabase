@@ -101,7 +101,7 @@
             <div class="button-group" *ngIf="can('game_edit')">
                 <div class="button" *ngIf="!editDescriptionShown" (click)="showEditDescription()">EDIT</div>
                 
-                <div class="button" *ngIf="editDescriptionShown" (click)="_closeAllEdits()">cancel</div>
+                <div class="button" *ngIf="editDescriptionShown" (click)="cancelEditDescription()">cancel</div>
                 <div class="button raised" *ngIf="editDescriptionShown" (click)="saveDescription()">SAVE</div>
             </div>
 

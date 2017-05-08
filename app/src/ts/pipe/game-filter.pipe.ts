@@ -4,6 +4,7 @@ import {
 } from '@angular/core';
 
 import { Game } from '../model/game';
+import { Tag } from '../model/tag';
 
 export class GameFilter {
     property: string;
@@ -21,7 +22,7 @@ export class GameFilterPipe implements PipeTransform {
                 if (args.property == 'tagId') {
                     // this isn't a foreach because that won't handle the return properly
                     for (var tagIDIndex = 0; tagIDIndex < game.tags.length; tagIDIndex++) {
-                        if (game.tags[tagIDIndex].tag._id == args.value) {
+                        if ((<Tag> game.tags[tagIDIndex].tag)._id == args.value) {
                             return true;
                         }
                     }

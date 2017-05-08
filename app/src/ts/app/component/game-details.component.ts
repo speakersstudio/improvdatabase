@@ -156,7 +156,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     }
 
     showEditName(): void {
-        this._closeAllEdits();
+        this.addNameShown = false;
         if (this.can('name_edit')) {
             if (!this.game.names.length) {
                 this.showAddName();
@@ -169,7 +169,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     }
 
     showAddName(): void {
-        this._closeAllEdits();
+        this.editNameShown = false;
         if (this.can('name_create')) {
             this.editName = "";
             this.addNameShown = true;
@@ -189,24 +189,25 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
                 // create a new name
                 this.gameDatabaseService.createName(this.game._id, this.editName)
                     .then(name => {
-                        this.game.names.unshift(name);
+                        // this.game.names.unshift(name);
                     });
             }
         }
 
         this.editName = "";
-        this._closeAllEdits();
-    }
-
-    private _closeAllEdits(): void {
         this.editNameShown = false;
         this.addNameShown = false;
-        this.addTagShown = false;
-        this.editDescriptionShown = false;
     }
 
+    // private _closeAllEdits(): void {
+    //     this.editNameShown = false;
+    //     this.addNameShown = false;
+    //     this.addTagShown = false;
+    //     this.editDescriptionShown = false;
+    // }
+
     private _saveGame(): void {
-        this._closeAllEdits();
+        // this._closeAllEdits();
         this.setGame(this.game);
 
         this.gameDatabaseService.saveGame(this.game)
@@ -252,7 +253,6 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
             this.game.duration = metadata;
         }
 
-        this._closeAllEdits();
         this.gameDatabaseService.saveGame(this.game);
     }
 
@@ -276,10 +276,10 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
 
                 this.addTagByName();
                 break;
-            case 27:
+            case 27: // escape
                 this._selectedTagIndex = -1;
 
-                this._closeAllEdits();
+                this.addTagShown = false;
                 break;
             case 40: // down
             case 38: // up
@@ -331,7 +331,6 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
             return;
         }
         let index = this.game.tags.indexOf(taggame);
-        console.log('removing tag', taggame, 'index: ', index);
         if (index > -1) {
             this.game.tags.splice(index, 1);
         }
@@ -382,10 +381,15 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         this.editDescriptionShown = true;
     }
 
+    cancelEditDescription(): void {
+        this.newDescriptionText = '';
+        this.editDescriptionShown = false;
+    }
+
     saveDescription(): void {
         this.game.description = this.newDescriptionText;
         this.gameDatabaseService.saveGame(this.game);
-        this._closeAllEdits();
+        this.editDescriptionShown = false;
     }
 
     setGame(game: Game): void {
@@ -403,7 +407,6 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     }
 
     closePage(): void {
-        console.log('dialog?', this.dialog);
         if (this.dialog) {
             this.onClose.emit();
         } else {

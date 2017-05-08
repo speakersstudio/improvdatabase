@@ -9,7 +9,9 @@
     
     "checkItems": "node -e \"require('./server/reset').checkForSeed()\"",
 
-    "reset": "node -e \"require('./server/reset').reset()\""
+    "reset": "node -e \"require('./server/reset').reset()\"",
+
+    "cleanup": "node -e \"require('./server/reset').cleanup()\""
   },
   "dependencies": {
     "@angular/animations": "^4.0.1",

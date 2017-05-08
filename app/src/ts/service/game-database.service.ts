@@ -14,6 +14,8 @@ import { SearchResult } from '../app/view/toolbar.view';
 
 import { UserService } from './user.service';
 
+import { Util } from '../util/util';
+
 @Injectable()
 export class GameDatabaseService {
     private gamesUrl = '/api/game';
@@ -116,7 +118,7 @@ export class GameDatabaseService {
         items.forEach(item => {
             if (item.game && item.game == id) {
                 returnItems.push(item);
-            } else if (item.games && item.games.indexOf(id) > -1) {
+            } else if (item.games && Util.indexOfId(item.games, id) > -1) {
                 returnItems.push(item);
             }
         });
@@ -151,6 +153,11 @@ export class GameDatabaseService {
             .then(response => {
                 let name = response.json() as Name;
                 this.names.push(name);
+
+                this.getGame(name.game).then(g => {
+                    g.names.unshift(name);
+                    this._sortGames();
+                });
                 return name;
             })
             .catch(this.handleError);
@@ -164,7 +171,7 @@ export class GameDatabaseService {
             .toPromise()
             .then(response => {
                 let newName = response.json() as Name;
-                let index = this.names.indexOf(name);
+                let index = Util.indexOfId(this.names, name);
                 if (index > -1) {
                     this.names.splice(index, 1, newName);
                 } else {
@@ -296,7 +303,7 @@ export class GameDatabaseService {
     gameHasTag(game: Game, tagIDs: String[]): boolean {
         let foundTagGame: boolean = false;
         game.tags.forEach((taggame) => {
-            if (tagIDs.includes(taggame.tag._id)) {
+            if (tagIDs.includes((<Tag> taggame.tag)._id)) {
                 foundTagGame = true;
                 return false;
             }
@@ -356,7 +363,8 @@ export class GameDatabaseService {
     }
 
     private _removeGameFromArray(game: Game): number {
-        let index = this.games.indexOf(game);
+        let index = Util.indexOfId(this.games, game);
+
         if (index > -1) {
             this.games.splice(index, 1);
         }
@@ -371,6 +379,7 @@ export class GameDatabaseService {
         } else {
             this.games.push(newGame);
         }
+        this._sortGames();
         return newGame;
     }
 
@@ -400,8 +409,8 @@ export class GameDatabaseService {
             taggame: TagGame;
 
         newGame.tags.forEach(tg => {
-            if ((typeof(tag) == 'object' && tg.tag._id == tag._id) ||
-                (typeof(tag) == 'string' && tg.tag.name == tag)) {
+            if (((<Tag>tag)._id && (<Tag> tg.tag)._id == (<Tag> tag)._id) ||
+                (!(<Tag>tag)._id && (<Tag> tg.tag).name == tag)) {
                 taggame = tg;
                 return false;
             }
@@ -419,7 +428,7 @@ export class GameDatabaseService {
     }
 
     deleteTagGame(game: Game, taggame: TagGame): Promise<Game> {
-        return this.http.delete(this.gamesUrl + '/' + game._id + '/removeTag/' + taggame.tag._id)
+        return this.http.delete(this.gamesUrl + '/' + game._id + '/removeTag/' + (<Tag> taggame.tag)._id)
             .toPromise()
             .then(response => {
                 return this._handleNewGame(game, response);
@@ -569,7 +578,7 @@ export class GameDatabaseService {
                                 // add it if a name matches
                                 game.names.forEach((name) => {
                                     if (name.name.toLowerCase().indexOf(term) > -1 &&
-                                            gameResults.indexOf(game) == -1) {
+                                            Util.indexOfId(gameResults, game) == -1) {
                                         gameResults.push(game);
                                     }
                                 });

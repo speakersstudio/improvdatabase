@@ -92,7 +92,7 @@ var GameDetailsComponent = (function () {
         }, 100);
     };
     GameDetailsComponent.prototype.showEditName = function () {
-        this._closeAllEdits();
+        this.addNameShown = false;
         if (this.can('name_edit')) {
             if (!this.game.names.length) {
                 this.showAddName();
@@ -105,7 +105,7 @@ var GameDetailsComponent = (function () {
         }
     };
     GameDetailsComponent.prototype.showAddName = function () {
-        this._closeAllEdits();
+        this.editNameShown = false;
         if (this.can('name_create')) {
             this.editName = "";
             this.addNameShown = true;
@@ -113,7 +113,6 @@ var GameDetailsComponent = (function () {
         }
     };
     GameDetailsComponent.prototype.saveEditName = function () {
-        var _this = this;
         if (this.editName) {
             if (this.editNameShown) {
                 // update the existing name if it is different
@@ -126,21 +125,22 @@ var GameDetailsComponent = (function () {
                 // create a new name
                 this.gameDatabaseService.createName(this.game._id, this.editName)
                     .then(function (name) {
-                    _this.game.names.unshift(name);
+                    // this.game.names.unshift(name);
                 });
             }
         }
         this.editName = "";
-        this._closeAllEdits();
-    };
-    GameDetailsComponent.prototype._closeAllEdits = function () {
         this.editNameShown = false;
         this.addNameShown = false;
-        this.addTagShown = false;
-        this.editDescriptionShown = false;
     };
+    // private _closeAllEdits(): void {
+    //     this.editNameShown = false;
+    //     this.addNameShown = false;
+    //     this.addTagShown = false;
+    //     this.editDescriptionShown = false;
+    // }
     GameDetailsComponent.prototype._saveGame = function () {
-        this._closeAllEdits();
+        // this._closeAllEdits();
         this.setGame(this.game);
         this.gameDatabaseService.saveGame(this.game)
             .then(function (game) {
@@ -181,7 +181,6 @@ var GameDetailsComponent = (function () {
             this.allDurations.push(metadata);
             this.game.duration = metadata;
         }
-        this._closeAllEdits();
         this.gameDatabaseService.saveGame(this.game);
     };
     GameDetailsComponent.prototype.showAddTag = function () {
@@ -200,7 +199,7 @@ var GameDetailsComponent = (function () {
                 break;
             case 27:
                 this._selectedTagIndex = -1;
-                this._closeAllEdits();
+                this.addTagShown = false;
                 break;
             case 40: // down
             case 38:
@@ -252,7 +251,6 @@ var GameDetailsComponent = (function () {
             return;
         }
         var index = this.game.tags.indexOf(taggame);
-        console.log('removing tag', taggame, 'index: ', index);
         if (index > -1) {
             this.game.tags.splice(index, 1);
         }
@@ -299,10 +297,14 @@ var GameDetailsComponent = (function () {
         this.newDescriptionText = this.game.description;
         this.editDescriptionShown = true;
     };
+    GameDetailsComponent.prototype.cancelEditDescription = function () {
+        this.newDescriptionText = '';
+        this.editDescriptionShown = false;
+    };
     GameDetailsComponent.prototype.saveDescription = function () {
         this.game.description = this.newDescriptionText;
         this.gameDatabaseService.saveGame(this.game);
-        this._closeAllEdits();
+        this.editDescriptionShown = false;
     };
     GameDetailsComponent.prototype.setGame = function (game) {
         var _this = this;
@@ -317,7 +319,6 @@ var GameDetailsComponent = (function () {
             .then(function (notes) { return _this.notes = notes; });
     };
     GameDetailsComponent.prototype.closePage = function () {
-        console.log('dialog?', this.dialog);
         if (this.dialog) {
             this.onClose.emit();
         }

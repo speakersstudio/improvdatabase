@@ -29,11 +29,15 @@ module.exports = {
 
         let gameId = req.params.id;
 
-        Game.remove({ _id: gameId }).then(() => {
-            res.send('Success');
-        }, error => {
-            util.handleError(req, res, error);
-        });
+        Game.remove({ _id: gameId })
+            .then(() => {
+                return Name.remove({ game: gameId });
+            })
+            .then(() => {
+                res.send('Success');
+            }, error => {
+                util.handleError(req, res, error);
+            });
 
     },
 
@@ -53,7 +57,10 @@ module.exports = {
                 return game.save();
             })
             .then(game => {
-                res.json(game);
+                return getGames(req.user, game._id);
+            })
+            .then(game => {
+                res.json(game[0]);
             }, error => {
                 util.handleError(req, res, error);
             });

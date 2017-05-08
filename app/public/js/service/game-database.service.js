@@ -13,6 +13,7 @@ var core_1 = require("@angular/core");
 require("rxjs/add/operator/toPromise");
 var app_http_1 = require("../data/app-http");
 var user_service_1 = require("./user.service");
+var util_1 = require("../util/util");
 var GameDatabaseService = (function () {
     function GameDatabaseService(http, userService) {
         this.http = http;
@@ -102,7 +103,7 @@ var GameDatabaseService = (function () {
             if (item.game && item.game == id) {
                 returnItems.push(item);
             }
-            else if (item.games && item.games.indexOf(id) > -1) {
+            else if (item.games && util_1.Util.indexOfId(item.games, id) > -1) {
                 returnItems.push(item);
             }
         });
@@ -136,6 +137,10 @@ var GameDatabaseService = (function () {
             .then(function (response) {
             var name = response.json();
             _this.names.push(name);
+            _this.getGame(name.game).then(function (g) {
+                g.names.unshift(name);
+                _this._sortGames();
+            });
             return name;
         })
             .catch(this.handleError);
@@ -149,7 +154,7 @@ var GameDatabaseService = (function () {
             .toPromise()
             .then(function (response) {
             var newName = response.json();
-            var index = _this.names.indexOf(name);
+            var index = util_1.Util.indexOfId(_this.names, name);
             if (index > -1) {
                 _this.names.splice(index, 1, newName);
             }
@@ -334,7 +339,7 @@ var GameDatabaseService = (function () {
         });
     };
     GameDatabaseService.prototype._removeGameFromArray = function (game) {
-        var index = this.games.indexOf(game);
+        var index = util_1.Util.indexOfId(this.games, game);
         if (index > -1) {
             this.games.splice(index, 1);
         }
@@ -349,6 +354,7 @@ var GameDatabaseService = (function () {
         else {
             this.games.push(newGame);
         }
+        this._sortGames();
         return newGame;
     };
     GameDatabaseService.prototype.saveGame = function (game) {
@@ -375,8 +381,8 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype._handleNewTagGame = function (game, response, tag) {
         var newGame = this._handleNewGame(game, response), taggame;
         newGame.tags.forEach(function (tg) {
-            if ((typeof (tag) == 'object' && tg.tag._id == tag._id) ||
-                (typeof (tag) == 'string' && tg.tag.name == tag)) {
+            if ((tag._id && tg.tag._id == tag._id) ||
+                (!tag._id && tg.tag.name == tag)) {
                 taggame = tg;
                 return false;
             }
@@ -531,7 +537,7 @@ var GameDatabaseService = (function () {
                             // add it if a name matches
                             game.names.forEach(function (name) {
                                 if (name.name.toLowerCase().indexOf(term) > -1 &&
-                                    gameResults.indexOf(game) == -1) {
+                                    util_1.Util.indexOfId(gameResults, game) == -1) {
                                     gameResults.push(game);
                                 }
                             });

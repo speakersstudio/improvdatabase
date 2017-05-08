@@ -29,14 +29,13 @@ export class GameCardView implements OnInit, OnDestroy {
     iconDescription: string;
     descriptionText: string;
 
-    //@Input() showTags: boolean = false;
-    tags: Tag[] = [];
-
     constructor(
         private gameDatabaseService: GameDatabaseService
     ) { }
 
     ngOnInit(): void {
+
+
         if (this.game.description) {
             // this will create a description string without any HTML tags in it
             let div = document.createElement("div");
@@ -44,25 +43,27 @@ export class GameCardView implements OnInit, OnDestroy {
             this.descriptionText = div.textContent || div.innerText || this.game.description;
         }
 
-        this.game.tags.forEach(taggame => {
-            // let's just make sure the tag actually exists
-            if (taggame.tag) {
-                switch(taggame.tag.name.toLowerCase()) {
-                    case 'show':
-                        this.iconClass = 'ticket';
-                        this.iconDescription = taggame.tag.description;
-                        break;
-                    case 'exercise':
-                        this.iconClass = 'lightbulb-o';
-                        this.iconDescription = taggame.tag.description;
-                        break;
-                    case 'warmup':
-                        this.iconClass = 'fire';
-                        this.iconDescription = taggame.tag.description;
-                        break;
+        if (this.game.tags) {
+            this.game.tags.forEach(taggame => {
+                // let's just make sure the tag actually exists
+                if (taggame.tag && (<Tag> taggame.tag).name) {
+                    switch((<Tag> taggame.tag).name.toLowerCase()) {
+                        case 'show':
+                            this.iconClass = 'ticket';
+                            this.iconDescription = (<Tag> taggame.tag).description;
+                            break;
+                        case 'exercise':
+                            this.iconClass = 'lightbulb-o';
+                            this.iconDescription = (<Tag> taggame.tag).description;
+                            break;
+                        case 'warmup':
+                            this.iconClass = 'fire';
+                            this.iconDescription = (<Tag> taggame.tag).description;
+                            break;
+                    }
                 }
-            }
-        })
+            })
+        }
     }
 
     ngOnDestroy(): void {

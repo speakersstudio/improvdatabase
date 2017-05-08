@@ -5,6 +5,8 @@ const Name = require('./name.model');
 const GameMetadata = require('./game-metadata.model');
 const Tag = require('./tag.model');
 
+const util = require('../util');
+
 const GameSchema = new mongoose.Schema({
     legacyID: Number,
     names: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Name' }],
@@ -103,7 +105,10 @@ GameSchema.methods.removeTag = function(tagId, userId) {
 
     return query.exec()
         .then(tag => {
-            tag.games = tag.games.splice(tag.games.indexOf(game._id), 1);
+            let index = util.indexOfObjectId(tag.games, game._id);
+            if (index > -1) {
+                tag.games = tag.games.splice(index, 1);
+            }
             if (tag.games.length == 0) {
                 return tag.remove();
             } else {

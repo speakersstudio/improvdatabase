@@ -5,7 +5,7 @@ import { Tag } from './tag';
 
 export class TagGame {
     _id: string;
-    tag: Tag;
+    tag: Tag|string;
     addedUser: string;
     dateAdded: Date;
 }

@@ -22,6 +22,7 @@ import { UserService } from "../../service/user.service";
 
 import { Game } from '../../model/game';
 import { Name } from '../../model/name';
+import { Tag } from '../../model/tag';
 
 import { GameFilter } from '../../pipe/game-filter.pipe';
 
@@ -130,7 +131,7 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
                 }
                 if (this.filter.property == 'TagID') {
                     for (var tagIDIndex = 0; tagIDIndex < game.tags.length; tagIDIndex++) {
-                        if (game.tags[tagIDIndex].tag._id == this.filter.value) {
+                        if ((<Tag> game.tags[tagIDIndex].tag)._id == this.filter.value) {
                             return true;
                         }
                     }

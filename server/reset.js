@@ -254,6 +254,26 @@ function resetAllTimes() {
     return DBInfo.find({}).remove();
 }
 
+function cleanup() {
+    // remove names that don't go with a game
+    // let namesToRemove = [];
+    return Name.find({}).exec().then(names => {
+        return util.iterate(names, (name) => {
+            let gameId = name.game;
+            return Game.find({}).where('_id').equals(gameId).exec()
+                .then(games => {
+                    if (!games || !games.length) {
+                        // namesToRemove.push(name);
+                        console.log('Removing name ' + name.name);
+                        return name.remove();
+                    } else {
+                        return Promise.resolve();
+                    }
+                })
+            })
+        });
+}
+
 const DBInfo = require('./models/dbinfo.model');
 
 module.exports = {
@@ -286,6 +306,12 @@ module.exports = {
 
     reset: function() {
         module.exports.checkForSeed(true);
+    },
+
+    cleanup: function() {
+        cleanup().then(() => {
+            process.exit(0);
+        })
     },
 
     checkForSeed: function(force) {

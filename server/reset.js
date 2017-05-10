@@ -20,6 +20,7 @@ const MaterialItem = require('./models/material-item.model');
 const Package = require('./models/package.model');
 const Preference = require('./models/preference.model');
 const PackageConfig = require('./models/packageconfig.model');
+const HistoryModel = require('./models/history.model');
 
 const Game = require('./models/game.model'),
     GameMetadata = require('./models/game-metadata.model'),
@@ -38,6 +39,7 @@ const   databases = {
             'Subscription': 1493846462338,
             'Team': 1493838843811,
             'User': 1494103814520,
+            'History': 1494440793134,
 
             'GameMetadata': 1494103814520,
             'Game': 1494103814520,
@@ -96,6 +98,11 @@ deleteMethods = {
     User: () =>{
         console.log('deleting users');
         return User.find({}).remove().exec();
+    },
+
+    History: () => {
+        console.log('deleting history');
+        return HistoryModel.find({}).remove().exec();
     },
 
     GameMetadata: () =>{
@@ -224,6 +231,10 @@ seedMethods = {
         });
     },
 
+    History: () => {
+        return doSeed('history', HistoryModel);
+    },
+
     GameMetadata: () => {
         return doSeed('game-metadata', GameMetadata);
     },
@@ -290,6 +301,7 @@ module.exports = {
             .then(deleteMethods.Subscription)
             .then(deleteMethods.Team)
             .then(deleteMethods.User)
+            .then(deleteMethods.History)
 
             .then(deleteMethods.GameMetadata)
             .then(deleteMethods.Game)

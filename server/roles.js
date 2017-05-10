@@ -1,3 +1,5 @@
+const util = require('./util');
+
 const 
  // DUDE DON'T CHANGE THESE NUMBERS DUDE
     ROLE_NOBODY = 0,
@@ -112,7 +114,11 @@ module.exports = {
                 'team_user_promote', // user has to be admin of team
                 'team_user_remove', // admins can remove users from a team
                 'team_purchases_view', // admins only baby
-                'team_leave'
+                'team_subscription_view',
+                'team_leave',
+
+                'blog_page_view',
+                'blog_view'
             ]
         },
         {
@@ -122,9 +128,6 @@ module.exports = {
             actions: [
                 'material_page_view',
                 'material_view', // download material items that you own
-
-                'blog_page_view',
-                'blog_view',
 
                 'coach_page_view',
                 'coach_contact_send'
@@ -195,6 +198,21 @@ module.exports = {
         }
     ],
 
+    getRoleType: (role) => {
+        switch (role) {
+            case ROLE_FACILITATOR:
+            case ROLE_FACILITATOR_TEAM:
+                return ROLE_FACILITATOR;
+            case ROLE_IMPROVISER:
+            case ROLE_IMPROVISER_TEAM:
+                return ROLE_IMPROVISER;
+            case ROLE_SUPER_ADMIN:
+                return ROLE_SUPER_ADMIN;
+            default:
+                return ROLE_NOBODY;
+        }
+    },
+
     findRoleById: (id) => {
         let role;
         module.exports.roles.forEach(r => {
@@ -229,23 +247,26 @@ module.exports = {
         }
     },
 
-    getActionsForRole: (roleId) => {
-        if (!module.exports._actionCache['role_' + roleId]) {
+    getActionsForRole: (roleId, blockRecursion) => {
+        let key = 'role_' + roleId + '_' + blockRecursion;
+        if (!module.exports._actionCache[key]) {
             let actions = [];
-            module.exports.roles.forEach(role => {
+            module.exports.roles.some(role => {
                 if (role.id === parseInt(roleId, 10)) {
-                    actions = union_arrays(actions, role.actions);
-                    if (role.inherits && role.inherits.length) {
+                    actions = util.unionArrays(actions, role.actions);
+                    if (!blockRecursion && role.inherits && role.inherits.length) {
                         role.inherits.forEach(id => {
-                            actions = union_arrays(actions, module.exports.getActionsForRole(id));
+                            actions = util.unionArrays(actions, module.exports.getActionsForRole(id));
                         });
                     }
+                    return true;
                 }
             });
-            module.exports._actionCache['role_' + roleId] = actions;
+
+            module.exports._actionCache[key] = actions;
         }
 
-        return module.exports._actionCache['role_' + roleId];
+        return module.exports._actionCache[key];
     },
 
     doesUserHaveAction: (user, action) => {
@@ -349,7 +370,7 @@ const actionmap = {
             let admin;
             switch(method) {
                 case "get":
-                    admin = 'users_view';
+                    admin = 'user_view';
                     break;
                 case "put":
                     admin = 'users_edit';
@@ -391,6 +412,8 @@ const actionmap = {
                         action = 'material_view';
                     } else if (url.indexOf('purchases') > -1) {
                         action = 'team_purchases_view';
+                    } else if (url.indexOf('subscription') > -1) {
+                        action = 'team_subscription_view';
                     } else {
                         action = 'team_view';
                     }
@@ -495,19 +518,20 @@ findActionForUrl = function(url, method) {
     return fallback;
 }
 
-function union_arrays (x, y) {
-    var obj = {};
-    for (var i = x.length-1; i >= 0; -- i) {
-        obj[x[i]] = x[i];
-    }
-    for (var i = y.length-1; i >= 0; -- i) {
-        obj[y[i]] = y[i];
-    }
-    var res = []
-    for (var k in obj) {
-        if (obj.hasOwnProperty(k)) {
-            res.push(obj[k]);
-        }
-    }
-    return res;
-}
+// function union_arrays (x, y) {
+//     var obj = {};
+//     for (var i = x.length-1; i >= 0; -- i) {
+//         obj[x[i]] = x[i];
+//     }
+//     y = y || []
+//     for (var i = y.length-1; i >= 0; -- i) {
+//         obj[y[i]] = y[i];
+//     }
+//     var res = []
+//     for (var k in obj) {
+//         if (obj.hasOwnProperty(k)) {
+//             res.push(obj[k]);
+//         }
+//     }
+//     return res;
+// }

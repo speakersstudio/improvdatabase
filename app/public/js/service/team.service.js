@@ -131,6 +131,14 @@ var TeamService = (function () {
             return response.json();
         });
     };
+    TeamService.prototype.fetchSubscription = function (team) {
+        return this.http.get(this.teamUrl + team._id + '/subscription')
+            .toPromise()
+            .then(function (response) {
+            var team = response.json();
+            return team.subscription;
+        });
+    };
     return TeamService;
 }());
 TeamService = __decorate([

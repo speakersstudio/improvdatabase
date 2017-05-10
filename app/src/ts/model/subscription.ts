@@ -3,13 +3,13 @@ import { Invite } from './invite';
 
 export class Subscription {
     _id: string;
-    start: Date;
+    start: string;
     role: number;
     roleName: string;
 
     type: string; // 'facilitator' or 'improviser'
 
-    expiration: Date;
+    expiration: string;
 
     team: string|Team; // the _id of the team with this sub
     subscriptions: number; // how many users can inherit this sub

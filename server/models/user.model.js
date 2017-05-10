@@ -32,7 +32,9 @@ const UserSchema = new mongoose.Schema({
     purchases: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Purchase' }],
     subscription: { type: mongoose.Schema.Types.ObjectId, ref: 'Subscription' },
     preferences: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Preference' }],
-    invites: [{type: mongoose.Schema.Types.ObjectId, ref: 'Invite'}]
+    invites: [{type: mongoose.Schema.Types.ObjectId, ref: 'Invite'}],
+
+    dateLoggedIn: Date
 });
 
 UserSchema.methods.addSubscription = function(role, stripeCustomerId, expires) {
@@ -54,6 +56,29 @@ UserSchema.methods.addSubscription = function(role, stripeCustomerId, expires) {
 
         return this.save();
     });
+}
+
+UserSchema.methods.setSubscriptionRole = function(role) {
+    let subId;
+
+    if (this.subscription && this.subscription._id) {
+        subId = this.subscription._id;
+    } else if (this.subscription) {
+        subId = this.subscription;
+    } else {
+        return this.save();
+    }
+
+    return mongoose.model('Subscription').findOne({})
+        .where('_id').equals(subId)
+        .exec()
+        .then(sub => {
+            sub.role = role;
+            return sub.save();
+        })
+        .then(sub => {
+            return this.save();
+        });
 }
 
 // TODO: create a renewSubscription method?
@@ -106,12 +131,21 @@ UserSchema.virtual('isThisAUser').get(function() {
 
 UserSchema.virtual('fullName')
     .get(function() {
-        return this.firstName + ' ' + this.lastName;
+        return (this.firstName + ' ' + this.lastName).trim();
     })
     .set(function(v) {
         this.firstName = v.substr(0, v.indexOf(' '));
         this.lastName = v.substr(v.indexOf(' ') + 1);
     });
+
+UserSchema.virtual('simpleName')
+    .get(function() {
+        if (this.firstName) {
+            return this.firstName;
+        } else {
+            return 'ImprovPlus user';
+        }
+    })
 
 const User = mongoose.model('User', UserSchema);
 

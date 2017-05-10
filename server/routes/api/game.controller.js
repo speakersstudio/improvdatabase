@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const   util = require('../../util');
 
 const Game = require('../../models/game.model');
-const Tag = require('../../models/tag.model');
+const Tag = require('../../models/tag.model'),
+        HistoryModel = require('../../models/history.model');
 
 module.exports = {
 
@@ -16,7 +17,10 @@ module.exports = {
                 description: data.description
             };
         
-        updateGame(Game.create(gameData), data, userId)
+        Game.create(gameData)
+            .then(game => {
+                return updateGame(game, data, userId)
+            })
             .then(game => {
                 res.json(game);
             }, error => {
@@ -29,14 +33,19 @@ module.exports = {
 
         let gameId = req.params.id;
 
-        Game.remove({ _id: gameId })
-            .then(() => {
-                return Name.remove({ game: gameId });
-            })
-            .then(() => {
-                res.send('Success');
-            }, error => {
-                util.handleError(req, res, error);
+        Game.findOne({})
+            .where('_id').equals(gameId).exec()
+            .then(game => {
+                if (game) {
+                    game.dateDeleted = Date.now();
+                    game.deletedUser = req.user._id;
+
+                    return game.save().then(() => {
+                        res.send('success');
+                    })
+                } else {
+                    return res.status(404).send('game not found');
+                }
             });
 
     },
@@ -45,15 +54,29 @@ module.exports = {
 
         let data = req.body,
             userId = req.user._id,
-            gameId = req.params.id || data._id;
+            gameId = req.params.id || data._id,
+            oldGame;
         
-        return updateGame(Game.findOne({}).where('_id').equals(gameId).exec(), data, userId)
+        return Game.findOne({}).where('_id').equals(gameId).exec()
+            .then(game => {
+                oldGame = game.toObject();
+                return updateGame(game, data, userId);
+            })
             .then(game => {
                 if (data.description) {
                     game.description = data.description;
                 }
                 game.modifiedUser = userId;
                 game.dateModified = Date.now();
+
+                let changes = util.findChanges(oldGame, game);
+
+                HistoryModel.create({
+                    user: userId,
+                    action: 'game_edit',
+                    changes: changes
+                });
+                
                 return game.save();
             })
             .then(game => {
@@ -107,10 +130,17 @@ module.exports = {
             let game = games[0];
             return game.removeTag(tagId, req.user._id);
         }).then(game => {
+            HistoryModel.create({
+                action: 'game_tag_remove',
+                target: game._id,
+                user: req.user._id,
+                reference: tagId
+            });
+
             res.json(game);
         }, error => {
-                util.handleError(req, res, error);
-            })
+            util.handleError(req, res, error);
+        })
     },
 
     createTag: (req, res) => {
@@ -142,28 +172,29 @@ module.exports = {
 
 }
 
-function updateGame(gamePromise, data, userId) {
-    return gamePromise
-        .catch(err => { util.handleError(req,res,err) })
-        .then(game => {
-            if (data.duration && data.duration != game.duration) {
-                return game.addMetadata(data.duration);
-            } else {
-                return game;
-            }
-        })
-        .then(game => {
-            if (data.playerCount && data.playerCount != game.playerCount) {
-                return game.addMetadata(data.playerCount);
-            } else {
-                return game;
-            }
-        })
+function updateGame(game, data, userId) {
+
+    let gamePromise;
+
+    if (data.duration && data.duration != game.duration) {
+        gamePromise = game.addMetadata(data.duration);
+    } else {
+        gamePromise = Promise.resolve(game);
+    }
+
+    return gamePromise.then(game => {
+        if (data.playerCount && data.playerCount != game.playerCount) {
+            return game.addMetadata(data.playerCount);
+        } else {
+            return Promise.resolve(game);
+        }
+    });
+
 }
 
 function getGames(user, id) {
     
-    let query = Game.find({})
+    let query = Game.find({}).where('dateDeleted').equals(null);
 
     query.select('addedUser dateAdded dateModified description modifiedUser names');
 

@@ -13,6 +13,7 @@ const MaterialItem = require('../../models/material-item.model');
 const Package = require('../../models/package.model');
 const Subscription = require('../../models/subscription.model');
 const Team = require('../../models/team.model');
+const HistoryModel = require('../../models/history.model');
 const userController = require('./user.controller');
 
 const subCtrl = require('./subscription.controller');
@@ -81,6 +82,12 @@ module.exports = {
                             exp: dateObj.getTime(),
                             iss: materialItem.id
                         }, config.token);
+
+                        HistoryModel.create({
+                            user: req.user._id,
+                            action: 'material_view',
+                            target: materialItem._id
+                        });
 
                         res.json({
                             url: '/download/' + token

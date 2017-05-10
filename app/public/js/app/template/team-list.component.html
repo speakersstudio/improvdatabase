@@ -54,11 +54,7 @@
                     </div>
                     <div class="columns fill data-row">
                         <span>Members</span>
-                        <span>{{team.admins.length + team.members.length}}</span>
-                    </div>
-                    <div class="columns fill data-row">
-                        <span>Available Subscriptions</span>
-                        <span>{{team.subscription.subscriptions - team.subscription.children.length}}</span>
+                        <span>{{(team.admins.length || 0) + (team.members.length + 0)}}</span>
                     </div>
                     <div class="columns fill data-row" *ngIf="team.materials && team.materials.length">
                         <span>Materials Owned</span>

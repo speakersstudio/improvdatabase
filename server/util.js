@@ -25,6 +25,9 @@ module.exports = {
     },
 
     getObjectIdAsString: function (item) {
+        if (!item) {
+            return item;
+        }
         if (typeof item == 'string') {
             return item;
         } else if (item._id && item._id.toString) {
@@ -34,7 +37,7 @@ module.exports = {
         } else if (item.toString) {
             return item.toString();
         } else {
-            return ''; // ??
+            return item; // ??
         }
     },
 
@@ -217,13 +220,26 @@ module.exports = {
 
         let oldKeys = Object.keys(oldObject),
             newKeys = Object.keys(newObject),
-            ignore = ['date', 'dateModified', 'password', 'user', 'team', 'subscription', 'purchases', '_id', 'adminOfTeams', 'memberOfTeams', 'dateAdded', 'preferences'],
+            allKeys = module.exports.unionArrays(oldKeys, newKeys)
+            ignore = ['isNew', '$__', 'date', 'dateModified', 'password', 'user', 'team',
+                        'subscription', 'purchases', '_id', 'adminOfTeams', 
+                        'memberOfTeams', 'dateAdded', 'preferences', 'members',
+                        'admins', 'tags'],
             changes = [];
 
-        oldKeys.forEach(key => {
-            if (ignore.indexOf(key) == -1) {
-                let oldval = oldObject[key],
-                    newval = newObject[key];
+        allKeys = allKeys.filter(item => {
+            return ignore.indexOf(item) == -1;
+        });
+
+        allKeys.forEach(key => {
+            let newval = module.exports.getObjectIdAsString(newObject[key]);
+            
+            // ignore anything that is in our blacklist, an object, or that starts with '_'
+            if (ignore.indexOf(key) == -1 &&
+                typeof(newval) != 'object' &&
+                key.indexOf('_') != 0) {
+
+                let oldval = module.exports.getObjectIdAsString(oldObject[key]);
 
                 if (oldval != newval) {
                     changes.push({

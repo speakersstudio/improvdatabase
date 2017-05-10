@@ -23,7 +23,9 @@ const GameSchema = new mongoose.Schema({
     addedUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     modifiedUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     dateAdded: { type: Date, default: Date.now },
-    dateModified: { type: Date, default: Date.now }
+    dateModified: { type: Date, default: Date.now },
+    dateDeleted: Date,
+    deletedUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 });
 
 GameSchema.methods.addNote = function(note, userId) {

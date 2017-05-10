@@ -17,7 +17,10 @@ const TeamSchema = new mongoose.Schema({
     country: String,
     url: String,
 
+    addedUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     dateAdded: { type: Date, default: Date.now },
+    
+    modifiedUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     dateModified: { type: Date, default: Date.now },
 
     lookingForMembers: Boolean,

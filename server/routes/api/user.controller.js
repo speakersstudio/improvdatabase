@@ -5,6 +5,7 @@ const   mongoose = require('mongoose'),
         config = require('../../config')(),
         roles = require('../../roles'),
         util = require('../../util'),
+        emailUtil = require('../../email'),
         findModelUtil = require('./find-model.util'),
 
         Subscription = require('../../models/subscription.model'),
@@ -32,6 +33,7 @@ module.exports = {
 
         return Invite.findOne({})
             .where('_id').equals(inviteId)
+            .where('dateDeleted').equals(null)
             .exec()
             .then(invite => {
                 if (!invite) {
@@ -42,7 +44,7 @@ module.exports = {
 
                     if (invite.email != email) {
                         // we will require the email as a sort of validation
-                        return res.status(500).json({error: 'wrong email'});
+                        return res.status(409).json({error: 'wrong email'});
                     } else {
 
                         let inviteTeam = util.getObjectIdAsString(invite.team),
@@ -55,10 +57,10 @@ module.exports = {
                             lastName = userName.substr((userName+' ').indexOf(' '), userName.length).trim();
                         }
 
-                        invite.accepted = true;
-                        invite.dateAccepted = Date.now();
+                        // invite.accepted = true;
+                        // invite.dateAccepted = Date.now();
 
-                        invite.save();
+                        // invite.save();
 
                         bcrypt.hash(password, config.saltRounds).then(hash => {
                             return User.create({
@@ -70,46 +72,8 @@ module.exports = {
                         })
                         .then(user => {
 
-                            HistoryModel.create({
-                                user: user._id,
-                                action: 'invite_accept',
-                                reference: invite._id.toString()
-                            });
-
                             if (inviteTeam) {
-                                Team.findOne({}).where('_id').equals(inviteTeam).exec()
-                                    .then(team => {
-                                        team.members = util.addToObjectIdArray(team.members, user._id);
-                                        return team.save();
-                                    })
-                                    .then(team => {
-                                        user.memberOfTeams = util.addToObjectIdArray(user.memberOfTeams, team._id);
-                                        return user.save();
-                                    })
-                                    .then(user => {
-                                        return Subscription.findOne({})
-                                            .where('team').equals(inviteTeam)
-                                            .exec()
-                                    })
-                                    .then(subscription => {
-                                        // create a subscription for the new user
-                                        return subscription.createChildSubscription(user)
-                                    })
-                                    .then(subscription => {
-                                        if (!subscription) {
-                                            // if the promise returns false, there were no available subs left
-                                            // TODO: adding a user to a team without using a subscription
-
-                                        } else {
-                                            // remove the invite from team's subscription, so it won't count against anything anymore
-                                            subscription.invites = util.removeFromObjectIdArray(subscription.invites, invite);
-                                            return subscription.save();
-                                        }
-                                    })
-                                    .then(subscription => {
-                                        // we should be done, but we want to return the new user
-                                        return User.findOne({}).where('_id').equals(user._id.toString()).exec()
-                                    })
+                                return module.exports.doAcceptInvite(user._id, inviteId, req)
                                     .then(newUser => {
                                         res.json(module.exports.prepUserObject(newUser));
                                     })
@@ -143,7 +107,11 @@ module.exports = {
                 util.handleError(req, res, err);
             })
             .then(user => {
-                res.json(module.exports.prepUserObject(user));
+                if (user) {
+                    res.json(module.exports.prepUserObject(user));
+                } else {
+                    res.status(404).send('not found');
+                }
             });
     },
 
@@ -215,6 +183,10 @@ module.exports = {
     },
 
     prepUserObject: (user) => {
+        if (!user) {
+            return {};
+        }
+
         if (user.toObject) {
             user = user.toObject();
         }
@@ -229,13 +201,20 @@ module.exports = {
         } else if (user.subscription &&
                 typeof(user.subscription) == 'object' &&
                 (
-                    // user.subscription.role == roles.ROLE_SUPER_ADMIN ||
                     user.subscription.expiration > Date.now()
                 )) {
 
             user.actions = roles.getActionsForRole(user.subscription.role);
         } else {
+            // the user is either expired or doesn't have a subscription
             user.actions = roles.getActionsForRole(roles.ROLE_USER);
+
+            if (user.subscription && roles.getRoleType(user.subscription.role) == roles.ROLE_FACILITATOR) {
+                // expired facilitator accounts should still have access to the facilitator role features, without the subscriber features
+                user.actions = util.unionArrays(roles.getActionsForRole(roles.ROLE_FACILITATOR, true), user.actions);
+            } else if (user.subscription && roles.getRoleType(user.subscription.role) == roles.ROLE_IMPROVISER) {
+                user.actions = util.unionArrays(roles.getActionsForRole(roles.ROLE_IMPROVISER, true), user.actions);
+            }
         }
 
         return user;
@@ -245,7 +224,7 @@ module.exports = {
         return findModelUtil.findUser(email, 'password')
             .then(user => {
                 if (user) {
-                    user = module.exports.prepUserObject(user);
+                    // user = module.exports.prepUserObject(user);
                     return bcrypt.compare(password, user.password)
                         .then(res => {
                             if (res) {
@@ -275,16 +254,6 @@ module.exports = {
      * Get all of a user's purchases
      */
     purchases: (req, res) => {
-        // let populate = {
-        //     path: 'purchases',
-        //     populate: {
-        //         path: 'packages.package materials.materialItem'
-        //     },
-        //     options: {
-        //         sort: 'date'
-        //     }
-        // };
-
         return Purchase.find({})
             .where('user').equals(req.user._id)
             .populate('team packages.package materials.material')
@@ -300,7 +269,25 @@ module.exports = {
             .select('memberOfTeams adminOfTeams')
             .populate({
                 path: 'adminOfTeams memberOfTeams',
-                populate: util.populations.team
+                populate: {
+                    path: 'subscription',
+                    select:'-stripeCustomerId',
+                    populate: {
+                        path: 'invites',
+                        match: { accepted: false }
+                    }
+                }
+            })
+            .populate({
+                path: 'adminOfTeams memberOfTeams',
+                populate: {
+                    path: 'admins members',
+                    select:'-password',
+                    populate: {
+                        path: 'subscription',
+                        select: '-stripeCustomerId'
+                    }
+                }
             })
             .then(u => {
                 res.json(u);
@@ -398,18 +385,6 @@ module.exports = {
             })
     },
 
-    // fetchMaterials: (userId) => {
-    //     return User.findOne({}).where('_id').equals(userId)
-    //         .select('purchases')
-    //         .populate({
-    //             path: 'purchases',
-    //             populate: {
-    //                 path: 'materials packages'
-    //             }
-    //         })
-    //         .exec()
-    // },
-
     subscription: (req, res) => {
         return User.findOne({}).where('_id').equals(req.user._id)
             .select('subscription')
@@ -438,14 +413,21 @@ module.exports = {
 
     leaveTeam: (req, res) => {
         if (req.method != 'PUT') {
-            return res.status(404);
+            return res.status(404).send('not found');
         }
 
         let userId = req.user._id,
             teamId = req.params.toId;
 
         module.exports.removeUserFromTeam(userId, teamId).then(user => {
-            res.json(module.exports.prepUserObject(u));
+            // store a history of this having happened
+            HistoryModel.create({
+                user: userId,
+                action: 'team_leave',
+                target: teamId
+            });
+
+            res.json(module.exports.prepUserObject(user));
         });
 
     },
@@ -457,7 +439,7 @@ module.exports = {
 
                 if (util.indexOfObjectId(user.adminOfTeams, teamId) == -1 && util.indexOfObjectId(user.memberOfTeams, teamId) == -1) {
                     // how can a user leave a team they aren't in?
-                    return res.status(404);
+                    return res.status(404).send('not found');
                 }
 
                 return findModelUtil.findTeam(teamId)
@@ -506,13 +488,6 @@ module.exports = {
                         if (team) {
                             user.memberOfTeams = util.removeFromObjectIdArray(user.memberOfTeams, teamId);
                             user.adminOfTeams = util.removeFromObjectIdArray(user.adminOfTeams, teamId);
-
-                            // store a history of this having happened
-                            HistoryModel.create({
-                                user: user,
-                                action: 'team_leave',
-                                reference: team._id
-                            });
                         }
 
                         if (returnTeam) {
@@ -532,28 +507,60 @@ module.exports = {
      */
     acceptInvite: (req, res) => {
         if (req.method != 'PUT') {
-            res.status(404);
+            res.status(404).send('not found');
             return;
         }
 
         let userId = req.params.id,
-            inviteId = req.params.toId,
+            inviteId = req.params.toId;
 
-            user;
+        module.exports.doAcceptInvite(userId, inviteId, req)
+            .then(newUser => {
+                res.json(module.exports.prepUserObject(newUser));
+            }, error => {
+                if (error == 'unauthorized') {
+                    util.unauthorized(req, res);
+                } else if (error.status && error.message) {
+                    res.status(error.status).send(error.message);
+                } else {
+                    console.error(error);
+                    res.status(500).send('error');
+                }
+            })
+    },
+
+    doAcceptInvite: (userId, inviteId, req) => {
+
+        let user, roleId;
 
         return findModelUtil.findUser(userId)
             .then(u => {
                 user = u;
-                return Invite.findOne({}).where('_id').equals(inviteId).exec();
+                return Invite.findOne({})
+                    .where('_id').equals(inviteId)
+                    .where('dateDeleted').equals(null)
+                    .exec();
             })
             .then(invite => {
                 if (!invite || !user) {
-                    res.status(404);
-                    return Promise.reject('no user or invite found');
+                    return Promise.reject({
+                        status: '404',
+                        message: 'not found'
+                    });
                 } else if (invite.email != user.email) {
-                    util.unauthorized(req, res);
-                    return Promise.reject('incorrect user or invite');
+                    return Promise.reject('unauthorized');
                 } else {
+                    // collect this for later
+                    roleId = invite.role;
+
+                    //check the invite role against the user to make sure they are the same type
+                    if (user.subscription && roles.getRoleType(roleId) != roles.ROLE_NOBODY && roles.getRoleType(user.subscription.role) !== roles.getRoleType(roleId)) {
+                        return Promise.reject({
+                            status: 500,
+                            message: 'user type mismatch'
+                        });
+                    }
+
                     invite.accepted = true;
                     invite.dateAccepted = Date.now();
 
@@ -579,10 +586,14 @@ module.exports = {
                     HistoryModel.create({
                         user: userId,
                         action: 'team_join',
-                        reference: team._id
+                        target: team._id
                     });
 
-                    if (!user.subscription) {
+                    let needsSubscription = !user.subscription || user.subscription.expiration < Date.now();
+
+                    module.exports.sendUserJoinedTeamEmail(req.user, user, needsSubscription, team.name, team._id, req);
+
+                    if (needsSubscription) {
                         return Subscription.findOne({})
                             .where('_id').equals(util.getObjectIdAsString(team.subscription))
                             .exec()
@@ -592,14 +603,12 @@ module.exports = {
                             .then(() => {
                                 return findModelUtil.findUser(user._id);
                             });
+                    } else if (roles.getRoleType(roleId) == roles.getRoleType(user.subscription.role) && roleId > user.subscription.role) {
+                        // upgrade the user's subscription role to the team's (a team subscription is one higher than the user version)
+                        return user.setSubscriptionRole(roleId);
                     } else {
                         return user.save();
                     }
-                }
-            })
-            .then(u => {
-                if (u) {
-                    res.json(module.exports.prepUserObject(u));
                 }
             });
 
@@ -684,6 +693,44 @@ module.exports = {
                     return checkTeamStuff(0);
                 }
             });
+    },
+
+    sendUserJoinedTeamEmail: (toUser, newUser, usedSubscription, teamName, teamId, req) => {
+
+        let newUserName = newUser.fullName ? ', one ' + newUser.fullName + ', ' : '';
+
+        let body = `
+            <p>A user${newUserName} has joined your team, ${teamName}! You don't necessarily need to do anything, but we're just letting you know.</p>
+        `;
+
+        if (usedSubscription) {
+            body += `
+                <p>They will utilize one of the User Subscriptions on your Team. To see details about your team (including how many subscriptions you have left), visit the ImprovPlus app.</p>
+            `
+        }
+
+        let toUserName = !toUser.simpleName || toUser.simpleName == 'undefined' ? 'ImprovPlus User' : toUser.simpleName;
+
+        let sendObject = {
+            to: toUser.email,
+            toName: toUserName,
+            subject: 'User has joined your Team',
+            content: {
+                type: 'text',
+                baseUrl: 'https://' + req.get('host'),
+                greeting: 'Hey ' + toUserName + ',',
+                body: body,
+                action: 'https://' + req.get('host') + '/app/team/' + teamId,
+                actionText: 'View Team Details'
+            }
+        }
+
+        emailUtil.send(sendObject, (error, response) => {
+            if (error) {
+                console.error(error);
+            }
+        })
+
     }
 
 }

@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const   util = require('../../util');
 
 const Game = require('../../models/game.model');
-const Name = require('../../models/name.model');
+const Name = require('../../models/name.model'),
+        HistoryModel = require('../../models/history.model');
 
 module.exports = {
 
@@ -24,12 +25,20 @@ module.exports = {
             })
             .then(game => {
                 let name = {};
-                game.names.forEach(n => {
+                game.names.some(n => {
                     if (n.name && n.name == req.body.name) {
                         name = n;
-                        return false;
+                        return true;
                     }
                 });
+
+                HistoryModel.create({
+                    user: userId,
+                    action: 'name_create',
+                    target: name._id,
+                    reference: game._id
+                });
+
                 res.json(name);
             })
 
@@ -59,10 +68,13 @@ module.exports = {
     update: (req, res) => {
         let data = req.body,
             nameID = req.params.id || req.body._id,
-            userId = req.user._id;
+            userId = req.user._id,
+            oldName;
 
         Name.findOne({}).where('_id').equals(nameID).exec()
             .then(name => {
+                oldName = name.toObject();
+
                 name.name = data.name;
                 name.modifiedUser = userId;
                 name.dateModified = Date.now();
@@ -72,6 +84,14 @@ module.exports = {
                 util.handleError(req, res, error);
             })
             .then(name => {
+                let changes = util.findChanges(oldName, name);
+                HistoryModel.create({
+                    user: req.user._id,
+                    action: 'name_edit',
+                    changes: changes,
+                    target: name._id
+                });
+
                 res.json(name);
             }, error => {
                 util.handleError(req, res, error);

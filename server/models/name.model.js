@@ -10,7 +10,9 @@ const NameSchema = new mongoose.Schema({
     modifiedUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     dateAdded: { type: Date, default: Date.now },
     dateModified: { type: Date, default: Date.now },
-    game: { type: mongoose.Schema.Types.ObjectId, ref: 'Game' }
+    game: { type: mongoose.Schema.Types.ObjectId, ref: 'Game' },
+    dateDeleted: Date,
+    deletedUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 });
 
 NameSchema.methods.addVote = function(userId) {

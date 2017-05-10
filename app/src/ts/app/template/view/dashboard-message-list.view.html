@@ -21,7 +21,7 @@
 
         <p *ngIf="!invite.user.firstName">You have been invited to join {{invite.team.name}}</p>
 
-        <p *ngIf="!userService.getLoggedInUser().subscription">You will be able to utilize one of {{invite.team.name}}'s subscriptions, which means you'll get full access to the app.</p>
+        <p *ngIf="userService.isExpired()">You will be able to utilize one of {{invite.team.name}}'s subscriptions, which means you'll get full access to the app.</p>
 
         <div class="action right" *ngIf="!isPosting">
             <span class="button" (click)="rejectInvite()">Reject their offer</span>

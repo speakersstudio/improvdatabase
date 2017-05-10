@@ -41,6 +41,7 @@
                     <div class="content">
                         <h4 class="light">Your <strong>{{subscription.roleName}}</strong> Subscription</h4>
                         <h4 class="light">Expires</h4>
+                        <h4 class="light" *ngIf="userService.isExpired()">Expired</h4>
                         <h3>{{getDate(subscription.expiration)}}</h3>
                     </div>
                 </div>
@@ -51,7 +52,8 @@
                     <p *ngIf="subscription.parent">When {{subscription.parent.team.name}}'s Subscription is renewed, yours will be too.</p>
                 </div>
                 <div class="action">
-                    <a (click)="cancelSubscription()" class="button">Cancel Your Subscription</a>
+                    <a (click)="cancelSubscription()" class="button" *ngIf="!userService.isExpired()">Cancel Your Subscription</a>
+                    <a (click)="cancelSubscription()" class="button" *ngIf="userService.isExpired()">Renew Your Subscription</a>
                 </div>
             </div>
 

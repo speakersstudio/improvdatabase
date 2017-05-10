@@ -47,7 +47,7 @@ module.exports = {
 
         let query = User.findOne({})
             .select(module.exports.USER_WHITELIST.join(' ') + 
-            ' subscription preferences invites memberOfTeams adminOfTeams role dateAdded dateModified superAdmin locked ' + select);
+            ' subscription preferences invites memberOfTeams adminOfTeams role dateAdded dateModified superAdmin locked dateLoggedIn ' + select);
 
         // catch a mongoose ObjectID, which looks like a string but isn't really
         if (typeof(key) == 'object' && key.toString) {
@@ -65,7 +65,11 @@ module.exports = {
                 path: 'invites',
                 populate: {
                     path: 'team user',
-                    select: 'name firstName lastName'
+                    select: 'name firstName lastName',
+                    match: {
+                        accepted: false,
+                        dateDeleted: null
+                    }
                 }
             })
             .populate({
@@ -105,7 +109,10 @@ module.exports = {
                 select:'-stripeCustomerId',
                 populate: {
                     path: 'invites',
-                    match: { accepted: false }
+                    match: { 
+                        accepted: false,
+                        dateDeleted: null
+                    }
                 }
             });
 

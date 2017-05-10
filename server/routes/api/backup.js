@@ -21,6 +21,7 @@ let databases = {
     'Subscription': require('../../models/subscription.model'),
     'Team': require('../../models/team.model'),
     'User': require('../../models/user.model'),
+    'History': require('../../models/history.model'),
 
     'GameMetadata': require('../../models/game-metadata.model'),
     'Game': require('../../models/game.model'),
@@ -52,7 +53,7 @@ module.exports = {
                     });
                 });
         }).then(() => {
-            res.json({done: 'very yes'});
+            res.json({done: 'very yes', timestamp: timestamp});
         });
 
     }

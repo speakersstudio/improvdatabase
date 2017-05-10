@@ -4,8 +4,8 @@ const config = require('./config')(),
 /**
  * The send object should be like this:
  * {
- *      from: email address,
- *      fromName?: string,
+ *      from?: email address (defaults to module.exports.contactAddress),
+ *      fromName?: string (defaults to 'ImprovPlus'),
  *      to?: email address, (defaults to module.exports.contactAddress)
  *      toName?: string,
  *      subject: string,
@@ -17,7 +17,7 @@ const config = require('./config')(),
  * Standard Text:
  * {
  *      type: 'text',
- *      baseUrl: string (https://localhost:1919)
+ *      baseUrl: string ('https://' + req.get('host'))
  *      greeting: string (Dear blank,)
  *      body: string (html markup)
  *      action?: string (url for button)
@@ -49,6 +49,14 @@ module.exports = {
 
         if (!content.baseUrl) {
             content.baseUrl = 'https://improvpl.us';
+        }
+
+        if (!content.afterAction) {
+            content.afterAction = `
+                <p>Sincerely,</p>
+
+                <p>The Proprietors of <span class="light">improv</span><strong>plus</strong>.</p>
+            `;
         }
 
         switch(content.type) {

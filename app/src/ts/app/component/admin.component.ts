@@ -14,6 +14,8 @@ import { UserService } from '../../service/user.service';
 
 import { TimeUtil } from '../../util/time.util';
 
+import { AppHttp } from '../../data/app-http';
+
 @Component({
     moduleId: module.id,
     selector: "admin",
@@ -23,7 +25,19 @@ export class AdminComponent implements OnInit {
 
     title: string = '<span class="light">super</span><strong>admin</strong>';
 
-    page: string;
+    tabs = [
+        {
+            name: 'Material Items',
+            id: 'materials',
+            icon: 'file'
+        },
+        {
+            name: 'Utilities',
+            id: 'utilities',
+            icon: 'cogs'
+        }
+    ];
+    selectedTab: string = 'materials';
 
     materialItems: MaterialItem[];
     selectedMaterial: MaterialItem;
@@ -35,7 +49,8 @@ export class AdminComponent implements OnInit {
         private _app: AppComponent,
         private router: Router,
         private libraryService: LibraryService,
-        private userService: UserService
+        private userService: UserService,
+        private http: AppHttp
     ) { }
 
     private _tools: Tool[] = [
@@ -43,6 +58,10 @@ export class AdminComponent implements OnInit {
 
     ngOnInit(): void {
         this.showMaterials();
+    }
+
+    selectTab(tab): void {
+        this.selectedTab = tab.id;
     }
 
     back(): void {
@@ -54,8 +73,6 @@ export class AdminComponent implements OnInit {
     }
 
     showMaterials(): void {
-        this.page = "materials";
-
         this.libraryService.getAllMaterials()
             .then(materials => {
                 this._app.hideLoader();
@@ -95,6 +112,13 @@ export class AdminComponent implements OnInit {
     deleteVersion(version: MaterialItemVersion): void {
         this.libraryService.deleteVersion(this.selectedMaterial._id, version).then(m => {
             this.selectedMaterial.versions = m.versions;
+        })
+    }
+
+    doBackup(): void {
+        this.http.get('/api/backup').toPromise().then(response => {
+            let data = response.json();
+            this._app.toast(data.timestamp);
         })
     }
 

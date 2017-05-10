@@ -4,6 +4,7 @@
     [tools]="_tools"
     (toolClicked)="onToolClicked($event)"
     [showBack]="user.memberOfTeams.length + user.adminOfTeams.length > 1"
+    (goBack)="goBack()"
     ></div>
 
 <div class="page">
@@ -140,8 +141,8 @@
                     <p *ngIf="pendingInvites">Pending Invites: <span class="tag orange">{{pendingInvites}}</span></p>
                     <p>Remaining User Subscriptions: <span class="tag">{{remainingSubs}} of {{team.subscription.subscriptions}}</span></p>
 
-                    <p *ngIf="remainingSubs > 0">You can invite {{remainingSubs}} more of your team members to join ImprovPlus for free.</p>
-                    <p *ngIf="remainingSubs == 0">You have no more free invites, but you can buy additional user subscriptions for your team members.</p>
+                    <p *ngIf="remainingSubs > 0">You can invite {{remainingSubs}} more of your team members to join ImprovPlus.</p>
+                    <p *ngIf="remainingSubs == 0">You have no more free invites, but you can buy additional user subscriptions or invite users with their own subscriptions.</p>
 
                     <div class="button-group">
                         <div class="button" (click)="leave()">Leave Team</div>
@@ -250,10 +251,14 @@
         <form class="block" name="invite" (ngSubmit)="submitInvite()" #inviteForm="ngForm">
             <div class="dialog-content">
                 <h2>Invite Someone to {{team.name}}</h2>
-
-                <p>Enter the email address of one of your colleagues here, and they will get a magic code in their inbox to join up. This will use one of the available subscriptions on your Team profile.</p>
+                
+                <p>Enter the email address of a colleague you wish to invite into {{team.name}}, and we will invite them to join your Team.</p>
+                
+                <p>If the email address is not already registered on ImprovPlus, this will use one of the available subscriptions on your Team profile.</p>
 
                 <input name="email" formInput [asterisk]="false" [(ngModel)]="inviteEmail" required type="text" placeholder="Email" />
+
+                <span class="error" *ngIf="inviteError">{{inviteError}}</span>
 
             </div>
 
@@ -269,12 +274,26 @@
 
     </div>
 
-    <div class="dialog invite-form" *ngIf="showInviteDialog && inviteStatus=='sent'" [@dialog]>
+    <div class="dialog invite-form" *ngIf="showInviteDialog && inviteStatus=='new'" [@dialog]>
 
         <div class="dialog-content">
             <h2>Invite Sent!</h2>
 
             <p>Your invite is on its way. When your colleague has accepted your invitation, they will take one of {{team.name}}'s user subscriptions. We will let you know when this happens. You can also check the status of your invite (and cancel it) here on your team's profile.</p>
+        </div>
+
+        <div class="button-group">
+            <a (click)="cancelInviteDialog()" class="button">Okay Bye</a>
+        </div>
+
+    </div>
+
+    <div class="dialog invite-form" *ngIf="showInviteDialog && inviteStatus=='exists'" [@dialog]>
+
+        <div class="dialog-content">
+            <h2>Invite Sent!</h2>
+
+            <p>Good news! That email address is registered to an active subscription already, so they will be able to join your team without using any of your user subscriptions. We will let you know when this happens. You can also check the status of your invite (and cancel it) here on your team's profile.</p>
         </div>
 
         <div class="button-group">

@@ -7,7 +7,10 @@ const InviteSchema = new mongoose.Schema({
     dateAccepted: Date, // when the invite was used
     email: String, // the email address of the person invited
     role: Number, // what role the invited person will receive
-    team: { type: mongoose.Schema.Types.ObjectId, ref: 'Team' } // what team the user was invited to
+    team: { type: mongoose.Schema.Types.ObjectId, ref: 'Team' }, // what team the user was invited to
+    
+    deletedUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    dateDeleted: Date
 });
 
 const InviteModel = mongoose.model('Invite', InviteSchema);

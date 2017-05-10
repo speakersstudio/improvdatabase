@@ -8,8 +8,18 @@
 
 <div class="page">
 
+    <div class="tabs" *ngIf="!selectedMaterial">
+        <span class="tab" 
+            *ngFor="let tab of tabs"
+            [class.active]="tab.id == selectedTab"
+            (click)="selectTab(tab)">
+            <i class="fa fa-{{tab.icon}}"></i>
+            <span>{{tab.name}}</span>
+        </span>
+    </div>
+
     <!-- Material Item List -->
-    <div class="paper has-brackets" *ngIf="page == 'materials' && !selectedMaterial">
+    <div class="paper has-brackets" *ngIf="selectedTab == 'materials' && !selectedMaterial">
 
         <div class="content">
 
@@ -57,7 +67,7 @@
     </div>
 
     <!-- Edit Material Item -->
-    <div class="paper has-brackets" *ngIf="page == 'materials' && selectedMaterial">
+    <div class="paper has-brackets" *ngIf="selectedMaterial">
 
         <div class="content">
 
@@ -138,6 +148,19 @@
                 </div>
 
             </div>
+
+        </div>
+
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>materials database</h1></div>
+    </div>
+
+    <!-- Utilities -->
+    <div class="paper has-brackets" *ngIf="selectedTab == 'utilities'">
+
+        <div class="content">
+
+            <a class="button raised" (click)="doBackup()">Create Database Backup</a>
 
         </div>
 

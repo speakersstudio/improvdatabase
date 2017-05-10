@@ -26,7 +26,7 @@ module.exports = function () {
             },
             s3_buckets: {
                 materials: 'improvplus.dev.materials',
-                backups: 'improvplus.backups'
+                backups: 'improvplus.dev.backups'
             },
             pdftkPath: 'C:\\Program Files (x86)\\PDFtk Server\\bin\\pdftk.exe',
             port: 1919,

@@ -6,7 +6,8 @@ const   jwt = require('jwt-simple'),
         config  = require('./config')(),
         url = require('url'),
         bcrypt = require('bcrypt'),
-        emailUtil = require('./email');
+        emailUtil = require('./email'),
+        HistoryModel = require('./models/history.model');
         //redis   = require('redis'),
         //client;
 
@@ -33,17 +34,28 @@ module.exports = {
 
         // Fire a query to your DB and check if the credentials are valid
         userApi.validateUser(email, password)
-            .catch(err => {
-                util.handleError(req, res, err);
+            .then(user => {
+                if (user) {
+                    user.dateLoggedIn = Date.now();
+                    return user.save();
+                } else {
+                    module.exports.invalid(req, res);
+                    return Promise.resolve(false);
+                }
             })
             .then(user => {
                 if (user) {
-                    module.exports.genToken(user).then(token => {
+                    HistoryModel.create({
+                        user: user._id,
+                        action: 'login'
+                    });
+
+                    module.exports.genToken(userApi.prepUserObject(user)).then(token => {
                         res.status(200).json(token);
                     });
-                } else {
-                    module.exports.invalid(req, res);
                 }
+            }, err => {
+                util.handleError(req, res, err);
             });
     },
 
@@ -145,6 +157,12 @@ module.exports = {
                         util.handleError(req, res, err);
                     } else {
                         saved = saved.toObject();
+
+                        HistoryModel.create({
+                            user: user._id,
+                            action: 'change_password'
+                        });
+
                         delete saved.password;
                         saved.actions = roles.getActionsForRole(saved.role);
 
@@ -180,7 +198,16 @@ module.exports = {
                 }
             });
         }
+        
         */
+        
+        var decoded = jwt.decode(token, config.token);
+
+        HistoryModel.create({
+            user: decoded.iss,
+            action: 'logout'
+        });
+
         res.status(200).json({ message: 'Logout' });
     },
 
@@ -211,9 +238,21 @@ module.exports = {
         });
         */
 
-        module.exports.genToken(req.user).then(token => {
-            res.status(200).json(token);
-        });
+        findModelUtil.findUser(req.user._id)
+            .then(user => {
+                user.dateLoggedIn = Date.now();
+                return user.save();
+            })
+            .then(user => {
+                HistoryModel.create({
+                    user: user._id,
+                    action: 'refresh'
+                });
+                
+                module.exports.genToken(userApi.prepUserObject(user)).then(token => {
+                    res.status(200).json(token);
+                });
+            });
     },
 
     /**
@@ -223,8 +262,9 @@ module.exports = {
         var token = (req.body && req.body.access_token) ||
             (req.query && req.query.access_token) || req.headers['x-access-token'];
 
+        // set a default 'blank' user
         req.user = {
-            actions: roles.getActionsForRole(0)
+            actions: roles.getActionsForRole(roles.ROLE_NOBODY)
         };
 
         if (token) {

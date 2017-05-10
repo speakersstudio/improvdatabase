@@ -47,4 +47,6 @@ export class User {
     invites?: Invite[];
 
     library?: Library;
+
+    dateLoggedIn?: string;
 }

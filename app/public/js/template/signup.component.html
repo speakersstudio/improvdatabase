@@ -51,6 +51,7 @@
                         placeholder="Email"
                         formInput
                         required
+                        autocomplete="off"
                         type="text" />
                     <span class="error" *ngIf="emailError">{{emailError}}</span>
                     
@@ -59,6 +60,7 @@
                         placeholder="Password"
                         formInput
                         required
+                        autocomplete="off"
                         type="password" />
 
                 </div>
@@ -89,6 +91,7 @@
                         placeholder="Email"
                         formInput
                         required 
+                        autocomplete="off"
                         type="text" />
                     <span class="error" *ngIf="emailError">{{emailError}}</span>
                     
@@ -97,6 +100,7 @@
                         placeholder="Password"
                         formInput
                         required
+                        autocomplete="off"
                         type="password" />
                 </div>
             </div>
@@ -147,7 +151,8 @@
 
                 <div class="body" *ngIf="teamOption == 'individual'" [@fadeAbsolute]>
                     <p>Hello! What do we call you?</p>
-                    <input formInput name="userName" placeholder="Your Name" [(ngModel)]="userName" required type="text" />
+                    <input
+                        autocomplete="off" formInput name="userName" placeholder="Your Name" [(ngModel)]="userName" required type="text" />
                 </div>
 
             </div>
@@ -185,6 +190,7 @@
                         [(ngModel)]="teamName"
                         required
                         (input)="teamInput($event)"
+                        autocomplete="off"
                         type="text" />
                     <span class="error" *ngIf="teamError">{{teamError}}</span>
 
@@ -228,8 +234,7 @@
                         <li *ngIf="package._id != 'sub' && userType=='facilitator' && teamOption=='individual'">Includes a one-year subscription to the app.</li>
                         <li *ngIf="package._id != 'sub' && userType=='facilitator' && teamOption=='team'">Includes {{config.fac_team_sub_count}} user subscriptions for you and your team.</li>
 
-                        <li *ngIf="package._id != 'sub' && userType=='improviser' && teamOption=='individual'">Includes a one-year subscription to the app.</li>
-                        <li *ngIf="package._id != 'sub' && userType=='improviser' && teamOption=='team'">Includes {{config.improv_team_sub_count}} user subscriptions to share the love your team.</li>
+                        <li *ngIf="userType=='improviser' && teamOption=='team'">Includes {{config.improv_team_sub_count}} user subscriptions to share the love your team.</li>
                     </ul>
 
                     <h4>${{package.price}}</h4>

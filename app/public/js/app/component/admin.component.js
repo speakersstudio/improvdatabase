@@ -16,17 +16,35 @@ var library_service_1 = require("../../service/library.service");
 var material_item_1 = require("../../model/material-item");
 var user_service_1 = require("../../service/user.service");
 var time_util_1 = require("../../util/time.util");
+var app_http_1 = require("../../data/app-http");
 var AdminComponent = (function () {
-    function AdminComponent(_app, router, libraryService, userService) {
+    function AdminComponent(_app, router, libraryService, userService, http) {
         this._app = _app;
         this.router = router;
         this.libraryService = libraryService;
         this.userService = userService;
+        this.http = http;
         this.title = '<span class="light">super</span><strong>admin</strong>';
+        this.tabs = [
+            {
+                name: 'Material Items',
+                id: 'materials',
+                icon: 'file'
+            },
+            {
+                name: 'Utilities',
+                id: 'utilities',
+                icon: 'cogs'
+            }
+        ];
+        this.selectedTab = 'materials';
         this._tools = [];
     }
     AdminComponent.prototype.ngOnInit = function () {
         this.showMaterials();
+    };
+    AdminComponent.prototype.selectTab = function (tab) {
+        this.selectedTab = tab.id;
     };
     AdminComponent.prototype.back = function () {
         this.selectedMaterial = null;
@@ -36,7 +54,6 @@ var AdminComponent = (function () {
     };
     AdminComponent.prototype.showMaterials = function () {
         var _this = this;
-        this.page = "materials";
         this.libraryService.getAllMaterials()
             .then(function (materials) {
             _this._app.hideLoader();
@@ -74,6 +91,13 @@ var AdminComponent = (function () {
             _this.selectedMaterial.versions = m.versions;
         });
     };
+    AdminComponent.prototype.doBackup = function () {
+        var _this = this;
+        this.http.get('/api/backup').toPromise().then(function (response) {
+            var data = response.json();
+            _this._app.toast(data.timestamp);
+        });
+    };
     return AdminComponent;
 }());
 AdminComponent = __decorate([
@@ -85,7 +109,8 @@ AdminComponent = __decorate([
     __metadata("design:paramtypes", [app_component_1.AppComponent,
         router_1.Router,
         library_service_1.LibraryService,
-        user_service_1.UserService])
+        user_service_1.UserService,
+        app_http_1.AppHttp])
 ], AdminComponent);
 exports.AdminComponent = AdminComponent;
 

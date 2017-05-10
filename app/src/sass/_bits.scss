@@ -605,7 +605,7 @@ button,
         }
 
         .metadata {
-            overflow: hidden;
+            min-width: 100px; // makes sure any ellipsized content inside will be ellipsized
             flex-grow: 1;
 
             .row {

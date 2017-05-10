@@ -165,8 +165,10 @@ export class SignupComponent implements OnInit {
             this.userService.validate(user).then(message => {
                 this.emailError = message;
             });
-        } else {
+        } else if (this.email.length > 0) {
             this.emailError = 'This does not seem to be a valid email address.';
+        } else {
+            this.emailError = '';
         }
     }
 

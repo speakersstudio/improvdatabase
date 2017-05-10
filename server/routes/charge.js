@@ -266,6 +266,7 @@ module.exports = {
                     })
                     .then(user => {
                         if (team) {
+                            team.addedUser = user._id;
                             team.admins = util.addToObjectIdArray(team.admins, user);
                             return team.save();
                         } else {

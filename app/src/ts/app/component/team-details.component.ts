@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Location, PathLocationStrategy } from '@angular/common';
 
 import {AppComponent} from '../../component/app.component';
 import { Tool } from '../view/toolbar.view';
@@ -9,6 +10,7 @@ import { Team } from '../../model/team';
 import { Address } from '../../model/address';
 import { Purchase } from '../../model/purchase';
 import { Invite } from '../../model/invite';
+import { Subscription } from '../../model/subscription';
 
 import { UserService } from '../../service/user.service';
 import { TeamService } from '../../service/team.service';
@@ -50,13 +52,16 @@ export class TeamDetailsComponent implements OnInit {
     isPosting: boolean;
 
     purchases: Purchase[];
+    subscription: Subscription;
 
     constructor(
         private _app: AppComponent,
         private router: Router,
         private route: ActivatedRoute,
         private userService: UserService,
-        private teamService: TeamService
+        private teamService: TeamService,
+        private pathLocationStrategy: PathLocationStrategy,
+        private _location: Location
     ) { }
 
     private _tools: Tool[] = [
@@ -85,6 +90,10 @@ export class TeamDetailsComponent implements OnInit {
                 this.leave();
                 break;
         }
+    }
+
+    goBack(): void {
+        this._location.back();
     }
 
     selectTab(tab): void {
@@ -129,6 +138,10 @@ export class TeamDetailsComponent implements OnInit {
             });
         }
 
+        this.teamService.fetchSubscription(this.team).then(s => {
+            this.subscription = s;
+        });
+
         this.title = team.name;
 
         this.tabs = [
@@ -160,7 +173,7 @@ export class TeamDetailsComponent implements OnInit {
 
     calculateSubs(): void {
         this.pendingInvites = this.team.subscription.invites ? this.team.subscription.invites.length : 0;
-        this.remainingSubs = this.team.subscription.subscriptions - this.team.subscription.children.length - this.pendingInvites;
+        this.remainingSubs = this.team.subscription.subscriptions - (this.team.subscription.children.length || 0) - this.pendingInvites;
     }
 
     saveEditName(name: string): void {
@@ -229,6 +242,7 @@ export class TeamDetailsComponent implements OnInit {
     inviteEmail: string;
     inviteStatus: string;
     inviteModel: Invite;
+    inviteError: string;
 
     selectedInvite: Invite;
 
@@ -248,6 +262,7 @@ export class TeamDetailsComponent implements OnInit {
 
     submitInvite(): void {
         this.isPosting = true;
+        this.inviteError = '';
 
         this.teamService.invite(this.team, this.inviteEmail)
             .then(invite => {
@@ -259,8 +274,28 @@ export class TeamDetailsComponent implements OnInit {
                     this.calculateSubs();
 
                     setTimeout(() => {
-                        this.inviteStatus = 'sent';
+                        if (!invite.inviteUser || !invite.inviteUser.subscription) {
+                            this.inviteStatus = 'new';
+                        } else {
+                            this.inviteStatus = 'exists';
+                        }
                     }, 300);
+                }
+            }, error => {
+                this.isPosting = false;
+                let response = error.json();
+                if (response.error && response.error == 'invite already exists') {
+                    this.inviteError = 'That email address has already been invited to ' + this.team.name + '.';
+                } else if (response.error && response.error == 'user already in team') {
+                    this.inviteError = 'That user is already in your team.';
+                } else if (response.error && response.error == 'user type mismatch') {
+                    if (this.subscription.type == 'improviser') {
+                        this.inviteError = 'At this time, you cannot invite a Facilitator to an Improv Team.'
+                    } else {
+                        this.inviteError = 'At this time, you cannot invite an Improviser to a Facilitator Team.'
+                    }
+                } else {
+                    this.inviteError = 'There was some sort of problem sending that invite.';
                 }
             })
     }

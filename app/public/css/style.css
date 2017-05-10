@@ -747,7 +747,7 @@ button,
         width: 24px;
         height: 24px; }
     .list .item .metadata {
-      overflow: hidden;
+      min-width: 100px;
       flex-grow: 1; }
       .list .item .metadata .row {
         display: flex;

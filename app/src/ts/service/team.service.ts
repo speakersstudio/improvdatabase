@@ -10,6 +10,7 @@ import { User } from "../model/user";
 import { Team } from '../model/team';
 import { Purchase } from '../model/purchase';
 import { Invite } from '../model/invite';
+import { Subscription } from '../model/subscription';
 
 @Injectable()
 export class TeamService {
@@ -101,7 +102,7 @@ export class TeamService {
                 }
                 
                 return invite;
-            })
+            });
     }
 
     removeUserFromTeam(team: Team, user: User): Promise<Team> {
@@ -140,6 +141,15 @@ export class TeamService {
             .then(response => {
                 return response.json() as Purchase[];
             });
+    }
+
+    fetchSubscription(team: Team): Promise<Subscription> {
+        return this.http.get(this.teamUrl + team._id + '/subscription')
+            .toPromise()
+            .then(response => {
+                let team = response.json() as Team;
+                return team.subscription;
+            })
     }
 
 }

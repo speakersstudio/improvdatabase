@@ -36,12 +36,21 @@ module.exports = {
             return;
         } else {
 
+            let oldTeam;
             return Team.findOne({}).where('_id').equals(id).exec()
                 .then(team => {
+                    oldTeam = team.toObject();
                     team = util.smartUpdate(team, req.body, findModelUtil.TEAM_WHITELIST);
                     return team.save();
                 })
                 .then(team => {
+                    let changes = util.findChanges(oldTeam, team);
+                    HistoryModel.create({
+                        user: req.user._id,
+                        action: 'team_edit',
+                        changes: changes
+                    });
+
                     res.json(team);
                 });
 
@@ -156,7 +165,8 @@ module.exports = {
                 HistoryModel.create({
                     user: req.user._id,
                     action: 'team_user_promote',
-                    reference: userId
+                    target: userId,
+                    reference: teamId
                 });
                 res.json(team);
             });
@@ -180,7 +190,8 @@ module.exports = {
                 HistoryModel.create({
                     user: req.user._id,
                     action: 'team_user_demote',
-                    reference: userId
+                    target: userId,
+                    reference: teamId
                 });
                 res.json(team);
             });
@@ -245,103 +256,138 @@ module.exports = {
                 .exec()
                 .then(subscription => {
 
-                    // TODO: check to see if the user has already been invited
+                    //  check to see if the user has already been invited
+                    Invite.count()
+                        .where('email').equals(email)
+                        .where('team').equals(subscription.team._id)
+                        .where('accepted').equals(false)
+                        .where('dateDeleted').equals(null)
+                        .exec()
+                        .then(existingCount => {
+                            if (existingCount && existingCount > 0) {
+                                res.status(409).json({error: 'invite already exists'});
+                                return;
+                            }
 
-                    // check if the email address entered is already a user
-                    User.findOne({}).where('email').equals(email).exec()
-                        .then(addUser => {
-
-                            // if they aren't a user, create a new invite object
-                            return Invite.create({
-                                    user: req.user._id,
-                                    email: email,
-                                    role: subscription.role,
-                                    team: subscription.team._id
-                                })
-                                .then(invite => {
-                                    // send an email to the user using the new invite's _id
-                                    let inviteId = invite._id.toString(),
-                                        name = user.firstName + ' ' + user.lastName,
-                                        nameText = name.trim() ? 'Your colleague, ' + name + ', ' : 'Your colleague',
-                                        link, subject, greeting, body, actionText;
-
+                            // check if the email address entered is already a user
+                            findModelUtil.findUser(email)
+                                .then(addUser => {
                                     if (addUser) {
-                                        subject = 'You have been invited to a Team on ImprovPlus';
-                                        let name = 'Hello ' + addUser.firstName;
-                                        greeting = name.trim() + ','
-                                        actionText = 'Accept Invitation';
-                                        link = 'https://' + req.get('host') + '/app/dashboard';
-                                    } else {
-                                        subject = 'You have been invited to join ImprovPlus',
-                                        greeting = 'ImprovPlus Awaits!';
-                                        actionText = 'Join Now';
-                                        link = 'https://' + req.get('host') + '/invite/' + inviteId;
-                                    }
-
-                                    body = `
-                                        <p>${nameText} has invited you to join ${subscription.team.name} on ImprovPlus.</p>
-                                    `;
-
-                                    if (!addUser) {
-                                        body += `<p>ImprovPlus is an online community for the world of Improv, helping Facilitators and Improvisers connect, share, and develop themselves and their techniques. By joining ImprovPlus, you will be on your way to making your world more Awesome.</p>`;
-                                    }
-
-                                    body += `
-                                        <p>You will be able to use the subscription already set up for ${subscription.team.name}, which means you will gain full access to the app and all of your team's resources right away.</p>
-                                    `;
-
-                                    emailUtil.send({
-                                        to: email,
-                                        subject: subject,
-                                        content: {
-                                            type: 'text',
-                                            baseUrl: 'https://' + req.get('host'),
-                                            greeting: greeting,
-                                            body: body,
-                                            action: link,
-                                            actionText: actionText,
-                                            afterAction: `
-                                                <p>If that button doesn't work for you (or your email account messed up the contents of this message and you don't see any button), you can accept this invite by visiting <a href="${link}">${link}</a> in your browser.</p>
-
-                                                <p>Be excellent to each other, and party on.</p>
-
-                                                <p>Sincerely,</p>
-
-                                                <p>The Proprietors of <span class="light">improv</span><strong>plus</strong>.</p>
-                                            `
+                                        // make sure they aren't already in this team
+                                        if (util.indexOfObjectId(addUser.memberOfTeams, teamId) > -1 ||
+                                                util.indexOfObjectId(addUser.adminOfTeams, teamId) > -1) {
+                                            
+                                            res.status(409).json({error: 'user already in team'});
+                                            return;
                                         }
-                                    }, (error, response) => {
 
-                                        subscription.invites.push(invite);
+                                        // make sure they are the correct type of user
+                                        if (addUser.subscription &&
+                                                !addUser.superAdmin &&
+                                                roles.getRoleType(subscription.role) != roles.ROLE_NOBODY &&
+                                                roles.getRoleType(addUser.subscription.role) !== roles.getRoleType(subscription.role)) {
 
-                                        HistoryModel.create({
+                                                res.status(500).json({error: 'user type mismatch'});
+                                                return;
+                                        }
+                                    }
+
+                                    // create a new invite object
+                                    return Invite.create({
                                             user: req.user._id,
-                                            action: 'team_subscription_invite',
-                                            reference: email
-                                        });
+                                            email: email,
+                                            role: subscription.role,
+                                            team: subscription.team._id
+                                        })
+                                        .then(invite => {
+                                            // send an email to the user using the new invite's _id
+                                            let inviteId = invite._id.toString(),
+                                                name = user.firstName + ' ' + user.lastName,
+                                                nameText = name.trim() ? 'Your colleague, ' + name + ', ' : 'Your colleague',
+                                                link, subject, greeting, body, actionText;
 
-                                        if (addUser) {
-                                            addUser.invites.push(invite);
-                                            addUser.save();
-                                        }
-
-                                        subscription.save().then(subscription => {
                                             if (addUser) {
-                                                invite.inviteUser = {
-                                                    firstName: addUser.firstName,
-                                                    lastName: addUser.lastName,
-                                                    email: addUser.email,
-                                                    _id: addUser._id
-                                                };
+                                                subject = 'You have been invited to a Team on ImprovPlus';
+                                                let name = 'Hello ' + addUser.firstName;
+                                                greeting = name.trim() + ','
+                                                actionText = 'Accept Invitation';
+                                                link = 'https://' + req.get('host') + '/app/dashboard';
+                                            } else {
+                                                subject = 'You have been invited to join ImprovPlus',
+                                                greeting = 'ImprovPlus Awaits!';
+                                                actionText = 'Join Now';
+                                                link = 'https://' + req.get('host') + '/invite/' + inviteId;
                                             }
-                                            res.json(invite);
+
+                                            body = `
+                                                <p>${nameText} has invited you to join ${subscription.team.name} on ImprovPlus.</p>
+                                            `;
+
+                                            if (!addUser) {
+                                                body += `<p>ImprovPlus is an online community for the world of Improv, helping Facilitators and Improvisers connect, share, and develop themselves and their techniques. By joining ImprovPlus, you will be on your way to making your world more Awesome.</p>`;
+                                            }
+
+                                            if (!addUser || !addUser.subscription || addUser.subscription.expires < Date.now()) {
+                                                body += `
+                                                    <p>You will be able to use the subscription already set up for ${subscription.team.name}, which means you will gain full access to the app and all of your team's resources right away.</p>
+                                                `;
+                                            } else {
+                                                body += `
+                                                    <p>You already have a subscription to ImprovPlus, but now you will be able to connect and collaborate with your teammates.</p>
+                                                `;
+                                            }
+
+                                            emailUtil.send({
+                                                to: email,
+                                                subject: subject,
+                                                content: {
+                                                    type: 'text',
+                                                    baseUrl: 'https://' + req.get('host'),
+                                                    greeting: greeting,
+                                                    body: body,
+                                                    action: link,
+                                                    actionText: actionText,
+                                                    afterAction: `
+                                                        <p>If that button doesn't work for you (or your email account messed up the contents of this message and you don't see any button), you can accept this invite by visiting <a href="${link}">${link}</a> in your browser.</p>
+
+                                                        <p>Be excellent to each other, and party on.</p>
+
+                                                        <p>Sincerely,</p>
+
+                                                        <p>The Proprietors of <span class="light">improv</span><strong>plus</strong>.</p>
+                                                    `
+                                                }
+                                            }, (error, response) => {
+
+                                                subscription.invites.push(invite);
+
+                                                if (addUser) {
+                                                    addUser.invites.push(invite);
+                                                    addUser.save();
+                                                }
+
+                                                subscription.save().then(subscription => {
+                                                    if (addUser) {
+                                                        invite = invite.toObject();
+                                                        invite.inviteUser = {
+                                                            firstName: addUser.firstName,
+                                                            lastName: addUser.lastName,
+                                                            email: addUser.email,
+                                                            _id: addUser._id,
+                                                            subscription: addUser.subscription
+                                                        };
+                                                    }
+                                                    res.json(invite);
+                                                });
+
+                                            })
                                         });
 
-                                    })
-                                });
-
-                            // }
+                                    // }
+                                })
                         })
+
+                    
 
                 })
 
@@ -349,6 +395,39 @@ module.exports = {
             auth.unauthorized(req, res);
         }
 
-    }
+    },
+
+    subscription: (req, res) => {
+        if (util.indexOfObjectId(req.user.memberOfTeams, req.params.id) == -1 &&
+            util.indexOfObjectId(req.user.adminOfTeams, req.params.id) == -1) {
+                util.unauthorized(req, res);
+                return;
+            }
+
+        return Team.findOne({}).where('_id').equals(req.params.id)
+            .select('subscription')
+            .populate({
+                path: 'subscription',
+                select: '-stripeCustomerId',
+                populate: {
+                    path: 'parent',
+                    select: '-stripeCustomerId',
+                    populate: {
+                        path: 'team',
+                        select: 'name'
+                    }
+                }
+            })
+            .then(t => {
+                let team = t.toObject();
+
+                if (team.subscription) {
+                    team.subscription.type = roles.findRoleById(roles.getRoleType(team.subscription.role)).name;
+                    team.subscription.roleName = roles.findRoleById(team.subscription.role).name;
+                }
+
+                res.json(team);
+            })
+    },
 
 }

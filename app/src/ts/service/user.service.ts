@@ -149,17 +149,14 @@ export class UserService {
     }
 
     _handleLoginRequest(response): User {
+        this.isLoggingIn = false;
         if (response) {
             let responseData = response.json() as LoginResponse;
-
             this.http.setToken(responseData.token, responseData.expires);
-
             this.saveUserData(responseData.user);
-
-            this.isLoggingIn = false;
             this.announceLoginState();
         } else {
-            this.clearUserData();
+            this._handleLogout();
         }
 
         return this.loggedInUser;
@@ -169,11 +166,15 @@ export class UserService {
         return this.http.post(this.logoutUrl, {})
             .toPromise()
             .then(() => {
-                this.http.reset();
-                this.clearUserData();
+                this._handleLogout();
                 this.announceLoginState();
                 return true;
             });
+    }
+
+    private _handleLogout(): void {
+        this.http.reset();
+        this.clearUserData();
     }
 
     isLoggedIn(): boolean {

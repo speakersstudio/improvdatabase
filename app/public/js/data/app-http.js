@@ -34,6 +34,8 @@ var AppHttp = (function () {
     AppHttp.prototype.clearValues = function () {
         localStorage.removeItem(this.TOKEN_STORAGE_KEY);
         localStorage.removeItem(this.EXPIRATION_STORAGE_KEY);
+        this.token = null;
+        this.tokenExpires = null;
     };
     AppHttp.prototype.checkTokenExpiration = function () {
         if (!this.token || !this.tokenExpires || this.tokenExpires <= Date.now()) {

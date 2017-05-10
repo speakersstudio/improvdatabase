@@ -126,15 +126,15 @@ var UserService = (function () {
         }
     };
     UserService.prototype._handleLoginRequest = function (response) {
+        this.isLoggingIn = false;
         if (response) {
             var responseData = response.json();
             this.http.setToken(responseData.token, responseData.expires);
             this.saveUserData(responseData.user);
-            this.isLoggingIn = false;
             this.announceLoginState();
         }
         else {
-            this.clearUserData();
+            this._handleLogout();
         }
         return this.loggedInUser;
     };
@@ -143,11 +143,14 @@ var UserService = (function () {
         return this.http.post(this.logoutUrl, {})
             .toPromise()
             .then(function () {
-            _this.http.reset();
-            _this.clearUserData();
+            _this._handleLogout();
             _this.announceLoginState();
             return true;
         });
+    };
+    UserService.prototype._handleLogout = function () {
+        this.http.reset();
+        this.clearUserData();
     };
     UserService.prototype.isLoggedIn = function () {
         return this.loggedInUser && true;

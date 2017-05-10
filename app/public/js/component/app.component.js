@@ -226,7 +226,7 @@ var AppComponent = (function () {
         }
     };
     AppComponent.prototype.login = function () {
-        if (this.user) {
+        if (this.userService.getLoggedInUser()) {
             this.router.navigate(['/app']);
         }
         else {
@@ -238,7 +238,7 @@ var AppComponent = (function () {
     AppComponent.prototype.handleLogin = function (user) {
         this.closeOverlays();
         if (this.inApp || this.router.url == '/login') {
-            this.router.navigate(['welcome']);
+            this.router.navigate(['/app']);
         }
     };
     AppComponent.prototype.logout = function () {

@@ -44,6 +44,8 @@ export class AppHttp {
     private clearValues(): void {
         localStorage.removeItem(this.TOKEN_STORAGE_KEY);
         localStorage.removeItem(this.EXPIRATION_STORAGE_KEY);
+        this.token = null;
+        this.tokenExpires = null;
     }
 
     checkTokenExpiration(): boolean {

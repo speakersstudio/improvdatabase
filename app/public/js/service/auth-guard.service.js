@@ -21,7 +21,7 @@ var AuthGuard = (function () {
         //console.log(this.userService.getLoggedInUser());
         var _this = this;
         if (this.userService.isLoggingIn) {
-            return this.userService.loginPromise.then(function () {
+            return this.userService.loginPromise.then(function (user) {
                 return Promise.resolve(_this.canActivateChild(route, state));
             });
         }

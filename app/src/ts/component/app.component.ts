@@ -290,7 +290,7 @@ export class AppComponent implements OnInit {
     }
 
     login(): void {
-        if (this.user) {
+        if (this.userService.getLoggedInUser()) {
             this.router.navigate(['/app']);
         } else {
             this.closeOverlays();
@@ -303,7 +303,7 @@ export class AppComponent implements OnInit {
         this.closeOverlays();
 
         if (this.inApp || this.router.url == '/login') {
-            this.router.navigate(['welcome']);
+            this.router.navigate(['/app']);
         }
     }
 

@@ -6,11 +6,8 @@
   "scripts": {
     "start": "npm run checkItems && node ./server",
     "quickstart": "node ./server",
-    
     "checkItems": "node -e \"require('./server/reset').checkForSeed()\"",
-
     "reset": "node -e \"require('./server/reset').reset()\"",
-
     "cleanup": "node -e \"require('./server/reset').cleanup()\""
   },
   "dependencies": {
@@ -43,6 +40,7 @@
     "morgan": "~1.7.0",
     "nodemailer": "~2.6.4",
     "pdf-merge": "^0.1.0",
+    "redis": "^2.7.1",
     "reflect-metadata": "^0.1.8",
     "rxjs": "^5.3.0",
     "sendgrid": "^5.0.0",

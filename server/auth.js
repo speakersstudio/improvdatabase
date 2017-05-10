@@ -7,19 +7,21 @@ const   jwt = require('jwt-simple'),
         url = require('url'),
         bcrypt = require('bcrypt'),
         emailUtil = require('./email'),
-        HistoryModel = require('./models/history.model');
-        //redis   = require('redis'),
-        //client;
+        HistoryModel = require('./models/history.model'),
+        bluebird = require('bluebird'),
+        redis   = require('redis');
 
-/*
+bluebird.promisifyAll(redis.RedisClient.prototype);
+bluebird.promisifyAll(redis.Multi.prototype);
+
+let client;
 if (config.redis.url) {
     var redisUrl = url.parse(config.redis.url);
     client = redis.createClient(redisUrl.port, redisUrl.hostname, {no_ready_check: true});
     client.auth(redisUrl.auth.split(':')[1]);
 } else {
-    client = redis.createClient(config.redis.port, config.redis.host);
+    client = redis.createClient();
 }
-*/
 
 module.exports = {
 
@@ -186,35 +188,24 @@ module.exports = {
 
     logout: (req, res) => {
         var token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token'];
-    /*
-        if (token) {
-            // instantly expire the token from redis
-            client.expire(token, 0, function (err, response) {
-                if (err) {
-                    res.status(500).json({ message: 'Server Error', error: err });
-                } else if (response) {
-                    console.log('USER LOG OUT');
-                    res.status(200).json({ message: 'Logout' });
-                }
+
+        client.delAsync(token).then(() => {
+            var decoded = jwt.decode(token, config.token);
+
+            HistoryModel.create({
+                user: decoded.iss,
+                action: 'logout'
             });
-        }
-        
-        */
-        
-        var decoded = jwt.decode(token, config.token);
 
-        HistoryModel.create({
-            user: decoded.iss,
-            action: 'logout'
+            res.status(200).json({ message: 'Logout' });
         });
-
-        res.status(200).json({ message: 'Logout' });
+        
     },
 
     refresh: (req, res) => {
         var token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token'];
 
-        if (!token || !req.user) {
+        if (!token || !req.user._id) {
             res.status(401).json({
                 'status': 401,
                 'message': 'Invalid Token'
@@ -222,23 +213,7 @@ module.exports = {
             return;
         }
 
-        /*
-        // instantly expire the old token from redis
-        client.expire(token, 0, function (err, response) {
-            if (err) {
-                res.status(500).json({ message: 'Server Error', error: err });
-            } else if (response) {
-                genToken(req.user, function (err, token) {
-                    if (err) {
-                        console.error('REDIS ERROR', err);
-                    }
-                    res.status(200).json(token);
-                });
-            }
-        });
-        */
-
-        findModelUtil.findUser(req.user._id)
+        return findModelUtil.findUser(req.user._id)
             .then(user => {
                 user.dateLoggedIn = Date.now();
                 return user.save();
@@ -249,9 +224,10 @@ module.exports = {
                     action: 'refresh'
                 });
                 
-                module.exports.genToken(userApi.prepUserObject(user)).then(token => {
-                    res.status(200).json(token);
-                });
+                // create a new token
+                return module.exports.genToken(userApi.prepUserObject(user), token);
+            }).then(newToken => {
+                res.status(200).json(newToken);
             });
     },
 
@@ -268,11 +244,11 @@ module.exports = {
         };
 
         if (token) {
-            try {
+            client.getAsync(token).then(tokenCache => {
                 var decoded = jwt.decode(token, config.token);
 
                 // first make sure the token hasn't expired
-                if (decoded.exp > Date.now()) {
+                if (decoded.exp > Date.now() && tokenCache) {
                     // now make sure the user exists
                     // The iss parameter would be the logged in user's UserID
                     findModelUtil.findUser(decoded.iss, 'stripeCustomerId')
@@ -283,10 +259,7 @@ module.exports = {
                 } else {
                     next();
                 }
-            } catch (err) {
-                console.log("Token decode error: ", err);
-                next();
-            }
+            })
         } else {
             next();
         }
@@ -313,39 +286,38 @@ module.exports = {
         }
     },
 
-    genToken: (user, expires) => {
-        expires = expires || expiresInDays(7); // one week is recommended by Auth0
+    genToken: (user, oldToken) => {
+        let expires = expiresInDays(7); // one week is recommended by Auth0
 
         let token = jwt.encode({
-                exp: expires,
-                iss: user._id
-            }, config.token);
+            exp: expires,
+            iss: user._id
+        }, config.token);
 
-            // this is all redis stuff, which isn't really necessary
-            //multi = client.multi();
+        multi = client.multi();
 
-        //multi.set(token, user.UserID);
-        //multi.expire(token, 60 * 60 * 24 * 7); // one week in seconds
+        multi.set(token, user._id.toString());
 
-        /*
-        multi.exec(function (err) {
-            callback(err, {
+        if (oldToken) {
+            multi.del(oldToken);
+        }
+        
+        // redis wants the expiration in seconds from now
+        let tokenExpires = Math.ceil((expires - Date.now()) / 1000);
+        multi.expire(token, tokenExpires); 
+
+        return multi.execAsync().then(() => {
+            // just to be safe...
+            delete user.password;
+            delete user.stripeCustomerId;
+
+            return Promise.resolve({
                 token: token,
                 expires: expires,
                 user: user
             });
         });
-        */
 
-        // just to be safe...
-        delete user.password;
-        delete user.stripeCustomerId;
-
-        return Promise.resolve({
-            token: token,
-            expires: expires,
-            user: user
-        });
     }
 
 }

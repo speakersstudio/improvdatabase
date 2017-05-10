@@ -20,7 +20,7 @@ export class AuthGuard implements CanActivateChild {
         //console.log(this.userService.getLoggedInUser());
 
         if (this.userService.isLoggingIn) {
-            return this.userService.loginPromise.then(() => {
+            return this.userService.loginPromise.then(user => {
                 return Promise.resolve(this.canActivateChild(route, state));
             });
         }

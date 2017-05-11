@@ -7,9 +7,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var platform_browser_1 = require("@angular/platform-browser");
-var http_1 = require("@angular/http");
+var common_1 = require("@angular/common");
+// import { BrowserModule } from '@angular/platform-browser';
+// import { HttpModule } from '@angular/http';
 var forms_1 = require("@angular/forms");
+// import { PathLocationStrategy } from '@angular/common';
+var shared_module_1 = require("../../module/shared.module");
+var improvplus_routing_module_1 = require("./improvplus-routing.module");
+// services
+var game_database_service_1 = require("../service/game-database.service");
+var library_service_1 = require("../service/library.service");
+var auth_guard_service_1 = require("../service/auth-guard.service");
+var team_service_1 = require("../service/team.service");
 // main components
 // import { AppComponent } from '../component/app.component';
 var unauthorized_component_1 = require("../component/unauthorized.component");
@@ -25,6 +34,7 @@ var legal_component_1 = require("../component/legal.component");
 var admin_component_1 = require("../component/admin.component");
 var team_list_component_1 = require("../component/team-list.component");
 var team_details_component_1 = require("../component/team-details.component");
+var not_found_component_1 = require("../component/not-found.component");
 // sub-views
 var toolbar_view_1 = require("../view/toolbar.view");
 var game_card_view_1 = require("../view/game-card.view");
@@ -33,8 +43,6 @@ var materials_page_view_1 = require("../view/materials-page.view");
 var user_card_view_1 = require("../view/user-card.view");
 var editable_metadata_view_1 = require("../view/editable-metadata.view");
 var dashboard_message_list_view_1 = require("../view/dashboard-message-list.view");
-var shared_module_1 = require("../../module/shared.module");
-var improvplus_routing_module_1 = require("./improvplus-routing.module");
 // utils
 var ImprovPlusModule = (function () {
     function ImprovPlusModule() {
@@ -44,10 +52,11 @@ var ImprovPlusModule = (function () {
 ImprovPlusModule = __decorate([
     core_1.NgModule({
         imports: [
-            platform_browser_1.BrowserModule,
+            // BrowserModule,
             forms_1.FormsModule,
             forms_1.ReactiveFormsModule,
-            http_1.HttpModule,
+            // HttpModule,
+            common_1.CommonModule,
             shared_module_1.SharedModule,
             improvplus_routing_module_1.ImprovPlusRoutingModule
         ],
@@ -65,6 +74,7 @@ ImprovPlusModule = __decorate([
             game_details_component_1.GameDetailsComponent,
             legal_component_1.LegalComponent,
             admin_component_1.AdminComponent,
+            not_found_component_1.NotFoundComponent,
             toolbar_view_1.ToolbarView,
             game_card_view_1.GameCardView,
             create_metadata_view_1.CreateMetadataView,
@@ -74,7 +84,12 @@ ImprovPlusModule = __decorate([
             dashboard_message_list_view_1.DashboardMessageListView
         ],
         // bootstrap: [ AppComponent ],
-        providers: []
+        providers: [
+            game_database_service_1.GameDatabaseService,
+            library_service_1.LibraryService,
+            auth_guard_service_1.AuthGuard,
+            team_service_1.TeamService
+        ]
     })
 ], ImprovPlusModule);
 exports.ImprovPlusModule = ImprovPlusModule;

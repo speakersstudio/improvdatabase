@@ -9,9 +9,9 @@ import {
 import { Router } from '@angular/router';
 
 import { AppComponent } from './app.component';
+import { AppService } from '../service/app.service';
 import { UserService } from '../service/user.service';
-import { TeamService } from '../service/team.service';
-import { LibraryService } from '../service/library.service';
+
 import { CartService } from '../service/cart.service';
 
 import { User } from '../model/user';
@@ -73,11 +73,10 @@ export class SignupComponent implements OnInit {
 
     constructor(
         private _app: AppComponent,
+        private _service: AppService,
         private router: Router,
         private userService: UserService,
-        private libraryService: LibraryService,
-        private cartService: CartService,
-        private teamService: TeamService
+        private cartService: CartService
     ) { }
 
     ngOnInit(): void {
@@ -100,8 +99,9 @@ export class SignupComponent implements OnInit {
         this._app.showBackground(true);
 
         this.isLoadingPackages = true;
-        this.libraryService.getPackages().then(packages => {
+        this._service.getPackages().then(p => {
             this.isLoadingPackages = false;
+            this.packages = p;
         });
 
         this.stripe = Stripe(this._app.config.stripe);
@@ -138,11 +138,6 @@ export class SignupComponent implements OnInit {
             }
         });
 
-
-        this.libraryService.getPackages().then(p => {
-            this.packages = p;
-        });
-
         this._app.hideLoader();
 
     }
@@ -162,7 +157,7 @@ export class SignupComponent implements OnInit {
 
         if (this.email.indexOf('@') > -1 && this.email.indexOf('.') > -1) {
             user.email = this.email;
-            this.userService.validate(user).then(message => {
+            this._service.validateUser(user).then(message => {
                 this.emailError = message;
             });
         } else if (this.email.length > 0) {
@@ -186,7 +181,7 @@ export class SignupComponent implements OnInit {
         let team = new Team();
         team.name = this.teamName;
 
-        this.teamService.validate(team).then(message => {
+        this._service.validateTeam(team).then(message => {
             this.teamError = message;
         });
     }

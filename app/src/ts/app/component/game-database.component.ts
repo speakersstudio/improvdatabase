@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { AppComponent } from '../../component/app.component';
 import { Tool, SearchResult } from '../view/toolbar.view';
 
-import { GameDatabaseService } from '../../service/game-database.service';
+import { GameDatabaseService } from '../service/game-database.service';
 import { UserService } from "../../service/user.service";
 
 import { Game } from '../../model/game';

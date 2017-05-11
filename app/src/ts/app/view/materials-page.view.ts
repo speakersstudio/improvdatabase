@@ -9,7 +9,7 @@ import {
 
 import {AppComponent    } from '../../component/app.component';
 
-import { LibraryService } from '../../service/library.service';
+import { LibraryService } from '../service/library.service';
 
 import { MaterialItem } from '../../model/material-item';
 import { Package } from '../../model/package';

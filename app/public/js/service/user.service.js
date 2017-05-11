@@ -13,16 +13,16 @@ var core_1 = require("@angular/core");
 var Rx_1 = require("rxjs/Rx");
 require("rxjs/add/operator/toPromise");
 var app_http_1 = require("../data/app-http");
-var team_service_1 = require("./team.service");
 var LoginResponse = (function () {
     function LoginResponse() {
     }
     return LoginResponse;
 }());
 var UserService = (function () {
-    function UserService(http, teamService) {
+    function UserService(http
+        // private teamService: TeamService
+    ) {
         this.http = http;
-        this.teamService = teamService;
         this.USER_STORAGE_KEY = 'improvplus_user';
         this.loginUrl = '/login';
         this.passwordRecoveryUrl = '/recoverPassword';
@@ -247,19 +247,6 @@ var UserService = (function () {
     UserService.prototype.isExpired = function () {
         return !this.loggedInUser.subscription || (new Date(this.loggedInUser.subscription.expiration)).getTime() <= Date.now();
     };
-    UserService.prototype.validate = function (user) {
-        return this.http.post(this.validateUrl, user)
-            .toPromise()
-            .then(function (response) {
-            var data = response.json();
-            if (data.conflict == 'email') {
-                return 'That email address is already registered on ImprovPlus.';
-            }
-            else {
-                return '';
-            }
-        });
-    };
     UserService.prototype.cancelInvite = function (invite) {
         return this.http.delete(this.inviteUrl + invite._id)
             .toPromise()
@@ -320,26 +307,13 @@ var UserService = (function () {
         }
         return this._subscriptionPromise;
     };
-    UserService.prototype.fetchTeams = function () {
-        var _this = this;
-        if (!this._teamPromise) {
-            this._teamPromise = this.http.get(this.userUrl + this.loggedInUser._id + '/teams')
-                .toPromise()
-                .then(function (response) {
-                var user = response.json();
-                _this.teamService.addTeams(user.adminOfTeams);
-                _this.teamService.addTeams(user.memberOfTeams);
-                return user;
-            });
-        }
-        return this._teamPromise;
-    };
     return UserService;
 }());
 UserService = __decorate([
     core_1.Injectable(),
-    __metadata("design:paramtypes", [app_http_1.AppHttp,
-        team_service_1.TeamService])
+    __metadata("design:paramtypes", [app_http_1.AppHttp
+        // private teamService: TeamService
+    ])
 ], UserService);
 exports.UserService = UserService;
 

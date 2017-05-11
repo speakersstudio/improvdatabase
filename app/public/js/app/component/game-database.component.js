@@ -14,7 +14,7 @@ var common_1 = require("@angular/common");
 var router_1 = require("@angular/router");
 require("rxjs/Subscription");
 var app_component_1 = require("../../component/app.component");
-var game_database_service_1 = require("../../service/game-database.service");
+var game_database_service_1 = require("../service/game-database.service");
 var user_service_1 = require("../../service/user.service");
 var GameDatabaseComponent = (function () {
     function GameDatabaseComponent(_app, route, router, gameDatabaseService, pathLocationStrategy, userService) {

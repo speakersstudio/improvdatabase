@@ -21,16 +21,16 @@ var router_1 = require("@angular/router");
 var constants_1 = require("../constants");
 var app_http_1 = require("../data/app-http");
 var config_1 = require("../model/config");
+var app_service_1 = require("../service/app.service");
 var user_service_1 = require("../service/user.service");
-var auth_guard_service_1 = require("../service/auth-guard.service");
 var anim_util_1 = require("../util/anim.util");
 var AppComponent = (function () {
-    function AppComponent(config, _renderer, router, _route, userService, authGuard, pathLocationStrategy, http) {
+    function AppComponent(config, _renderer, router, _route, _service, userService, pathLocationStrategy, http) {
         this._renderer = _renderer;
         this.router = router;
         this._route = _route;
+        this._service = _service;
         this.userService = userService;
-        this.authGuard = authGuard;
         this.pathLocationStrategy = pathLocationStrategy;
         this.http = http;
         this.scrollpos = 0;
@@ -60,9 +60,16 @@ var AppComponent = (function () {
         //     this.config = response.json() as Config;
         // });
         this.router.events.filter(function (event) { return event instanceof router_1.NavigationStart; }).subscribe(function (event) {
-            _this.showBackground(false);
+            _this.backgroundVisible = true;
+            _this.backgroundRequested = false;
             _this.showWhiteBrackets(false);
             _this.closeOverlays();
+            _this.showLoader();
+        });
+        this.router.events.filter(function (event) { return event instanceof router_1.NavigationEnd; }).subscribe(function (event) {
+            if (!_this.backgroundRequested) {
+                _this.backgroundVisible = false;
+            }
             _this.hideLoader();
             if (event.url.indexOf('/app') > -1) {
                 _this.inApp = true;
@@ -76,9 +83,9 @@ var AppComponent = (function () {
             if (!_this.user) {
                 // we just logged in
                 var path_1 = [];
-                if (_this.authGuard.redirect) {
+                if (_this._service.getRedirect()) {
                     path_1.push('app');
-                    _this.authGuard.redirect.forEach(function (segment) {
+                    _this._service.getRedirect().forEach(function (segment) {
                         path_1.push(segment.path);
                     });
                 }
@@ -104,11 +111,13 @@ var AppComponent = (function () {
             // TODO: where is the best place for this?
             this.userService.refreshToken();
         }
-        var siteLoader = document.getElementById("siteLoader");
-        siteLoader.style.opacity = "0";
         setTimeout(function () {
-            siteLoader.remove();
-        }, 500);
+            var siteLoader = document.getElementById("siteLoader");
+            siteLoader.style.opacity = "0";
+            setTimeout(function () {
+                siteLoader.remove();
+            }, 500);
+        }, 100);
     };
     AppComponent.prototype.ngOnDestroy = function () {
         this.userSubscription.unsubscribe();
@@ -127,7 +136,11 @@ var AppComponent = (function () {
         this.showBackdrop = false;
     };
     AppComponent.prototype.showBackground = function (show) {
-        this.backgroundVisible = show;
+        var _this = this;
+        this.backgroundRequested = true;
+        setTimeout(function () {
+            _this.backgroundVisible = show;
+        }, 50);
     };
     AppComponent.prototype.showWhiteBrackets = function (show) {
         this.whiteBrackets = show;
@@ -307,7 +320,9 @@ AppComponent = __decorate([
         templateUrl: '../template/app.component.html',
         animations: [
             anim_util_1.DialogAnim.dialog,
-            anim_util_1.ToggleAnim.fade
+            anim_util_1.ToggleAnim.fade,
+            anim_util_1.ToggleAnim.bubble,
+            anim_util_1.ShrinkAnim.vertical
         ]
     }),
     __param(0, core_1.Inject(constants_1.CONFIG_TOKEN)),
@@ -315,8 +330,8 @@ AppComponent = __decorate([
         core_1.Renderer2,
         router_1.Router,
         router_1.ActivatedRoute,
+        app_service_1.AppService,
         user_service_1.UserService,
-        auth_guard_service_1.AuthGuard,
         common_1.PathLocationStrategy,
         app_http_1.AppHttp])
 ], AppComponent);

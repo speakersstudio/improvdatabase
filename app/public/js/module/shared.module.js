@@ -7,20 +7,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
+var common_1 = require("@angular/common");
 var router_1 = require("@angular/router");
-var platform_browser_1 = require("@angular/platform-browser");
+// import { BrowserModule } from '@angular/platform-browser';
 var forms_1 = require("@angular/forms");
 var iplus_view_1 = require("../view/iplus.view");
 var login_view_1 = require("../view/login.view");
 var user_form_view_1 = require("../view/user-form.view");
 var landing_hero_view_1 = require("../view/landing-hero.view");
 // services
-var game_database_service_1 = require("../service/game-database.service");
-var library_service_1 = require("../service/library.service");
 var user_service_1 = require("../service/user.service");
-var auth_guard_service_1 = require("../service/auth-guard.service");
 var cart_service_1 = require("../service/cart.service");
-var team_service_1 = require("../service/team.service");
+var app_service_1 = require("../service/app.service");
 var form_input_directive_1 = require("../view/form-input.directive");
 var bracket_card_directive_1 = require("../view/bracket-card.directive");
 var SharedModule = (function () {
@@ -31,7 +29,8 @@ var SharedModule = (function () {
 SharedModule = __decorate([
     core_1.NgModule({
         imports: [
-            platform_browser_1.BrowserModule,
+            // BrowserModule,
+            common_1.CommonModule,
             forms_1.FormsModule,
             router_1.RouterModule
         ],
@@ -52,12 +51,9 @@ SharedModule = __decorate([
             bracket_card_directive_1.BracketCardDirective
         ],
         providers: [
-            game_database_service_1.GameDatabaseService,
-            library_service_1.LibraryService,
+            app_service_1.AppService,
             user_service_1.UserService,
-            auth_guard_service_1.AuthGuard,
-            cart_service_1.CartService,
-            team_service_1.TeamService
+            cart_service_1.CartService
         ]
     })
 ], SharedModule);

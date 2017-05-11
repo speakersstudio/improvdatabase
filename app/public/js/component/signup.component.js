@@ -12,9 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var app_component_1 = require("./app.component");
+var app_service_1 = require("../service/app.service");
 var user_service_1 = require("../service/user.service");
-var team_service_1 = require("../service/team.service");
-var library_service_1 = require("../service/library.service");
 var cart_service_1 = require("../service/cart.service");
 var user_1 = require("../model/user");
 var team_1 = require("../model/team");
@@ -23,13 +22,12 @@ var anim_util_1 = require("../util/anim.util");
 var bracket_card_directive_1 = require("../view/bracket-card.directive");
 var config_1 = require("../model/config");
 var SignupComponent = (function () {
-    function SignupComponent(_app, router, userService, libraryService, cartService, teamService) {
+    function SignupComponent(_app, _service, router, userService, cartService) {
         this._app = _app;
+        this._service = _service;
         this.router = router;
         this.userService = userService;
-        this.libraryService = libraryService;
         this.cartService = cartService;
-        this.teamService = teamService;
         this.config = new config_1.PackageConfig();
         this.isLoadingPackages = false;
         this.isPosting = false;
@@ -50,8 +48,9 @@ var SignupComponent = (function () {
         var _this = this;
         this._app.showBackground(true);
         this.isLoadingPackages = true;
-        this.libraryService.getPackages().then(function (packages) {
+        this._service.getPackages().then(function (p) {
             _this.isLoadingPackages = false;
+            _this.packages = p;
         });
         this.stripe = Stripe(this._app.config.stripe);
         var elements = this.stripe.elements();
@@ -83,9 +82,6 @@ var SignupComponent = (function () {
                 _this.cardError = '';
             }
         });
-        this.libraryService.getPackages().then(function (p) {
-            _this.packages = p;
-        });
         this._app.hideLoader();
     };
     SignupComponent.prototype.emailInput = function () {
@@ -101,7 +97,7 @@ var SignupComponent = (function () {
         var user = new user_1.User();
         if (this.email.indexOf('@') > -1 && this.email.indexOf('.') > -1) {
             user.email = this.email;
-            this.userService.validate(user).then(function (message) {
+            this._service.validateUser(user).then(function (message) {
                 _this.emailError = message;
             });
         }
@@ -124,7 +120,7 @@ var SignupComponent = (function () {
         var _this = this;
         var team = new team_1.Team();
         team.name = this.teamName;
-        this.teamService.validate(team).then(function (message) {
+        this._service.validateTeam(team).then(function (message) {
             _this.teamError = message;
         });
     };
@@ -403,11 +399,10 @@ SignupComponent = __decorate([
         ]
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,
+        app_service_1.AppService,
         router_1.Router,
         user_service_1.UserService,
-        library_service_1.LibraryService,
-        cart_service_1.CartService,
-        team_service_1.TeamService])
+        cart_service_1.CartService])
 ], SignupComponent);
 exports.SignupComponent = SignupComponent;
 

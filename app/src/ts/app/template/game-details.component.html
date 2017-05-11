@@ -149,6 +149,8 @@
         <div class="right-bracket"><h1>discussion</h1></div>
     </div>
 
+    <not-found *ngIf="!game" [injected]="true"></not-found>
+
 </div>
 
 <create-metadata *ngIf="can('meta_create')" class="dialog-container"

@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { GameDatabaseService } from "../../service/game-database.service";
+import { GameDatabaseService } from "../service/game-database.service";
 import { UserService } from "../../service/user.service";
 
 import { User } from "../../model/user";

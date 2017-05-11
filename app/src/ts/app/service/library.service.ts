@@ -3,17 +3,17 @@ import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/toPromise';
 
 import { RequestOptions, Headers } from '@angular/http';
-import { AppHttp } from '../data/app-http';
+import { AppHttp } from '../../data/app-http';
 
-import { Package } from '../model/package';
-import { MaterialItem, MaterialItemVersion } from '../model/material-item';
-import { Subscription } from '../model/subscription';
-import { Team } from '../model/team';
+import { Package } from '../../model/package';
+import { MaterialItem, MaterialItemVersion } from '../../model/material-item';
+import { Subscription } from '../../model/subscription';
+import { Team } from '../../model/team';
 
-import { User } from '../model/user';
-import { UserService } from './user.service';
+import { User } from '../../model/user';
+import { UserService } from '../../service/user.service';
 
-import { Library } from '../model/library';
+import { Library } from '../../model/library';
 
 @Injectable()
 export class LibraryService {
@@ -31,23 +31,6 @@ export class LibraryService {
         private http: AppHttp,
         private userService: UserService
         ) { }
-
-    /**
-     * Get all of the available packages!
-     */
-    private _packagePromise: Promise<Package[]>;
-    getPackages(): Promise<Package[]> {
-        if (!this._packagePromise) {
-            this._packagePromise = this.http.get(this.packageUrl)
-                .toPromise()
-                .then(response => {
-                    this.packages = response.json() as Package[];
-                    return this.packages;
-                })
-                .catch(this.handleError);
-        }
-        return this._packagePromise;
-    }
 
     /**
      * Get the materials that you own

@@ -1,18 +1,16 @@
 import { Injectable } from '@angular/core';
 import { CanActivateChild, Router, ActivatedRoute, ActivatedRouteSnapshot, RouterStateSnapshot, UrlSegment } from '@angular/router';
 
-import { AppComponent } from '../component/app.component';
-
-import { User } from "../model/user";
-import { UserService } from '../service/user.service';
+import { User } from "../../model/user";
+import { AppService } from '../../service/app.service';
+import { UserService } from '../../service/user.service';
 
 @Injectable() 
 export class AuthGuard implements CanActivateChild {
 
-    redirect: UrlSegment[];
-
     constructor(
         private router: Router,
+        private _service: AppService,
         private userService: UserService
     ) {}
 
@@ -36,7 +34,7 @@ export class AuthGuard implements CanActivateChild {
                 this.router.navigate(['/app/unauthorized'], { replaceUrl: true });
             }
         } else {
-            this.redirect = route.url;
+            this._service.setRedirect(route.url);
             this.router.navigate(['/login'], { replaceUrl: true });
         }
         return false;

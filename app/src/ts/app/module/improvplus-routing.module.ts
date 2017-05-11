@@ -1,7 +1,7 @@
 import { NgModule }         from "@angular/core";
 import { RouterModule, Routes }     from "@angular/router";
 
-import { AuthGuard } from '../../service/auth-guard.service';
+import { AuthGuard } from '../service/auth-guard.service';
 import { DashboardComponent } from "../component/dashboard.component";
 import { MaterialsLibraryComponent } from "../component/materials-library.component";
 import { HelpComponent } from "../component/help.component";
@@ -16,10 +16,11 @@ import { TeamListComponent } from '../component/team-list.component';
 import { TeamDetailsComponent } from '../component/team-details.component';
 
 import { AdminComponent } from '../component/admin.component';
+import { NotFoundComponent } from '../component/not-found.component';
 
 const routes: Routes = [
     {
-        path: 'app',
+        path: '',
         children: [
             {
                 path: '',
@@ -124,6 +125,10 @@ const routes: Routes = [
             {
                 path: 'legal',
                 component: LegalComponent
+            },
+            {
+                path: '**',
+                component: NotFoundComponent
             }
         ]
     }

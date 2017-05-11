@@ -1,7 +1,8 @@
 import { NgModule }         from "@angular/core";
-import { RouterModule, Routes }     from "@angular/router";
+import { RouterModule, Routes, PreloadAllModules }     from "@angular/router";
 
-import { AuthGuard } from '../service/auth-guard.service';
+// import { AuthGuard } from '../service/auth-guard.service';
+import { AppLoadGuard } from '../service/app-load-guard.service';
 
 import { WelcomeComponent } from '../component/ms.welcome.component';
 
@@ -40,11 +41,17 @@ const routes: Routes = [
     {
         path: 'resetMyPassword/:token',
         component: ChangePasswordComponent
+    },
+    {
+        path: 'app',
+        loadChildren: 'app/app/module/improvplus.module#ImprovPlusModule'
     }
 ];
 
 @NgModule({
-    imports: [ RouterModule.forRoot(routes) ],
+    imports: [ RouterModule.forRoot(routes, 
+            { preloadingStrategy: PreloadAllModules }
+        ) ],
     exports: [ RouterModule ]
 })
 

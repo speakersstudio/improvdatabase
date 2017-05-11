@@ -11,7 +11,7 @@ import { Team } from '../model/team';
 import { Purchase } from '../model/purchase';
 import { Invite } from '../model/invite';
 
-import { TeamService } from './team.service';
+// import { TeamService } from '../app/service/team.service';
 
 import { Library } from '../model/library';
 
@@ -46,8 +46,8 @@ export class UserService {
     loginState$ = this.logginStateSource.asObservable();
 
     constructor(
-        private http: AppHttp,
-        private teamService: TeamService
+        private http: AppHttp
+        // private teamService: TeamService
     ) {
         this.loadUserData();
     }
@@ -284,19 +284,6 @@ export class UserService {
         return !this.loggedInUser.subscription || (new Date(this.loggedInUser.subscription.expiration)).getTime() <= Date.now();
     }
 
-    validate (user: User): Promise<string> {
-        return this.http.post(this.validateUrl, user)
-            .toPromise()
-            .then((response) => {
-                let data = response.json();
-                if (data.conflict == 'email') {
-                    return 'That email address is already registered on ImprovPlus.';
-                } else {
-                    return '';
-                }
-            })
-    }
-
     cancelInvite(invite: Invite): Promise<boolean> {
         return this.http.delete(this.inviteUrl + invite._id)
             .toPromise()
@@ -360,23 +347,6 @@ export class UserService {
                 });
         }
         return this._subscriptionPromise;
-    }
-
-    private _teamPromise: Promise<User>;
-    fetchTeams(): Promise<User> {
-        if (!this._teamPromise) {
-            this._teamPromise = this.http.get(this.userUrl + this.loggedInUser._id + '/teams')
-                .toPromise()
-                .then(response => {
-                    let user = response.json() as User;
-                        
-                    this.teamService.addTeams(<Team[]> user.adminOfTeams);
-                    this.teamService.addTeams(<Team[]> user.memberOfTeams);
-
-                    return user;
-                });
-        }
-        return this._teamPromise;
     }
 
 }

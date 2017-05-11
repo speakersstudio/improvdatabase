@@ -13,7 +13,7 @@ import { Invite } from '../../model/invite';
 import { Subscription } from '../../model/subscription';
 
 import { UserService } from '../../service/user.service';
-import { TeamService } from '../../service/team.service';
+import { TeamService } from '../service/team.service';
 
 import { TimeUtil } from '../../util/time.util';
 

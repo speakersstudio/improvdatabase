@@ -17,10 +17,11 @@ import { AppHttp } from '../data/app-http';
 
 import { User } from "../model/user";
 import { Config } from '../model/config';
-import { UserService } from '../service/user.service';
-import { AuthGuard } from '../service/auth-guard.service';
 
-import { DialogAnim, ToggleAnim } from '../util/anim.util';
+import { AppService } from '../service/app.service';
+import { UserService } from '../service/user.service';
+
+import { DialogAnim, ToggleAnim, ShrinkAnim } from '../util/anim.util';
 
 @Component({
     moduleId: module.id,
@@ -28,7 +29,9 @@ import { DialogAnim, ToggleAnim } from '../util/anim.util';
     templateUrl: '../template/app.component.html',
     animations: [
         DialogAnim.dialog,
-        ToggleAnim.fade
+        ToggleAnim.fade,
+        ToggleAnim.bubble,
+        ShrinkAnim.vertical
     ]
 })
 export class AppComponent implements OnInit {
@@ -43,6 +46,7 @@ export class AppComponent implements OnInit {
     onScroll$ = this.scrollSource.asObservable()
 
     inApp: boolean;
+    backgroundRequested: boolean;
     backgroundVisible: boolean;
 
     // loader = document.getElementById("siteLoader");
@@ -83,8 +87,8 @@ export class AppComponent implements OnInit {
         private _renderer: Renderer2,
         private router: Router,
         private _route: ActivatedRoute,
+        private _service: AppService,
         private userService: UserService,
-        private authGuard: AuthGuard,
         private pathLocationStrategy: PathLocationStrategy,
         private http: AppHttp
     ) {
@@ -100,9 +104,17 @@ export class AppComponent implements OnInit {
         // });
 
         this.router.events.filter(event => event instanceof NavigationStart).subscribe(event => {
-            this.showBackground(false);
+            this.backgroundVisible = true;
+            this.backgroundRequested = false;
             this.showWhiteBrackets(false);
             this.closeOverlays();
+            this.showLoader();
+        });
+
+        this.router.events.filter(event => event instanceof NavigationEnd).subscribe(event => {
+            if (!this.backgroundRequested) {
+                this.backgroundVisible = false;
+            }
             this.hideLoader();
 
             if ((<NavigationStart> event).url.indexOf('/app') > -1) {
@@ -110,7 +122,7 @@ export class AppComponent implements OnInit {
             } else {
                 this.inApp = false;
             }
-        });
+        })
 
         this.setUser(this.userService.getLoggedInUser());
 
@@ -119,9 +131,9 @@ export class AppComponent implements OnInit {
                 // we just logged in
                 let path:string[] = [];
 
-                if (this.authGuard.redirect) {
+                if (this._service.getRedirect()) {
                     path.push('app');
-                    this.authGuard.redirect.forEach(segment => {
+                    this._service.getRedirect().forEach(segment => {
                         path.push(segment.path);
                     });
                 } else {
@@ -149,11 +161,13 @@ export class AppComponent implements OnInit {
             this.userService.refreshToken();
         }
 
-        let siteLoader = document.getElementById("siteLoader");
-        siteLoader.style.opacity = "0";
         setTimeout(() => {
-            siteLoader.remove();
-        }, 500);
+            let siteLoader = document.getElementById("siteLoader");
+            siteLoader.style.opacity = "0";
+            setTimeout(() => {
+                siteLoader.remove();
+            }, 500);
+        }, 100);
     }
 
     ngOnDestroy() {
@@ -179,7 +193,10 @@ export class AppComponent implements OnInit {
     }
 
     showBackground(show: boolean): void {
-        this.backgroundVisible = show;
+        this.backgroundRequested = true;
+        setTimeout(() => {
+            this.backgroundVisible = show;
+        }, 50);
     }
 
     showWhiteBrackets(show: boolean): void {

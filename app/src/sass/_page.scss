@@ -84,6 +84,7 @@ $paper-bg: $color-white;
 .background {
     @include abs(0,0,0,0,0);
     background: $color-curtain;
+    transform-origin: 50% 0;
 }
 
 .page {

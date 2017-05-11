@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import {AppComponent} from '../../component/app.component';
 import { Tool } from '../view/toolbar.view';
 
-import { LibraryService } from '../../service/library.service';
+import { LibraryService } from '../service/library.service';
 
 import { Subscription } from '../../model/subscription';
 import { Package } from '../../model/package';

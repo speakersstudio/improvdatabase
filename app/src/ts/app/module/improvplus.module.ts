@@ -1,8 +1,19 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { HttpModule } from '@angular/http';
+import { CommonModule } from '@angular/common';
+
+// import { BrowserModule } from '@angular/platform-browser';
+// import { HttpModule } from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { PathLocationStrategy } from '@angular/common';
+// import { PathLocationStrategy } from '@angular/common';
+
+import { SharedModule } from '../../module/shared.module';
+import { ImprovPlusRoutingModule } from './improvplus-routing.module';
+
+// services
+import { GameDatabaseService } from "../service/game-database.service";
+import { LibraryService } from "../service/library.service";
+import { AuthGuard } from "../service/auth-guard.service";
+import { TeamService } from '../service/team.service';
 
 // main components
 // import { AppComponent } from '../component/app.component';
@@ -20,6 +31,8 @@ import { AdminComponent } from '../component/admin.component';
 import { TeamListComponent } from '../component/team-list.component';
 import { TeamDetailsComponent } from '../component/team-details.component';
 
+import { NotFoundComponent } from '../component/not-found.component';
+
 // sub-views
 import { ToolbarView } from '../view/toolbar.view';
 import { GameCardView } from '../view/game-card.view';
@@ -29,17 +42,15 @@ import { UserCardView } from '../view/user-card.view';
 import { EditableMetadataView } from '../view/editable-metadata.view';
 import { DashboardMessageListView } from '../view/dashboard-message-list.view';
 
-import { SharedModule } from '../../module/shared.module';
-import { ImprovPlusRoutingModule } from './improvplus-routing.module';
-
 // utils
 
 @NgModule({
     imports: [
-        BrowserModule,
+        // BrowserModule,
         FormsModule,
         ReactiveFormsModule,
-        HttpModule,
+        // HttpModule,
+        CommonModule,
         SharedModule,
         ImprovPlusRoutingModule
      ],
@@ -57,6 +68,7 @@ import { ImprovPlusRoutingModule } from './improvplus-routing.module';
         GameDetailsComponent,
         LegalComponent,
         AdminComponent,
+        NotFoundComponent,
         
         ToolbarView,
         GameCardView,
@@ -68,7 +80,10 @@ import { ImprovPlusRoutingModule } from './improvplus-routing.module';
     ],
     // bootstrap: [ AppComponent ],
     providers: [
-        
+        GameDatabaseService,
+        LibraryService,
+        AuthGuard,
+        TeamService
     ]
 })
 

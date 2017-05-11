@@ -8,7 +8,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppHttp } from '../data/app-http';
 
 // main components
-// import { MarketingSiteComponent } from '../component/ms.component';
 import { AppComponent } from '../component/app.component';
 import { WelcomeComponent } from '../component/ms.welcome.component';
 
@@ -18,8 +17,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './shared.module';
 
 // the improvplus module is the app
-import { ImprovPlusModule } from '../app/module/improvplus.module';
-
 import { LoginScreenComponent } from '../component/login-screen.component';
 import { SignupComponent } from '../component/signup.component';
 import { ChangePasswordComponent } from '../component/change-password.component'
@@ -35,8 +32,7 @@ import { ImprovisersComponent } from '../component/improvisers.component';
         HttpModule,
         BrowserAnimationsModule,
         SharedModule,
-        AppRoutingModule,
-        ImprovPlusModule
+        AppRoutingModule
      ],
     declarations: [
         LoginScreenComponent,

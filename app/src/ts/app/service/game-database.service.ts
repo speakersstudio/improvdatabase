@@ -2,19 +2,19 @@ import { Injectable } from '@angular/core';
 
 import 'rxjs/add/operator/toPromise';
 
-import { AppHttp } from '../data/app-http';
+import { AppHttp } from '../../data/app-http';
 
-import { Name } from '../model/name';
-import { Game, TagGame } from '../model/game';
-import { GameMetadata } from '../model/game-metadata';
-import { Tag } from '../model/tag';
-import { Note } from '../model/note';
+import { Name } from '../../model/name';
+import { Game, TagGame } from '../../model/game';
+import { GameMetadata } from '../../model/game-metadata';
+import { Tag } from '../../model/tag';
+import { Note } from '../../model/note';
 
-import { SearchResult } from '../app/view/toolbar.view';
+import { SearchResult } from '../../app/view/toolbar.view';
 
-import { UserService } from './user.service';
+import { UserService } from '../../service/user.service';
 
-import { Util } from '../util/util';
+import { Util } from '../../util/util';
 
 @Injectable()
 export class GameDatabaseService {

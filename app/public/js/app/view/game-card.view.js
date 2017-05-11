@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 require("rxjs/Subscription");
-var game_database_service_1 = require("../../service/game-database.service");
+var game_database_service_1 = require("../service/game-database.service");
 var game_1 = require("../../model/game");
 var GameCardView = (function () {
     function GameCardView(gameDatabaseService) {

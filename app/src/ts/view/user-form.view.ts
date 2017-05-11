@@ -11,7 +11,7 @@ import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { AppComponent } from '../component/app.component';
 
 import { User } from '../model/user';
-import { UserService } from '../service/user.service';
+import { AppService } from '../service/app.service';
 
 @Component({
     moduleId: module.id,
@@ -40,7 +40,7 @@ export class UserFormView implements OnInit, OnDestroy {
 
     constructor(
         private _app: AppComponent,
-        private userService: UserService
+        private appService: AppService
     ) { }
 
     ngOnInit(): void {
@@ -65,7 +65,7 @@ export class UserFormView implements OnInit, OnDestroy {
 
             this.isValidating = true;
 
-            this.userService.validate(this.user)
+            this.appService.validateUser(this.user)
                 .then(conflict => {
                     this.isValidating = false;
 

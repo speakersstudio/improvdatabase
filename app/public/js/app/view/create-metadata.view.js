@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var game_database_service_1 = require("../../service/game-database.service");
+var game_database_service_1 = require("../service/game-database.service");
 var user_service_1 = require("../../service/user.service");
 var anim_util_1 = require("../../util/anim.util");
 var MAX_ATTEMPTS = 5;

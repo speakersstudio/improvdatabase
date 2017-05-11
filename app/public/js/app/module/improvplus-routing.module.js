@@ -8,7 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
-var auth_guard_service_1 = require("../../service/auth-guard.service");
+var auth_guard_service_1 = require("../service/auth-guard.service");
 var dashboard_component_1 = require("../component/dashboard.component");
 var materials_library_component_1 = require("../component/materials-library.component");
 var help_component_1 = require("../component/help.component");
@@ -22,9 +22,10 @@ var legal_component_1 = require("../component/legal.component");
 var team_list_component_1 = require("../component/team-list.component");
 var team_details_component_1 = require("../component/team-details.component");
 var admin_component_1 = require("../component/admin.component");
+var not_found_component_1 = require("../component/not-found.component");
 var routes = [
     {
-        path: 'app',
+        path: '',
         children: [
             {
                 path: '',
@@ -129,6 +130,10 @@ var routes = [
             {
                 path: 'legal',
                 component: legal_component_1.LegalComponent
+            },
+            {
+                path: '**',
+                component: not_found_component_1.NotFoundComponent
             }
         ]
     }

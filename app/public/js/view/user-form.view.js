@@ -12,11 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var app_component_1 = require("../component/app.component");
 var user_1 = require("../model/user");
-var user_service_1 = require("../service/user.service");
+var app_service_1 = require("../service/app.service");
 var UserFormView = (function () {
-    function UserFormView(_app, userService) {
+    function UserFormView(_app, appService) {
         this._app = _app;
-        this.userService = userService;
+        this.appService = appService;
         this.isPosting = false;
         this.saveText = "Save";
         this.back = new core_1.EventEmitter();
@@ -38,7 +38,7 @@ var UserFormView = (function () {
         if (this.password === this.passwordConfirm) {
             this.user.password = this.password;
             this.isValidating = true;
-            this.userService.validate(this.user)
+            this.appService.validateUser(this.user)
                 .then(function (conflict) {
                 _this.isValidating = false;
                 if (conflict) {
@@ -90,7 +90,7 @@ UserFormView = __decorate([
         templateUrl: '../template/view/user-form.view.html'
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,
-        user_service_1.UserService])
+        app_service_1.AppService])
 ], UserFormView);
 exports.UserFormView = UserFormView;
 

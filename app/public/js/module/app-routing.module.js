@@ -43,6 +43,10 @@ var routes = [
     {
         path: 'resetMyPassword/:token',
         component: change_password_component_1.ChangePasswordComponent
+    },
+    {
+        path: 'app',
+        loadChildren: 'app/app/module/improvplus.module#ImprovPlusModule'
     }
 ];
 var AppRoutingModule = (function () {
@@ -52,7 +56,7 @@ var AppRoutingModule = (function () {
 }());
 AppRoutingModule = __decorate([
     core_1.NgModule({
-        imports: [router_1.RouterModule.forRoot(routes)],
+        imports: [router_1.RouterModule.forRoot(routes, { preloadingStrategy: router_1.PreloadAllModules })],
         exports: [router_1.RouterModule]
     })
 ], AppRoutingModule);

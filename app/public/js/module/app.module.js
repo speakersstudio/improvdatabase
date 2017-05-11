@@ -14,14 +14,12 @@ var common_1 = require("@angular/common");
 var animations_1 = require("@angular/platform-browser/animations");
 var app_http_1 = require("../data/app-http");
 // main components
-// import { MarketingSiteComponent } from '../component/ms.component';
 var app_component_1 = require("../component/app.component");
 var ms_welcome_component_1 = require("../component/ms.welcome.component");
 var app_routing_module_1 = require("./app-routing.module");
 // the shared module is where all of the views and services live
 var shared_module_1 = require("./shared.module");
 // the improvplus module is the app
-var improvplus_module_1 = require("../app/module/improvplus.module");
 var login_screen_component_1 = require("../component/login-screen.component");
 var signup_component_1 = require("../component/signup.component");
 var change_password_component_1 = require("../component/change-password.component");
@@ -41,8 +39,7 @@ AppModule = __decorate([
             http_1.HttpModule,
             animations_1.BrowserAnimationsModule,
             shared_module_1.SharedModule,
-            app_routing_module_1.AppRoutingModule,
-            improvplus_module_1.ImprovPlusModule
+            app_routing_module_1.AppRoutingModule
         ],
         declarations: [
             login_screen_component_1.LoginScreenComponent,

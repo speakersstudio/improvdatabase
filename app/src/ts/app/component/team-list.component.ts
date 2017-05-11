@@ -5,7 +5,7 @@ import {AppComponent} from '../../component/app.component';
 import { Tool } from '../view/toolbar.view';
 import { Team } from '../../model/team';
 
-import { UserService } from '../../service/user.service';
+import { TeamService } from '../service/team.service';
 
 import { TimeUtil } from '../../util/time.util';
 
@@ -24,14 +24,14 @@ export class TeamListComponent implements OnInit {
     constructor(
         private _app: AppComponent,
         private _router: Router,
-        private userService: UserService
+        private teamService: TeamService
     ) { }
 
     private _tools: Tool[] = [
     ]
 
     ngOnInit(): void {
-        this.userService.fetchTeams().then(u => {
+        this.teamService.fetchTeams().then(u => {
             this.memberOfTeams = <Team[]> u.memberOfTeams;
             this.adminOfTeams = <Team[]> u.adminOfTeams;
         });

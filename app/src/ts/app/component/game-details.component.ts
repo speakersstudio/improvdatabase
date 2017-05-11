@@ -16,7 +16,7 @@ import { Location }   from '@angular/common';
 
 import { AppComponent } from "../../component/app.component";
 
-import { GameDatabaseService } from '../../service/game-database.service';
+import { GameDatabaseService } from '../service/game-database.service';
 
 import { Game, TagGame } from '../../model/game';
 import { Name } from '../../model/name';

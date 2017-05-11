@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var app_component_1 = require("../../component/app.component");
-var library_service_1 = require("../../service/library.service");
+var library_service_1 = require("../service/library.service");
 var library_1 = require("../../model/library");
 var team_1 = require("../../model/team");
 var MaterialsPageView = (function () {

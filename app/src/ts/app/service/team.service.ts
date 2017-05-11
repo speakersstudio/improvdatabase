@@ -4,24 +4,26 @@ import { Headers } from '@angular/http';
 import { Observable, Subject } from 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
 
-import { AppHttp } from '../data/app-http';
+import { AppHttp } from '../../data/app-http';
 
-import { User } from "../model/user";
-import { Team } from '../model/team';
-import { Purchase } from '../model/purchase';
-import { Invite } from '../model/invite';
-import { Subscription } from '../model/subscription';
+import { UserService } from '../../service/user.service';
+
+import { User } from "../../model/user";
+import { Team } from '../../model/team';
+import { Purchase } from '../../model/purchase';
+import { Invite } from '../../model/invite';
+import { Subscription } from '../../model/subscription';
 
 @Injectable()
 export class TeamService {
 
     private teamUrl = '/api/team/';
-    private validateUrl = this.teamUrl + 'validate';
 
     private teams: Team[] = [];
 
     constructor(
-        private http: AppHttp
+        private http: AppHttp,
+        private userService: UserService
     ) {
     }
 
@@ -76,19 +78,6 @@ export class TeamService {
                 this.addTeam(team);
                 return team;
             })
-    }
-
-    validate(team: Team): Promise<string> {
-        return this.http.post(this.teamUrl + 'validate', team)
-            .toPromise()
-            .then(response => {
-                let data = response.json();
-                if (data.conflict == 'name') {
-                    return 'A team with that name is already registered on ImprovPlus';
-                } else {
-                    return '';
-                }
-            });
     }
 
     invite(team: Team, email: string): Promise<Invite> {
@@ -150,6 +139,21 @@ export class TeamService {
                 let team = response.json() as Team;
                 return team.subscription;
             })
+    }
+
+    fetchTeams(user?: User): Promise<User> {
+        user = user || this.userService.getLoggedInUser();
+
+        return this.http.get('/api/user/' + user._id + '/teams')
+            .toPromise()
+            .then(response => {
+                let user = response.json() as User;
+                    
+                this.addTeams(<Team[]> user.adminOfTeams);
+                this.addTeams(<Team[]> user.memberOfTeams);
+
+                return user;
+            });
     }
 
 }

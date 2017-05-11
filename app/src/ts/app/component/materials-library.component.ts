@@ -5,8 +5,8 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import {AppComponent    } from '../../component/app.component';
 import { Tool, SearchResult } from '../view/toolbar.view';
 
-import { LibraryService } from '../../service/library.service';
-import { UserService } from '../../service/user.service';
+import { LibraryService } from '../service/library.service';
+import { TeamService } from '../service/team.service';
 
 import { Subscription } from '../../model/subscription';
 import { Package } from '../../model/package';
@@ -35,7 +35,7 @@ export class MaterialsLibraryComponent implements OnInit {
         private router: Router,
         private route: ActivatedRoute,
         private libraryService: LibraryService,
-        private userService: UserService,
+        private teamService: TeamService,
         private pathLocationStrategy: PathLocationStrategy
     ) { }
 
@@ -59,7 +59,7 @@ export class MaterialsLibraryComponent implements OnInit {
                 this.ownedMaterials = materials;
             });
 
-        this.userService.fetchTeams().then(user => {
+        this.teamService.fetchTeams().then(user => {
             let adminOfTeams = user.adminOfTeams,
                 memberOfTeams = user.memberOfTeams;
 

@@ -38,9 +38,9 @@ app.use(favicon(path.join(__dirname, '../app/public', 'favicon/favicon.ico')));
 
 // set up API stuff
 app.all( '/api/*', function( req, res, next ) {
-    res.header( 'Access-Control-Allow-Origin', '*' );
-    res.header( 'Access-Control-Allow-Method', 'POST, GET, PUT, DELETE, OPTIONS' );
-    res.header( 'Access-Control-Allow-Headers', 'origin, x-requested-with, x-file-name, content-type, cache-control' );
+    // res.header( 'Access-Control-Allow-Origin', '*' );
+    // res.header( 'Access-Control-Allow-Method', 'POST, GET, PUT, DELETE, OPTIONS' );
+    // res.header( 'Access-Control-Allow-Headers', 'origin, x-requested-with, x-file-name, content-type, cache-control' );
     // Process preflight if it is OPTIONS request
     if( 'OPTIONS' === req.method ) {
         res.send( 203, 'No Content' );

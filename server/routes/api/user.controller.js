@@ -310,10 +310,12 @@ module.exports = {
                     path: 'materials.materialItem packages.package',
                     populate: {
                         path: 'materials packages',
+                        match: {visible: true},
                         populate: {
-                            path: 'materials'
+                            path: 'materials',
                             // lets only allow packages to include packages one level deep, because this is getting silly
                             // so a package that includes packages can't be included in a package
+                            match: {visible: true}
                         }
                     }
                 }

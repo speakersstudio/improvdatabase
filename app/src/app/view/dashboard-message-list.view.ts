@@ -18,7 +18,7 @@ import { UserService } from '../../service/user.service';
 
 import { PreferenceUtil } from '../../util/preference.util';
 
-import { BracketCardDirective } from '../../view/bracket-card.directive';
+import { BracketCardDirective } from '../../directive/bracket-card.directive';
 
 import { ShrinkAnim } from '../../util/anim.util';
 

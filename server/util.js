@@ -6,6 +6,9 @@ module.exports = {
                 model[name] = data[name];
             }
         });
+        if (model.dateModified) {
+            model.dateModified = Date.now();
+        }
         return model;
     },
 

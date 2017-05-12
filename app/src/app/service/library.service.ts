@@ -92,6 +92,54 @@ export class LibraryService {
             });
     }
 
+    getAllPackages(): Promise<Package[]> {
+        return this.http.get(this.packageUrl + 'all')
+            .toPromise()
+            .then(response => {
+                return response.json() as Package[];
+            });
+    }
+
+    createMaterial(): Promise<MaterialItem> {
+        if (this.userService.can('material_create')) {
+            return this.http.post(this.materialsUrl, {})
+                .toPromise()
+                .then(response => {
+                    return response.json() as MaterialItem;
+                });
+        }
+    }
+
+    createPackage(): Promise<Package> {
+        if (this.userService.can('package_create')) {
+            return this.http.post(this.packageUrl, {})
+                .toPromise()
+                .then(response => {
+                    return response.json() as Package;
+                });
+        }
+    }
+
+    deleteMaterial(material: MaterialItem): Promise<boolean> {
+        if (this.userService.can('material_delete')) {
+            return this.http.delete(this.materialsUrl + material._id)
+                .toPromise()
+                .then(response => {
+                    return true;
+                })
+        }
+    }
+
+    deletePackage(p: Package): Promise<boolean> {
+        if (this.userService.can('package_delete')) {
+            return this.http.delete(this.packageUrl + p._id)
+                .toPromise()
+                .then(response => {
+                    return true;
+                })
+        }
+    }
+
     saveMaterial(material: MaterialItem): Promise<MaterialItem> {
         if (!this.userService.isSuperAdmin()) {
             return;
@@ -101,6 +149,16 @@ export class LibraryService {
             .then(response => {
                 return response.json() as MaterialItem;
             });
+    }
+
+    savePackage(p: Package): Promise<Package> {
+        if (this.userService.can('package_edit')) {
+            return this.http.put(this.packageUrl + p._id, p)
+                .toPromise()
+                .then(response => {
+                    return response.json() as Package;
+                })
+        }
     }
 
     postNewVersion(materialItemId: string, version: MaterialItemVersion, file: File): Promise<MaterialItem> {
@@ -128,6 +186,26 @@ export class LibraryService {
             .then(response => {
                 return response.json() as MaterialItem;
             });
+    }
+
+    savePackagePackages(p: Package): Promise<Package> {
+        if (this.userService.can('package_edit')) {
+            return this.http.put(this.packageUrl + p._id + '/packages', p)
+                .toPromise()
+                .then(response => {
+                    return response.json() as Package;
+                })
+        }
+    }
+
+    savePackageMaterials(p: Package): Promise<Package> {
+        if (this.userService.can('package_edit')) {
+            return this.http.put(this.packageUrl + p._id + '/materials', p)
+                .toPromise()
+                .then(response => {
+                    return response.json() as Package;
+                })
+        }
     }
 
     private handleError(error: any): Promise<any> {

@@ -19,7 +19,7 @@ var user_1 = require("../model/user");
 var team_1 = require("../model/team");
 var package_1 = require("../model/package");
 var anim_util_1 = require("../util/anim.util");
-var bracket_card_directive_1 = require("../view/bracket-card.directive");
+var bracket_card_directive_1 = require("../directive/bracket-card.directive");
 var config_1 = require("../model/config");
 var SignupComponent = (function () {
     function SignupComponent(_app, _service, router, userService, cartService) {
@@ -125,9 +125,9 @@ var SignupComponent = (function () {
         });
     };
     SignupComponent.prototype.setPageHeight = function () {
-        var height = this.pageElement.offsetHeight, currentMinHeight = this.pageElement.style.minHeight ? parseInt(this.pageElement.style.minHeight.replace('px', '')) : 0;
+        var page = this.pageElement.nativeElement, height = page.offsetHeight, currentMinHeight = page.style.minHeight ? parseInt(page.style.minHeight.replace('px', '')) : 0;
         if (height > currentMinHeight) {
-            this.pageElement.style.minHeight = this.pageElement.offsetHeight + 'px';
+            page.style.minHeight = page.offsetHeight + 'px';
         }
     };
     SignupComponent.prototype.selectCard = function (option, value, cardToOpen, cardToClose) {
@@ -365,8 +365,8 @@ var SignupComponent = (function () {
     return SignupComponent;
 }());
 __decorate([
-    core_1.ViewChild('page', { read: HTMLElement }),
-    __metadata("design:type", HTMLElement)
+    core_1.ViewChild('page'),
+    __metadata("design:type", core_1.ElementRef)
 ], SignupComponent.prototype, "pageElement", void 0);
 __decorate([
     core_1.ViewChild('facilitatorCard', { read: bracket_card_directive_1.BracketCardDirective }),

@@ -77,6 +77,49 @@ var LibraryService = (function () {
             return response.json();
         });
     };
+    LibraryService.prototype.getAllPackages = function () {
+        return this.http.get(this.packageUrl + 'all')
+            .toPromise()
+            .then(function (response) {
+            return response.json();
+        });
+    };
+    LibraryService.prototype.createMaterial = function () {
+        if (this.userService.can('material_create')) {
+            return this.http.post(this.materialsUrl, {})
+                .toPromise()
+                .then(function (response) {
+                return response.json();
+            });
+        }
+    };
+    LibraryService.prototype.createPackage = function () {
+        if (this.userService.can('package_create')) {
+            return this.http.post(this.packageUrl, {})
+                .toPromise()
+                .then(function (response) {
+                return response.json();
+            });
+        }
+    };
+    LibraryService.prototype.deleteMaterial = function (material) {
+        if (this.userService.can('material_delete')) {
+            return this.http.delete(this.materialsUrl + material._id)
+                .toPromise()
+                .then(function (response) {
+                return true;
+            });
+        }
+    };
+    LibraryService.prototype.deletePackage = function (p) {
+        if (this.userService.can('package_delete')) {
+            return this.http.delete(this.packageUrl + p._id)
+                .toPromise()
+                .then(function (response) {
+                return true;
+            });
+        }
+    };
     LibraryService.prototype.saveMaterial = function (material) {
         if (!this.userService.isSuperAdmin()) {
             return;
@@ -86,6 +129,15 @@ var LibraryService = (function () {
             .then(function (response) {
             return response.json();
         });
+    };
+    LibraryService.prototype.savePackage = function (p) {
+        if (this.userService.can('package_edit')) {
+            return this.http.put(this.packageUrl + p._id, p)
+                .toPromise()
+                .then(function (response) {
+                return response.json();
+            });
+        }
     };
     LibraryService.prototype.postNewVersion = function (materialItemId, version, file) {
         if (!this.userService.isSuperAdmin()) {
@@ -108,6 +160,24 @@ var LibraryService = (function () {
             .then(function (response) {
             return response.json();
         });
+    };
+    LibraryService.prototype.savePackagePackages = function (p) {
+        if (this.userService.can('package_edit')) {
+            return this.http.put(this.packageUrl + p._id + '/packages', p)
+                .toPromise()
+                .then(function (response) {
+                return response.json();
+            });
+        }
+    };
+    LibraryService.prototype.savePackageMaterials = function (p) {
+        if (this.userService.can('package_edit')) {
+            return this.http.put(this.packageUrl + p._id + '/materials', p)
+                .toPromise()
+                .then(function (response) {
+                return response.json();
+            });
+        }
     };
     LibraryService.prototype.handleError = function (error) {
         console.error('An error has occurred', error);

@@ -14,7 +14,7 @@ require("rxjs/Subscription");
 var router_1 = require("@angular/router");
 var app_component_1 = require("../../component/app.component");
 var user_service_1 = require("../../service/user.service");
-var bracket_card_directive_1 = require("../../view/bracket-card.directive");
+var bracket_card_directive_1 = require("../../directive/bracket-card.directive");
 var anim_util_1 = require("../../util/anim.util");
 var DashboardMessage = (function () {
     function DashboardMessage() {

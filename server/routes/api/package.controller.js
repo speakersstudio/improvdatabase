@@ -16,11 +16,16 @@ const userController = require('./user.controller');
 
 const util = require('../../util');
 
+const whitelist = [
+    'slug', 'name', 'description', 'color', 'price', 'visible'
+];
+
 module.exports = {
 
     getAll: (req, res) => {
 
         Package.find({})
+            .where('visible').equals('true')
             // .populate('materials.materialItem')
             // .select('name description price dateModified dateAdded')
             .exec((err, packages) => {
@@ -56,7 +61,9 @@ module.exports = {
                 return auth.unauthorized(req, res);
             }
 
-            Package.find({}).sort('name').exec()
+            Package.find({}).sort('name')
+                .populate('packages materials')
+                .exec()
                 .then(p => {
                     res.json(p);
                 }, error => {
@@ -105,6 +112,44 @@ module.exports = {
 
         }
 
+    },
+
+    create: (req, res) => {
+        Package.create({
+            name: 'New Package',
+            visible: false
+        }).then(m => {
+            util.smartUpdate(m, req.body, whitelist);
+            return m.save();
+        }).then(m => {
+            res.json(m);
+        })
+    },
+
+    delete: (req, res) => {
+        let id = req.params.id;
+
+        Package.find({}).where('_id').equals(id).remove()
+            .then(() => {
+                res.send('success');
+            })
+    },
+
+    update: (req, res) => {
+        let packageData = req.body;
+
+        Package.findOne({})
+            .where("_id").equals(req.params.id)
+            .exec()
+            .then(p => {
+                util.smartUpdate(p, packageData, whitelist);
+                return p.save();
+            })
+            .then(p => {
+                res.json(p);
+            }, error => {
+                util.handleError(req, res, error);
+            })
     },
 
     download: (req, res, next) => {
@@ -188,6 +233,35 @@ module.exports = {
         } else {
             auth.unauthorized(req,res);
         }
+    },
+
+    packages: (req, res) => {
+        let packageId = req.params.id,
+            packages = req.body.packages;
+
+        Package.findOne({}).where('_id').equals(packageId).exec()
+            .then(p => {
+                p.packages = packages;
+                return p.save();
+            })
+            .then(p => {
+                res.json(p);
+            })
+    },
+
+    materials: (req, res) => {
+        let packageId = req.params.id,
+            materials = req.body.materials;
+
+        Package.findOne({}).where('_id').equals(packageId).exec()
+            .then(p => {
+                p.materials = materials;
+                return p.save();
+            })
+            .then(p => {
+                res.json(p);
+            })
     }
+
 
 }

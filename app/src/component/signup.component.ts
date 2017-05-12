@@ -20,7 +20,7 @@ import { Package } from '../model/package';
 
 import { ToggleAnim } from '../util/anim.util';
 
-import { BracketCardDirective } from '../view/bracket-card.directive';
+import { BracketCardDirective } from '../directive/bracket-card.directive';
 
 import { PackageConfig } from '../model/config';
 
@@ -38,7 +38,7 @@ declare var Stripe: any;
 export class SignupComponent implements OnInit {
     [key:string]: any;
 
-    @ViewChild('page', {read: HTMLElement}) pageElement: HTMLElement;
+    @ViewChild('page') pageElement: ElementRef;
 
     @ViewChild('facilitatorCard', {read: BracketCardDirective}) facilitatorCard: BracketCardDirective;
     @ViewChild('improviserCard', {read: BracketCardDirective}) improviserCard: BracketCardDirective;
@@ -188,11 +188,12 @@ export class SignupComponent implements OnInit {
     }
 
     setPageHeight(): void {
-        let height = this.pageElement.offsetHeight,
-            currentMinHeight = this.pageElement.style.minHeight ? parseInt(this.pageElement.style.minHeight.replace('px', '')) : 0;
+        let page = this.pageElement.nativeElement,
+            height = page.offsetHeight,
+            currentMinHeight = page.style.minHeight ? parseInt(page.style.minHeight.replace('px', '')) : 0;
 
         if (height > currentMinHeight) {
-            this.pageElement.style.minHeight = this.pageElement.offsetHeight + 'px';
+            page.style.minHeight = page.offsetHeight + 'px';
         }
     }
 

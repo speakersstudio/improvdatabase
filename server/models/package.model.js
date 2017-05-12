@@ -15,6 +15,8 @@ const PackageSchema = new mongoose.Schema({
     packages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Package' }],
 
     type: String, // either 'facilitator' or 'improviser'
+
+    visible: { type: Boolean, default: true }
 });
 
 PackageSchema.query.byName = function(name) {

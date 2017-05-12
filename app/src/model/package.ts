@@ -10,5 +10,6 @@ export class Package {
     "dateAdded": Date;
     "dateModified": Date;
     "materials": MaterialItem[];
-    "package": Package[];
+    "packages": Package[];
+    "visible": boolean;
 }

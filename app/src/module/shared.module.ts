@@ -14,8 +14,10 @@ import { UserService } from "../service/user.service";
 import { CartService } from '../service/cart.service';
 import { AppService } from '../service/app.service';
 
-import { FormInputDirective } from '../view/form-input.directive';
-import { BracketCardDirective } from '../view/bracket-card.directive';
+import { FormInputDirective } from '../directive/form-input.directive';
+import { BracketCardDirective } from '../directive/bracket-card.directive';
+import { DraggableDirective } from '../directive/draggable.directive';
+import { DroppableDirective } from '../directive/droppable.directive';
 
 @NgModule({
     imports: [
@@ -30,7 +32,9 @@ import { BracketCardDirective } from '../view/bracket-card.directive';
         UserFormView,
         LandingHeroView,
         FormInputDirective,
-        BracketCardDirective
+        BracketCardDirective,
+        DraggableDirective,
+        DroppableDirective
     ],
     exports: [
         IPlusView,
@@ -38,7 +42,9 @@ import { BracketCardDirective } from '../view/bracket-card.directive';
         UserFormView,
         LandingHeroView,
         FormInputDirective,
-        BracketCardDirective
+        BracketCardDirective,
+        DraggableDirective,
+        DroppableDirective
     ],
     providers: [
         AppService,

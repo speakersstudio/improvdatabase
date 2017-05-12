@@ -18,10 +18,14 @@ import { TimeUtil } from '../../util/time.util';
 
 import { AppHttp } from '../../data/app-http';
 
+import { Util } from '../../util/util';
+import { DialogAnim } from '../../util/anim.util';
+
 @Component({
     moduleId: module.id,
     selector: "admin",
-    templateUrl: "../template/admin.component.html"
+    templateUrl: "../template/admin.component.html",
+    animations: [DialogAnim.dialog]
 })
 export class AdminComponent implements OnInit {
 
@@ -36,9 +40,9 @@ export class AdminComponent implements OnInit {
             icon: 'file'
         },
         {
-            name: 'Utilities',
-            id: 'utilities',
-            icon: 'cogs'
+            name: 'Packages',
+            id: 'packages',
+            icon: 'book'
         }
     ];
     selectedTab: string = 'materials';
@@ -47,7 +51,14 @@ export class AdminComponent implements OnInit {
     selectedMaterial: MaterialItem;
 
     newVersion: MaterialItemVersion;
-    newVersionFile: File
+    newVersionFile: File;
+
+    packages: Package[];
+    selectedPackage: Package;
+    selectedPackageDescription: string;
+
+    selectPackageDialogVisible: boolean;
+    selectMaterialDialogVisible: boolean;
 
     constructor(
         public _app: AppComponent,
@@ -75,6 +86,7 @@ export class AdminComponent implements OnInit {
 
     ngOnInit(): void {
         this.showMaterials();
+        this.showPackages();
     }
 
     selectTab(tab: TabData): void {
@@ -83,6 +95,7 @@ export class AdminComponent implements OnInit {
 
     back(): void {
         this.selectedMaterial = null;
+        this.selectedPackage = null;
     }
 
     simpleDate(date: string): string {
@@ -97,9 +110,36 @@ export class AdminComponent implements OnInit {
             });
     }
 
+    showPackages(): void {
+        this.libraryService.getAllPackages()
+            .then(packages => {
+                this.packages = packages;
+            })
+    }
+
     selectMaterial(material: MaterialItem): void {
         this.newVersion = new MaterialItemVersion();
         this.selectedMaterial = material;
+    }
+
+    selectPackage(p: Package): void {
+        this.selectedPackage = p;
+
+        this.selectedPackageDescription = p.description.join('\n');
+    }
+
+    createMaterial(): void {
+        this.libraryService.createMaterial().then(m => {
+            this.materialItems.push(m);
+            this.selectMaterial(m);
+        });
+    }
+
+    createPackage(): void {
+        this.libraryService.createPackage().then(p => {
+            this.packages.push(p);
+            this.selectPackage(p);
+        })
     }
 
     saveMaterial(): void {
@@ -111,7 +151,18 @@ export class AdminComponent implements OnInit {
             });
             this.selectedMaterial.tags = tagArray;
         }
-        this.libraryService.saveMaterial(this.selectedMaterial).then();
+        this.libraryService.saveMaterial(this.selectedMaterial).then(() => {
+            this._app.toast('It is done.');
+        });
+    }
+
+    savePackage(): void {
+        let descArray = this.selectedPackageDescription.split('\n');
+
+        this.selectedPackage.description = descArray;
+        this.libraryService.savePackage(this.selectedPackage).then(() => {
+            this._app.toast('It is done.');
+        });
     }
 
     fileChange(): void {
@@ -137,6 +188,114 @@ export class AdminComponent implements OnInit {
             let data = response.json();
             this._app.toast(data.timestamp);
         })
+    }
+
+    deleteMaterial(): void {
+        this._app.showLoader();
+        this.libraryService.deleteMaterial(this.selectedMaterial).then(() => {
+            let index = Util.indexOfId(this.materialItems, this.selectedMaterial);
+            if (index > -1) {
+                this.materialItems.splice(index, 1);
+            }
+            this.selectedMaterial = null;
+            this._app.hideLoader();
+        });
+    }
+
+    deletePackage(): void {
+        this._app.showLoader();
+        this.libraryService.deletePackage(this.selectedPackage).then(() => {
+            let index = Util.indexOfId(this.packages, this.selectedPackage);
+            if (index > -1) {
+                this.packages.splice(index, 1);
+            }
+            this.selectedPackage = null;
+            this._app.hideLoader();
+        });
+    }
+
+    removePackageFromPackage(pkg: Package): void {
+        let index = Util.indexOfId(this.selectedPackage.packages, pkg);
+        this.selectedPackage.packages.splice(index, 1);
+        this.libraryService.savePackagePackages(this.selectedPackage)
+            .then(() => {
+                this._app.toast('Package Packages saved');
+            });
+    }
+
+    removeMaterialFromPackage(material: MaterialItem): void {
+        let index = Util.indexOfId(this.selectedPackage.materials, material);
+        this.selectedPackage.materials.splice(index, 1);
+        this.libraryService.savePackageMaterials(this.selectedPackage)
+            .then(() => {
+                this._app.toast('Package Materials saved');
+            });
+    }
+
+    packagePackagesDropped(droppedId: string, ontoId: string): void {
+        let indexFrom, indexTo;
+        indexFrom = Util.indexOfId(this.selectedPackage.packages, droppedId);
+        indexTo = Util.indexOfId(this.selectedPackage.packages, ontoId);
+
+        let packageToMove = this.selectedPackage.packages[indexFrom];
+        this.selectedPackage.packages.splice(indexFrom, 1);
+        this.selectedPackage.packages.splice(indexTo, 0, packageToMove);
+
+        this.libraryService.savePackagePackages(this.selectedPackage)
+            .then(() => {
+                this._app.toast('Package Packages saved');
+            });
+    }
+
+    packageMaterialsDropped(droppedId: string, ontoId: string): void {
+        let indexFrom, indexTo;
+        indexFrom = Util.indexOfId(this.selectedPackage.materials, droppedId);
+        indexTo = Util.indexOfId(this.selectedPackage.materials, ontoId);
+
+        let materialToMove = this.selectedPackage.materials[indexFrom];
+        this.selectedPackage.materials.splice(indexFrom, 1);
+        this.selectedPackage.materials.splice(indexTo, 0, materialToMove);
+
+        this.libraryService.savePackageMaterials(this.selectedPackage)
+            .then(() => {
+                this._app.toast('Package Materials saved');
+            });
+    }
+
+    cancelSelectMaterialDialog(): void {
+        this.selectMaterialDialogVisible = false;
+        this.selectPackageDialogVisible = false;
+        this._app.backdrop(false);
+    }
+
+    showSelectMaterialDialog(): void {
+        this.selectMaterialDialogVisible = true;
+        this.selectPackageDialogVisible = false;
+        this._app.backdrop(true);
+    }
+
+    showSelectPackageDialog(): void {
+        this.selectPackageDialogVisible = true;
+        this.selectMaterialDialogVisible = false;
+        this._app.backdrop(true);
+    }
+
+    selectPackageForPackage(pkg: Package): void {
+        this.selectedPackage.packages.push(pkg);
+
+        this.libraryService.savePackagePackages(this.selectedPackage)
+            .then(() => {
+                this._app.toast('Package Packages saved');
+            });
+    }
+
+    selectMaterialForPackage(material: MaterialItem): void {
+        this.selectedPackage.materials.push(material);
+
+        this.libraryService.savePackageMaterials(this.selectedPackage)
+            .then(() => {
+                this._app.toast('Package Materials saved');
+            });
     }
 
 }

@@ -19,8 +19,10 @@ var landing_hero_view_1 = require("../view/landing-hero.view");
 var user_service_1 = require("../service/user.service");
 var cart_service_1 = require("../service/cart.service");
 var app_service_1 = require("../service/app.service");
-var form_input_directive_1 = require("../view/form-input.directive");
-var bracket_card_directive_1 = require("../view/bracket-card.directive");
+var form_input_directive_1 = require("../directive/form-input.directive");
+var bracket_card_directive_1 = require("../directive/bracket-card.directive");
+var draggable_directive_1 = require("../directive/draggable.directive");
+var droppable_directive_1 = require("../directive/droppable.directive");
 var SharedModule = (function () {
     function SharedModule() {
     }
@@ -40,7 +42,9 @@ SharedModule = __decorate([
             user_form_view_1.UserFormView,
             landing_hero_view_1.LandingHeroView,
             form_input_directive_1.FormInputDirective,
-            bracket_card_directive_1.BracketCardDirective
+            bracket_card_directive_1.BracketCardDirective,
+            draggable_directive_1.DraggableDirective,
+            droppable_directive_1.DroppableDirective
         ],
         exports: [
             iplus_view_1.IPlusView,
@@ -48,7 +52,9 @@ SharedModule = __decorate([
             user_form_view_1.UserFormView,
             landing_hero_view_1.LandingHeroView,
             form_input_directive_1.FormInputDirective,
-            bracket_card_directive_1.BracketCardDirective
+            bracket_card_directive_1.BracketCardDirective,
+            draggable_directive_1.DraggableDirective,
+            droppable_directive_1.DroppableDirective
         ],
         providers: [
             app_service_1.AppService,

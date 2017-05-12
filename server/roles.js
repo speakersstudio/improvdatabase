@@ -193,7 +193,11 @@ module.exports = {
 
                 'material_edit',
                 'material_create',
-                'material_delete'
+                'material_delete',
+
+                'package_edit',
+                'package_create',
+                'package_delete'
             ]
         }
     ],

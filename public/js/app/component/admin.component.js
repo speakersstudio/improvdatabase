@@ -17,6 +17,8 @@ var material_item_1 = require("../../model/material-item");
 var user_service_1 = require("../../service/user.service");
 var time_util_1 = require("../../util/time.util");
 var app_http_1 = require("../../data/app-http");
+var util_1 = require("../../util/util");
+var anim_util_1 = require("../../util/anim.util");
 var AdminComponent = (function () {
     function AdminComponent(_app, router, libraryService, userService, http) {
         this._app = _app;
@@ -32,22 +34,37 @@ var AdminComponent = (function () {
                 icon: 'file'
             },
             {
-                name: 'Utilities',
-                id: 'utilities',
-                icon: 'cogs'
+                name: 'Packages',
+                id: 'packages',
+                icon: 'book'
             }
         ];
         this.selectedTab = 'materials';
-        this._tools = [];
+        this._tools = [
+            {
+                icon: "fa-database",
+                name: "backup",
+                text: "Back Up Database"
+            }
+        ];
     }
+    AdminComponent.prototype.onToolClicked = function (tool) {
+        switch (tool.name) {
+            case "backup":
+                this.doBackup();
+                break;
+        }
+    };
     AdminComponent.prototype.ngOnInit = function () {
         this.showMaterials();
+        this.showPackages();
     };
     AdminComponent.prototype.selectTab = function (tab) {
         this.selectedTab = tab.id;
     };
     AdminComponent.prototype.back = function () {
         this.selectedMaterial = null;
+        this.selectedPackage = null;
     };
     AdminComponent.prototype.simpleDate = function (date) {
         return time_util_1.TimeUtil.simpleDate(date);
@@ -60,11 +77,37 @@ var AdminComponent = (function () {
             _this.materialItems = materials;
         });
     };
+    AdminComponent.prototype.showPackages = function () {
+        var _this = this;
+        this.libraryService.getAllPackages()
+            .then(function (packages) {
+            _this.packages = packages;
+        });
+    };
     AdminComponent.prototype.selectMaterial = function (material) {
         this.newVersion = new material_item_1.MaterialItemVersion();
         this.selectedMaterial = material;
     };
+    AdminComponent.prototype.selectPackage = function (p) {
+        this.selectedPackage = p;
+        this.selectedPackageDescription = p.description.join('\n');
+    };
+    AdminComponent.prototype.createMaterial = function () {
+        var _this = this;
+        this.libraryService.createMaterial().then(function (m) {
+            _this.materialItems.push(m);
+            _this.selectMaterial(m);
+        });
+    };
+    AdminComponent.prototype.createPackage = function () {
+        var _this = this;
+        this.libraryService.createPackage().then(function (p) {
+            _this.packages.push(p);
+            _this.selectPackage(p);
+        });
+    };
     AdminComponent.prototype.saveMaterial = function () {
+        var _this = this;
         if (typeof (this.selectedMaterial.tags) == 'string') {
             var tags = this.selectedMaterial.tags;
             var tagArray_1 = [];
@@ -73,7 +116,17 @@ var AdminComponent = (function () {
             });
             this.selectedMaterial.tags = tagArray_1;
         }
-        this.libraryService.saveMaterial(this.selectedMaterial).then();
+        this.libraryService.saveMaterial(this.selectedMaterial).then(function () {
+            _this._app.toast('It is done.');
+        });
+    };
+    AdminComponent.prototype.savePackage = function () {
+        var _this = this;
+        var descArray = this.selectedPackageDescription.split('\n');
+        this.selectedPackage.description = descArray;
+        this.libraryService.savePackage(this.selectedPackage).then(function () {
+            _this._app.toast('It is done.');
+        });
     };
     AdminComponent.prototype.fileChange = function () {
         this.newVersionFile = this.versionFileInput.files[0];
@@ -98,6 +151,105 @@ var AdminComponent = (function () {
             _this._app.toast(data.timestamp);
         });
     };
+    AdminComponent.prototype.deleteMaterial = function () {
+        var _this = this;
+        this._app.showLoader();
+        this.libraryService.deleteMaterial(this.selectedMaterial).then(function () {
+            var index = util_1.Util.indexOfId(_this.materialItems, _this.selectedMaterial);
+            if (index > -1) {
+                _this.materialItems.splice(index, 1);
+            }
+            _this.selectedMaterial = null;
+            _this._app.hideLoader();
+        });
+    };
+    AdminComponent.prototype.deletePackage = function () {
+        var _this = this;
+        this._app.showLoader();
+        this.libraryService.deletePackage(this.selectedPackage).then(function () {
+            var index = util_1.Util.indexOfId(_this.packages, _this.selectedPackage);
+            if (index > -1) {
+                _this.packages.splice(index, 1);
+            }
+            _this.selectedPackage = null;
+            _this._app.hideLoader();
+        });
+    };
+    AdminComponent.prototype.removePackageFromPackage = function (pkg) {
+        var _this = this;
+        var index = util_1.Util.indexOfId(this.selectedPackage.packages, pkg);
+        this.selectedPackage.packages.splice(index, 1);
+        this.libraryService.savePackagePackages(this.selectedPackage)
+            .then(function () {
+            _this._app.toast('Package Packages saved');
+        });
+    };
+    AdminComponent.prototype.removeMaterialFromPackage = function (material) {
+        var _this = this;
+        var index = util_1.Util.indexOfId(this.selectedPackage.materials, material);
+        this.selectedPackage.materials.splice(index, 1);
+        this.libraryService.savePackageMaterials(this.selectedPackage)
+            .then(function () {
+            _this._app.toast('Package Materials saved');
+        });
+    };
+    AdminComponent.prototype.packagePackagesDropped = function (droppedId, ontoId) {
+        var _this = this;
+        var indexFrom, indexTo;
+        indexFrom = util_1.Util.indexOfId(this.selectedPackage.packages, droppedId);
+        indexTo = util_1.Util.indexOfId(this.selectedPackage.packages, ontoId);
+        var packageToMove = this.selectedPackage.packages[indexFrom];
+        this.selectedPackage.packages.splice(indexFrom, 1);
+        this.selectedPackage.packages.splice(indexTo, 0, packageToMove);
+        this.libraryService.savePackagePackages(this.selectedPackage)
+            .then(function () {
+            _this._app.toast('Package Packages saved');
+        });
+    };
+    AdminComponent.prototype.packageMaterialsDropped = function (droppedId, ontoId) {
+        var _this = this;
+        var indexFrom, indexTo;
+        indexFrom = util_1.Util.indexOfId(this.selectedPackage.materials, droppedId);
+        indexTo = util_1.Util.indexOfId(this.selectedPackage.materials, ontoId);
+        var materialToMove = this.selectedPackage.materials[indexFrom];
+        this.selectedPackage.materials.splice(indexFrom, 1);
+        this.selectedPackage.materials.splice(indexTo, 0, materialToMove);
+        this.libraryService.savePackageMaterials(this.selectedPackage)
+            .then(function () {
+            _this._app.toast('Package Materials saved');
+        });
+    };
+    AdminComponent.prototype.cancelSelectMaterialDialog = function () {
+        this.selectMaterialDialogVisible = false;
+        this.selectPackageDialogVisible = false;
+        this._app.backdrop(false);
+    };
+    AdminComponent.prototype.showSelectMaterialDialog = function () {
+        this.selectMaterialDialogVisible = true;
+        this.selectPackageDialogVisible = false;
+        this._app.backdrop(true);
+    };
+    AdminComponent.prototype.showSelectPackageDialog = function () {
+        this.selectPackageDialogVisible = true;
+        this.selectMaterialDialogVisible = false;
+        this._app.backdrop(true);
+    };
+    AdminComponent.prototype.selectPackageForPackage = function (pkg) {
+        var _this = this;
+        this.selectedPackage.packages.push(pkg);
+        this.libraryService.savePackagePackages(this.selectedPackage)
+            .then(function () {
+            _this._app.toast('Package Packages saved');
+        });
+    };
+    AdminComponent.prototype.selectMaterialForPackage = function (material) {
+        var _this = this;
+        this.selectedPackage.materials.push(material);
+        this.libraryService.savePackageMaterials(this.selectedPackage)
+            .then(function () {
+            _this._app.toast('Package Materials saved');
+        });
+    };
     return AdminComponent;
 }());
 __decorate([
@@ -108,7 +260,8 @@ AdminComponent = __decorate([
     core_1.Component({
         moduleId: module.id,
         selector: "admin",
-        templateUrl: "../template/admin.component.html"
+        templateUrl: "../template/admin.component.html",
+        animations: [anim_util_1.DialogAnim.dialog]
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,
         router_1.Router,

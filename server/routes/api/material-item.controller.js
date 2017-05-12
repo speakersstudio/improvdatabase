@@ -23,6 +23,10 @@ const util = require('../../util');
 
 const materialFolderName = '../../../materials';
 
+const whitelist = [
+    'name', 'description', 'price', 'color', 'fileslug', 'extension', 'tags', 'visible'
+];
+
 module.exports = {
 
     getAll: (req, res) => {
@@ -106,6 +110,27 @@ module.exports = {
 
     },
 
+    create: (req, res) => {
+        MaterialItem.create({
+            name: 'New Item',
+            visible: false
+        }).then(m => {
+            util.smartUpdate(m, req.body, whitelist);
+            return m.save();
+        }).then(m => {
+            res.json(m);
+        })
+    },
+
+    delete: (req, res) => {
+        let id = req.params.id;
+
+        MaterialItem.find({}).where('_id').equals(id).remove()
+            .then(() => {
+                res.send('success');
+            })
+    },
+
     update: (req, res) => {
         let materialItem = req.body;
 
@@ -113,9 +138,7 @@ module.exports = {
             .where("_id").equals(req.params.id)
             .exec()
             .then(m => {
-                util.smartUpdate(m, materialItem, [
-                    'name', 'description', 'price', 'color', 'fileslug', 'extension', 'tags', 'visible'
-                ]);
+                util.smartUpdate(m, materialItem, whitelist);
                 return m.save();
             })
             .then(m => {

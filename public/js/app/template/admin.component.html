@@ -2,8 +2,9 @@
     [class.on]="_app.toolbarVisible"
     [tools]="_tools"
     [title]="title"
-    [showBack]="selectedMaterial"
+    [showBack]="selectedMaterial || selectedPackage"
     (goBack)="back()"
+    (toolClicked)="onToolClicked($event)"
     ></div>
 
 <div class="page">
@@ -51,7 +52,7 @@
                 <div class="card small clickable" (click)="createMaterial()">
                     <div class="top">
                         <i class="fa fa-plus"></i>
-                        <h3>New</h3>
+                        <h3>Create New</h3>
                     </div>
                     <div class="body">
                         <p>Create a new Material Item</p>
@@ -107,6 +108,7 @@
             </div>
 
             <div class="section right">
+                <div class="button" (click)="deleteMaterial()">Delete</div>
                 <div class="button raised" (click)="saveMaterial()">Save</div>
             </div>
 
@@ -155,17 +157,197 @@
         <div class="right-bracket"><h1>materials database</h1></div>
     </div>
 
-    <!-- Utilities -->
-    <div class="paper has-brackets" *ngIf="selectedTab == 'utilities'">
+
+    <!-- Material Item List -->
+    <div class="paper has-brackets" *ngIf="selectedTab == 'packages' && !selectedPackage">
 
         <div class="content">
 
-            <a class="button raised" (click)="doBackup()">Create Database Backup</a>
+            <h4 class="right">All of the Packages</h4>
+
+            <div class="card-list">
+
+                <div class="card small clickable {{package.color}}"
+                    *ngFor="let package of packages"
+                    (click)="selectPackage(package)">
+
+                    <div class="top">
+                        <h3>{{package.name}}</h3>
+                    </div>
+                    <div class="body">
+                        <p>${{package.price}}</p>
+
+                        <p *ngFor="let desc of package.description">{{desc}}</p>
+
+                        <ul class="taglist grey">
+                            <li *ngIf="!package.visible"><i class="fa fa-eye-slash"></i> Hidden!</li>
+                            <li>{{package.materials.length + package.packages.length}} items</li>
+                        </ul>
+                    </div>
+                    <!--<div class="action">
+                        <a href="#" class="button">Download</a>
+                    </div>-->
+                </div>
+
+                <div class="card small clickable" (click)="createPackage()">
+                    <div class="top">
+                        <i class="fa fa-plus"></i>
+                        <h3>Create New</h3>
+                    </div>
+                    <div class="body">
+                        <p>Create a new Package</p>
+                    </div>
+                </div>
+
+            </div>
 
         </div>
 
         <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
-        <div class="right-bracket"><h1>materials database</h1></div>
+        <div class="right-bracket"><h1>package database</h1></div>
+    </div>
+
+    <!-- Edit Material Item -->
+    <div class="paper has-brackets" *ngIf="selectedPackage">
+
+        <div class="content">
+
+            <label>
+                Name
+                <input name="name" [(ngModel)]="selectedPackage.name" type="text" placeholder="Name" />
+            </label>
+
+            <label>
+                Slug
+                <input name="slug" [(ngModel)]="selectedPackage.slug" type="text" placeholder="Slug" />
+            </label>
+
+            <label>Description (Use a new line to separate bullet points)
+                <textarea name="description" [(ngModel)]="selectedPackageDescription" rows="4"></textarea>
+            </label>
+
+            <div class="columns">
+                <label>
+                    Price (no dollar sign, but decimals are okay)
+                    <input name="price" [(ngModel)]="selectedPackage.price" type="text" placeholder="Price" />
+                </label>
+
+                <label>
+                    Color (red, blue, orange, yellow)
+                    <input name="color" [(ngModel)]="selectedPackage.color" type="text" placeholder="Color" />
+                </label>
+            </div>
+
+            <div class="columns">
+                <label class="checkbox">
+                    <input type="checkbox" class="inline-block" name="visible" [checked]="selectedPackage.visible" (change)="selectedPackage.visible = !selectedPackage.visible" />
+                    Visible?
+                </label>
+            </div>
+
+            <div class="section right">
+                <div class="button" (click)="deletePackage()">Delete</div>
+                <div class="button raised" (click)="savePackage()">Save</div>
+            </div>
+
+            <div class="section">
+
+                <h5>Contents</h5>
+
+                <p>Drag and drop to reorder, double click to remove.</p>
+
+                <ul class="taglist files">
+
+                    <li *ngFor="let package of selectedPackage.packages"
+                        (dblclick)="removePackageFromPackage(package)"
+                        [makeDraggable]="package._id"
+                        makeDroppable
+                        (dropped)="packagePackagesDropped($event, package._id)"
+                        class="{{package.color}} clickable">
+
+                        <i class="fa fa-book"></i>
+                        {{package.name}}
+                    </li>
+
+                    <li class="grey clickable" (click)="showSelectPackageDialog()">
+                        <i class="fa fa-plus"></i>
+                        Add Package
+                    </li>
+
+                </ul>
+
+                <p>Materials:</p>
+                <ul class="taglist files">
+
+                    <li *ngFor="let material of selectedPackage.materials"
+                        (dblclick)="removeMaterialFromPackage(material)"
+                        [makeDraggable]="material._id"
+                        makeDroppable
+                        (dropped)="packageMaterialsDropped($event, material._id)"
+                        class="grey clickable">
+
+                        <i *ngIf="material.versions[0] && material.versions[0].extension == 'pdf'" class="fa fa-file-pdf-o large" title="PDF"></i>
+                        {{material.name}}
+                    </li>
+
+                    <li class="grey clickable" (click)="showSelectMaterialDialog()">
+                        <i class="fa fa-plus"></i>
+                        Add Material
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>package</h1></div>
+    </div>
+
+</div>
+
+<!-- dialog for selecting a material item or package -->
+<div class="dialog-container" [class.show]="selectMaterialDialogVisible || selectPackageDialogVisible">
+    <div class="dialog-dismiss" (click)="cancelSelectMaterialDialog()"></div>
+
+    <div class="dialog invite-form" *ngIf="selectMaterialDialogVisible || selectPackageDialogVisible" [@dialog]>
+
+        <form class="block" name="invite" (ngSubmit)="submitInvite()" #inviteForm="ngForm">
+            <div class="dialog-content">
+                <h2>Select a Thing!</h2>
+                
+                <ul class="taglist files" *ngIf="selectMaterialDialogVisible">
+
+                    <li *ngFor="let material of materialItems"
+                        (click)="selectMaterialForPackage(material)"
+                        class="{{material.color}} clickable">
+
+                        <i *ngIf="material.versions[0] && material.versions[0].extension == 'pdf'" class="fa fa-file-pdf-o large" title="PDF"></i>
+                        {{material.name}}
+                    </li>
+
+                </ul>
+                
+                <ul class="taglist files" *ngIf="selectPackageDialogVisible">
+
+                    <li *ngFor="let package of packages"
+                        (click)="selectPackageForPackage(package)"
+                        class="{{package.color}} clickable">
+
+                        <i class="fa fa-book"></i>
+                        {{package.name}}
+                    </li>
+
+                </ul>
+
+            </div>
+
+            <div class="button-group" *ngIf="!isPosting">
+                <a (click)="cancelSelectMaterialDialog()" class="button">Cancel</a>
+            </div>
+        </form>
+
     </div>
 
 </div>

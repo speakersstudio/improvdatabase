@@ -14,4 +14,3 @@ fetch('/config').then(response => {
         platform.bootstrapModuleFactory(AppModuleNgFactory);
     });
 })
-

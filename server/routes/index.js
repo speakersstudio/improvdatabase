@@ -69,8 +69,7 @@ router.get('/downloadPackage/:token', packageCtrl.download);
 
 // MAIN HOME PAGE HTML
 router.get('/*', function(req, res, next) {
-  //let template = process.env.NODE_ENV === 'production' ? 'index-prod' : 'index-dev';
-  let template = 'index-prod';
+  let template = process.env.NODE_ENV === 'production' ? 'index-prod' : 'index-dev';
 
   res.render(template, {
        title: 'improvplus',

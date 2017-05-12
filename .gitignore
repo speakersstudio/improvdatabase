@@ -34,3 +34,4 @@ materials
 temp
 
 aot-compile
+app/aot

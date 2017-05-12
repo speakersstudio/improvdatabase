@@ -15,28 +15,28 @@ gulp.task('default', function() {
 });
 
 gulp.task('compileAppSass', function() {
-    return gulp.src('./app/src/sass/style.scss')
+    return gulp.src('./app/sass/style.scss')
         .pipe(plumber({ errorHandler: handleError }))
         .pipe(maps.init())
         .pipe(sass())
         .pipe(maps.write('./'))
         .pipe(plumber.stop())
-        .pipe(gulp.dest('./app/public/css'));
+        .pipe(gulp.dest('./public/css'));
 });
 
 gulp.task('tscompile', function() {
-    return gulp.src('./app/src/ts/**/*.ts')
+    return gulp.src(['./app/src/**/*.ts', '!./app/src/main-aot.ts'])
         .pipe(plumber({ errorHandler: handleError }))
         .pipe(maps.init())
         .pipe(ts(tsoptions.compilerOptions))
         .pipe(maps.write('./'))
         .pipe(plumber.stop())
-        .pipe(gulp.dest('./app/public/js'));
+        .pipe(gulp.dest('./public/js'));
 });
 
 gulp.task('templateCopy', function () {
-    return gulp.src('./app/src/ts/**/*.html')
-        .pipe(gulp.dest('./app/public/js'));
+    return gulp.src('./app/src/**/*.html')
+        .pipe(gulp.dest('./public/js'));
 });
 
 function handleError(err) {

@@ -34,7 +34,7 @@ app.engine('handlebars', hbs.engine);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'handlebars');
 
-app.use(favicon(path.join(__dirname, '../app/public', 'favicon/favicon.ico')));
+app.use(favicon(path.join(__dirname, '../public', 'favicon/favicon.ico')));
 
 // set up API stuff
 app.all( '/api/*', function( req, res, next ) {
@@ -53,7 +53,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(express.static(path.join(__dirname, '../app/public')));
+app.use(express.static(path.join(__dirname, '../public')));
 app.use('/node_modules', express.static(path.join(__dirname, '../node_modules')));
 
 app.use(morgan(':remote-addr :remote-user - :method :url :status :response-time ms - :res[content-length]'));

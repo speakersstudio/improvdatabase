@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../src/ts/config.ts"],"names":[],"mappings":";;AAAA;IAAA;IAEA,CAAC;IAAD,aAAC;AAAD,CAFA,AAEC;AADiB,iBAAU,GAAG,kCAAkC,CAAA;AADpD,wBAAM","file":"config.js","sourcesContent":["export class Config {\r\n    public static STRIPE_KEY = 'pk_test_o2Kb3Is8AdQuSP8a4UjrvRyK'\r\n}"]}

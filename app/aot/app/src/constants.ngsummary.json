@@ -1,0 +1,1 @@
+{"summaries":[{"symbol":{"__symbol":0,"members":[]},"metadata":{"__symbolic":"new","expression":{"__symbol":1,"members":[]},"arguments":["config"]}}],"symbols":[{"__symbol":0,"name":"CONFIG_TOKEN","filePath":"E:/lib/Git/improvplus/app/src/constants.d.ts"},{"__symbol":1,"name":"OpaqueToken","filePath":"E:/lib/Git/improvplus/node_modules/@angular/core/core.d.ts"}]}

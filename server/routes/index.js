@@ -69,11 +69,12 @@ router.get('/downloadPackage/:token', packageCtrl.download);
 
 // MAIN HOME PAGE HTML
 router.get('/*', function(req, res, next) {
-  res.render('index', {
+  //let template = process.env.NODE_ENV === 'production' ? 'index-prod' : 'index-dev';
+  let template = 'index-prod';
+
+  res.render(template, {
        title: 'improvplus',
-       baseHref: '/',
-       prod: process.env.NODE_ENV === 'production',
-       stripeKey: config.stripe.publishable
+       baseHref: '/'
    });
 });
 

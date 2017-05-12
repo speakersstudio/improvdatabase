@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../src/ts/constants.ts"],"names":[],"mappings":";;AAAA,sCAA4C;AAE/B,QAAA,YAAY,GAAG,IAAI,kBAAW,CAAC,QAAQ,CAAC,CAAC","file":"constants.js","sourcesContent":["import { OpaqueToken } from '@angular/core';\r\n\r\nexport const CONFIG_TOKEN = new OpaqueToken('config');"]}

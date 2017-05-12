@@ -71,8 +71,6 @@ router.get('/downloadPackage/:token', packageCtrl.download);
 router.get('/*', function(req, res, next) {
   let template = process.env.NODE_ENV == 'production' || process.env.NODE_ENV == 'qa' ? 'index-prod' : 'index-dev';
 
-  console.log('RENDERING TEMPLATE ' + template);
-
   res.render(template, {
        title: 'improvplus',
        prod: process.env.NODE_ENV == 'production',

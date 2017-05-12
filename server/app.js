@@ -49,14 +49,18 @@ app.all( '/api/*', function( req, res, next ) {
     }
 });
 
+app.use(morgan(':remote-addr :remote-user - :method :url :status :response-time ms - :res[content-length]', {
+  skip: (req, res) => {
+    return req.path.match(/\.js|\.html|\.css|\.jpg|\.png|\.ico/);
+  }
+}));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, '../public')));
 app.use('/node_modules', express.static(path.join(__dirname, '../node_modules')));
-
-app.use(morgan(':remote-addr :remote-user - :method :url :status :response-time ms - :res[content-length]'));
 
 app.use(require('./routes'));
 

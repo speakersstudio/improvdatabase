@@ -1,9 +1,9 @@
-<div (click)="cancel()" class="backdrop nav-backdrop show" *ngIf="type" [@fade]></div>
+<div class="dialog-dismiss" (click)="cancel()"></div>
 
-<div class="dialog" *ngIf="type" [@dialog]>
+<div class="dialog" *ngIf="type" [@dialog]="'default'">
     <form #createForm="ngForm">
         <div class="dialog-content">
-            <h3>New {{type}}</h3>
+            <h3>New {{type == 'playerCount' ? 'Player Count' : 'Duration'}}</h3>
 
             <input name="name" required placeholder="Name" [(ngModel)]="name" />
             <div class="columns">

@@ -158,11 +158,17 @@ var GameDatabaseService = (function () {
                 .toPromise()
                 .then(function (response) {
                 _this.playercounts = response.json();
+                _this.sortPlayerCounts();
                 return _this.playercounts;
             })
                 .catch(this.handleError);
         }
         return this._playerCountPromise;
+    };
+    GameDatabaseService.prototype.sortPlayerCounts = function () {
+        this.playercounts.sort(function (a, b) {
+            return a.name.localeCompare(b.name);
+        });
     };
     GameDatabaseService.prototype.getPlayerCountById = function (id) {
         var _this = this;
@@ -189,6 +195,7 @@ var GameDatabaseService = (function () {
             .then(function (response) {
             var playercount = response.json();
             _this.playercounts.push(playercount);
+            _this.sortPlayerCounts();
             return playercount;
         });
     };
@@ -199,11 +206,17 @@ var GameDatabaseService = (function () {
                 .toPromise()
                 .then(function (response) {
                 _this.durations = response.json();
+                _this.sortDurations();
                 return _this.durations;
             })
                 .catch(this.handleError);
         }
         return this._durationPromise;
+    };
+    GameDatabaseService.prototype.sortDurations = function () {
+        this.durations.sort(function (a, b) {
+            return a.name.localeCompare(b.name);
+        });
     };
     GameDatabaseService.prototype.getDurationById = function (id) {
         var _this = this;
@@ -220,16 +233,17 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype.createDuration = function (name, min, max, description) {
         var _this = this;
         return this.http.post(this.metadataUrl, {
-            Name: name,
-            Min: min,
-            Max: max,
+            name: name,
+            min: min,
+            max: max,
             type: 'duration',
-            Description: description
+            description: description
         })
             .toPromise()
             .then(function (response) {
             var duration = response.json();
             _this.durations.push(duration);
+            _this.sortDurations();
             return duration;
         });
     };

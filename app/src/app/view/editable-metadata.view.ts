@@ -1,6 +1,7 @@
 import { 
     Component,
     OnInit,
+    OnChanges,
     Input,
     Output,
     EventEmitter,
@@ -16,7 +17,7 @@ import { GameMetadata } from '../../model/game-metadata';
     selector: '.improvplus-editable-metadata',
     templateUrl: '../template/view/editable-metadata.view.html'
 })
-export class EditableMetadataView implements OnInit {
+export class EditableMetadataView implements OnInit, OnChanges {
 
     @ViewChild('metadataInput') inputElement: any;
 
@@ -55,10 +56,6 @@ export class EditableMetadataView implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        if (!this.text && this.model && this.model.hasOwnProperty('name')) {
-            this.text = this.model.name;
-        }
-
         if (!this.type) {
             if (this.address) {
                 this.type = 'address';
@@ -71,6 +68,12 @@ export class EditableMetadataView implements OnInit {
 
         if (this.type == 'address') {
             this.setupAddress();
+        }
+    }
+
+    ngOnChanges(changes: any): void {
+        if (changes.model && !this.text && this.model && this.model.hasOwnProperty('name')) {
+            this.text = this.model.name;
         }
     }
 
@@ -141,6 +144,7 @@ export class EditableMetadataView implements OnInit {
         } else if (this.type == 'dropdown') {
             if (this.editModel == '-1') {
                 // create a new thing!
+                this.text = '';
                 this.createOption.emit(true);
             } else {
                 let selection: any;

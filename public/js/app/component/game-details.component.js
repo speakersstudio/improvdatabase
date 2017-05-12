@@ -133,12 +133,6 @@ var GameDetailsComponent = (function () {
         this.editNameShown = false;
         this.addNameShown = false;
     };
-    // private _closeAllEdits(): void {
-    //     this.editNameShown = false;
-    //     this.addNameShown = false;
-    //     this.addTagShown = false;
-    //     this.editDescriptionShown = false;
-    // }
     GameDetailsComponent.prototype._saveGame = function () {
         // this._closeAllEdits();
         this.setGame(this.game);
@@ -166,22 +160,26 @@ var GameDetailsComponent = (function () {
             }
         }
     };
-    GameDetailsComponent.prototype.showCreateMetadataDialog = function (type) {
+    GameDetailsComponent.prototype.showCreateMetadataDialog = function (show, type) {
         if (this.can('metadata_create')) {
             this.createMetadataType = type;
+            this._app.backdrop(true);
         }
     };
     GameDetailsComponent.prototype.onCreateMetadataDone = function (metadata) {
         this.createMetadataType = "";
-        if (metadata.type == 'playerCount') {
-            this.allPlayerCounts.push(metadata);
-            this.game.playerCount = metadata;
+        this._app.backdrop(false);
+        if (metadata) {
+            if (metadata.type == 'playerCount') {
+                // this.allPlayerCounts.push(metadata);
+                this.game.playerCount = metadata;
+            }
+            else if (metadata.type == 'duration') {
+                // this.allDurations.push(metadata);
+                this.game.duration = metadata;
+            }
+            this._saveGame();
         }
-        else if (metadata.type == 'duration') {
-            this.allDurations.push(metadata);
-            this.game.duration = metadata;
-        }
-        this.gameDatabaseService.saveGame(this.game);
     };
     GameDetailsComponent.prototype.showAddTag = function () {
         if (this.can('game_tag_add')) {
@@ -308,15 +306,14 @@ var GameDetailsComponent = (function () {
     };
     GameDetailsComponent.prototype.setGame = function (game) {
         var _this = this;
-        this.game = game;
-        // if (this.game.duration) {
-        //     this.durationID = this.game.duration._id;
-        // }
-        // if (this.game.playerCount) {
-        //     this.playerCountID = this.game.playerCount._id;
-        // }
-        this.gameDatabaseService.getNotesForGame(this.game)
-            .then(function (notes) { return _this.notes = notes; });
+        if (!game) {
+            this.gameNotFound = true;
+        }
+        else {
+            this.game = game;
+            this.gameDatabaseService.getNotesForGame(this.game)
+                .then(function (notes) { return _this.notes = notes; });
+        }
     };
     GameDetailsComponent.prototype.closePage = function () {
         if (this.dialog) {

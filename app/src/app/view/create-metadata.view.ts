@@ -10,11 +10,9 @@ import { Router } from '@angular/router';
 import { GameDatabaseService } from "../service/game-database.service";
 import { UserService } from "../../service/user.service";
 
-import { User } from "../../model/user";
+import { GameMetadata } from '../../model/game-metadata';
 
 import { DialogAnim, ToggleAnim } from '../../util/anim.util';
-
-const MAX_ATTEMPTS = 5;
 
 @Component({
     moduleId: module.id,
@@ -27,7 +25,7 @@ const MAX_ATTEMPTS = 5;
 })
 export class CreateMetadataView implements OnInit {
 
-    @Output() done: EventEmitter<any> = new EventEmitter();
+    @Output() done: EventEmitter<GameMetadata> = new EventEmitter();
 
     isPosting: boolean;
 
@@ -49,23 +47,33 @@ export class CreateMetadataView implements OnInit {
 
     createMetadata(): void {
         this.isPosting = true;
-        if (this.userService.can('meta_create')) {
-            if (this.type == "Player Count") {
+        if (this.userService.can('metadata_create')) {
+            if (this.type == "playerCount") {
                 // create a new player count
                 this.gameDatabaseService.createPlayerCount(this.name, this.min, this.max, this.description)
                     .then(playercount => {
-                        this.done.emit(playercount);
+                        this.doDone(playercount);
                     });
             } else {
                 // create a new Duration
                 this.gameDatabaseService.createDuration(this.name, this.min, this.max, this.description)
                     .then(duration => {
-                        this.done.emit(duration);
+                        this.doDone(duration);
                     });
             }
         } else {
             this.cancel();
         }
+    }
+
+    doDone(item: GameMetadata): void {
+        this.isPosting = false;
+        this.name = '';
+        this.min = 0;
+        this.max = 0;
+        this.description = '';
+
+        this.done.emit(item);
     }
 
     cancel(): boolean {

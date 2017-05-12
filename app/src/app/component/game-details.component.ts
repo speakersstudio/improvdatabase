@@ -51,6 +51,8 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     @Input() game: Game;
     @Output() onClose: EventEmitter<Tool> = new EventEmitter();
 
+    gameNotFound: boolean;
+
     dialog: boolean = false;
 
     // tagMap: Object = {};
@@ -199,13 +201,6 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         this.addNameShown = false;
     }
 
-    // private _closeAllEdits(): void {
-    //     this.editNameShown = false;
-    //     this.addNameShown = false;
-    //     this.addTagShown = false;
-    //     this.editDescriptionShown = false;
-    // }
-
     private _saveGame(): void {
         // this._closeAllEdits();
         this.setGame(this.game);
@@ -237,23 +232,27 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         }
     }
 
-    showCreateMetadataDialog(type: string): void {
+    showCreateMetadataDialog(show: boolean, type: string): void {
         if (this.can('metadata_create')) {
             this.createMetadataType = type;
+            this._app.backdrop(true);
         }
     }
     onCreateMetadataDone(metadata: GameMetadata): void {
         this.createMetadataType = "";
+        this._app.backdrop(false);
 
-        if (metadata.type == 'playerCount') {
-            this.allPlayerCounts.push(metadata);
-            this.game.playerCount = metadata;
-        } else if (metadata.type == 'duration') {
-            this.allDurations.push(metadata);
-            this.game.duration = metadata;
+        if (metadata) {
+            if (metadata.type == 'playerCount') {
+                // this.allPlayerCounts.push(metadata);
+                this.game.playerCount = metadata;
+            } else if (metadata.type == 'duration') {
+                // this.allDurations.push(metadata);
+                this.game.duration = metadata;
+            }
+
+            this._saveGame();
         }
-
-        this.gameDatabaseService.saveGame(this.game);
     }
 
     showAddTag(): void {
@@ -393,17 +392,15 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     }
 
     setGame(game: Game): void {
-        this.game = game;
+        if (!game) {
+            this.gameNotFound = true;
+        } else {
 
-        // if (this.game.duration) {
-        //     this.durationID = this.game.duration._id;
-        // }
-        // if (this.game.playerCount) {
-        //     this.playerCountID = this.game.playerCount._id;
-        // }
+            this.game = game;
 
-        this.gameDatabaseService.getNotesForGame(this.game)
-            .then((notes) => this.notes = notes);
+            this.gameDatabaseService.getNotesForGame(this.game)
+                .then((notes) => this.notes = notes);
+        }
     }
 
     closePage(): void {

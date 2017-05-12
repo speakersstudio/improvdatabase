@@ -22,9 +22,6 @@ var EditableMetadataView = (function () {
         this.createOption = new core_1.EventEmitter(); // should trigger a dialog or something to create a new option
     }
     EditableMetadataView.prototype.ngOnInit = function () {
-        if (!this.text && this.model && this.model.hasOwnProperty('name')) {
-            this.text = this.model.name;
-        }
         if (!this.type) {
             if (this.address) {
                 this.type = 'address';
@@ -38,6 +35,11 @@ var EditableMetadataView = (function () {
         }
         if (this.type == 'address') {
             this.setupAddress();
+        }
+    };
+    EditableMetadataView.prototype.ngOnChanges = function (changes) {
+        if (changes.model && !this.text && this.model && this.model.hasOwnProperty('name')) {
+            this.text = this.model.name;
         }
     };
     EditableMetadataView.prototype._focusInput = function () {
@@ -99,6 +101,7 @@ var EditableMetadataView = (function () {
         else if (this.type == 'dropdown') {
             if (this.editModel == '-1') {
                 // create a new thing!
+                this.text = '';
                 this.createOption.emit(true);
             }
             else {

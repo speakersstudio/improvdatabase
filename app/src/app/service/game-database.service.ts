@@ -176,11 +176,18 @@ export class GameDatabaseService {
                 .toPromise()
                 .then(response => {
                     this.playercounts = response.json() as GameMetadata[];
+                    this.sortPlayerCounts();
                     return this.playercounts;
                 })
                 .catch(this.handleError);
         }
         return this._playerCountPromise;
+    }
+
+    private sortPlayerCounts(): void {
+        this.playercounts.sort((a, b) => {
+            return a.name.localeCompare(b.name);
+        });
     }
 
     getPlayerCountById(id: String): Promise<GameMetadata> {
@@ -208,6 +215,7 @@ export class GameDatabaseService {
             .then((response) => {
                 let playercount = response.json() as GameMetadata;
                 this.playercounts.push(playercount);
+                this.sortPlayerCounts();
                 return playercount;
             });
     }
@@ -219,11 +227,18 @@ export class GameDatabaseService {
                 .toPromise()
                 .then(response => {
                     this.durations = response.json() as GameMetadata[];
+                    this.sortDurations();
                     return this.durations;
                 })
                 .catch(this.handleError);
         }
         return this._durationPromise;
+    }
+
+    private sortDurations(): void {
+        this.durations.sort((a, b) => {
+            return a.name.localeCompare(b.name);
+        });
     }
 
     getDurationById(id: String): Promise<GameMetadata> {
@@ -241,16 +256,17 @@ export class GameDatabaseService {
     createDuration(name: string, min: number, max: number, description: string): Promise<GameMetadata> {
         return this.http.post(this.metadataUrl,
             {
-                Name: name,
-                Min: min,
-                Max: max,
+                name: name,
+                min: min,
+                max: max,
                 type: 'duration',
-                Description: description
+                description: description
             })
             .toPromise()
             .then((response) => {
                 let duration = response.json() as GameMetadata;
                 this.durations.push(duration);
+                this.sortDurations();
                 return duration;
             });
     }

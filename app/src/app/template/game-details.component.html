@@ -52,7 +52,8 @@
                     [canEdit]="can('game_edit')"
                     [options]="allPlayerCounts"
                     [optionCreate]="can('metadata_create')"
-                    (save)="savePlayerCount($event)"></span>
+                    (save)="savePlayerCount($event)"
+                    (createOption)="showCreateMetadataDialog($event, 'playerCount')"></span>
                 
 
                 <span class="improvplus-editable-metadata"
@@ -62,7 +63,8 @@
                     [canEdit]="can('game_edit')"
                     [options]="allDurations"
                     [optionCreate]="can('metadata_create')"
-                    (save)="saveDuration($event)"></span>
+                    (save)="saveDuration($event)"
+                    (createOption)="showCreateMetadataDialog($event, 'duration')"></span>
 
                 <ul class="taglist">
                     <li *ngIf="can('game_tag_add') && !addTagShown"
@@ -149,9 +151,9 @@
         <div class="right-bracket"><h1>discussion</h1></div>
     </div>
 
-    <not-found *ngIf="!game" [injected]="true"></not-found>
+    <not-found *ngIf="gameNotFound" [injected]="true"></not-found>
 
 </div>
 
-<create-metadata *ngIf="can('meta_create')" class="dialog-container"
+<create-metadata *ngIf="can('metadata_create')" class="dialog-container" [class.show]="createMetadataType"
     [type]="createMetadataType" (done)="onCreateMetadataDone($event)"></create-metadata>

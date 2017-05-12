@@ -13,7 +13,6 @@ var core_1 = require("@angular/core");
 var game_database_service_1 = require("../service/game-database.service");
 var user_service_1 = require("../../service/user.service");
 var anim_util_1 = require("../../util/anim.util");
-var MAX_ATTEMPTS = 5;
 var CreateMetadataView = (function () {
     function CreateMetadataView(userService, gameDatabaseService) {
         this.userService = userService;
@@ -25,25 +24,33 @@ var CreateMetadataView = (function () {
     CreateMetadataView.prototype.createMetadata = function () {
         var _this = this;
         this.isPosting = true;
-        if (this.userService.can('meta_create')) {
-            if (this.type == "Player Count") {
+        if (this.userService.can('metadata_create')) {
+            if (this.type == "playerCount") {
                 // create a new player count
                 this.gameDatabaseService.createPlayerCount(this.name, this.min, this.max, this.description)
                     .then(function (playercount) {
-                    _this.done.emit(playercount);
+                    _this.doDone(playercount);
                 });
             }
             else {
                 // create a new Duration
                 this.gameDatabaseService.createDuration(this.name, this.min, this.max, this.description)
                     .then(function (duration) {
-                    _this.done.emit(duration);
+                    _this.doDone(duration);
                 });
             }
         }
         else {
             this.cancel();
         }
+    };
+    CreateMetadataView.prototype.doDone = function (item) {
+        this.isPosting = false;
+        this.name = '';
+        this.min = 0;
+        this.max = 0;
+        this.description = '';
+        this.done.emit(item);
     };
     CreateMetadataView.prototype.cancel = function () {
         this.done.emit(null);

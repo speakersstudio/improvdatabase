@@ -25,8 +25,11 @@ import { Tag } from '../../model/tag';
 import { Note } from '../../model/note';
 
 import { Tool } from '../view/toolbar.view';
+import { TabData } from '../../model/tab-data';
 
 import { UserService } from "../../service/user.service";
+
+import { DropdownOption } from '../view/editable-metadata.view';
 
 @Component({
     moduleId: module.id,
@@ -96,6 +99,24 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         }
     ];
 
+    tabs = [
+        {
+            name: 'Details',
+            id: 'details',
+            icon: 'rocket'
+        },
+        {
+            name: 'Notes',
+            id: 'notes',
+            icon: 'sticky-note-o'
+        }
+    ];
+    selectedTab: string = 'notes';
+
+    noteInput: string;
+    noteContext: string;
+    noteContextOptions: DropdownOption[];
+
     constructor(
         public _app: AppComponent,
         private gameDatabaseService: GameDatabaseService,
@@ -132,6 +153,10 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
             });
         }
 
+    }
+
+    selectTab(tab: TabData): void {
+        this.selectedTab = tab.id;
     }
 
     ngOnDestroy(): void {
@@ -403,8 +428,44 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
 
             this.game = game;
 
-            this.gameDatabaseService.getNotesForGame(this.game)
-                .then((notes) => this.notes = notes);
+            if (this.game.names && this.game.names.length) {
+                this.gameDatabaseService.getNotesForGame(this.game)
+                    .then((notes) => this.notes = notes);
+
+                this.noteContextOptions = [
+                    {
+                        name: 'This game: ' + this.game.names[0].name,
+                        _id: 'game',
+                        icon: 'rocket',
+                        description: 'This note will only apply to this game.'
+                    },
+                    {
+                        name: this.game.playerCount.name,
+                        _id: 'metadata_' + this.game.playerCount._id,
+                        icon: 'users',
+                        description: 'This note will apply to any game involving \'' + this.game.playerCount.name + '\' player count.'
+                    },
+                    {
+                        name: this.game.duration.name,
+                        _id: 'metadata_' + this.game.duration._id,
+                        icon: 'users',
+                        description: 'This note will apply to any game involving \'' + this.game.duration.name + '\' duration.'
+                    }
+                ];
+
+                this.game.tags.forEach(taggame => {
+                    let tag = <Tag> taggame.tag;
+                    this.noteContextOptions.push({
+                        name: tag.name,
+                        _id: 'tag_' + tag._id,
+                        icon: 'hashtag',
+                        description: 'This note will apply to any game tagged \'' + tag.name + '\'.'
+                    })
+                });
+
+                this.noteContext = '';
+            }
+
         }
     }
 
@@ -441,6 +502,30 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
                     });
                 break;
         }
+    }
+
+    setNoteContext(context: DropdownOption): void {
+        this.noteContext = context._id;
+    }
+
+    saveNote(): void {
+        if (!this.noteContext) {
+            this.noteContext = this.noteContextOptions[0]._id;
+        }
+
+        let note = new Note();
+
+        note.description = this.noteInput;
+        
+        if (this.noteContext == 'game') {
+            note.game = this.game._id;
+        } else if (this.noteContext.indexOf('tag_') > -1) {
+            note.tag = this.noteContext.replace('tag_', '');
+        } else if (this.noteContext.indexOf('metadata_') > -1) {
+            note.metadata = this.noteContext.replace('metadata_', '');
+        }
+
+        console.log(note); 
     }
 
 

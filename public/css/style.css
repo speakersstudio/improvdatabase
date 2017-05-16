@@ -498,6 +498,10 @@ iplus {
 .nowrap {
   white-space: nowrap; }
 
+.fa.std {
+  font-size: 16px;
+  margin-right: 8px; }
+
 .fa.huge {
   font-size: 50px;
   margin-top: 24px; }
@@ -584,6 +588,23 @@ iplus {
   text-align: right; }
   .button-group .button:last-child {
     margin-right: 0; }
+  .button-group label {
+    display: inline-block; }
+    .button-group label .fa {
+      vertical-align: middle; }
+  .button-group .improvplus-editable-metadata {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 24px;
+    color: rgba(96, 96, 96, 0.5); }
+    .button-group .improvplus-editable-metadata .fa {
+      font-size: 16px;
+      margin-right: 8px; }
+    .button-group .improvplus-editable-metadata select {
+      display: inline-block;
+      margin: 0;
+      padding: 8px 0;
+      width: auto; }
 
 .form-input {
   position: relative;
@@ -644,6 +665,10 @@ button,
     button iplus:hover .plus,
     .button iplus:hover .plus {
       color: #FFFFFF; }
+  button .fa,
+  .button .fa {
+    font-size: 16px;
+    margin-right: 8px; }
   button.large,
   .button.large {
     font-size: 24px;

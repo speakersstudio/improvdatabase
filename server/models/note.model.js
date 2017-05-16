@@ -5,11 +5,14 @@ const NoteSchema = new mongoose.Schema({
     tag: { type: mongoose.Schema.Types.ObjectId, ref: 'Tag' },
     metadata: { type: mongoose.Schema.Types.ObjectId, ref: 'GameMetadata' },
     description: String,
-    public: { type: Boolean, default: false },
+    public: Boolean,
+    sharedWithTeam: Boolean,
     addedUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     modifiedUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     dateAdded: { type: Date, default: Date.now },
-    dateModified: { type: Date, default: Date.now }
+    dateModified: { type: Date, default: Date.now },
+    dateDeleted: Date,
+    deletedUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 });
 
 const Note = mongoose.model('Note', NoteSchema);

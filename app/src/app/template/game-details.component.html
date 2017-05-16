@@ -10,9 +10,19 @@
     <h2 *ngIf="game && (!game.names || !game.names[0])">New Game</h2>
 </div>-->
 
-<div class="page">
+<div class="page" *ngIf="game">
 
-    <div *ngIf="game" class="paper has-brackets">
+    <div class="tabs">
+        <span class="tab" 
+            *ngFor="let tab of tabs"
+            [class.active]="tab.id == selectedTab"
+            (click)="selectTab(tab)">
+            <i class="fa fa-{{tab.icon}}"></i>
+            <span>{{tab.name}}</span>
+        </span>
+    </div>
+
+    <div *ngIf="selectedTab == 'details'" class="paper has-brackets">
 
         <div class="content">
 
@@ -113,7 +123,7 @@
         <div class="right-bracket"><h1>game details</h1></div>
     </div>
 
-    <div *ngIf="game && notes.length > 0" class="paper has-brackets">
+    <div *ngIf="selectedTab == 'notes'" class="paper has-brackets">
 
         <!--<h4>Discussion</h4>-->
 
@@ -148,11 +158,44 @@
         </div>
 
         <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
-        <div class="right-bracket"><h1>discussion</h1></div>
+        <div class="right-bracket"><h1>director's commentary</h1></div>
     </div>
 
-    <not-found *ngIf="gameNotFound" [injected]="true"></not-found>
+    <div *ngIf="selectedTab == 'notes'" class="paper has-brackets">
 
+        <div class="content">
+
+            <textarea formInput
+                name="noteInput"
+                placeholder="Add a note"
+                rows="5"
+                [(ngModel)]="noteInput"></textarea>
+
+            <div class="button-group">
+
+                <span class="improvplus-editable-metadata"
+                    [canEdit]="true"
+                    [allowBlank]="false"
+                    [options]="noteContextOptions"
+                    (save)="setNoteContext($event)"></span>
+
+                <label title="Share this note with your team?">
+                    <i class="fa std fa-users"></i>
+                    <input formSwitch name="noteTeam" type="checkbox" [(ngModel)]="noteTeam" />
+                </label>
+                <button class="button raised" [class.disabled]="!noteInput" (click)="saveNote()">Save</button>
+            </div>
+
+        </div>
+
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>your notes</h1></div>
+    </div>
+
+</div>
+
+<div class="page" *ngIf="gameNotFound">
+    <not-found [injected]="true"></not-found>
 </div>
 
 <create-metadata *ngIf="can('metadata_create')" class="dialog-container" [class.show]="createMetadataType"

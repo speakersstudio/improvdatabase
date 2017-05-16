@@ -12,6 +12,15 @@ import {
 import { Address } from '../../model/address';
 import { GameMetadata } from '../../model/game-metadata';
 
+export class DropdownOption {
+    [key:string]: any;
+
+    name: string;
+    _id: string;
+    icon?: string;
+    description?: string;
+}
+
 @Component({
     moduleId: module.id,
     selector: '.improvplus-editable-metadata',
@@ -23,8 +32,9 @@ export class EditableMetadataView implements OnInit, OnChanges {
 
     @Input() icon: string; // an icon to show if necessary
     @Input() text: string; // the text to show by default
-    @Input() model: GameMetadata; // pass an object if you want, this will try to use the name property if it exists
+    @Input() model: string|GameMetadata|DropdownOption; // pass an object if you want, this will try to use the name property if it exists
     @Input() blankText: string; // the fallback text to show if there is no text
+    @Input() allowBlank: boolean = true;
     @Input() canEdit: boolean; // whether the user can edit this thing
 
     @Input() type: string; // 'text' 'address' or 'dropdown'
@@ -44,7 +54,7 @@ export class EditableMetadataView implements OnInit, OnChanges {
     @Input() country: string;
 
     // for dropdowns, the items to show
-    @Input() options: GameMetadata[];
+    @Input() options: DropdownOption[]|GameMetadata[];
     @Input() optionId: string = '_id'; // the property to use as the ID for each option
     @Input() optionDescription: string = 'description'; // the property to use as the title attribute on each option
     @Input() optionText: string = 'name'; // the property to use to get the text for each option
@@ -69,11 +79,21 @@ export class EditableMetadataView implements OnInit, OnChanges {
         if (this.type == 'address') {
             this.setupAddress();
         }
+
+        if (this.type == 'dropdown' && !this.model && !this.allowBlank) {
+            this.model = this.options[0];
+            this.text = this.model.name;
+            this.icon = this.model.icon;
+        }
     }
 
     ngOnChanges(changes: any): void {
         if (changes.model && !this.text && this.model && this.model.hasOwnProperty('name')) {
-            this.text = this.model.name;
+            this.text = (<DropdownOption> this.model).name;
+
+            if (!this.icon && (<DropdownOption> this.model).icon) {
+                this.icon = (<DropdownOption> this.model).icon;
+            }
         }
     }
 
@@ -110,7 +130,7 @@ export class EditableMetadataView implements OnInit, OnChanges {
     showEdit(): void {
         if (this.canEdit) {
             if (this.model) {
-                this.editModel = this.optionId ? this.model[this.optionId] : this.text;
+                this.editModel = this.optionId ? (<GameMetadata|DropdownOption> this.model)[this.optionId] : this.text;
             } else {
                 this.editModel = this.text
             }
@@ -124,7 +144,11 @@ export class EditableMetadataView implements OnInit, OnChanges {
 
     closeEdit(): void {
         this.editShown = false;
-        this.editModel = this.text;
+        if (this.model) {
+            this.editModel = this.optionId ? (<GameMetadata|DropdownOption> this.model)[this.optionId] : this.text;
+        } else {
+            this.editModel = this.text
+        }
     }
 
     pressEnter(): void {
@@ -149,7 +173,7 @@ export class EditableMetadataView implements OnInit, OnChanges {
             } else {
                 let selection: any;
                 if (this.optionId) {
-                    this.options.forEach(option => {
+                    (<DropdownOption[]> this.options).forEach(option => {
                         if (option[this.optionId] == this.editModel) {
                             selection = option;
                         }
@@ -158,6 +182,10 @@ export class EditableMetadataView implements OnInit, OnChanges {
                     selection = this.editModel;
                 }
                 this.text = this.optionText ? selection[this.optionText] : selection;
+                if (selection.icon) {
+                    this.icon = selection.icon;
+                }
+                this.model = selection;
                 this.save.emit(selection);
             }
         } else if (this.editModel && this.editModel != this.text) {

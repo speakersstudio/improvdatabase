@@ -45,6 +45,19 @@ var GameDetailsComponent = (function () {
                 active: false
             }
         ];
+        this.tabs = [
+            {
+                name: 'Details',
+                id: 'details',
+                icon: 'rocket'
+            },
+            {
+                name: 'Notes',
+                id: 'notes',
+                icon: 'sticky-note-o'
+            }
+        ];
+        this.selectedTab = 'notes';
         this._selectedTagIndex = -1;
     }
     GameDetailsComponent.prototype.ngOnInit = function () {
@@ -72,6 +85,9 @@ var GameDetailsComponent = (function () {
                 _this.allDurations = durations;
             });
         }
+    };
+    GameDetailsComponent.prototype.selectTab = function (tab) {
+        this.selectedTab = tab.id;
     };
     GameDetailsComponent.prototype.ngOnDestroy = function () {
     };
@@ -315,8 +331,40 @@ var GameDetailsComponent = (function () {
         }
         else {
             this.game = game;
-            this.gameDatabaseService.getNotesForGame(this.game)
-                .then(function (notes) { return _this.notes = notes; });
+            if (this.game.names && this.game.names.length) {
+                this.gameDatabaseService.getNotesForGame(this.game)
+                    .then(function (notes) { return _this.notes = notes; });
+                this.noteContextOptions = [
+                    {
+                        name: 'This game: ' + this.game.names[0].name,
+                        _id: 'game',
+                        icon: 'rocket',
+                        description: 'This note will only apply to this game.'
+                    },
+                    {
+                        name: this.game.playerCount.name,
+                        _id: 'metadata_' + this.game.playerCount._id,
+                        icon: 'users',
+                        description: 'This note will apply to any game involving \'' + this.game.playerCount.name + '\' player count.'
+                    },
+                    {
+                        name: this.game.duration.name,
+                        _id: 'metadata_' + this.game.duration._id,
+                        icon: 'users',
+                        description: 'This note will apply to any game involving \'' + this.game.duration.name + '\' duration.'
+                    }
+                ];
+                this.game.tags.forEach(function (taggame) {
+                    var tag = taggame.tag;
+                    _this.noteContextOptions.push({
+                        name: tag.name,
+                        _id: 'tag_' + tag._id,
+                        icon: 'hashtag',
+                        description: 'This note will apply to any game tagged \'' + tag.name + '\'.'
+                    });
+                });
+                this.noteContext = '';
+            }
         }
     };
     GameDetailsComponent.prototype.closePage = function () {
@@ -350,6 +398,15 @@ var GameDetailsComponent = (function () {
                 });
                 break;
         }
+    };
+    GameDetailsComponent.prototype.setNoteContext = function (context) {
+        this.noteContext = context._id;
+    };
+    GameDetailsComponent.prototype.saveNote = function () {
+        if (!this.noteContext) {
+            this.noteContext = this.noteContextOptions[0]._id;
+        }
+        console.log(this.noteContext);
     };
     return GameDetailsComponent;
 }());

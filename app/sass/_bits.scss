@@ -284,6 +284,10 @@ iplus {
     white-space: nowrap;
 }
 
+.fa.std {
+    font-size: $std;
+    margin-right: $small;
+}
 .fa.huge {
     font-size: 50px;
     margin-top: $large;
@@ -413,6 +417,31 @@ iplus {
     .button:last-child {
         margin-right: 0;
     }
+    label {
+        display: inline-block;
+
+        .fa {
+            vertical-align: middle;
+        }
+    }
+    .improvplus-editable-metadata {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 24px;
+        color: $color-hr;
+
+        .fa {
+            font-size: $std;
+            margin-right: $small;
+        }
+
+        select {
+            display: inline-block;
+            margin: 0;
+            padding: $small 0;
+            width: auto;
+        }
+    }
 }
 
 .form-input {
@@ -482,6 +511,11 @@ button,
                 color: $color-white;
             }
         }
+    }
+
+    .fa {
+        font-size: $std;
+        margin-right: $small;
     }
 
     $large-button-scale: 1.5;

@@ -10,9 +10,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var game_metadata_1 = require("../../model/game-metadata");
+var DropdownOption = (function () {
+    function DropdownOption() {
+    }
+    return DropdownOption;
+}());
+exports.DropdownOption = DropdownOption;
 var EditableMetadataView = (function () {
     function EditableMetadataView() {
+        this.allowBlank = true;
         this.save = new core_1.EventEmitter(); // called when the item saves
         this.saveAddress = new core_1.EventEmitter(); // called when the address saves
         this.optionId = '_id'; // the property to use as the ID for each option
@@ -36,10 +42,18 @@ var EditableMetadataView = (function () {
         if (this.type == 'address') {
             this.setupAddress();
         }
+        if (this.type == 'dropdown' && !this.model && !this.allowBlank) {
+            this.model = this.options[0];
+            this.text = this.model.name;
+            this.icon = this.model.icon;
+        }
     };
     EditableMetadataView.prototype.ngOnChanges = function (changes) {
         if (changes.model && !this.text && this.model && this.model.hasOwnProperty('name')) {
             this.text = this.model.name;
+            if (!this.icon && this.model.icon) {
+                this.icon = this.model.icon;
+            }
         }
     };
     EditableMetadataView.prototype._focusInput = function () {
@@ -81,7 +95,12 @@ var EditableMetadataView = (function () {
     };
     EditableMetadataView.prototype.closeEdit = function () {
         this.editShown = false;
-        this.editModel = this.text;
+        if (this.model) {
+            this.editModel = this.optionId ? this.model[this.optionId] : this.text;
+        }
+        else {
+            this.editModel = this.text;
+        }
     };
     EditableMetadataView.prototype.pressEnter = function () {
         this.inputElement.nativeElement.blur();
@@ -117,6 +136,10 @@ var EditableMetadataView = (function () {
                     selection_1 = this.editModel;
                 }
                 this.text = this.optionText ? selection_1[this.optionText] : selection_1;
+                if (selection_1.icon) {
+                    this.icon = selection_1.icon;
+                }
+                this.model = selection_1;
                 this.save.emit(selection_1);
             }
         }
@@ -142,12 +165,16 @@ __decorate([
 ], EditableMetadataView.prototype, "text", void 0);
 __decorate([
     core_1.Input(),
-    __metadata("design:type", game_metadata_1.GameMetadata)
+    __metadata("design:type", Object)
 ], EditableMetadataView.prototype, "model", void 0);
 __decorate([
     core_1.Input(),
     __metadata("design:type", String)
 ], EditableMetadataView.prototype, "blankText", void 0);
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", Boolean)
+], EditableMetadataView.prototype, "allowBlank", void 0);
 __decorate([
     core_1.Input(),
     __metadata("design:type", Boolean)

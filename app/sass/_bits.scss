@@ -19,6 +19,9 @@
     &orange {
         color: $color-orange;
     }
+    &green {
+        color: $color-green;
+    }
     &primary {
         color: $color-primary;
     }
@@ -430,7 +433,7 @@ iplus {
         }
     }
 
-    input {
+    input, textarea {
         margin: 0;
     }
 
@@ -768,6 +771,10 @@ button,
         background-color: $color-red;
     }
 
+    &.green {
+        background-color: $color-green;
+    }
+
     &.flat {
         background: none;
         @include md-elevation(0);
@@ -851,6 +858,18 @@ button,
     &.orange {
         .tag {
             background-color: $color-orange;
+        }
+    }
+
+    &.blue {
+        .tag {
+            background-color: $color-blue;
+        }
+    }
+
+    &.green {
+        .tag {
+            background-color: $color-green;
         }
     }
 
@@ -942,4 +961,47 @@ button,
         content: " ●    \A   ●   \A    ●  \A     ● \A      ●\A     ● \A    ●  \A   ●   \A  ●    \A ●     ";
         animation: loadingSpin 1s steps(10) infinite;
     }
+}
+
+.form-switch {
+    height: $icon-size - 2;
+    width: $icon-size * 1.55;
+    border-radius: ($icon-size / 2);
+    background-color: $color-white;
+    border: 1px solid $color-hr;
+    display: inline-block;
+    box-sizing: border-box;
+    @include md-elevation($raised-button-elevation, inset);
+    cursor: pointer;
+    transition: background-color 250ms;
+    position: relative;
+    vertical-align: middle;
+
+    .control {
+        width: $icon-size;
+        height: $icon-size;
+        border-radius: 50%;
+        background-color: $color-white;
+        border: 1px solid $color-hr;
+        box-sizing: border-box;
+        display: inline-block;
+        @include md-elevation($raised-button-elevation);
+        @include abs(-2px, auto, null, -2px);
+        transition: left 250ms, right 250ms;
+    }
+
+    &.on {
+        background-color: $color-primary;
+
+        .control {
+            left: ((($icon-size * 1.55) / 2) - 3);
+        }
+    }
+
+    input {
+        display: none;
+    }
+}
+label .form-switch {
+    margin-right: $small;
 }

@@ -104,7 +104,6 @@ var LoginView = (function () {
         })
             .then(function (success) {
             _this.isPosting = false;
-            console.log('success?', success);
             if (success) {
                 _this.show = false;
                 setTimeout(function () {

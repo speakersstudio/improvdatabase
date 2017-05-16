@@ -18,6 +18,7 @@ import { FormInputDirective } from '../directive/form-input.directive';
 import { BracketCardDirective } from '../directive/bracket-card.directive';
 import { DraggableDirective } from '../directive/draggable.directive';
 import { DroppableDirective } from '../directive/droppable.directive';
+import { FormSwitchDirective } from '../directive/form-switch.directive';
 
 @NgModule({
     imports: [
@@ -34,7 +35,8 @@ import { DroppableDirective } from '../directive/droppable.directive';
         FormInputDirective,
         BracketCardDirective,
         DraggableDirective,
-        DroppableDirective
+        DroppableDirective,
+        FormSwitchDirective
     ],
     exports: [
         IPlusView,
@@ -44,7 +46,8 @@ import { DroppableDirective } from '../directive/droppable.directive';
         FormInputDirective,
         BracketCardDirective,
         DraggableDirective,
-        DroppableDirective
+        DroppableDirective,
+        FormSwitchDirective
     ],
     providers: [
         AppService,

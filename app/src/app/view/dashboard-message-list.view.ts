@@ -168,15 +168,33 @@ export class DashboardMessageListView implements OnInit, OnDestroy {
 
     }
 
+    inviteAccepted: boolean;
+    inviteRejected: boolean;
+
     acceptInvite(): void {
         this.isPosting = true;
         this.userService.acceptInvite(this.invite._id).then(() => {
             this.isPosting = false;
-            this.showNextMessage();
+            this.inviteAccepted = true;
         });
     }
 
     rejectInvite(): void {
+        this.isPosting = true;
+        this.userService.cancelInvite(this.invite).then(() => {
+            this.isPosting = false;
+            this.inviteRejected = true;
+        })
+    }
 
+    dismissInvite(): void {
+        this.messageElement.close();
+
+        setTimeout(() => {
+            this.inviteAccepted = false;
+            this.inviteRejected = false;
+            
+            this.showNextMessage();
+        }, 300);
     }
 }

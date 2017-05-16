@@ -5,6 +5,8 @@ import { UrlSegment } from '@angular/router';
 import { Observable, Subject } from 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
 
+import {API} from '../constants';
+
 import { AppHttp } from '../data/app-http';
 
 import { User } from '../model/user';
@@ -14,10 +16,10 @@ import { Package } from '../model/package';
 @Injectable()
 export class AppService {
 
-    private packageUrl = '/api/package/';
+    // private packageUrl = '/api/package/';
 
-    private userValidateUrl = '/api/user/validate';
-    private teamValidateUrl = '/api/team/validate';
+    // private userValidateUrl = '/api/user/validate';
+    // private teamValidateUrl = '/api/team/validate';
 
     private redirect: UrlSegment[];
     
@@ -39,7 +41,7 @@ export class AppService {
     }
 
     validateUser (user: User): Promise<string> {
-        return this.http.post(this.userValidateUrl, user)
+        return this.http.post(API.validateUser, user)
             .toPromise()
             .then((response) => {
                 let data = response.json();
@@ -52,7 +54,7 @@ export class AppService {
     }
 
     validateTeam (team: Team): Promise<string> {
-        return this.http.post(this.teamValidateUrl, team)
+        return this.http.post(API.validateTeam, team)
             .toPromise()
             .then(response => {
                 let data = response.json();
@@ -70,7 +72,7 @@ export class AppService {
     private _packagePromise: Promise<Package[]>;
     getPackages(): Promise<Package[]> {
         if (!this._packagePromise) {
-            this._packagePromise = this.http.get(this.packageUrl)
+            this._packagePromise = this.http.get(API.package)
                 .toPromise()
                 .then(response => {
                     let packages = response.json() as Package[];

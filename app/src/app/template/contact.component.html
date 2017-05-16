@@ -28,10 +28,8 @@
             <hr />
 
             <h5>Dear Proprietors of <span class="light">improv</span><strong>plus</strong>,</h5>
-
-            <p>In order to make ImprovPlus even more awesome...</p>
             
-            <textarea name="gordon" [(ngModel)]="featureMessage" rows="10"></textarea>
+            <textarea formInput placeholder="In order to make ImprovPlus even more awesome..." name="gordon" [(ngModel)]="featureMessage" rows="10"></textarea>
 
             <div class="pull-right">
                 <p>Sincerely,</p>
@@ -67,22 +65,14 @@
             <hr />
 
             <h5>Dear Proprietors of <span class="light">improv</span><strong>plus</strong>,</h5>
-
-            <p>Something went wrong while I was trying to...</p>
             
-            <textarea name="bugTryingTo" [(ngModel)]="bugTryingTo" rows="5"></textarea>
-
-            <p>I expected it to...</p>
+            <textarea formInput placeholder="Something went wrong while I was trying to..." name="bugTryingTo" [(ngModel)]="bugTryingTo" rows="5"></textarea>
             
-            <textarea name="bugExpectation" [(ngModel)]="bugExpectation" rows="5"></textarea>
-
-            <p>But unfortunately it actually...</p>
+            <textarea formInput placeholder="I expected it to..." name="bugExpectation" [(ngModel)]="bugExpectation" rows="5"></textarea>
             
-            <textarea name="bugReality" [(ngModel)]="bugReality" rows="5"></textarea>
-
-            <p>The steps I took to cause the problem were...</p>
+            <textarea formInput placeholder="But unfortunately it actually..." name="bugReality" [(ngModel)]="bugReality" rows="5"></textarea>
             
-            <textarea name="bugSteps" [(ngModel)]="bugSteps" rows="5"></textarea>
+            <textarea formInput placeholder="The steps I took to cause the problem were..." name="bugSteps" [(ngModel)]="bugSteps" rows="5"></textarea>
 
             <div class="pull-right">
                 <p>Sincerely,</p>

@@ -24,7 +24,7 @@ export class FormInputDirective implements OnInit {
 
     @Output() helpClicked: EventEmitter<boolean> = new EventEmitter();
 
-    inputElement: HTMLInputElement;
+    inputElement: HTMLInputElement|HTMLTextAreaElement;
     divElement: HTMLDivElement;
     labelElement: HTMLLabelElement;
     helpLinkElement: HTMLAnchorElement;
@@ -38,41 +38,43 @@ export class FormInputDirective implements OnInit {
     }
 
     ngOnInit(): void {
-        this.placeholder = this.inputElement.getAttribute('placeholder');
-
-        this.divElement = document.createElement('div');
-        this.divElement.className = 'form-input';
-
-        if (this.inputElement.name) {
-            this.divElement.className += ' form-input-' + this.inputElement.name;
-        }
-
-        this.inputElement.parentElement.insertBefore(this.divElement, this.inputElement.nextSibling);
-        this.divElement.appendChild(this.inputElement);
-
-        if (this.helpLink) {
-            this.helpLinkElement = document.createElement('a');
-            this.helpLinkElement.innerText = this.helpLink;
-            this.helpLinkElement.className = 'help';
-            this.divElement.appendChild(this.helpLinkElement);
-
-            this.renderer.listen(this.helpLinkElement, 'click', e => this.clickHelp());
-        }
-
-        this.inputElement.setAttribute('placeholder', '');
-
-        this.labelElement = document.createElement('label');
-        this.labelElement.textContent = this.placeholder;
-        if (this.inputElement.required && this.asterisk) {
-            this.labelElement.textContent += ' *';
-        }
-        this.divElement.appendChild(this.labelElement);
-
         setTimeout(() => {
-            if (this.inputElement.value) {
-                this.focus();
+            this.placeholder = this.inputElement.getAttribute('placeholder');
+
+            this.divElement = document.createElement('div');
+            this.divElement.className = 'form-input';
+
+            if (this.inputElement.name) {
+                this.divElement.className += ' form-input-' + this.inputElement.name;
             }
-        }, 10);
+
+            this.inputElement.parentElement.insertBefore(this.divElement, this.inputElement.nextSibling);
+            this.divElement.appendChild(this.inputElement);
+
+            if (this.helpLink) {
+                this.helpLinkElement = document.createElement('a');
+                this.helpLinkElement.innerText = this.helpLink;
+                this.helpLinkElement.className = 'help';
+                this.divElement.appendChild(this.helpLinkElement);
+
+                this.renderer.listen(this.helpLinkElement, 'click', e => this.clickHelp());
+            }
+
+            this.inputElement.setAttribute('placeholder', '');
+
+            this.labelElement = document.createElement('label');
+            this.labelElement.textContent = this.placeholder;
+            if (this.inputElement.required && this.asterisk) {
+                this.labelElement.textContent += ' *';
+            }
+            this.divElement.appendChild(this.labelElement);
+
+            setTimeout(() => {
+                if (this.inputElement.value) {
+                    this.focus();
+                }
+            }, 10);
+        }, 100);
     }
 
     focus(): void {

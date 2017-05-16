@@ -13,6 +13,8 @@ var core_1 = require("@angular/core");
 var Rx_1 = require("rxjs/Rx");
 require("rxjs/add/operator/toPromise");
 var app_http_1 = require("../data/app-http");
+var constants_1 = require("../constants");
+var util_1 = require("../util/util");
 var LoginResponse = (function () {
     function LoginResponse() {
     }
@@ -24,15 +26,6 @@ var UserService = (function () {
     ) {
         this.http = http;
         this.USER_STORAGE_KEY = 'improvplus_user';
-        this.loginUrl = '/login';
-        this.passwordRecoveryUrl = '/recoverPassword';
-        this.passwordRecoveryTokenCheckUrl = '/checkPasswordToken';
-        this.passwordChangeUrl = '/changePassword';
-        this.logoutUrl = '/logout';
-        this.refreshUrl = '/refreshToken';
-        this.userUrl = '/api/user/';
-        this.validateUrl = this.userUrl + 'validate';
-        this.inviteUrl = '/api/invite/';
         this.logginStateSource = new Rx_1.Subject();
         this.loginState$ = this.logginStateSource.asObservable();
         this.loadUserData();
@@ -72,7 +65,7 @@ var UserService = (function () {
     UserService.prototype.login = function (email, password) {
         var _this = this;
         this.isLoggingIn = true;
-        this.loginPromise = this.http.post(this.loginUrl, {
+        this.loginPromise = this.http.post(constants_1.API.login, {
             email: email,
             password: password
         }).toPromise()
@@ -80,7 +73,7 @@ var UserService = (function () {
         return this.loginPromise;
     };
     UserService.prototype.recoverPassword = function (email) {
-        return this.http.post(this.passwordRecoveryUrl, {
+        return this.http.post(constants_1.API.passwordRecovery, {
             email: email
         }).toPromise()
             .then(function (response) {
@@ -93,7 +86,7 @@ var UserService = (function () {
         });
     };
     UserService.prototype.checkPasswordRecoveryToken = function (token) {
-        return this.http.post(this.passwordRecoveryTokenCheckUrl, {
+        return this.http.post(constants_1.API.passwordRecoveryTokenCheck, {
             token: token
         }).toPromise()
             .then(function (response) {
@@ -107,7 +100,7 @@ var UserService = (function () {
         });
     };
     UserService.prototype.changePassword = function (token, password) {
-        return this.http.post(this.passwordChangeUrl, {
+        return this.http.post(constants_1.API.passwordChange, {
             password: password,
             token: token
         }).toPromise()
@@ -119,7 +112,7 @@ var UserService = (function () {
         var _this = this;
         if (this.checkTokenExpiration()) {
             this.isLoggingIn = true;
-            this.loginPromise = this.http.post(this.refreshUrl, {})
+            this.loginPromise = this.http.post(constants_1.API.refresh, {})
                 .toPromise()
                 .then(function (response) { return _this._handleLoginRequest(response); });
             return this.loginPromise;
@@ -138,13 +131,15 @@ var UserService = (function () {
         }
         return this.loggedInUser;
     };
-    UserService.prototype.logout = function () {
+    UserService.prototype.logout = function (silent) {
         var _this = this;
-        return this.http.post(this.logoutUrl, {})
+        return this.http.post(constants_1.API.logout, {})
             .toPromise()
             .then(function () {
             _this._handleLogout();
-            _this.announceLoginState();
+            if (!silent) {
+                _this.announceLoginState();
+            }
             return true;
         });
     };
@@ -180,7 +175,7 @@ var UserService = (function () {
      */
     UserService.prototype.updateUser = function (user) {
         var _this = this;
-        return this.http.put(this.userUrl + this.loggedInUser._id, user)
+        return this.http.put(constants_1.API.updateUser(user._id), user)
             .toPromise()
             .then(function (response) {
             var user = response.json();
@@ -190,7 +185,7 @@ var UserService = (function () {
     };
     UserService.prototype.setPreference = function (key, val) {
         var _this = this;
-        return this.http.post(this.userUrl + this.loggedInUser._id + '/preference', {
+        return this.http.post(constants_1.API.userPreference(this.loggedInUser._id), {
             key: key,
             val: val
         }).toPromise()
@@ -244,20 +239,26 @@ var UserService = (function () {
     UserService.prototype.isLocked = function () {
         return this.loggedInUser.locked;
     };
-    UserService.prototype.isExpired = function () {
-        return !this.loggedInUser.subscription || (new Date(this.loggedInUser.subscription.expiration)).getTime() <= Date.now();
+    UserService.prototype.isExpired = function (user) {
+        user = user || this.loggedInUser;
+        return !user.subscription || (new Date(user.subscription.expiration)).getTime() <= Date.now();
     };
     UserService.prototype.cancelInvite = function (invite) {
-        return this.http.delete(this.inviteUrl + invite._id)
+        var _this = this;
+        return this.http.delete(constants_1.API.cancelInvite(invite._id))
             .toPromise()
             .then(function (response) {
+            var inviteIndex = util_1.Util.indexOfId(_this.loggedInUser.invites, invite);
+            if (inviteIndex > -1) {
+                _this.loggedInUser.invites.splice(inviteIndex, 1);
+            }
             return true;
         });
     };
     UserService.prototype.acceptInvite = function (inviteId, email, password, name) {
         var _this = this;
         if (this.loggedInUser) {
-            return this.http.put(this.userUrl + this.loggedInUser._id + '/acceptInvite/' + inviteId, {}).toPromise()
+            return this.http.put(constants_1.API.acceptInvite(this.loggedInUser._id, inviteId), {}).toPromise()
                 .then(function (response) {
                 var user = response.json();
                 _this.saveUserData(user);
@@ -266,7 +267,7 @@ var UserService = (function () {
             });
         }
         else {
-            return this.http.post(this.userUrl, {
+            return this.http.post(constants_1.API.user, {
                 email: email,
                 password: password,
                 invite: inviteId,
@@ -279,7 +280,7 @@ var UserService = (function () {
     };
     UserService.prototype.leaveTeam = function (team) {
         var _this = this;
-        return this.http.put(this.userUrl + this.loggedInUser._id + '/leaveTeam/' + team._id, {}).toPromise()
+        return this.http.put(constants_1.API.leaveTeam(this.loggedInUser._id, team._id), {}).toPromise()
             .then(function (response) {
             var user = response.json();
             _this.saveUserData(user);
@@ -291,7 +292,7 @@ var UserService = (function () {
      * The following functions get various expanded properties on the user object. They don't change the logged in user data
      */
     UserService.prototype.fetchPurchases = function () {
-        return this.http.get(this.userUrl + this.loggedInUser._id + '/purchases')
+        return this.http.get(constants_1.API.userPurchases(this.loggedInUser._id))
             .toPromise()
             .then(function (response) {
             return response.json();
@@ -299,7 +300,7 @@ var UserService = (function () {
     };
     UserService.prototype.fetchSubscription = function () {
         if (!this._subscriptionPromise) {
-            this._subscriptionPromise = this.http.get(this.userUrl + this.loggedInUser._id + '/subscription')
+            this._subscriptionPromise = this.http.get(constants_1.API.userSubscription(this.loggedInUser._id))
                 .toPromise()
                 .then(function (response) {
                 return response.json();

@@ -19,6 +19,7 @@ var game_database_service_1 = require("../service/game-database.service");
 var library_service_1 = require("../service/library.service");
 var auth_guard_service_1 = require("../service/auth-guard.service");
 var team_service_1 = require("../service/team.service");
+var history_service_1 = require("../service/history.service");
 // main components
 // import { AppComponent } from '../component/app.component';
 var unauthorized_component_1 = require("../component/unauthorized.component");
@@ -88,7 +89,8 @@ ImprovPlusModule = __decorate([
             game_database_service_1.GameDatabaseService,
             library_service_1.LibraryService,
             auth_guard_service_1.AuthGuard,
-            team_service_1.TeamService
+            team_service_1.TeamService,
+            history_service_1.HistoryService
         ]
     })
 ], ImprovPlusModule);

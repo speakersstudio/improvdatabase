@@ -72,32 +72,18 @@
 
         <div class="content">
 
-            <label>
-                Name
-                <input name="name" [(ngModel)]="selectedMaterial.name" type="text" placeholder="Name" />
-            </label>
+            <input name="name" formInput [(ngModel)]="selectedMaterial.name" type="text" placeholder="Name" />
 
-            <label>Description
-                <textarea name="description" [(ngModel)]="selectedMaterial.description" rows="4"></textarea>
-            </label>
+            <textarea name="description" formInput placeholder="Description" [(ngModel)]="selectedMaterial.description" rows="4"></textarea>
 
             <div class="columns">
-                <label>
-                    Price (no dollar sign, but decimals are okay)
-                    <input name="price" [(ngModel)]="selectedMaterial.price" type="text" placeholder="Price" />
-                </label>
+                <input name="price" formInput [(ngModel)]="selectedMaterial.price" type="text" placeholder="Price (no dollar sign, but decimals are okay)" />
 
-                <label>
-                    Color (red, blue, orange, yellow)
-                    <input name="color" [(ngModel)]="selectedMaterial.color" type="text" placeholder="Color" />
-                </label>
+                <input name="color" formInput [(ngModel)]="selectedMaterial.color" type="text" placeholder="Color (red, blue, orange, yellow, green)" />
             </div>
 
             <div class="columns">
-                <label>
-                    Tags (comma-separated)
-                    <input name="tags" [(ngModel)]="selectedMaterial.tags" type="text" placeholder="Tags" />
-                </label>
+                <input name="tags" formInput [(ngModel)]="selectedMaterial.tags" type="text" placeholder="Tags (comma-separated)" />
             </div>
 
             <div class="columns">
@@ -207,35 +193,21 @@
         <div class="right-bracket"><h1>package database</h1></div>
     </div>
 
-    <!-- Edit Material Item -->
+    <!-- Edit Package -->
     <div class="paper has-brackets" *ngIf="selectedPackage">
 
         <div class="content">
 
-            <label>
-                Name
-                <input name="name" [(ngModel)]="selectedPackage.name" type="text" placeholder="Name" />
-            </label>
+            <input name="name" formInput [(ngModel)]="selectedPackage.name" type="text" placeholder="Name" />
 
-            <label>
-                Slug
-                <input name="slug" [(ngModel)]="selectedPackage.slug" type="text" placeholder="Slug" />
-            </label>
+            <input name="slug" formInput [(ngModel)]="selectedPackage.slug" type="text" placeholder="Slug" />
 
-            <label>Description (Use a new line to separate bullet points)
-                <textarea name="description" [(ngModel)]="selectedPackageDescription" rows="4"></textarea>
-            </label>
+            <textarea name="description" formInput [(ngModel)]="selectedPackageDescription" rows="4" placeholder="Description (Use a new line to separate bullet points)"></textarea>
 
             <div class="columns">
-                <label>
-                    Price (no dollar sign, but decimals are okay)
-                    <input name="price" [(ngModel)]="selectedPackage.price" type="text" placeholder="Price" />
-                </label>
+                <input name="price" formInput [(ngModel)]="selectedPackage.price" type="text" placeholder="Price (no dollar sign, but decimals are okay)" />
 
-                <label>
-                    Color (red, blue, orange, yellow)
-                    <input name="color" [(ngModel)]="selectedPackage.color" type="text" placeholder="Color" />
-                </label>
+                <input name="color" formInput [(ngModel)]="selectedPackage.color" type="text" placeholder="Color (red, blue, orange, yellow, green)" />
             </div>
 
             <div class="columns">
@@ -305,6 +277,46 @@
         <div class="right-bracket"><h1>package</h1></div>
     </div>
 
+    <!-- History List -->
+    <div class="paper has-brackets" *ngIf="selectedTab == 'history'">
+
+        <div class="content">
+
+            <h4 class="right">History of Everything</h4>
+
+            <div class="list">
+
+                <div class="item" *ngFor="let history of histories">
+                    
+                    <div class="badge">
+                        <i class="fa {{getHistoryIcon(history)}}"></i>
+                    </div>
+                    <div class="metadata">    
+                        <div class="row columns fill">
+                            <span>{{history.user.firstName}} {{history.user.lastName}}</span>
+                            <span *ngIf="!history.user.firstName && !history.user.lastName">{{history.user.email}}</span>
+                            
+                            <span>{{simpleDateTime(history.date)}}</span>
+                        </div>
+                        <div class="row columns">
+                            <span>{{history.action}}</span>
+                            <span>{{history.target}}</span>
+                            <span>
+                                <span *ngFor="let change of history.changes">{{change.property}}</span>
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>materials database</h1></div>
+    </div>
+
 </div>
 
 <!-- dialog for selecting a material item or package -->
@@ -321,7 +333,8 @@
 
                     <li *ngFor="let material of materialItems"
                         (click)="selectMaterialForPackage(material)"
-                        class="{{material.color}} clickable">
+                        class="{{material.color}} clickable"
+                        [class.hide]="!material.visible">
 
                         <i *ngIf="material.versions[0] && material.versions[0].extension == 'pdf'" class="fa fa-file-pdf-o large" title="PDF"></i>
                         {{material.name}}
@@ -333,7 +346,8 @@
 
                     <li *ngFor="let package of packages"
                         (click)="selectPackageForPackage(package)"
-                        class="{{package.color}} clickable">
+                        class="{{package.color}} clickable"
+                        [class.hide]="!package.visible">
 
                         <i class="fa fa-book"></i>
                         {{package.name}}

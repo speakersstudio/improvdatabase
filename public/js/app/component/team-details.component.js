@@ -92,7 +92,6 @@ var TeamDetailsComponent = (function () {
     TeamDetailsComponent.prototype.setTeam = function (team) {
         var _this = this;
         this.team = team;
-        this.calculateSubs();
         if (this.isUserAdmin()) {
             this.teamService.fetchPurchases(this.team).then(function (p) {
                 _this.purchases = p;
@@ -100,6 +99,7 @@ var TeamDetailsComponent = (function () {
         }
         this.teamService.fetchSubscription(this.team).then(function (s) {
             _this.subscription = s;
+            _this.calculateSubs();
         });
         this.title = team.name;
         this.tabs = [
@@ -128,8 +128,16 @@ var TeamDetailsComponent = (function () {
         }
     };
     TeamDetailsComponent.prototype.calculateSubs = function () {
-        this.pendingInvites = this.team.subscription.invites ? this.team.subscription.invites.length : 0;
-        this.remainingSubs = this.team.subscription.subscriptions - (this.team.subscription.children.length || 0) - this.pendingInvites;
+        var _this = this;
+        this.pendingInvites = 0;
+        if (this.subscription.invites) {
+            this.subscription.invites.forEach(function (invite) {
+                if (!invite.inviteUser || _this.userService.isExpired(invite.inviteUser)) {
+                    _this.pendingInvites++;
+                }
+            });
+        }
+        this.remainingSubs = this.subscription.subscriptions - (this.subscription.children.length || 0) - this.pendingInvites;
     };
     TeamDetailsComponent.prototype.saveEditName = function (name) {
         this.team.name = name;
@@ -185,6 +193,7 @@ var TeamDetailsComponent = (function () {
         this._app.backdrop(true);
         this.showInviteDialog = true;
         this.inviteEmail = '';
+        this.inviteError = '';
     };
     TeamDetailsComponent.prototype.cancelInviteDialog = function () {
         this._app.backdrop(false);
@@ -201,10 +210,10 @@ var TeamDetailsComponent = (function () {
             _this.inviteStatus = 'wait';
             _this.inviteModel = invite;
             if (invite) {
-                _this.team.subscription.invites.push(invite);
+                _this.subscription.invites.push(invite);
                 _this.calculateSubs();
                 setTimeout(function () {
-                    if (!invite.inviteUser || !invite.inviteUser.subscription) {
+                    if (!invite.inviteUser || _this.userService.isExpired(invite.inviteUser)) {
                         _this.inviteStatus = 'new';
                     }
                     else {
@@ -248,8 +257,8 @@ var TeamDetailsComponent = (function () {
         this._app.dialog('Cancel an Invitation', 'Are you sure you want to revoke your invitation to ' + invite.email + '? We already sent them the invite, but the link inside will no longer work. We will not notify them that it was cancelled.', 'Yes', function () {
             _this.userService.cancelInvite(invite).then(function (done) {
                 if (done) {
-                    var index = _this.team.subscription.invites.indexOf(invite);
-                    _this.team.subscription.invites.splice(index, 1);
+                    var index = _this.subscription.invites.indexOf(invite);
+                    _this.subscription.invites.splice(index, 1);
                     _this.calculateSubs();
                 }
             });

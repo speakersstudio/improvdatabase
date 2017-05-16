@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 
 import {AppComponent} from '../../component/app.component';
@@ -7,10 +7,12 @@ import { Tool } from '../view/toolbar.view';
 import { TabData } from '../../model/tab-data';
 
 import { LibraryService } from '../service/library.service';
+import { HistoryService } from '../service/history.service';
 
 import { Subscription } from '../../model/subscription';
 import { Package } from '../../model/package';
 import { MaterialItem, MaterialItemVersion } from '../../model/material-item';
+import { HistoryModel } from '../../model/history';
 
 import { UserService } from '../../service/user.service';
 
@@ -29,7 +31,7 @@ import { DialogAnim } from '../../util/anim.util';
 })
 export class AdminComponent implements OnInit {
 
-    @ViewChild('versionFileInput', {read: HTMLInputElement}) versionFileInput: HTMLInputElement;
+    @ViewChild('versionFileInput') versionFileInput: ElementRef;
 
     title: string = '<span class="light">super</span><strong>admin</strong>';
 
@@ -43,6 +45,11 @@ export class AdminComponent implements OnInit {
             name: 'Packages',
             id: 'packages',
             icon: 'book'
+        },
+        {
+            name: 'History',
+            id: 'history',
+            icon: 'history'
         }
     ];
     selectedTab: string = 'materials';
@@ -60,11 +67,17 @@ export class AdminComponent implements OnInit {
     selectPackageDialogVisible: boolean;
     selectMaterialDialogVisible: boolean;
 
+    histories: HistoryModel[];
+    rawHistories: HistoryModel[];
+    historyShowRefresh: boolean;
+    historyShowLogin: boolean;
+
     constructor(
         public _app: AppComponent,
         private router: Router,
         private libraryService: LibraryService,
         private userService: UserService,
+        private historyService: HistoryService,
         private http: AppHttp
     ) { }
 
@@ -87,6 +100,7 @@ export class AdminComponent implements OnInit {
     ngOnInit(): void {
         this.showMaterials();
         this.showPackages();
+        this.getHistory();
     }
 
     selectTab(tab: TabData): void {
@@ -102,6 +116,10 @@ export class AdminComponent implements OnInit {
         return TimeUtil.simpleDate(date);
     }
 
+    simpleDateTime(date: string): string {
+        return TimeUtil.simpleDate(date) + ' ' + TimeUtil.simpleTime(date);
+    }
+
     showMaterials(): void {
         this.libraryService.getAllMaterials()
             .then(materials => {
@@ -115,6 +133,38 @@ export class AdminComponent implements OnInit {
             .then(packages => {
                 this.packages = packages;
             })
+    }
+
+    getHistory(): void {
+        this.historyService.getAllHistory().then(histories => {
+            this.rawHistories = histories;
+            this.filterHistory();
+        })
+    }
+
+    getHistoryIcon(history: HistoryModel): string {
+        switch(history.action) {
+            case 'game_edit':
+                return 'fa-rocket';
+            case 'material_view':
+                return 'fa-file-pdf-o';
+            case 'change_password':
+                return 'fa-key';
+            default:
+                return 'fa-history';
+        }
+    }
+
+    filterHistory(): void {
+        this.histories = this.rawHistories.filter(h => {
+            if (!this.historyShowRefresh && h.action == 'refresh') {
+                return false;
+            } else if (!this.historyShowLogin && (h.action == 'login' || h.action == 'logout' )) {
+                return false;
+            }
+            return true;
+        });
+        console.log(this.histories);
     }
 
     selectMaterial(material: MaterialItem): void {
@@ -166,7 +216,8 @@ export class AdminComponent implements OnInit {
     }
 
     fileChange(): void {
-        this.newVersionFile = this.versionFileInput.files[0];
+        let fileInput = this.versionFileInput.nativeElement;
+        this.newVersionFile = fileInput.files[0];
     }
 
     saveVersion(): void {

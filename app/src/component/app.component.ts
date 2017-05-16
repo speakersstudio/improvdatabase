@@ -217,8 +217,12 @@ export class AppComponent implements OnInit {
     }
 
     toggleNav(): void {
-        this.showMenu = !this.showMenu;
-        this.showBackdrop = this.showMenu;
+        if (this.userService.getLoggedInUser()) {
+            this.showMenu = !this.showMenu;
+            this.showBackdrop = this.showMenu;
+        } else {
+            this.router.navigate(['/welcome']);
+        }
     }
 
     closeOverlays(): void {
@@ -319,7 +323,9 @@ export class AppComponent implements OnInit {
     handleLogin(user: User): void {
         this.closeOverlays();
 
-        if (this.inApp || this.router.url == '/login') {
+        if (!user) {
+            this.router.navigate(['/welcome']);
+        } else if (this.inApp || this.router.url == '/login') {
             this.router.navigate(['/app']);
         }
     }

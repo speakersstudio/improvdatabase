@@ -24,6 +24,9 @@ var InviteComponent = (function () {
     }
     InviteComponent.prototype.ngOnInit = function () {
         var _this = this;
+        if (this.userService.getLoggedInUser()) {
+            this.userService.logout(true);
+        }
         this.route.params.forEach(function (params) {
             _this.inviteId = params['id'];
         });

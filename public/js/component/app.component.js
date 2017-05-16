@@ -159,8 +159,13 @@ var AppComponent = (function () {
         }
     };
     AppComponent.prototype.toggleNav = function () {
-        this.showMenu = !this.showMenu;
-        this.showBackdrop = this.showMenu;
+        if (this.userService.getLoggedInUser()) {
+            this.showMenu = !this.showMenu;
+            this.showBackdrop = this.showMenu;
+        }
+        else {
+            this.router.navigate(['/welcome']);
+        }
     };
     AppComponent.prototype.closeOverlays = function () {
         this.showDialog = false;
@@ -250,7 +255,10 @@ var AppComponent = (function () {
     };
     AppComponent.prototype.handleLogin = function (user) {
         this.closeOverlays();
-        if (this.inApp || this.router.url == '/login') {
+        if (!user) {
+            this.router.navigate(['/welcome']);
+        }
+        else if (this.inApp || this.router.url == '/login') {
             this.router.navigate(['/app']);
         }
     };

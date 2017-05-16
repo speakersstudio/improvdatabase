@@ -65,11 +65,11 @@ module.exports = {
                 path: 'invites',
                 populate: {
                     path: 'team user',
-                    select: 'name firstName lastName',
-                    match: {
-                        accepted: false,
-                        dateDeleted: null
-                    }
+                    select: 'name firstName lastName'
+                },
+                match: {
+                    accepted: false,
+                    dateDeleted: null
                 }
             })
             .populate({
@@ -109,9 +109,9 @@ module.exports = {
                 select:'-stripeCustomerId',
                 populate: {
                     path: 'invites',
-                    match: { 
+                    match: {
                         accepted: false,
-                        dateDeleted: null
+                        dateDeleted: undefined
                     }
                 }
             });

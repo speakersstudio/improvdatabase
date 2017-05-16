@@ -5,6 +5,9 @@ import { Observable, Subject } from 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
 
 import { AppHttp } from '../data/app-http';
+import { API } from '../constants';
+
+import { Util } from '../util/util';
 
 import { User } from "../model/user";
 import { Team } from '../model/team';
@@ -26,15 +29,15 @@ export class UserService {
 
     private USER_STORAGE_KEY = 'improvplus_user';
 
-    private loginUrl = '/login';
-    private passwordRecoveryUrl = '/recoverPassword';
-    private passwordRecoveryTokenCheckUrl = '/checkPasswordToken';
-    private passwordChangeUrl = '/changePassword';
-    private logoutUrl = '/logout';
-    private refreshUrl = '/refreshToken';
-    private userUrl = '/api/user/';
-    private validateUrl = this.userUrl + 'validate';
-    private inviteUrl = '/api/invite/';
+    // private loginUrl = '/login';
+    // private passwordRecoveryUrl = '/recoverPassword';
+    // private passwordRecoveryTokenCheckUrl = '/checkPasswordToken';
+    // private passwordChangeUrl = '/changePassword';
+    // private logoutUrl = '/logout';
+    // private refreshUrl = '/refreshToken';
+    // private userUrl = '/api/user/';
+    // private validateUrl = this.userUrl + 'validate';
+    // private inviteUrl = '/api/invite/';
 
     loggedInUser: User;
 
@@ -91,7 +94,7 @@ export class UserService {
 
     login(email: string, password: string): Promise<User> {
         this.isLoggingIn = true;
-        this.loginPromise = this.http.post(this.loginUrl, {
+        this.loginPromise = this.http.post(API.login, {
                 email: email,
                 password: password
             }).toPromise()
@@ -101,7 +104,7 @@ export class UserService {
     }
 
     recoverPassword(email: string): Promise<boolean> {
-        return this.http.post(this.passwordRecoveryUrl, {
+        return this.http.post(API.passwordRecovery, {
             email: email
         }).toPromise()
         .then(response => {
@@ -114,7 +117,7 @@ export class UserService {
     }
 
     checkPasswordRecoveryToken(token: string): Promise<boolean> {
-        return this.http.post(this.passwordRecoveryTokenCheckUrl, {
+        return this.http.post(API.passwordRecoveryTokenCheck, {
             token: token
         }).toPromise()
         .then(response => {
@@ -128,7 +131,7 @@ export class UserService {
     }
 
     changePassword(token: string, password: string): Promise<User> {
-        return this.http.post(this.passwordChangeUrl, {
+        return this.http.post(API.passwordChange, {
             password: password,
             token: token
         }).toPromise()
@@ -140,7 +143,7 @@ export class UserService {
     refreshToken(): Promise<User> {
         if (this.checkTokenExpiration()) {
             this.isLoggingIn = true;
-            this.loginPromise = this.http.post(this.refreshUrl, {})
+            this.loginPromise = this.http.post(API.refresh, {})
                 .toPromise()
                 .then(response => this._handleLoginRequest(response));
             
@@ -162,12 +165,14 @@ export class UserService {
         return this.loggedInUser;
     }
 
-    logout(): Promise<boolean> {
-        return this.http.post(this.logoutUrl, {})
+    logout(silent?: boolean): Promise<boolean> {
+        return this.http.post(API.logout, {})
             .toPromise()
             .then(() => {
                 this._handleLogout();
-                this.announceLoginState();
+                if (!silent) {
+                    this.announceLoginState();
+                }
                 return true;
             });
     }
@@ -209,7 +214,7 @@ export class UserService {
      * Change information on the current user
      */
     updateUser(user: User): Promise<User> {
-        return this.http.put(this.userUrl + this.loggedInUser._id, user)
+        return this.http.put(API.updateUser(user._id), user)
             .toPromise()
             .then((response) => {
                 let user = response.json() as User;
@@ -219,7 +224,7 @@ export class UserService {
     }
 
     setPreference(key: string, val: string): Promise<User> {
-        return this.http.post(this.userUrl + this.loggedInUser._id + '/preference', {
+        return this.http.post(API.userPreference(this.loggedInUser._id), {
             key: key,
             val: val
         }).toPromise()
@@ -280,21 +285,27 @@ export class UserService {
         return this.loggedInUser.locked;
     }
 
-    isExpired(): boolean {
-        return !this.loggedInUser.subscription || (new Date(this.loggedInUser.subscription.expiration)).getTime() <= Date.now();
+    isExpired(user?: User): boolean {
+        user = user || this.loggedInUser;
+        return !user.subscription || (new Date(user.subscription.expiration)).getTime() <= Date.now();
     }
 
     cancelInvite(invite: Invite): Promise<boolean> {
-        return this.http.delete(this.inviteUrl + invite._id)
+        return this.http.delete(API.cancelInvite(invite._id))
             .toPromise()
             .then(response => {
+                let inviteIndex = Util.indexOfId(this.loggedInUser.invites, invite);
+                if (inviteIndex > -1) {
+                    this.loggedInUser.invites.splice(inviteIndex, 1);
+                }
+
                 return true;
             })
     }
 
     acceptInvite(inviteId: string, email?: string, password?: string, name?: string): Promise<User> {
         if (this.loggedInUser) {
-            return this.http.put(this.userUrl + this.loggedInUser._id + '/acceptInvite/' + inviteId, {}).toPromise()
+            return this.http.put(API.acceptInvite(this.loggedInUser._id, inviteId), {}).toPromise()
                 .then(response => {
                     let user = response.json() as User;
                     this.saveUserData(user);
@@ -302,7 +313,7 @@ export class UserService {
                     return this.loggedInUser;
                 })
         } else {
-            return this.http.post(this.userUrl, {
+            return this.http.post(API.user, {
                 email: email,
                 password: password,
                 invite: inviteId,
@@ -315,7 +326,7 @@ export class UserService {
     }
 
     leaveTeam(team: Team): Promise<User> {
-        return this.http.put(this.userUrl + this.loggedInUser._id + '/leaveTeam/' + team._id, {}).toPromise()
+        return this.http.put(API.leaveTeam(this.loggedInUser._id, team._id), {}).toPromise()
             .then(response => {
                 let user = response.json() as User;
 
@@ -330,7 +341,7 @@ export class UserService {
      * The following functions get various expanded properties on the user object. They don't change the logged in user data
      */
     fetchPurchases(): Promise<Purchase[]> {
-        return this.http.get(this.userUrl + this.loggedInUser._id + '/purchases')
+        return this.http.get(API.userPurchases(this.loggedInUser._id))
             .toPromise()
             .then(response => {
                 return response.json() as Purchase[];
@@ -340,7 +351,7 @@ export class UserService {
     private _subscriptionPromise: Promise<User>;
     fetchSubscription(): Promise<User> {
         if (!this._subscriptionPromise) {
-            this._subscriptionPromise = this.http.get(this.userUrl + this.loggedInUser._id + '/subscription')
+            this._subscriptionPromise = this.http.get(API.userSubscription(this.loggedInUser._id))
                 .toPromise()
                 .then(response => {
                     return response.json() as User;

@@ -12,15 +12,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 require("rxjs/add/operator/toPromise");
 var app_http_1 = require("../data/app-http");
+var constants_1 = require("../constants");
 var purchase_1 = require("../model/purchase");
 var user_service_1 = require("./user.service");
 var CartService = (function () {
     function CartService(http, userService) {
         this.http = http;
         this.userService = userService;
-        this.chargeUrl = "/charge";
-        this.signupUrl = "/signup";
-        this.configUrl = "/packageconfig";
+        // private chargeUrl = "/charge";
+        // private signupUrl = "/signup";
+        // private configUrl = "/packageconfig";
         this.purchase = new purchase_1.Purchase();
     }
     CartService.prototype.reset = function () {
@@ -37,7 +38,7 @@ var CartService = (function () {
             });
         }
         else {
-            return this.http.get(this.configUrl)
+            return this.http.get(constants_1.API.packageConfig)
                 .toPromise()
                 .then(function (result) {
                 _this.config = result.json();
@@ -72,7 +73,7 @@ var CartService = (function () {
         this.user = user;
     };
     CartService.prototype.charge = function (token) {
-        return this.http.post(this.chargeUrl, {
+        return this.http.post(constants_1.API.charge, {
             stripeToken: token,
             purchase: this.purchase,
             user: this.user
@@ -88,7 +89,7 @@ var CartService = (function () {
         // if (role) {
         //     this.addSubscription(role);
         // }
-        return this.http.post(this.signupUrl, {
+        return this.http.post(constants_1.API.signup, {
             stripeToken: token,
             purchase: this.purchase,
             email: email,

@@ -11,13 +11,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 require("rxjs/add/operator/toPromise");
+var constants_1 = require("../constants");
 var app_http_1 = require("../data/app-http");
 var AppService = (function () {
     function AppService(http) {
         this.http = http;
-        this.packageUrl = '/api/package/';
-        this.userValidateUrl = '/api/user/validate';
-        this.teamValidateUrl = '/api/team/validate';
     }
     AppService.prototype.handleError = function (error) {
         console.error('An error has occurred', error);
@@ -30,7 +28,7 @@ var AppService = (function () {
         return this.redirect;
     };
     AppService.prototype.validateUser = function (user) {
-        return this.http.post(this.userValidateUrl, user)
+        return this.http.post(constants_1.API.validateUser, user)
             .toPromise()
             .then(function (response) {
             var data = response.json();
@@ -43,7 +41,7 @@ var AppService = (function () {
         });
     };
     AppService.prototype.validateTeam = function (team) {
-        return this.http.post(this.teamValidateUrl, team)
+        return this.http.post(constants_1.API.validateTeam, team)
             .toPromise()
             .then(function (response) {
             var data = response.json();
@@ -57,7 +55,7 @@ var AppService = (function () {
     };
     AppService.prototype.getPackages = function () {
         if (!this._packagePromise) {
-            this._packagePromise = this.http.get(this.packageUrl)
+            this._packagePromise = this.http.get(constants_1.API.package)
                 .toPromise()
                 .then(function (response) {
                 var packages = response.json();

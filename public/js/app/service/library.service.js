@@ -12,22 +12,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 require("rxjs/add/operator/toPromise");
 var app_http_1 = require("../../data/app-http");
+var constants_1 = require("../../constants");
 var user_service_1 = require("../../service/user.service");
 var LibraryService = (function () {
     function LibraryService(http, userService) {
         this.http = http;
         this.userService = userService;
-        this.packageUrl = '/api/package/';
-        this.materialsUrl = '/api/material/';
-        this.ownedMaterialsUrl = '/api/user/:_id/materials';
-        this.userUrl = '/api/user/';
-        this.teamUrl = '/api/team/';
     }
     /**
      * Get the materials that you own
      */
     LibraryService.prototype.getOwnedMaterials = function () {
-        return this.http.get(this.userUrl + this.userService.getLoggedInUser()._id + '/materials')
+        return this.http.get(constants_1.API.userMaterials(this.userService.getLoggedInUser()._id))
             .toPromise()
             .then(function (response) {
             return response.json();
@@ -37,14 +33,14 @@ var LibraryService = (function () {
      * Get the materials that a team owns (will die )
      */
     LibraryService.prototype.getTeamMaterials = function (teamId) {
-        return this.http.get(this.teamUrl + teamId + '/materials')
+        return this.http.get(constants_1.API.teamMaterials(teamId))
             .toPromise()
             .then(function (response) {
             return response.json();
         });
     };
     LibraryService.prototype.downloadMaterial = function (id) {
-        this.http.get(this.materialsUrl + id)
+        this.http.get(constants_1.API.getMaterial(id))
             .toPromise()
             .then(function (response) {
             var url = response.json().url;
@@ -52,7 +48,7 @@ var LibraryService = (function () {
         });
     };
     LibraryService.prototype.downloadPackage = function (id) {
-        this.http.get(this.packageUrl + id)
+        this.http.get(constants_1.API.getPackage(id))
             .toPromise()
             .then(function (response) {
             var url = response.json().url;
@@ -71,14 +67,14 @@ var LibraryService = (function () {
     };
     // this is for admin - perhaps admin items should live in their own service?
     LibraryService.prototype.getAllMaterials = function () {
-        return this.http.get(this.materialsUrl + 'all')
+        return this.http.get(constants_1.API.getMaterial('all'))
             .toPromise()
             .then(function (response) {
             return response.json();
         });
     };
     LibraryService.prototype.getAllPackages = function () {
-        return this.http.get(this.packageUrl + 'all')
+        return this.http.get(constants_1.API.getPackage('all'))
             .toPromise()
             .then(function (response) {
             return response.json();
@@ -86,7 +82,7 @@ var LibraryService = (function () {
     };
     LibraryService.prototype.createMaterial = function () {
         if (this.userService.can('material_create')) {
-            return this.http.post(this.materialsUrl, {})
+            return this.http.post(constants_1.API.materials, {})
                 .toPromise()
                 .then(function (response) {
                 return response.json();
@@ -95,7 +91,7 @@ var LibraryService = (function () {
     };
     LibraryService.prototype.createPackage = function () {
         if (this.userService.can('package_create')) {
-            return this.http.post(this.packageUrl, {})
+            return this.http.post(constants_1.API.package, {})
                 .toPromise()
                 .then(function (response) {
                 return response.json();
@@ -104,7 +100,7 @@ var LibraryService = (function () {
     };
     LibraryService.prototype.deleteMaterial = function (material) {
         if (this.userService.can('material_delete')) {
-            return this.http.delete(this.materialsUrl + material._id)
+            return this.http.delete(constants_1.API.getMaterial(material._id))
                 .toPromise()
                 .then(function (response) {
                 return true;
@@ -113,7 +109,7 @@ var LibraryService = (function () {
     };
     LibraryService.prototype.deletePackage = function (p) {
         if (this.userService.can('package_delete')) {
-            return this.http.delete(this.packageUrl + p._id)
+            return this.http.delete(constants_1.API.getPackage(p._id))
                 .toPromise()
                 .then(function (response) {
                 return true;
@@ -124,7 +120,7 @@ var LibraryService = (function () {
         if (!this.userService.isSuperAdmin()) {
             return;
         }
-        return this.http.put(this.materialsUrl + material._id, material)
+        return this.http.put(constants_1.API.getMaterial(material._id), material)
             .toPromise()
             .then(function (response) {
             return response.json();
@@ -132,7 +128,7 @@ var LibraryService = (function () {
     };
     LibraryService.prototype.savePackage = function (p) {
         if (this.userService.can('package_edit')) {
-            return this.http.put(this.packageUrl + p._id, p)
+            return this.http.put(constants_1.API.getPackage(p._id), p)
                 .toPromise()
                 .then(function (response) {
                 return response.json();
@@ -147,7 +143,7 @@ var LibraryService = (function () {
         formData.append('ver', version.ver + '');
         formData.append('description', version.description);
         formData.append('file', file, file.name);
-        return this.http.postFormData(this.materialsUrl + materialItemId + '/version', formData).toPromise()
+        return this.http.postFormData(constants_1.API.materialVersion(materialItemId), formData).toPromise()
             .then(function (response) {
             return response.json();
         });
@@ -156,14 +152,14 @@ var LibraryService = (function () {
         if (!this.userService.isSuperAdmin()) {
             return;
         }
-        return this.http.delete(this.materialsUrl + materialItemId + '/version/' + version._id).toPromise()
+        return this.http.delete(constants_1.API.getMaterialVersion(materialItemId, version._id)).toPromise()
             .then(function (response) {
             return response.json();
         });
     };
     LibraryService.prototype.savePackagePackages = function (p) {
         if (this.userService.can('package_edit')) {
-            return this.http.put(this.packageUrl + p._id + '/packages', p)
+            return this.http.put(constants_1.API.savePackagePackages(p._id), p)
                 .toPromise()
                 .then(function (response) {
                 return response.json();
@@ -172,7 +168,7 @@ var LibraryService = (function () {
     };
     LibraryService.prototype.savePackageMaterials = function (p) {
         if (this.userService.can('package_edit')) {
-            return this.http.put(this.packageUrl + p._id + '/materials', p)
+            return this.http.put(constants_1.API.savePackageMaterials(p._id), p)
                 .toPromise()
                 .then(function (response) {
                 return response.json();

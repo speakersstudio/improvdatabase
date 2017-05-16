@@ -19,33 +19,35 @@ var FormInputDirective = (function () {
     }
     FormInputDirective.prototype.ngOnInit = function () {
         var _this = this;
-        this.placeholder = this.inputElement.getAttribute('placeholder');
-        this.divElement = document.createElement('div');
-        this.divElement.className = 'form-input';
-        if (this.inputElement.name) {
-            this.divElement.className += ' form-input-' + this.inputElement.name;
-        }
-        this.inputElement.parentElement.insertBefore(this.divElement, this.inputElement.nextSibling);
-        this.divElement.appendChild(this.inputElement);
-        if (this.helpLink) {
-            this.helpLinkElement = document.createElement('a');
-            this.helpLinkElement.innerText = this.helpLink;
-            this.helpLinkElement.className = 'help';
-            this.divElement.appendChild(this.helpLinkElement);
-            this.renderer.listen(this.helpLinkElement, 'click', function (e) { return _this.clickHelp(); });
-        }
-        this.inputElement.setAttribute('placeholder', '');
-        this.labelElement = document.createElement('label');
-        this.labelElement.textContent = this.placeholder;
-        if (this.inputElement.required && this.asterisk) {
-            this.labelElement.textContent += ' *';
-        }
-        this.divElement.appendChild(this.labelElement);
         setTimeout(function () {
-            if (_this.inputElement.value) {
-                _this.focus();
+            _this.placeholder = _this.inputElement.getAttribute('placeholder');
+            _this.divElement = document.createElement('div');
+            _this.divElement.className = 'form-input';
+            if (_this.inputElement.name) {
+                _this.divElement.className += ' form-input-' + _this.inputElement.name;
             }
-        }, 10);
+            _this.inputElement.parentElement.insertBefore(_this.divElement, _this.inputElement.nextSibling);
+            _this.divElement.appendChild(_this.inputElement);
+            if (_this.helpLink) {
+                _this.helpLinkElement = document.createElement('a');
+                _this.helpLinkElement.innerText = _this.helpLink;
+                _this.helpLinkElement.className = 'help';
+                _this.divElement.appendChild(_this.helpLinkElement);
+                _this.renderer.listen(_this.helpLinkElement, 'click', function (e) { return _this.clickHelp(); });
+            }
+            _this.inputElement.setAttribute('placeholder', '');
+            _this.labelElement = document.createElement('label');
+            _this.labelElement.textContent = _this.placeholder;
+            if (_this.inputElement.required && _this.asterisk) {
+                _this.labelElement.textContent += ' *';
+            }
+            _this.divElement.appendChild(_this.labelElement);
+            setTimeout(function () {
+                if (_this.inputElement.value) {
+                    _this.focus();
+                }
+            }, 10);
+        }, 100);
     };
     FormInputDirective.prototype.focus = function () {
         this.labelElement.className = 'active';

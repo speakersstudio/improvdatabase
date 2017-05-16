@@ -395,7 +395,8 @@ SignupComponent = __decorate([
         templateUrl: '../template/signup.component.html',
         animations: [
             anim_util_1.ToggleAnim.fadeAbsolute,
-            anim_util_1.ToggleAnim.bubble
+            anim_util_1.ToggleAnim.bubble,
+            anim_util_1.ToggleAnim.bubbleSlow
         ]
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,

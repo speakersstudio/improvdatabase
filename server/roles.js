@@ -54,7 +54,10 @@ module.exports = {
                 'dashboard_page_view',
                 'subscription_view',
                 'account_edit', // editing oneself
-                'subscription_renew'
+                'subscription_renew',
+                'history_view',
+
+                'invite_delete' // users can cancel invites that they sent, or reject ones sent to them
             ]
         },
         {
@@ -91,9 +94,7 @@ module.exports = {
 
                 'team_page_view',
                 'team_view', // get teams
-                'team_create', // users can create teams!
-
-                'invite_delete' // users can cancel invites that they sent
+                'team_create' // users can create teams!
             ]
         },
         {
@@ -118,7 +119,10 @@ module.exports = {
                 'team_leave',
 
                 'blog_page_view',
-                'blog_view'
+                'blog_view',
+
+                'hire_apply_page_view', // view the page to apply to become a hireable
+                'hire_apply' // apply to become a hireable
             ]
         },
         {
@@ -129,8 +133,8 @@ module.exports = {
                 'material_page_view',
                 'material_view', // download material items that you own
 
-                'coach_page_view',
-                'coach_contact_send'
+                'coach_page_view', // hire a facilitation coach
+                'coach_contact_send' // send a request to hire a facilitation coach
             ]
         },
         {
@@ -146,8 +150,6 @@ module.exports = {
             name: 'Improviser',
             inherits: [ROLE_SUBSCRIBER],
             actions: [
-                'hire_apply_page_view', // view the page to apply to become a hireable
-                'hire_apply' // apply to become a hireable
             ]
         },
         {

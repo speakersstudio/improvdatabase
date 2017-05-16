@@ -53,7 +53,11 @@ var GameDetailsComponent = (function () {
             this.route.params.forEach(function (params) {
                 var id = params['id'];
                 _this.gameDatabaseService.getGame(id)
-                    .then(function (game) { return _this.setGame(game); });
+                    .then(function (game) { return _this.setGame(game); }, function (error) {
+                    // if (error.status == 404) {
+                    _this.gameNotFound = true;
+                    // }
+                });
             });
         }
         else {

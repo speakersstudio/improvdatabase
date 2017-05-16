@@ -100,7 +100,7 @@
     <!-- member list -->
     <div class="paper has-brackets" *ngIf="selectedTab == 'members'">
 
-        <div class="content" *ngIf="team">
+        <div class="content" *ngIf="team && subscription">
             <div class="list">
                 <div class="item improvplus-user-card clickable" *ngFor="let user of [].concat(team.admins, team.members)"
                     [user]="user"
@@ -112,15 +112,20 @@
                     (demoteUser)="demoteUser($event)">
                 </div>
 
-                <div class="item clickable" *ngFor="let invite of team.subscription.invites"
+                <div class="item clickable" *ngFor="let invite of subscription.invites"
                     [class.selected] = "invite === selectedInvite"
                     (click)="selectInvite(invite)">
 
                     <div class="badge text-orange"><i class="fa fa-envelope-open-o"></i></div>
 
                     <div class="metadata">
-                        <div class="row">
+                        <div class="row" *ngIf="!invite.inviteUser">
                             <h5>{{invite.email}}</h5>
+                        </div>
+                        <div class="row" *ngIf="invite.inviteUser">
+                            <h5>{{invite.inviteUser.firstName ? invite.inviteUser.firstName + ' ' + invite.inviteUser.lastName : invite.email}}</h5>
+                            <em *ngIf="userService.isExpired(invite.inviteUser)">Will use Team's Subscription</em>
+                            <em *ngIf="!userService.isExpired(invite.inviteUser)">Has their own Subscription</em>
                         </div>
 
                         <div class="row">
@@ -138,7 +143,7 @@
                 <p>Total Users: <span class="tag grey">{{team.admins.length + team.members.length}}</span></p>
 
                 <div *ngIf="isUserAdmin()" class="right">
-                    <p *ngIf="pendingInvites">Pending Invites: <span class="tag orange">{{pendingInvites}}</span></p>
+                    <p *ngIf="pendingInvites">Pending Subscription Invites: <span class="tag orange">{{pendingInvites}}</span></p>
                     <p>Remaining User Subscriptions: <span class="tag">{{remainingSubs}} of {{team.subscription.subscriptions}}</span></p>
 
                     <p *ngIf="remainingSubs > 0">You can invite {{remainingSubs}} more of your team members to join ImprovPlus.</p>
@@ -182,7 +187,7 @@
                 <div class="body">
                     <p>Activated {{getDate(team.subscription.start)}}</p>
 
-                    <p *ngIf="pendingInvites">Pending Invites: <span class="tag orange">{{pendingInvites}}</span></p>
+                    <p *ngIf="pendingInvites">Pending Subscription Invites: <span class="tag orange">{{pendingInvites}}</span></p>
                     <p>Remaining User Subscriptions: <span class="tag">{{remainingSubs}} of {{team.subscription.subscriptions}}</span></p>
                 </div>
                 <!--<div class="action">
@@ -246,7 +251,7 @@
 <div class="dialog-container" [class.show]="showInviteDialog">
     <div class="dialog-dismiss" (click)="cancelInviteDialog()"></div>
 
-    <div class="dialog invite-form" *ngIf="showInviteDialog && !inviteStatus" [@dialog]>
+    <div class="dialog invite-form" *ngIf="showInviteDialog && !inviteStatus" [@dialog]="'default'">
 
         <form class="block" name="invite" (ngSubmit)="submitInvite()" #inviteForm="ngForm">
             <div class="dialog-content">
@@ -274,7 +279,7 @@
 
     </div>
 
-    <div class="dialog invite-form" *ngIf="showInviteDialog && inviteStatus=='new'" [@dialog]>
+    <div class="dialog invite-form" *ngIf="showInviteDialog && inviteStatus=='new'" [@dialog]="'default'">
 
         <div class="dialog-content">
             <h2>Invite Sent!</h2>
@@ -288,7 +293,7 @@
 
     </div>
 
-    <div class="dialog invite-form" *ngIf="showInviteDialog && inviteStatus=='exists'" [@dialog]>
+    <div class="dialog invite-form" *ngIf="showInviteDialog && inviteStatus=='exists'" [@dialog]="'default'">
 
         <div class="dialog-content">
             <h2>Invite Sent!</h2>

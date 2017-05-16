@@ -146,8 +146,6 @@ export class LoginView implements OnInit {
         .then((success) => {
             this.isPosting = false;
 
-            console.log('success?', success);
-
             if (success) {
                 this.show = false;
                 setTimeout(() => {

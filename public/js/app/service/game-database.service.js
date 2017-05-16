@@ -12,19 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 require("rxjs/add/operator/toPromise");
 var app_http_1 = require("../../data/app-http");
+var constants_1 = require("../../constants");
 var user_service_1 = require("../../service/user.service");
 var util_1 = require("../../util/util");
 var GameDatabaseService = (function () {
     function GameDatabaseService(http, userService) {
         this.http = http;
         this.userService = userService;
-        this.gamesUrl = '/api/game';
-        this.namesUrl = '/api/name';
-        this.metadataUrl = '/api/metadata';
-        this.playerCountUrl = '/api/metadata/playerCount';
-        this.durationUrl = '/api/metadata/duration';
-        this.tagUrl = '/api/tag';
-        this.noteUrl = '/api/note';
         // cache all the things
         this.games = [];
         this.names = [];
@@ -36,7 +30,7 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype.getGames = function () {
         var _this = this;
         if (!this._gamePromise) {
-            this._gamePromise = this.http.get(this.gamesUrl)
+            this._gamePromise = this.http.get(constants_1.API.games)
                 .toPromise()
                 .then(function (response) {
                 _this.games = response.json();
@@ -61,7 +55,7 @@ var GameDatabaseService = (function () {
         }
         else {
             // either no games are loaded or we couldn't find the specified one
-            return this.http.get(this.gamesUrl + '/' + id)
+            return this.http.get(constants_1.API.getGame(id))
                 .toPromise()
                 .then(function (response) {
                 return response.json();
@@ -84,7 +78,7 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype.getNames = function () {
         var _this = this;
         if (!this._namePromise) {
-            this._namePromise = this.http.get(this.namesUrl)
+            this._namePromise = this.http.get(constants_1.API.names)
                 .toPromise()
                 .then(function (response) {
                 _this.names = response.json();
@@ -115,7 +109,7 @@ var GameDatabaseService = (function () {
      */
     GameDatabaseService.prototype.createName = function (gameID, name) {
         var _this = this;
-        return this.http.post(this.namesUrl, {
+        return this.http.post(constants_1.API.names, {
             game: gameID,
             name: name
         })
@@ -136,7 +130,7 @@ var GameDatabaseService = (function () {
      */
     GameDatabaseService.prototype.saveName = function (name) {
         var _this = this;
-        return this.http.put(this.namesUrl + '/' + name._id, name)
+        return this.http.put(constants_1.API.getName(name._id), name)
             .toPromise()
             .then(function (response) {
             var newName = response.json();
@@ -154,7 +148,7 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype.getPlayerCounts = function () {
         var _this = this;
         if (!this._playerCountPromise) {
-            this._playerCountPromise = this.http.get(this.playerCountUrl)
+            this._playerCountPromise = this.http.get(constants_1.API.playerCount)
                 .toPromise()
                 .then(function (response) {
                 _this.playercounts = response.json();
@@ -184,7 +178,7 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.createPlayerCount = function (name, min, max, description) {
         var _this = this;
-        return this.http.post(this.metadataUrl, {
+        return this.http.post(constants_1.API.metadata, {
             name: name,
             min: min,
             max: max,
@@ -202,7 +196,7 @@ var GameDatabaseService = (function () {
     GameDatabaseService.prototype.getDurations = function () {
         var _this = this;
         if (!this._durationPromise) {
-            this._durationPromise = this.http.get(this.durationUrl)
+            this._durationPromise = this.http.get(constants_1.API.duration)
                 .toPromise()
                 .then(function (response) {
                 _this.durations = response.json();
@@ -232,7 +226,7 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.createDuration = function (name, min, max, description) {
         var _this = this;
-        return this.http.post(this.metadataUrl, {
+        return this.http.post(constants_1.API.metadata, {
             name: name,
             min: min,
             max: max,
@@ -251,7 +245,7 @@ var GameDatabaseService = (function () {
         var _this = this;
         if (!this._tagPromise) {
             if (this.userService.can('tag_view')) {
-                this._tagPromise = this.http.get(this.tagUrl)
+                this._tagPromise = this.http.get(constants_1.API.tags)
                     .toPromise()
                     .then(function (response) {
                     _this.tags = response.json();
@@ -293,7 +287,7 @@ var GameDatabaseService = (function () {
         var _this = this;
         if (!this._notePromise) {
             if (this.userService.can('note_public_view')) {
-                this._notePromise = this.http.get(this.noteUrl)
+                this._notePromise = this.http.get(constants_1.API.notes)
                     .toPromise()
                     .then(function (response) {
                     _this.notes = response.json();
@@ -331,7 +325,7 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.deleteGame = function (game) {
         var _this = this;
-        return this.http.delete(this.gamesUrl + '/' + game._id)
+        return this.http.delete(constants_1.API.getGame(game._id))
             .toPromise()
             .then(function (response) {
             _this._removeGameFromArray(game);
@@ -359,7 +353,7 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.saveGame = function (game) {
         var _this = this;
-        return this.http.put(this.gamesUrl + '/' + game._id, game)
+        return this.http.put(constants_1.API.getGame(game._id), game)
             .toPromise()
             .then(function (response) {
             return _this._handleNewGame(game, response);
@@ -368,7 +362,7 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.createGame = function () {
         var _this = this;
-        return this.http.post(this.gamesUrl, {})
+        return this.http.post(constants_1.API.games, {})
             .toPromise()
             .then(function (response) {
             var game = response.json();
@@ -391,7 +385,7 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.saveTagToGame = function (game, tag) {
         var _this = this;
-        return this.http.post(this.gamesUrl + '/' + game._id + '/addTag/' + tag._id, {})
+        return this.http.post(constants_1.API.gameAddTag(game._id, tag._id), {})
             .toPromise()
             .then(function (response) {
             return _this._handleNewTagGame(game, response, tag);
@@ -399,7 +393,7 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.deleteTagGame = function (game, taggame) {
         var _this = this;
-        return this.http.delete(this.gamesUrl + '/' + game._id + '/removeTag/' + taggame.tag._id)
+        return this.http.delete(constants_1.API.gameRemoveTag(game._id, taggame.tag._id))
             .toPromise()
             .then(function (response) {
             return _this._handleNewGame(game, response);
@@ -407,14 +401,14 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.createTag = function (name, game) {
         var _this = this;
-        return this.http.post(this.gamesUrl + '/' + game._id + '/createTag/' + name, { name: name })
+        return this.http.post(constants_1.API.gameCreateTag(game._id, name), { name: name })
             .toPromise()
             .then(function (response) {
             return _this._handleNewTagGame(game, response, name);
         });
     };
     GameDatabaseService.prototype.handleError = function (error) {
-        console.error('An error has occurred', error);
+        // console.error('An error has occurred', error);
         return Promise.reject(error.message || error);
     };
     // TODO: search stuff can be in a separate service

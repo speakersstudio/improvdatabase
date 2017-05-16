@@ -20,11 +20,16 @@ module.exports = {
 
     handleError: function (req, res, err) {
         if (err.name && err.name == 'CastError') {
-            res.status(500).json({error: 'Invalid data'});
+            // trying to look up an _id using a string that isn't an _id
+            module.exports.notfound(req, res);
         } else {
             console.error("Unknown error:", err);
             res.status(500).json(err);
         }
+    },
+
+    notfound: (req, res) => {
+        res.status(404).send('not found');
     },
 
     getObjectIdAsString: function (item) {

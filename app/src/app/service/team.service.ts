@@ -5,6 +5,7 @@ import { Observable, Subject } from 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
 
 import { AppHttp } from '../../data/app-http';
+import { API } from '../../constants';
 
 import { UserService } from '../../service/user.service';
 
@@ -16,8 +17,6 @@ import { Subscription } from '../../model/subscription';
 
 @Injectable()
 export class TeamService {
-
-    private teamUrl = '/api/team/';
 
     private teams: Team[] = [];
 
@@ -62,7 +61,7 @@ export class TeamService {
                 res(team);
             });
         } else {
-            return this.http.get(this.teamUrl + id)
+            return this.http.get(API.getTeam(id))
                 .toPromise()
                 .then(response => {
                     return response.json() as Team;
@@ -71,7 +70,7 @@ export class TeamService {
     }
 
     saveTeam(team: Team): Promise<Team> {
-        return this.http.put(this.teamUrl + team._id, team)
+        return this.http.put(API.getTeam(team._id), team)
             .toPromise()
             .then(response => {
                 let team = response.json() as Team;
@@ -81,7 +80,7 @@ export class TeamService {
     }
 
     invite(team: Team, email: string): Promise<Invite> {
-        return this.http.post(this.teamUrl + team._id + '/invite', {email: email})
+        return this.http.post(API.teamInvite(team._id), {email: email})
             .toPromise()
             .then(response => {
                 let invite = response.json() as Invite;
@@ -95,7 +94,7 @@ export class TeamService {
     }
 
     removeUserFromTeam(team: Team, user: User): Promise<Team> {
-        return this.http.put(this.teamUrl + team._id + '/removeUser/' + user._id, {})
+        return this.http.put(API.removeUser(team._id, user._id), {})
             .toPromise()
             .then(response => {
                 let team = response.json() as Team;
@@ -105,7 +104,7 @@ export class TeamService {
     }
 
     promoteUser(team: Team, user: User): Promise<Team> {
-        return this.http.put(this.teamUrl + team._id + '/promote/' + user._id, {})
+        return this.http.put(API.promoteUser(team._id, user._id), {})
             .toPromise()
             .then(response => {
                 let team = response.json() as Team;
@@ -115,7 +114,7 @@ export class TeamService {
     }
 
     demoteUser(team: Team, user: User): Promise<Team> {
-        return this.http.put(this.teamUrl + team._id + '/demote/' + user._id, {})
+        return this.http.put(API.demoteUser(team._id, user._id), {})
             .toPromise()
             .then(response => {
                 let team = response.json() as Team;
@@ -125,7 +124,7 @@ export class TeamService {
     }
     
     fetchPurchases(team: Team): Promise<Purchase[]> {
-        return this.http.get(this.teamUrl + team._id + '/purchases')
+        return this.http.get(API.teamPurchases(team._id))
             .toPromise()
             .then(response => {
                 return response.json() as Purchase[];
@@ -133,7 +132,7 @@ export class TeamService {
     }
 
     fetchSubscription(team: Team): Promise<Subscription> {
-        return this.http.get(this.teamUrl + team._id + '/subscription')
+        return this.http.get(API.teamSubscription(team._id))
             .toPromise()
             .then(response => {
                 let team = response.json() as Team;

@@ -143,6 +143,12 @@ module.exports = {
             });
 
             res.json(team);
+        }, error => {
+            if (error == 404) {
+                util.notfound(req, res);
+            } else {
+                util.handleError(error);
+            }
         });
 
     },
@@ -410,8 +416,12 @@ module.exports = {
                 path: 'subscription',
                 select: '-stripeCustomerId',
                 populate: {
-                    path: 'parent',
+                    path: 'parent invites',
                     select: '-stripeCustomerId',
+                    match: {
+                        accepted: false,
+                        dateDeleted: undefined
+                    },
                     populate: {
                         path: 'team',
                         select: 'name'
@@ -419,13 +429,35 @@ module.exports = {
                 }
             })
             .then(t => {
-                let team = t.toObject();
+                team = t.toObject();
 
                 if (team.subscription) {
                     team.subscription.type = roles.findRoleById(roles.getRoleType(team.subscription.role)).name;
                     team.subscription.roleName = roles.findRoleById(team.subscription.role).name;
                 }
 
+                if (team.subscription.invites && team.subscription.invites.length) {
+                    return util.iterate(team.subscription.invites, (invite) => {
+                        return findModelUtil.findUser(invite.email)
+                            .then(user => {
+                                if (user) {
+                                    invite.inviteUser = {
+                                        firstName: user.firstName,
+                                        lastName: user.lastName,
+                                        email: user.email,
+                                        _id: user._id,
+                                        subscription: user.subscription
+                                    };
+                                }
+                            });
+                    }).then(() => {
+                        return Promise.resolve(team);
+                    })
+                } else {
+                    return Promise.resolve(team);
+                }
+            })
+            .then(team => {
                 res.json(team);
             })
     },

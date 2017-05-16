@@ -19,7 +19,7 @@
 
 
     <!-- step 1: who are you? -->
-    <div class="block center" [@bubble]>
+    <div class="block center" [@bubbleSlow]>
         
         <div class="card">
             1. How do you describe yourself?
@@ -113,7 +113,7 @@
     </div>
 
     <!-- step 2: yourself or your team -->
-    <div class="block center" *ngIf="userType" [@bubble]>
+    <div class="block center" *ngIf="userType" [@bubbleSlow]>
         
         <div class="card">
             2. Who do you represent?
@@ -208,7 +208,7 @@
     </div>
 
     <!-- step 3: choose your package -->
-    <div class="block center" *ngIf="teamOption" [@bubble]>
+    <div class="block center" *ngIf="teamOption" [@bubbleSlow]>
 
         <div class="card">
             3. Which option is for you?
@@ -285,7 +285,7 @@
     </div>
 
     <!-- step 4: GO! -->
-    <div class="block center" *ngIf="isFormValid()" [@bubble]>
+    <div class="block center" *ngIf="isFormValid()" [@bubbleSlow]>
 
         <div class="card">
             4. Let's do this.

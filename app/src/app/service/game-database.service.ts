@@ -4,6 +4,7 @@ import { Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
 import { AppHttp } from '../../data/app-http';
+import { API } from '../../constants';
 
 import { Name } from '../../model/name';
 import { Game, TagGame } from '../../model/game';
@@ -19,16 +20,6 @@ import { Util } from '../../util/util';
 
 @Injectable()
 export class GameDatabaseService {
-    private gamesUrl = '/api/game';
-    private namesUrl = '/api/name';
-
-    private metadataUrl = '/api/metadata';
-    private playerCountUrl = '/api/metadata/playerCount';
-    private durationUrl = '/api/metadata/duration';
-
-    private tagUrl = '/api/tag';
-
-    private noteUrl = '/api/note';
 
     // cache all the things
     private games: Game[] = [];
@@ -48,7 +39,7 @@ export class GameDatabaseService {
     private _gamePromise: Promise<Game[]>;
     getGames(): Promise<Game[]> {
         if (!this._gamePromise) {
-            this._gamePromise = this.http.get(this.gamesUrl)
+            this._gamePromise = this.http.get(API.games)
                 .toPromise()
                 .then(response => {
                     this.games = response.json() as Game[];
@@ -60,7 +51,7 @@ export class GameDatabaseService {
         return this._gamePromise;
     }
 
-    getGame(id: String): Promise<Game> {
+    getGame(id: string): Promise<Game> {
         let gameToReturn: Game;
         if (this.games.length > 0) {
             this.games.forEach((game) => {
@@ -74,7 +65,7 @@ export class GameDatabaseService {
             return Promise.resolve(gameToReturn);
         } else {
             // either no games are loaded or we couldn't find the specified one
-            return this.http.get(this.gamesUrl + '/' + id)
+            return this.http.get(API.getGame(id))
                 .toPromise()
                 .then(response => {
                     return response.json() as Game;
@@ -100,7 +91,7 @@ export class GameDatabaseService {
     private _namePromise: Promise<Name[]>;
     getNames(): Promise<Name[]> {
         if (!this._namePromise) {
-            this._namePromise = this.http.get(this.namesUrl)
+            this._namePromise = this.http.get(API.names)
                 .toPromise()
                 .then(response => {
                     this.names = response.json() as Name[];
@@ -132,7 +123,7 @@ export class GameDatabaseService {
      * Creates a new name for the given gameID, making a post to /api/name
      */
     createName(gameID: string, name: string): Promise<Name> {
-        return this.http.post(this.namesUrl, {
+        return this.http.post(API.names, {
             game: gameID,
             name: name
         })
@@ -154,7 +145,7 @@ export class GameDatabaseService {
      * Updates a name on the server, making a PUT call to /api/name/:_id
      */
     saveName(name: Name): Promise<Name> {
-        return this.http.put(this.namesUrl + '/' + name._id, name)
+        return this.http.put(API.getName(name._id), name)
             .toPromise()
             .then(response => {
                 let newName = response.json() as Name;
@@ -172,7 +163,7 @@ export class GameDatabaseService {
     private _playerCountPromise: Promise<GameMetadata[]>;
     getPlayerCounts(): Promise<GameMetadata[]> {
         if (!this._playerCountPromise) {
-            this._playerCountPromise = this.http.get(this.playerCountUrl)
+            this._playerCountPromise = this.http.get(API.playerCount)
                 .toPromise()
                 .then(response => {
                     this.playercounts = response.json() as GameMetadata[];
@@ -203,7 +194,7 @@ export class GameDatabaseService {
     }
 
     createPlayerCount(name: string, min: number, max: number, description: string): Promise<GameMetadata> {
-        return this.http.post(this.metadataUrl,
+        return this.http.post(API.metadata,
             {
                 name: name,
                 min: min,
@@ -223,7 +214,7 @@ export class GameDatabaseService {
     private _durationPromise: Promise<GameMetadata[]>;
     getDurations(): Promise<GameMetadata[]> {
         if (!this._durationPromise) {
-            this._durationPromise = this.http.get(this.durationUrl)
+            this._durationPromise = this.http.get(API.duration)
                 .toPromise()
                 .then(response => {
                     this.durations = response.json() as GameMetadata[];
@@ -254,7 +245,7 @@ export class GameDatabaseService {
     }
 
     createDuration(name: string, min: number, max: number, description: string): Promise<GameMetadata> {
-        return this.http.post(this.metadataUrl,
+        return this.http.post(API.metadata,
             {
                 name: name,
                 min: min,
@@ -275,7 +266,7 @@ export class GameDatabaseService {
     getTags(): Promise<Tag[]> {
         if (!this._tagPromise) {
             if (this.userService.can('tag_view')) {
-                this._tagPromise = this.http.get(this.tagUrl)
+                this._tagPromise = this.http.get(API.tags)
                     .toPromise()
                     .then(response => {
                         this.tags = response.json() as Tag[];
@@ -318,7 +309,7 @@ export class GameDatabaseService {
     getNotes(): Promise<Note[]> {
         if (!this._notePromise) {
             if (this.userService.can('note_public_view')) {
-                this._notePromise = this.http.get(this.noteUrl)
+                this._notePromise = this.http.get(API.notes)
                     .toPromise()
                     .then(response => {
                         this.notes = response.json() as Note[];
@@ -357,7 +348,7 @@ export class GameDatabaseService {
     }
 
     deleteGame(game: Game): Promise<boolean> {
-        return this.http.delete(this.gamesUrl + '/' + game._id)
+        return this.http.delete(API.getGame(game._id))
             .toPromise()
             .then((response) => {
                 this._removeGameFromArray(game);
@@ -387,7 +378,7 @@ export class GameDatabaseService {
     }
 
     saveGame(game: Game): Promise<Game> {
-        return this.http.put(this.gamesUrl + '/' + game._id, game)
+        return this.http.put(API.getGame(game._id), game)
             .toPromise()
             .then((response) => {
                 return this._handleNewGame(game, response);
@@ -396,7 +387,7 @@ export class GameDatabaseService {
     }
 
     createGame(): Promise<Game> {
-        return this.http.post(this.gamesUrl, {})
+        return this.http.post(API.games, {})
             .toPromise()
             .then((response) => {
                 let game = response.json() as Game;
@@ -423,7 +414,7 @@ export class GameDatabaseService {
     }
 
     saveTagToGame(game: Game, tag: Tag): Promise<TagGame> {
-        return this.http.post(this.gamesUrl + '/' + game._id + '/addTag/' + tag._id, {})
+        return this.http.post(API.gameAddTag(game._id, tag._id), {})
             .toPromise()
             .then(response => {
                 return this._handleNewTagGame(game, response, tag);
@@ -431,7 +422,7 @@ export class GameDatabaseService {
     }
 
     deleteTagGame(game: Game, taggame: TagGame): Promise<Game> {
-        return this.http.delete(this.gamesUrl + '/' + game._id + '/removeTag/' + (<Tag> taggame.tag)._id)
+        return this.http.delete(API.gameRemoveTag(game._id, (<Tag> taggame.tag)._id))
             .toPromise()
             .then(response => {
                 return this._handleNewGame(game, response);
@@ -439,7 +430,7 @@ export class GameDatabaseService {
     }
 
     createTag(name: string, game: Game): Promise<TagGame> {
-        return this.http.post(this.gamesUrl + '/' + game._id + '/createTag/' + name, { name: name })
+        return this.http.post(API.gameCreateTag(game._id, name), { name: name })
             .toPromise()
             .then(response => {
                 return this._handleNewTagGame(game, response, name);
@@ -447,8 +438,7 @@ export class GameDatabaseService {
     }
 
     private handleError(error: any): Promise<any> {
-        console.error('An error has occurred', error);
-        
+        // console.error('An error has occurred', error);
         return Promise.reject(error.message || error);
     }
 

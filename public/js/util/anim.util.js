@@ -110,11 +110,21 @@ ToggleAnim.fadeAbsolute = animations_1.trigger('fadeAbsolute', [
         animations_1.animate(DEFAULT_DURATION + 'ms ' + DEFAULT_EASE, animations_1.style(ToggleAnim.STYLE_ABSOLUTE_OUT))
     ])
 ]);
-ToggleAnim.bubble = animations_1.trigger('bubble', [
+ToggleAnim.bubbleSlow = animations_1.trigger('bubbleSlow', [
     animations_1.state('in', animations_1.style(DialogAnim.instyle)),
     animations_1.transition('void => *', [
         animations_1.style(DialogAnim.outstyle),
         animations_1.animate((DEFAULT_DURATION * 2) + 'ms ' + EASE_OUT_BACK)
+    ]),
+    animations_1.transition('* => void', [
+        animations_1.animate((DEFAULT_DURATION * 2) + 'ms ' + EASE_IN_BACK, animations_1.style(DialogAnim.outstyle))
+    ])
+]);
+ToggleAnim.bubble = animations_1.trigger('bubble', [
+    animations_1.state('in', animations_1.style(DialogAnim.instyle)),
+    animations_1.transition('void => *', [
+        animations_1.style(DialogAnim.outstyle),
+        animations_1.animate(DEFAULT_DURATION + 'ms ' + EASE_OUT_BACK)
     ]),
     animations_1.transition('* => void', [
         animations_1.animate(DEFAULT_DURATION + 'ms ' + EASE_IN_BACK, animations_1.style(DialogAnim.outstyle))

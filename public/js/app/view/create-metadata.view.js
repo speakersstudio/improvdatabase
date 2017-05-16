@@ -20,6 +20,7 @@ var CreateMetadataView = (function () {
         this.done = new core_1.EventEmitter();
     }
     CreateMetadataView.prototype.ngOnInit = function () {
+        this.outputType = this.type == 'playerCount' ? 'Player Count' : 'Duration';
     };
     CreateMetadataView.prototype.createMetadata = function () {
         var _this = this;

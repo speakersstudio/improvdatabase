@@ -4,6 +4,8 @@ import 'rxjs/add/operator/toPromise';
 
 import { AppHttp } from '../data/app-http';
 
+import {API} from '../constants';
+
 import { PackageConfig } from '../model/config';
 
 import { Package } from '../model/package';
@@ -16,9 +18,9 @@ import { UserService } from './user.service';
 
 @Injectable()
 export class CartService {
-    private chargeUrl = "/charge";
-    private signupUrl = "/signup";
-    private configUrl = "/packageconfig";
+    // private chargeUrl = "/charge";
+    // private signupUrl = "/signup";
+    // private configUrl = "/packageconfig";
 
     private purchase: Purchase = new Purchase();
     private user: User;
@@ -43,7 +45,7 @@ export class CartService {
                 resolve(this.config);
             });
         } else {
-            return this.http.get(this.configUrl)
+            return this.http.get(API.packageConfig)
                 .toPromise()
                 .then(result => {
                     this.config = result.json() as PackageConfig;
@@ -84,7 +86,7 @@ export class CartService {
     }
 
     charge(token: String): Promise<User> {
-        return this.http.post(this.chargeUrl, {
+        return this.http.post(API.charge, {
             stripeToken: token,
             purchase: this.purchase,
             user: this.user
@@ -101,7 +103,7 @@ export class CartService {
         // if (role) {
         //     this.addSubscription(role);
         // }
-        return this.http.post(this.signupUrl, {
+        return this.http.post(API.signup, {
             stripeToken: token,
             purchase: this.purchase,
             email: email,

@@ -111,7 +111,12 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
             this.route.params.forEach((params: Params) => {
                 let id = params['id']
                 this.gameDatabaseService.getGame(id)
-                    .then(game => this.setGame(game));
+                    .then(game => this.setGame(game),
+                        error => {
+                            // if (error.status == 404) {
+                                this.gameNotFound = true;
+                            // }
+                        });
             });
         } else {
             this.dialog = true;

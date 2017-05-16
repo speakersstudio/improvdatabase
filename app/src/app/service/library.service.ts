@@ -4,6 +4,7 @@ import 'rxjs/add/operator/toPromise';
 
 import { RequestOptions, Headers } from '@angular/http';
 import { AppHttp } from '../../data/app-http';
+import { API } from '../../constants';
 
 import { Package } from '../../model/package';
 import { MaterialItem, MaterialItemVersion } from '../../model/material-item';
@@ -17,12 +18,6 @@ import { Library } from '../../model/library';
 
 @Injectable()
 export class LibraryService {
-    private packageUrl = '/api/package/';
-    private materialsUrl = '/api/material/';
-    private ownedMaterialsUrl = '/api/user/:_id/materials';
-
-    private userUrl = '/api/user/';
-    private teamUrl = '/api/team/';
 
     private subscriptions: Subscription[];
     private packages: Package[];
@@ -36,7 +31,7 @@ export class LibraryService {
      * Get the materials that you own
      */
     getOwnedMaterials(): Promise<Library> {
-        return this.http.get(this.userUrl + this.userService.getLoggedInUser()._id + '/materials')
+        return this.http.get(API.userMaterials(this.userService.getLoggedInUser()._id))
             .toPromise()
             .then(response => {
                 return response.json() as Library;
@@ -47,7 +42,7 @@ export class LibraryService {
      * Get the materials that a team owns (will die )
      */
     getTeamMaterials(teamId: string): Promise<Library> {
-        return this.http.get(this.teamUrl + teamId + '/materials')
+        return this.http.get(API.teamMaterials(teamId))
             .toPromise()
             .then(response => {
                 return response.json() as Library;
@@ -55,7 +50,7 @@ export class LibraryService {
     }
 
     downloadMaterial(id: string): void {
-        this.http.get(this.materialsUrl + id)
+        this.http.get(API.getMaterial(id))
             .toPromise()
             .then(response => {
                 let url = response.json().url;
@@ -64,7 +59,7 @@ export class LibraryService {
     }
 
     downloadPackage(id: string): void {
-        this.http.get(this.packageUrl + id)
+        this.http.get(API.getPackage(id))
             .toPromise()
             .then(response => {
                 let url = response.json().url;
@@ -85,7 +80,7 @@ export class LibraryService {
 
     // this is for admin - perhaps admin items should live in their own service?
     getAllMaterials(): Promise<MaterialItem[]> {
-        return this.http.get(this.materialsUrl + 'all')
+        return this.http.get(API.getMaterial('all'))
             .toPromise()
             .then(response => {
                 return response.json() as MaterialItem[];
@@ -93,7 +88,7 @@ export class LibraryService {
     }
 
     getAllPackages(): Promise<Package[]> {
-        return this.http.get(this.packageUrl + 'all')
+        return this.http.get(API.getPackage('all'))
             .toPromise()
             .then(response => {
                 return response.json() as Package[];
@@ -102,7 +97,7 @@ export class LibraryService {
 
     createMaterial(): Promise<MaterialItem> {
         if (this.userService.can('material_create')) {
-            return this.http.post(this.materialsUrl, {})
+            return this.http.post(API.materials, {})
                 .toPromise()
                 .then(response => {
                     return response.json() as MaterialItem;
@@ -112,7 +107,7 @@ export class LibraryService {
 
     createPackage(): Promise<Package> {
         if (this.userService.can('package_create')) {
-            return this.http.post(this.packageUrl, {})
+            return this.http.post(API.package, {})
                 .toPromise()
                 .then(response => {
                     return response.json() as Package;
@@ -122,7 +117,7 @@ export class LibraryService {
 
     deleteMaterial(material: MaterialItem): Promise<boolean> {
         if (this.userService.can('material_delete')) {
-            return this.http.delete(this.materialsUrl + material._id)
+            return this.http.delete(API.getMaterial(material._id))
                 .toPromise()
                 .then(response => {
                     return true;
@@ -132,7 +127,7 @@ export class LibraryService {
 
     deletePackage(p: Package): Promise<boolean> {
         if (this.userService.can('package_delete')) {
-            return this.http.delete(this.packageUrl + p._id)
+            return this.http.delete(API.getPackage(p._id))
                 .toPromise()
                 .then(response => {
                     return true;
@@ -144,7 +139,7 @@ export class LibraryService {
         if (!this.userService.isSuperAdmin()) {
             return;
         }
-        return this.http.put(this.materialsUrl + material._id, material)
+        return this.http.put(API.getMaterial(material._id), material)
             .toPromise()
             .then(response => {
                 return response.json() as MaterialItem;
@@ -153,7 +148,7 @@ export class LibraryService {
 
     savePackage(p: Package): Promise<Package> {
         if (this.userService.can('package_edit')) {
-            return this.http.put(this.packageUrl + p._id, p)
+            return this.http.put(API.getPackage(p._id), p)
                 .toPromise()
                 .then(response => {
                     return response.json() as Package;
@@ -171,7 +166,7 @@ export class LibraryService {
         formData.append('description', version.description);
         formData.append('file', file, file.name);
 
-        return this.http.postFormData(this.materialsUrl + materialItemId + '/version', formData).toPromise()
+        return this.http.postFormData(API.materialVersion(materialItemId), formData).toPromise()
             .then(response => {
                 return response.json() as MaterialItem;
             });
@@ -182,7 +177,7 @@ export class LibraryService {
             return;
         }
 
-        return this.http.delete(this.materialsUrl + materialItemId + '/version/' + version._id).toPromise()
+        return this.http.delete(API.getMaterialVersion(materialItemId, version._id)).toPromise()
             .then(response => {
                 return response.json() as MaterialItem;
             });
@@ -190,7 +185,7 @@ export class LibraryService {
 
     savePackagePackages(p: Package): Promise<Package> {
         if (this.userService.can('package_edit')) {
-            return this.http.put(this.packageUrl + p._id + '/packages', p)
+            return this.http.put(API.savePackagePackages(p._id), p)
                 .toPromise()
                 .then(response => {
                     return response.json() as Package;
@@ -200,7 +195,7 @@ export class LibraryService {
 
     savePackageMaterials(p: Package): Promise<Package> {
         if (this.userService.can('package_edit')) {
-            return this.http.put(this.packageUrl + p._id + '/materials', p)
+            return this.http.put(API.savePackageMaterials(p._id), p)
                 .toPromise()
                 .then(response => {
                     return response.json() as Package;

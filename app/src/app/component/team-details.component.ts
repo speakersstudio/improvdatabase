@@ -132,8 +132,6 @@ export class TeamDetailsComponent implements OnInit {
     setTeam(team: Team): void {
         this.team = team;
 
-        this.calculateSubs();
-
         if (this.isUserAdmin()) {
             this.teamService.fetchPurchases(this.team).then(p => {
                 this.purchases = p;
@@ -142,6 +140,8 @@ export class TeamDetailsComponent implements OnInit {
 
         this.teamService.fetchSubscription(this.team).then(s => {
             this.subscription = s;
+
+            this.calculateSubs();
         });
 
         this.title = team.name;
@@ -174,8 +174,16 @@ export class TeamDetailsComponent implements OnInit {
     }
 
     calculateSubs(): void {
-        this.pendingInvites = this.team.subscription.invites ? this.team.subscription.invites.length : 0;
-        this.remainingSubs = this.team.subscription.subscriptions - (this.team.subscription.children.length || 0) - this.pendingInvites;
+        this.pendingInvites = 0;
+        if (this.subscription.invites) {
+            this.subscription.invites.forEach(invite => {
+                if (!invite.inviteUser || this.userService.isExpired(invite.inviteUser)) {
+                    this.pendingInvites++;
+                }
+            });
+        }
+
+        this.remainingSubs = this.subscription.subscriptions - (this.subscription.children.length || 0) - this.pendingInvites;
     }
 
     saveEditName(name: string): void {
@@ -253,6 +261,7 @@ export class TeamDetailsComponent implements OnInit {
 
         this.showInviteDialog = true;
         this.inviteEmail = '';
+        this.inviteError = '';
     }
 
     cancelInviteDialog(): void {
@@ -272,11 +281,11 @@ export class TeamDetailsComponent implements OnInit {
                 this.inviteStatus = 'wait';
                 this.inviteModel = invite;
                 if (invite) {
-                    this.team.subscription.invites.push(invite);
+                    this.subscription.invites.push(invite);
                     this.calculateSubs();
 
                     setTimeout(() => {
-                        if (!invite.inviteUser || !invite.inviteUser.subscription) {
+                        if (!invite.inviteUser || this.userService.isExpired(invite.inviteUser)) {
                             this.inviteStatus = 'new';
                         } else {
                             this.inviteStatus = 'exists';
@@ -316,8 +325,8 @@ export class TeamDetailsComponent implements OnInit {
             () => {
                 this.userService.cancelInvite(invite).then(done => {
                     if (done) {
-                        let index = this.team.subscription.invites.indexOf(invite);
-                        this.team.subscription.invites.splice(index, 1);
+                        let index = this.subscription.invites.indexOf(invite);
+                        this.subscription.invites.splice(index, 1);
 
                         this.calculateSubs();
                     }

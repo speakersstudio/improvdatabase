@@ -206,6 +206,12 @@
         }
     }
 
+    &.green {
+        .top {
+            background-color: $color-green;
+        }
+    }
+
     $bracket-thickness: 10px;
 
     &.brackets {
@@ -314,6 +320,17 @@
 
             & > .fa {
                 color: $color-yellow;
+            }
+        }
+
+        &.green {
+            &:after,
+            &:before {
+                border-color: $color-green;
+            }
+
+            & > .fa {
+                color: $color-green;
             }
         }
     }

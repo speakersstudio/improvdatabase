@@ -12,12 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 require("rxjs/add/operator/toPromise");
 var app_http_1 = require("../../data/app-http");
+var constants_1 = require("../../constants");
 var user_service_1 = require("../../service/user.service");
 var TeamService = (function () {
     function TeamService(http, userService) {
         this.http = http;
         this.userService = userService;
-        this.teamUrl = '/api/team/';
         this.teams = [];
     }
     TeamService.prototype.addTeams = function (teams) {
@@ -52,7 +52,7 @@ var TeamService = (function () {
             });
         }
         else {
-            return this.http.get(this.teamUrl + id)
+            return this.http.get(constants_1.API.getTeam(id))
                 .toPromise()
                 .then(function (response) {
                 return response.json();
@@ -61,7 +61,7 @@ var TeamService = (function () {
     };
     TeamService.prototype.saveTeam = function (team) {
         var _this = this;
-        return this.http.put(this.teamUrl + team._id, team)
+        return this.http.put(constants_1.API.getTeam(team._id), team)
             .toPromise()
             .then(function (response) {
             var team = response.json();
@@ -71,7 +71,7 @@ var TeamService = (function () {
     };
     TeamService.prototype.invite = function (team, email) {
         var _this = this;
-        return this.http.post(this.teamUrl + team._id + '/invite', { email: email })
+        return this.http.post(constants_1.API.teamInvite(team._id), { email: email })
             .toPromise()
             .then(function (response) {
             var invite = response.json();
@@ -84,7 +84,7 @@ var TeamService = (function () {
     };
     TeamService.prototype.removeUserFromTeam = function (team, user) {
         var _this = this;
-        return this.http.put(this.teamUrl + team._id + '/removeUser/' + user._id, {})
+        return this.http.put(constants_1.API.removeUser(team._id, user._id), {})
             .toPromise()
             .then(function (response) {
             var team = response.json();
@@ -94,7 +94,7 @@ var TeamService = (function () {
     };
     TeamService.prototype.promoteUser = function (team, user) {
         var _this = this;
-        return this.http.put(this.teamUrl + team._id + '/promote/' + user._id, {})
+        return this.http.put(constants_1.API.promoteUser(team._id, user._id), {})
             .toPromise()
             .then(function (response) {
             var team = response.json();
@@ -104,7 +104,7 @@ var TeamService = (function () {
     };
     TeamService.prototype.demoteUser = function (team, user) {
         var _this = this;
-        return this.http.put(this.teamUrl + team._id + '/demote/' + user._id, {})
+        return this.http.put(constants_1.API.demoteUser(team._id, user._id), {})
             .toPromise()
             .then(function (response) {
             var team = response.json();
@@ -113,14 +113,14 @@ var TeamService = (function () {
         });
     };
     TeamService.prototype.fetchPurchases = function (team) {
-        return this.http.get(this.teamUrl + team._id + '/purchases')
+        return this.http.get(constants_1.API.teamPurchases(team._id))
             .toPromise()
             .then(function (response) {
             return response.json();
         });
     };
     TeamService.prototype.fetchSubscription = function (team) {
-        return this.http.get(this.teamUrl + team._id + '/subscription')
+        return this.http.get(constants_1.API.teamSubscription(team._id))
             .toPromise()
             .then(function (response) {
             var team = response.json();

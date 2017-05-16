@@ -3,18 +3,31 @@
 <div class="dialog" *ngIf="type" [@dialog]="'default'">
     <form #createForm="ngForm">
         <div class="dialog-content">
-            <h3>New {{type == 'playerCount' ? 'Player Count' : 'Duration'}}</h3>
+            <h3>New {{outputType}}</h3>
 
-            <input name="name" required placeholder="Name" [(ngModel)]="name" />
+            <input name="name"
+                required
+                formInput
+                placeholder="Name"
+                [(ngModel)]="name" />
+
             <div class="columns">
-                <input name="min" required [placeholder]="'Min ' + type" [(ngModel)]="min" />
-                <input name="max" required [placeholder]="'Max ' + type" [(ngModel)]="max" />
+                <input name="min"
+                    required
+                    formInput
+                    placeholder="{{'Min ' + outputType}} (or 0 for 'any')"
+                    [(ngModel)]="min"
+                    type="text" />
+                <input name="max"
+                    required
+                    formInput
+                    type="text"
+                    placeholder="{{'Max ' + outputType}} (or 0 for 'any')"
+                    [(ngModel)]="max" />
             </div>
 
-            <div class="section">
-                <label>Description</label>
-                <textarea name="description" [(ngModel)]="description"></textarea>
-            </div>
+            <textarea formInput name="description" [(ngModel)]="description" placeholder="Description"></textarea>
+            
         </div>
         <div class="button-group" *ngIf="!isPosting">
             <div class="button" (click)="cancel()">cancel</div>

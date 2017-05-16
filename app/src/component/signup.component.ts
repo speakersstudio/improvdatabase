@@ -32,7 +32,8 @@ declare var Stripe: any;
     templateUrl: '../template/signup.component.html',
     animations: [
         ToggleAnim.fadeAbsolute,
-        ToggleAnim.bubble
+        ToggleAnim.bubble,
+        ToggleAnim.bubbleSlow
     ]
 })
 export class SignupComponent implements OnInit {

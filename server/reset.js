@@ -29,24 +29,25 @@ const Game = require('./models/game.model'),
     Note = require('./models/note.model'),
     Tag = require('./models/tag.model');
 
+const backuptime = 1494449014692;
 const   databases = {
-            'Invite': 1493838843811,
-            'MaterialItem': 1493847396156,
-            'PackageConfig': 1493838843811,
-            'Package': 1493838843811,
-            'Preference': 1493838843811,
-            'Purchase': 1493838843811,
-            'Subscription': 1493846462338,
-            'Team': 1493838843811,
-            'User': 1494103814520,
-            'History': 1494440793134,
+            'Invite': backuptime,
+            'MaterialItem': backuptime,
+            'PackageConfig': backuptime,
+            'Package': backuptime,
+            'Preference': backuptime,
+            'Purchase': backuptime,
+            'Subscription': backuptime,
+            'Team': backuptime,
+            'User': backuptime,
+            'History': backuptime,
 
-            'GameMetadata': 1494103814520,
-            'Game': 1494103814520,
-            'Name': 1494103814520,
-            'NameVote': 1494103814520,
-            'Note': 1494103814520,
-            'Tag': 1494103814520
+            'GameMetadata': backuptime,
+            'Game': backuptime,
+            'Name': backuptime,
+            'NameVote': backuptime,
+            'Note': backuptime,
+            'Tag': backuptime
         }
 
 mongoose.Promise = Promise;
@@ -143,7 +144,7 @@ function doSeed(key, Model, dataProcess, afterCreate, cancelCreate) {
     let seedData;
     
     try {
-        seedData = require('./models/seeds/' + key + '.seed.json');
+        seedData = require('./models/seeds/' + key + '_' + databases[key] + '.json');
     } catch (e) {
         seedData = [];
     }
@@ -173,19 +174,19 @@ function doSeed(key, Model, dataProcess, afterCreate, cancelCreate) {
 seedMethods = {
 
     Invite: () =>{
-        return doSeed('invite', InviteModel);
+        return doSeed('Invite', InviteModel);
     },
 
     MaterialItem: () =>{
-        return doSeed('material-item', MaterialItem);
+        return doSeed('MaterialItem', MaterialItem);
     },
 
     PackageConfig: () =>{
-        return doSeed('package-config', PackageConfig);
+        return doSeed('PackageConfig', PackageConfig);
     },
 
     Package: () =>{
-        return doSeed('package', Package, null, (packages) => {
+        return doSeed('Package', Package, null, (packages) => {
             // let ids = [],
             //     ultimate;
             // packages.forEach(p => {
@@ -202,23 +203,23 @@ seedMethods = {
     },
 
     Preference: () =>{
-        return doSeed('preference', Preference);
+        return doSeed('Preference', Preference);
     },
 
     Purchase: () =>{
-        return doSeed('purchase', Purchase);
+        return doSeed('Purchase', Purchase);
     },
 
     Subscription: () =>{
-        return doSeed('subscription', Subscription);
+        return doSeed('Subscription', Subscription);
     },
 
     Team: () =>{
-        return doSeed('team', Team);
+        return doSeed('Team', Team);
     },
 
     User: () =>{
-        return doSeed('user', User, (users) => {
+        return doSeed('User', User, (users) => {
             users.forEach(user => {
                 // hash the password if it isn't already
                 if (user.password.substr(0,2) !== '$2') {
@@ -232,31 +233,31 @@ seedMethods = {
     },
 
     History: () => {
-        return doSeed('history', HistoryModel);
+        return doSeed('History', HistoryModel);
     },
 
     GameMetadata: () => {
-        return doSeed('game-metadata', GameMetadata);
+        return doSeed('GameMetadata', GameMetadata);
     },
 
     Game: () => {
-        return doSeed('game', Game);
+        return doSeed('Game', Game);
     },
 
     Name: () => {
-        return doSeed('name', Name);
+        return doSeed('Name', Name);
     },
 
     NameVote: () => {
-        return doSeed('name-vote', NameVote);
+        return doSeed('NameVote', NameVote);
     },
 
     Note: () => {
-        return doSeed('note', Note);
+        return doSeed('Note', Note);
     },
 
     Tag: () => {
-        return doSeed('tag', Tag);
+        return doSeed('Tag', Tag);
     }
 
 }

@@ -13,6 +13,7 @@ var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var app_component_1 = require("../../component/app.component");
 var library_service_1 = require("../service/library.service");
+var history_service_1 = require("../service/history.service");
 var material_item_1 = require("../../model/material-item");
 var user_service_1 = require("../../service/user.service");
 var time_util_1 = require("../../util/time.util");
@@ -20,11 +21,12 @@ var app_http_1 = require("../../data/app-http");
 var util_1 = require("../../util/util");
 var anim_util_1 = require("../../util/anim.util");
 var AdminComponent = (function () {
-    function AdminComponent(_app, router, libraryService, userService, http) {
+    function AdminComponent(_app, router, libraryService, userService, historyService, http) {
         this._app = _app;
         this.router = router;
         this.libraryService = libraryService;
         this.userService = userService;
+        this.historyService = historyService;
         this.http = http;
         this.title = '<span class="light">super</span><strong>admin</strong>';
         this.tabs = [
@@ -37,6 +39,11 @@ var AdminComponent = (function () {
                 name: 'Packages',
                 id: 'packages',
                 icon: 'book'
+            },
+            {
+                name: 'History',
+                id: 'history',
+                icon: 'history'
             }
         ];
         this.selectedTab = 'materials';
@@ -58,6 +65,7 @@ var AdminComponent = (function () {
     AdminComponent.prototype.ngOnInit = function () {
         this.showMaterials();
         this.showPackages();
+        this.getHistory();
     };
     AdminComponent.prototype.selectTab = function (tab) {
         this.selectedTab = tab.id;
@@ -68,6 +76,9 @@ var AdminComponent = (function () {
     };
     AdminComponent.prototype.simpleDate = function (date) {
         return time_util_1.TimeUtil.simpleDate(date);
+    };
+    AdminComponent.prototype.simpleDateTime = function (date) {
+        return time_util_1.TimeUtil.simpleDate(date) + ' ' + time_util_1.TimeUtil.simpleTime(date);
     };
     AdminComponent.prototype.showMaterials = function () {
         var _this = this;
@@ -83,6 +94,38 @@ var AdminComponent = (function () {
             .then(function (packages) {
             _this.packages = packages;
         });
+    };
+    AdminComponent.prototype.getHistory = function () {
+        var _this = this;
+        this.historyService.getAllHistory().then(function (histories) {
+            _this.rawHistories = histories;
+            _this.filterHistory();
+        });
+    };
+    AdminComponent.prototype.getHistoryIcon = function (history) {
+        switch (history.action) {
+            case 'game_edit':
+                return 'fa-rocket';
+            case 'material_view':
+                return 'fa-file-pdf-o';
+            case 'change_password':
+                return 'fa-key';
+            default:
+                return 'fa-history';
+        }
+    };
+    AdminComponent.prototype.filterHistory = function () {
+        var _this = this;
+        this.histories = this.rawHistories.filter(function (h) {
+            if (!_this.historyShowRefresh && h.action == 'refresh') {
+                return false;
+            }
+            else if (!_this.historyShowLogin && (h.action == 'login' || h.action == 'logout')) {
+                return false;
+            }
+            return true;
+        });
+        console.log(this.histories);
     };
     AdminComponent.prototype.selectMaterial = function (material) {
         this.newVersion = new material_item_1.MaterialItemVersion();
@@ -129,7 +172,8 @@ var AdminComponent = (function () {
         });
     };
     AdminComponent.prototype.fileChange = function () {
-        this.newVersionFile = this.versionFileInput.files[0];
+        var fileInput = this.versionFileInput.nativeElement;
+        this.newVersionFile = fileInput.files[0];
     };
     AdminComponent.prototype.saveVersion = function () {
         var _this = this;
@@ -253,8 +297,8 @@ var AdminComponent = (function () {
     return AdminComponent;
 }());
 __decorate([
-    core_1.ViewChild('versionFileInput', { read: HTMLInputElement }),
-    __metadata("design:type", HTMLInputElement)
+    core_1.ViewChild('versionFileInput'),
+    __metadata("design:type", core_1.ElementRef)
 ], AdminComponent.prototype, "versionFileInput", void 0);
 AdminComponent = __decorate([
     core_1.Component({
@@ -267,6 +311,7 @@ AdminComponent = __decorate([
         router_1.Router,
         library_service_1.LibraryService,
         user_service_1.UserService,
+        history_service_1.HistoryService,
         app_http_1.AppHttp])
 ], AdminComponent);
 exports.AdminComponent = AdminComponent;

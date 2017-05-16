@@ -74,6 +74,7 @@ module.exports = {
                 HistoryModel.create({
                     user: userId,
                     action: 'game_edit',
+                    target: game._id,
                     changes: changes
                 });
                 
@@ -102,7 +103,11 @@ module.exports = {
     get: (req, res) => {
         getGames(req.user, req.params.id)
             .then(games => {
-                res.json(games[0]);
+                if (games[0]) {
+                    res.json(games[0]);
+                } else {
+                    util.notfound(req, res);
+                }
             }, error => {
                 util.handleError(req, res, error);
             });

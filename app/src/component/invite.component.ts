@@ -41,6 +41,10 @@ export class InviteComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        if (this.userService.getLoggedInUser()) {
+            this.userService.logout(true);
+        }
+
         this.route.params.forEach((params: Params) => {
             this.inviteId = params['id'];
         });

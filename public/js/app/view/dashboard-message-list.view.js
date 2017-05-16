@@ -129,10 +129,25 @@ var DashboardMessageListView = (function () {
         this.isPosting = true;
         this.userService.acceptInvite(this.invite._id).then(function () {
             _this.isPosting = false;
-            _this.showNextMessage();
+            _this.inviteAccepted = true;
         });
     };
     DashboardMessageListView.prototype.rejectInvite = function () {
+        var _this = this;
+        this.isPosting = true;
+        this.userService.cancelInvite(this.invite).then(function () {
+            _this.isPosting = false;
+            _this.inviteRejected = true;
+        });
+    };
+    DashboardMessageListView.prototype.dismissInvite = function () {
+        var _this = this;
+        this.messageElement.close();
+        setTimeout(function () {
+            _this.inviteAccepted = false;
+            _this.inviteRejected = false;
+            _this.showNextMessage();
+        }, 300);
     };
     return DashboardMessageListView;
 }());

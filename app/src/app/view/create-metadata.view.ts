@@ -30,6 +30,7 @@ export class CreateMetadataView implements OnInit {
     isPosting: boolean;
 
     @Input() type: string;
+    outputType: string;
 
     name: string;
     min: number;
@@ -42,7 +43,7 @@ export class CreateMetadataView implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        
+        this.outputType = this.type == 'playerCount' ? 'Player Count' : 'Duration';
     }
 
     createMetadata(): void {

@@ -430,6 +430,12 @@ module.exports = {
             });
 
             res.json(module.exports.prepUserObject(user));
+        }, error => {
+            if (error == 404) {
+                util.notfound(req, res);
+            } else {
+                util.handleError(error);
+            }
         });
 
     },
@@ -441,7 +447,7 @@ module.exports = {
 
                 if (util.indexOfObjectId(user.adminOfTeams, teamId) == -1 && util.indexOfObjectId(user.memberOfTeams, teamId) == -1) {
                     // how can a user leave a team they aren't in?
-                    return res.status(404).send('not found');
+                    return Promise.reject(404);
                 }
 
                 return findModelUtil.findTeam(teamId)
@@ -593,7 +599,7 @@ module.exports = {
 
                     let needsSubscription = !user.subscription || user.subscription.expiration < Date.now();
 
-                    module.exports.sendUserJoinedTeamEmail(req.user, user, needsSubscription, team.name, team._id, req);
+                    module.exports.sendUserJoinedTeamEmail(team.admins, user, needsSubscription, team.name, team._id, req);
 
                     if (needsSubscription) {
                         return Subscription.findOne({})
@@ -697,7 +703,7 @@ module.exports = {
             });
     },
 
-    sendUserJoinedTeamEmail: (toUser, newUser, usedSubscription, teamName, teamId, req) => {
+    sendUserJoinedTeamEmail: (toUsers, newUser, usedSubscription, teamName, teamId, req) => {
 
         let newUserName = newUser.fullName ? ', one ' + newUser.fullName + ', ' : '';
 
@@ -711,27 +717,31 @@ module.exports = {
             `
         }
 
-        let toUserName = !toUser.simpleName || toUser.simpleName == 'undefined' ? 'ImprovPlus User' : toUser.simpleName;
+        toUsers.forEach(toUser => {
 
-        let sendObject = {
-            to: toUser.email,
-            toName: toUserName,
-            subject: 'User has joined your Team',
-            content: {
-                type: 'text',
-                baseUrl: 'https://' + req.get('host'),
-                greeting: 'Hey ' + toUserName + ',',
-                body: body,
-                action: 'https://' + req.get('host') + '/app/team/' + teamId,
-                actionText: 'View Team Details'
-            }
-        }
+            let toUserName = !toUser.simpleName || toUser.simpleName == 'undefined' ? 'ImprovPlus User' : toUser.simpleName;
 
-        emailUtil.send(sendObject, (error, response) => {
-            if (error) {
-                console.error(error);
+            let sendObject = {
+                to: toUser.email,
+                toName: toUserName,
+                subject: 'User has joined your Team',
+                content: {
+                    type: 'text',
+                    baseUrl: 'https://' + req.get('host'),
+                    greeting: 'Hey ' + toUserName + ',',
+                    body: body,
+                    action: 'https://' + req.get('host') + '/app/team/' + teamId,
+                    actionText: 'View Team Details'
+                }
             }
-        })
+
+            emailUtil.send(sendObject, (error, response) => {
+                if (error) {
+                    console.error(error);
+                }
+            })
+
+        });
 
     }
 

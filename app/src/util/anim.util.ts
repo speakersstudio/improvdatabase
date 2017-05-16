@@ -119,11 +119,22 @@ export class ToggleAnim {
         ])
     ]);
 
-    static bubble = trigger('bubble', [
+    static bubbleSlow = trigger('bubbleSlow', [
         state('in', style(DialogAnim.instyle)),
         transition('void => *', [
             style(DialogAnim.outstyle),
             animate((DEFAULT_DURATION * 2) + 'ms ' + EASE_OUT_BACK)
+        ]),
+        transition('* => void', [
+            animate((DEFAULT_DURATION * 2) + 'ms ' + EASE_IN_BACK, style(DialogAnim.outstyle))
+        ])
+    ]);
+
+    static bubble = trigger('bubble', [
+        state('in', style(DialogAnim.instyle)),
+        transition('void => *', [
+            style(DialogAnim.outstyle),
+            animate(DEFAULT_DURATION + 'ms ' + EASE_OUT_BACK)
         ]),
         transition('* => void', [
             animate(DEFAULT_DURATION + 'ms ' + EASE_IN_BACK, style(DialogAnim.outstyle))

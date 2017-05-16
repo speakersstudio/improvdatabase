@@ -14,6 +14,7 @@ import { GameDatabaseService } from "../service/game-database.service";
 import { LibraryService } from "../service/library.service";
 import { AuthGuard } from "../service/auth-guard.service";
 import { TeamService } from '../service/team.service';
+import { HistoryService } from '../service/history.service';
 
 // main components
 // import { AppComponent } from '../component/app.component';
@@ -83,7 +84,8 @@ import { DashboardMessageListView } from '../view/dashboard-message-list.view';
         GameDatabaseService,
         LibraryService,
         AuthGuard,
-        TeamService
+        TeamService,
+        HistoryService
     ]
 })
 

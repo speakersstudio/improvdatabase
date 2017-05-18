@@ -17,7 +17,6 @@ var user_service_1 = require("../service/user.service");
 var cart_service_1 = require("../service/cart.service");
 var user_1 = require("../model/user");
 var team_1 = require("../model/team");
-var package_1 = require("../model/package");
 var anim_util_1 = require("../util/anim.util");
 var bracket_card_directive_1 = require("../directive/bracket-card.directive");
 var config_1 = require("../model/config");
@@ -39,7 +38,7 @@ var SignupComponent = (function () {
             this.router.navigate(['/app/dashboard'], { replaceUrl: true });
         }
         this._app.showLoader();
-        this.cartService.getConfig().then(function (config) {
+        this._service.getPackageConfig().then(function (config) {
             _this.config = config;
             _this.setup();
         });
@@ -186,32 +185,15 @@ var SignupComponent = (function () {
     SignupComponent.prototype.showPackages = function (team) {
         var _this = this;
         this.selectedPackage = null;
-        // add a subscription option to the list
-        var subOption = new package_1.Package();
-        subOption._id = 'sub';
         this.options = [];
         if (this.userType == 'facilitator') {
             if (!team) {
-                subOption.name = 'Individual Facilitator Subscription';
-                subOption.price = this.config.fac_sub_price;
-                subOption.description = [
-                    "Gain access to the the app for one year.",
-                    "Browse and purchase from our catalogue of facilitation materials.",
-                    "Utilize the database of over 200 Improv Exercises."
-                ];
                 this.packages.forEach(function (p) {
                     var copy = Object.assign({}, p);
                     _this.options.push(copy);
                 });
             }
             else {
-                subOption.name = 'Facilitator Team Subscription';
-                subOption.price = this.config.fac_team_sub_price;
-                subOption.description = [
-                    "Your team can share and collaborate with the ImprovPlus app.",
-                    "Browse and purchase from our catalogue of facilitation materials.",
-                    "Utilize the database of over 200 Improv Exercises."
-                ];
                 this.packages.forEach(function (p) {
                     var copy = Object.assign({}, p);
                     // the facilitator team packages are more expensive
@@ -220,27 +202,10 @@ var SignupComponent = (function () {
                 });
             }
         }
-        else {
-            if (!team) {
-                subOption.name = 'Individual Improviser Subscription';
-                subOption.price = this.config.improv_sub_price;
-                subOption.description = [
-                    "Gain access to the app for one year.",
-                    "Browse the database of over 200 Improv Games.",
-                    "Join the ever-growing ImprovPlus community."
-                ];
-            }
-            else {
-                subOption.name = 'Improviser Team Subscription';
-                subOption.price = this.config.improv_team_sub_price;
-                subOption.description = [
-                    'Access powerful marketing and collaboration tools.',
-                    'Browse the database of over 200 Improv Games.',
-                    "Join the ever-growing ImprovPlus community."
-                ];
-            }
-        }
-        this.options.push(subOption);
+        // add a subscription option to the list
+        this._service.getSubscriptionPackage(this.userType, this.team).then(function (pkg) {
+            _this.options.push(pkg);
+        });
     };
     SignupComponent.prototype.selectPackage = function ($event, pack, cardClicked) {
         var _this = this;

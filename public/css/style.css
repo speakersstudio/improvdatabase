@@ -535,6 +535,12 @@ iplus {
   @media only screen and (max-width: 500px) {
     .columns.responsive {
       flex-direction: column; } }
+  .columns.double {
+    flex-wrap: wrap; }
+    .columns.double > * {
+      width: calc(50% - (8px)); }
+    .columns.double > *:nth-child(2) {
+      margin-right: 0; }
 
 @media only screen and (max-width: 500px) {
   .tabs {
@@ -1449,7 +1455,7 @@ nav {
   position: relative;
   box-sizing: border-box;
   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-  transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1), width 500ms, height 500ms, opacity 500ms;
+  transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1), width 500ms, height 500ms, opacity 500ms, max-width 500ms;
   will-change: box-shadow;
   color: #606060;
   text-decoration: none; }
@@ -1550,7 +1556,9 @@ nav {
     background-color: #26AA30; }
   .card.brackets {
     text-align: center;
-    padding: 24px 32px; }
+    padding: 24px 32px;
+    position: relative;
+    overflow: hidden; }
     .card.brackets:before {
       content: "";
       position: absolute;
@@ -1595,6 +1603,24 @@ nav {
       font-weight: 300; }
       .card.brackets p:first-child, .card.brackets ul:first-child {
         margin-top: 0; }
+    .card.brackets .body-default, .card.brackets .body-open {
+      opacity: 1;
+      position: relative;
+      z-index: 2;
+      transition: height 600ms, opacity 200ms; }
+    .card.brackets.card-closed .body-default, .card.brackets.card-closed .body-open {
+      opacity: 0; }
+    .card.brackets .body-open {
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      left: 32px;
+      z-index: 1;
+      opacity: 0; }
+    .card.brackets.card-open .body-default {
+      z-index: 1; }
+    .card.brackets.card-open .body-open {
+      z-index: 2; }
     .card.brackets .action {
       border: 0px;
       padding-bottom: 16px; }
@@ -2242,7 +2268,7 @@ welcome .page, signup .page, for-improvisers .page {
     welcome .page .block:last-child, signup .page .block:last-child, for-improvisers .page .block:last-child {
       margin-bottom: 0; }
   welcome .page .card-list h4, signup .page .card-list h4, for-improvisers .page .card-list h4 {
-    margin-bottom: 0; }
+    margin-bottom: 24px; }
   welcome .page .card-list p, signup .page .card-list p, for-improvisers .page .card-list p {
     line-height: 1.5; }
   welcome .page .paper, signup .page .paper, for-improvisers .page .paper {

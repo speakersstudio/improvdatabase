@@ -16,7 +16,11 @@ var BracketCardDirective = (function () {
     }
     BracketCardDirective.prototype.ngOnInit = function () {
         this._saveDimens();
-        this.isOpen = true;
+        this.contentOpen = this.card.querySelector('.body-open');
+        this.contentDefault = this.card.querySelector('.body-default');
+        if (!this.contentOpen) {
+            this.isOpen = true;
+        }
     };
     BracketCardDirective.prototype._saveDimens = function () {
         this.card.dataset.width = this.card.offsetWidth.toString();
@@ -34,6 +38,9 @@ var BracketCardDirective = (function () {
                 _this._closeHorizontal();
             }
             _this.isOpen = false;
+            _this.isClosed = true;
+            _this.card.classList.remove('card-open');
+            _this.card.classList.add('card-closed');
         }, delay);
     };
     BracketCardDirective.prototype._closeVertical = function () {
@@ -79,37 +86,95 @@ var BracketCardDirective = (function () {
             _this.card.style.opacity = '0.5';
         }, 10);
     };
+    BracketCardDirective.prototype._closeContent = function () {
+        var _this = this;
+        setTimeout(function () {
+            _this.card.style.maxWidth = '';
+            var height = _this.card.dataset.contentheight;
+            _this.contentDefault.style.height = height + 'px';
+            _this.contentOpen.style.opacity = '0';
+            setTimeout(function () {
+                _this.contentDefault.style.opacity = '1';
+            }, 300);
+        }, 10);
+    };
     BracketCardDirective.prototype.open = function (delay) {
         var _this = this;
         delay = delay || 10;
-        if (this.card.style.height !== '0px' && this.card.style.width !== '0px') {
+        // if the width isn't already 0, it's already open
+        if (!this.contentOpen && this.card.style.height !== '0px' && this.card.style.width !== '0px') {
             return;
         }
         setTimeout(function () {
-            var height = _this.card.dataset.height, width = _this.card.dataset.width, children = _this.card.children;
-            var _loop_3 = function (i) {
-                var child = children[i];
-                child.style.opacity = '0';
+            if (_this.contentOpen) {
+                _this._openContent();
+            }
+            else {
+                _this._openBasic();
+            }
+            _this.isClosed = false;
+            _this.isOpen = true;
+            _this.card.classList.remove('card-closed');
+            _this.card.classList.add('card-open');
+        }, delay);
+    };
+    BracketCardDirective.prototype._openBasic = function () {
+        var _this = this;
+        var height = this.card.dataset.height, width = this.card.dataset.width;
+        var children = this.card.children;
+        var _loop_3 = function (i) {
+            var child = children[i];
+            child.style.opacity = '0';
+            if (!child.classList.contains('body-open')) {
                 setTimeout(function () {
                     child.style.opacity = '1';
                 }, 200);
-            };
-            for (var i = 0; i < children.length; i++) {
-                _loop_3(i);
             }
-            _this.card.style.overflow = 'hidden';
+        };
+        for (var i = 0; i < children.length; i++) {
+            _loop_3(i);
+        }
+        this.card.style.overflow = 'hidden';
+        setTimeout(function () {
+            _this.card.style.height = height + 'px';
+            _this.card.style.width = width + 'px';
+            _this.card.style.opacity = '1';
             setTimeout(function () {
-                _this.card.style.height = height + 'px';
-                _this.card.style.width = width + 'px';
-                _this.card.style.opacity = '1';
-                setTimeout(function () {
-                    _this.card.style.flexGrow = '';
-                    _this.card.style.width = '';
-                    _this.card.style.height = '';
-                    _this.card.style.overflow = '';
-                }, 500);
-            }, 10);
-            _this.isOpen = true;
+                _this.card.style.flexGrow = '';
+                _this.card.style.width = '';
+                _this.card.style.height = '';
+                _this.card.style.overflow = '';
+            }, 500);
+        }, 10);
+    };
+    BracketCardDirective.prototype._openContent = function () {
+        var _this = this;
+        setTimeout(function () {
+            _this.card.style.maxWidth = '100%';
+            _this.card.dataset.contentheight = _this.contentDefault.offsetHeight.toString();
+            _this.contentDefault.style.height = _this.contentDefault.offsetHeight + 'px';
+            _this.contentDefault.style.opacity = '0';
+            _this.contentOpen.removeAttribute('style');
+            setTimeout(function () {
+                _this.contentDefault.style.height = _this.contentOpen.offsetHeight + 'px';
+                _this.contentOpen.style.opacity = '1';
+            }, 200);
+        }, 10);
+    };
+    BracketCardDirective.prototype.reset = function (delay) {
+        var _this = this;
+        delay = delay || 10;
+        setTimeout(function () {
+            if (_this.isOpen && _this.contentOpen) {
+                _this._closeContent();
+            }
+            else if (_this.isClosed) {
+                _this._openBasic();
+            }
+            _this.isClosed = false;
+            _this.isOpen = false;
+            _this.card.classList.remove('card-open');
+            _this.card.classList.remove('card-closed');
         }, delay);
     };
     return BracketCardDirective;

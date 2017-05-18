@@ -57,7 +57,7 @@
     position: relative;
     box-sizing: border-box;
     @include md-elevation($card-elevation-default);
-    @include md-elevation-transition(("width 500ms", "height 500ms", "opacity 500ms"));
+    @include md-elevation-transition(("width 500ms", "height 500ms", "opacity 500ms", "max-width 500ms"));
 
     & > * {
         transition: opacity $anim-duration;
@@ -218,6 +218,8 @@
         text-align: center;
         //border: $bracket-width solid $color-text;
         padding: $large ($std * 2);
+        position: relative;
+        overflow: hidden;
 
         &:before {
             content: "";
@@ -262,6 +264,32 @@
 
             &:first-child {
                 margin-top: 0;
+            }
+        }
+
+        .body-default, .body-open {
+            opacity: 1;
+            position: relative;
+            z-index: 2;
+            transition: height 600ms, opacity 200ms;
+        }
+        &.card-closed {
+            .body-default, .body-open {
+                opacity: 0;
+            }
+        }
+
+        .body-open {
+            @include abs($large, ($std * 2), null, ($std * 2), 1);
+            opacity: 0;
+        }
+
+        &.card-open {
+            .body-default {
+                z-index: 1;
+            }
+            .body-open {
+                z-index: 2;
             }
         }
 

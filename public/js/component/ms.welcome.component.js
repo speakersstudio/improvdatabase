@@ -13,14 +13,17 @@ var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var http_1 = require("@angular/http");
 require("rxjs/add/operator/toPromise");
+var app_service_1 = require("../service/app.service");
 // import { MarketingSiteComponent } from './ms.component';
 var app_component_1 = require("./app.component");
 var anim_util_1 = require("../util/anim.util");
+var bracket_card_directive_1 = require("../directive/bracket-card.directive");
 var WelcomeComponent = (function () {
-    function WelcomeComponent(_app, router, http) {
+    function WelcomeComponent(_app, router, http, _service) {
         this._app = _app;
         this.router = router;
         this.http = http;
+        this._service = _service;
         this.contact = {
             firstName: "",
             lastName: "",
@@ -31,9 +34,18 @@ var WelcomeComponent = (function () {
         };
         this.toolbarheight = 48;
         this.pageStart = window.innerHeight - (this.toolbarheight + 24);
+        this.packages = [];
     }
     WelcomeComponent.prototype.ngOnInit = function () {
+        var _this = this;
         this.setupSize();
+        this._service.getPackageConfig().then(function (config) { return _this.config = config; });
+        this._service.getPackages().then(function (pkgs) {
+            _this.packages = pkgs;
+            _this._service.getSubscriptionPackage('facilitator', false).then(function (pkg) {
+                _this.packages.push(pkg);
+            });
+        });
     };
     WelcomeComponent.prototype.setupSize = function () {
     };
@@ -69,8 +81,29 @@ var WelcomeComponent = (function () {
             });
         }
     };
+    WelcomeComponent.prototype.selectPackage = function ($event, pkg, cardClicked) {
+        if (cardClicked.classList.contains('card-open')) {
+            this.packageCards.forEach(function (card) {
+                card.reset();
+            });
+        }
+        else {
+            this.packageCards.forEach(function (card) {
+                if (card.card != cardClicked) {
+                    card.close();
+                }
+                else {
+                    card.open();
+                }
+            });
+        }
+    };
     return WelcomeComponent;
 }());
+__decorate([
+    core_1.ViewChildren('packageCard', { read: bracket_card_directive_1.BracketCardDirective }),
+    __metadata("design:type", core_1.QueryList)
+], WelcomeComponent.prototype, "packageCards", void 0);
 WelcomeComponent = __decorate([
     core_1.Component({
         moduleId: module.id,
@@ -83,7 +116,8 @@ WelcomeComponent = __decorate([
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,
         router_1.Router,
-        http_1.Http])
+        http_1.Http,
+        app_service_1.AppService])
 ], WelcomeComponent);
 exports.WelcomeComponent = WelcomeComponent;
 

@@ -13,6 +13,7 @@ var core_1 = require("@angular/core");
 require("rxjs/add/operator/toPromise");
 var constants_1 = require("../constants");
 var app_http_1 = require("../data/app-http");
+var package_1 = require("../model/package");
 var AppService = (function () {
     function AppService(http) {
         this.http = http;
@@ -64,6 +65,70 @@ var AppService = (function () {
                 .catch(this.handleError);
         }
         return this._packagePromise;
+    };
+    AppService.prototype.getSubscriptionPackage = function (userType, team) {
+        return this.getPackageConfig()
+            .then(function (config) {
+            var subOption = new package_1.Package();
+            subOption._id = 'sub';
+            if (userType == 'facilitator') {
+                if (!team) {
+                    subOption.name = 'Individual Facilitator Subscription';
+                    subOption.price = config.fac_sub_price;
+                    subOption.description = [
+                        "Gain access to the the app for one year.",
+                        "Browse and purchase from our entire catalogue of facilitation materials.",
+                        "Utilize the database of over 200 Improv Exercises."
+                    ];
+                }
+                else {
+                    subOption.name = 'Facilitator Team Subscription';
+                    subOption.price = config.fac_team_sub_price;
+                    subOption.description = [
+                        "Your team can share and collaborate with the ImprovPlus app.",
+                        "Browse and purchase from our entire catalogue of facilitation materials.",
+                        "Utilize the database of over 200 Improv Exercises."
+                    ];
+                }
+            }
+            else {
+                if (!team) {
+                    subOption.name = 'Individual Improviser Subscription';
+                    subOption.price = config.improv_sub_price;
+                    subOption.description = [
+                        "Gain access to the app for one year.",
+                        "Browse the database of over 200 Improv Games.",
+                        "Join the ever-growing ImprovPlus community."
+                    ];
+                }
+                else {
+                    subOption.name = 'Improviser Team Subscription';
+                    subOption.price = config.improv_team_sub_price;
+                    subOption.description = [
+                        'Access powerful marketing and collaboration tools.',
+                        'Browse the database of over 200 Improv Games.',
+                        "Join the ever-growing ImprovPlus community."
+                    ];
+                }
+            }
+            return subOption;
+        });
+    };
+    AppService.prototype.getPackageConfig = function () {
+        var _this = this;
+        if (this.config) {
+            return new Promise(function (resolve, reject) {
+                resolve(_this.config);
+            });
+        }
+        else {
+            return this.http.get(constants_1.API.packageConfig)
+                .toPromise()
+                .then(function (result) {
+                _this.config = result.json();
+                return _this.config;
+            });
+        }
     };
     return AppService;
 }());

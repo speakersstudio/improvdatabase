@@ -347,6 +347,18 @@ iplus {
             flex-direction: column;
         }
     }
+
+    &.double {
+        flex-wrap: wrap;
+
+        & > * {
+            width: calc(50% - (#{($std / 2)}));
+        }
+
+        & > *:nth-child(2) {
+            margin-right: 0;
+        }
+    }
 }
 
 .tabs {

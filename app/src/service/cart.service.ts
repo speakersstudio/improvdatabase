@@ -25,8 +25,6 @@ export class CartService {
     private purchase: Purchase = new Purchase();
     private user: User;
 
-    private config: PackageConfig;
-
     constructor(
         private http: AppHttp,
         private userService: UserService
@@ -37,21 +35,6 @@ export class CartService {
         this.purchase.packages = [];
         this.purchase.materials = [];
         this.purchase.other = [];
-    }
-
-    getConfig(): Promise<PackageConfig> {
-        if (this.config) {
-            return new Promise((resolve, reject) => {
-                resolve(this.config);
-            });
-        } else {
-            return this.http.get(API.packageConfig)
-                .toPromise()
-                .then(result => {
-                    this.config = result.json() as PackageConfig;
-                    return this.config;
-                });
-        }
     }
 
     addPackage(pack: Package): Purchase {

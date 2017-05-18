@@ -98,56 +98,71 @@
             
             <h3>packages</h3>
 
-            <p>Get started right away with our innovative program materials.</p>
+            <p>Get started right away with our innovative program materials. Click through to see more.</p>
 
             <div class="card-list span3">
 
-                <div class="card red brackets clickable">
-                    <h4>improv + networking</h4>
-                    <p>A complete 90 minute networking training for Young Professionals.</p>
-                    <h5 class="center">$1250</h5>
-                </div>
+                <div class="card brackets clickable {{pkg.color}}"
+                    #packageCard
+                    bracketCard
+                    (click)="selectPackage($event, pkg, packageCard)"
+                    *ngFor="let pkg of packages">
 
-                <div class="card red brackets clickable">
-                    <h4>improv + business</h4>
-                    <p>Develop strong team players, creative thinkers, and effective communicators with this three-hour training.</p>
-                    <h5 class="center">$1750</h5>
-                </div>
+                    <div class="body-default">
+                        <h4>{{pkg.name}}</h4>
+                        <p>{{pkg.description[0]}}</p>
+                        <!--<p *ngIf="pkg._id != 'sub'">Includes your first year of access to the App.</p>-->
+                        <h5 class="center">
+                            <label *ngIf="pkg._id != 'sub'">starting at</label>
+                            ${{pkg.price}}
+                            <label *ngIf="pkg._id == 'sub'">per year</label>
+                        </h5>
+                    </div>
 
-                <div class="card red brackets clickable">
-                    <h4>improv + ultimate</h4>
-                    <p>Get everything we have to offer for one price - the best way to get your team started on ImprovPlus.</p>
-                    <h5 class="center">$2500</h5>
+                    <div class="body-open">
+                        <h4>{{pkg.name}}</h4>
+                        <p *ngFor="let item of pkg.description">{{item}}</p>
+                        <p *ngIf="pkg._id != 'sub'">Includes your first year of access to the App (a $99 value).</p>
+
+                        <h5 class="center">
+                            <label *ngIf="pkg._id != 'sub'">starting at</label>
+                            ${{pkg.price}}
+                            <label *ngIf="pkg._id == 'sub'">per year</label>
+                        </h5>
+
+                        <div class="block" *ngIf="pkg._id != 'sub' && pkg.materials.length">
+                            <h5>Includes:</h5>
+
+                            <p>These downloadable materials will be yours to keep.</p>
+
+                            <div class="columns left double">
+                                <div class=""
+                                    *ngFor="let item of pkg.materials">
+
+                                    <p><i class="fa fa-file-pdf-o" title="PDF Download"></i> <strong>{{item.name}}</strong></p>
+
+                                    <p>{{item.description}}</p>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
             </div>
 
             <h3>the <span class="light">improv</span><strong>plus</strong> app</h3>
 
-            <p>Buying a package comes along with a year-long subscription to the ImprovPlus app, including a smorgasbord of incredible content and features.</p>
+            <p>Buying a package includes a year-long subscription to the ImprovPlus app, including an ever-growing smorgasbord of incredible content and features.</p>
 
             <div class="card-list span3">
 
-                <!--<div class="card blue brackets clickable">
-                    <h4>House Rules</h4>
-                    <p>Vestibulum at mollis lectus, in eleifend justo. Donec dignissim vestibulum ex vel consequat.</p>
-                </div>
-
-                <div class="card blue brackets clickable">
-                    <h4>Facilitation Tips</h4>
-                    <p>Suspendisse egestas posuere ex, nec bibendum elit lacinia in. Pellentesque quis eros nunc.</p>
-                </div>
-
-                <div class="card blue brackets clickable">
-                    <h4>Bonus Materials</h4>
-                    <p>Nunc vitae eleifend felis. Praesent auctor, orci a tristique rhoncus, urna turpis elementum massa, sed faucibus lacus orci fermentum ex.</p>
-                </div>-->
-
-                <div class="card blue brackets">
+                <!--<div class="card blue brackets">
                     <h4>App Subscription</h4>
                     <p>Get access to all of these features.</p>
                     <h5 class="center">$99 / year</h5>
-                </div>
+                </div>-->
 
                 <div class="card blue brackets">
                     <h4>Materials Library</h4>
@@ -156,7 +171,7 @@
 
                 <div class="card blue brackets">
                     <h4>Game Database</h4>
-                    <p>View our collection of over 200 Improv games, warmups, icebreakers, and exercises.</p>
+                    <p>View our collection of over 200 Improv games, warmups, icebreakers, and exercises. Keep track of your favorites, and save your notes on each one for future reference.</p>
                 </div>
 
                 <div class="card blue brackets">
@@ -225,7 +240,7 @@
 
     </div>
 
-    <div class="paper center">
+    <!--<div class="paper center">
 
         <div class="block">
             <h4>calling improvisers</h4>
@@ -237,7 +252,7 @@
             <a routerLink="/signup" class="button">Sign up as an improviser</a>
         </div>
 
-    </div>
+    </div>-->
 
 </div>
 

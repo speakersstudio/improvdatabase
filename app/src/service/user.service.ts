@@ -29,16 +29,6 @@ export class UserService {
 
     private USER_STORAGE_KEY = 'improvplus_user';
 
-    // private loginUrl = '/login';
-    // private passwordRecoveryUrl = '/recoverPassword';
-    // private passwordRecoveryTokenCheckUrl = '/checkPasswordToken';
-    // private passwordChangeUrl = '/changePassword';
-    // private logoutUrl = '/logout';
-    // private refreshUrl = '/refreshToken';
-    // private userUrl = '/api/user/';
-    // private validateUrl = this.userUrl + 'validate';
-    // private inviteUrl = '/api/invite/';
-
     loggedInUser: User;
 
     isLoggingIn: boolean;

@@ -272,6 +272,20 @@
             position: relative;
             z-index: 2;
             transition: height 600ms, opacity 200ms;
+            padding: $large;
+            margin: 0 (-$std);
+            box-sizing: border-box;
+
+            & > *:first-child {
+                margin-top: 0;
+            }
+            & > *:last-child {
+                margin-bottom: 0;
+            }
+
+            @media #{$media-mobile} {
+                transition: height 2000ms, opacity 200ms;
+            }
         }
         &.card-closed {
             .body-default, .body-open {

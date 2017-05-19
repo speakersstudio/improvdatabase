@@ -1,6 +1,7 @@
 import { OpaqueToken } from '@angular/core';
 
 export const CONFIG_TOKEN = new OpaqueToken('config');
+export const MOBILE_WIDTH = 500;
 export const API = {
     login: '/login',
     passwordRecovery: '/recoverPassword',

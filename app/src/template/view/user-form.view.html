@@ -90,10 +90,37 @@
 
     <div class="section" *ngIf="!newUser">
         <div class="columns">
-            <label>Description
-                <textarea name="description" [(ngModel)]="user.description" rows="4"></textarea>
+            <textarea formInput placeholder="Description" name="description" [(ngModel)]="user.description" rows="4"></textarea>
+        </div>
+    </div>
+
+    <div class="section" *ngIf="!newUser">
+
+        <div class="spanhalf">
+            <label>Birthday
+                <div class="columns">
+                    <div class="form-input">
+                        <select name="birthday-month" [(ngModel)]="birthdayMonth">
+                            <option value='0'>Janaury</option>
+                            <option value='1'>February</option>
+                            <option value='2'>March</option>
+                            <option value='3'>April</option>
+                            <option value='4'>May</option>
+                            <option value='5'>June</option>
+                            <option value='6'>July</option>
+                            <option value='7'>August</option>
+                            <option value='8'>September</option>
+                            <option value='9'>October</option>
+                            <option value='10'>November</option>
+                            <option value='11'>December</option>
+                        </select>
+                    </div>
+                    <input formInput placeholder="Day" type="text" name="birthday-day" [(ngModel)]="birthdayDay" />
+                    <input formInput placeholder="Year" type="text" name="birthday-year" [(ngModel)]="birthdayYear" />
+                </div>
             </label>
         </div>
+
     </div>
 
     <div class="section">

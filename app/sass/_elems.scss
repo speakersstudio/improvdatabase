@@ -99,7 +99,7 @@ label {
     display: block;
     margin-top: $small;
 
-    input, textarea, select {
+    & > input, & > textarea, & > select {
         margin-top: 0px;
         padding-top: $small;
     }

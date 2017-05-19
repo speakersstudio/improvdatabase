@@ -1,6 +1,8 @@
 import { 
     Component,
     OnInit,
+    ViewChild,
+    ElementRef,
     ViewChildren,
     QueryList
 } from '@angular/core';
@@ -115,12 +117,23 @@ export class WelcomeComponent implements OnInit {
         }
     }
 
+    selectedCard: HTMLElement;
     selectPackage($event: any, pkg: Package, cardClicked: HTMLElement): void {
+        if (this.selectedCard && this.selectedCard != cardClicked) {
+            this.selectPackage(null, null, this.selectedCard);
+            setTimeout(() => {
+                this.selectPackage($event, pkg, cardClicked);
+            }, 500);
+            return;
+        }
+
         if (cardClicked.classList.contains('card-open')) {
             this.packageCards.forEach(card => {
                 card.reset();
             });
+            this.selectedCard = null;
         } else {
+            this.selectedCard = cardClicked;
             this.packageCards.forEach(card => {
                 if (card.card != cardClicked) {
                     card.close();

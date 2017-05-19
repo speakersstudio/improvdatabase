@@ -82,12 +82,22 @@ var WelcomeComponent = (function () {
         }
     };
     WelcomeComponent.prototype.selectPackage = function ($event, pkg, cardClicked) {
+        var _this = this;
+        if (this.selectedCard && this.selectedCard != cardClicked) {
+            this.selectPackage(null, null, this.selectedCard);
+            setTimeout(function () {
+                _this.selectPackage($event, pkg, cardClicked);
+            }, 500);
+            return;
+        }
         if (cardClicked.classList.contains('card-open')) {
             this.packageCards.forEach(function (card) {
                 card.reset();
             });
+            this.selectedCard = null;
         }
         else {
+            this.selectedCard = cardClicked;
             this.packageCards.forEach(function (card) {
                 if (card.card != cardClicked) {
                     card.close();

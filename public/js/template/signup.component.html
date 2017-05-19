@@ -1,12 +1,4 @@
-<div class="toolbar" [class.on]="_app.scrollpos > 20">
-    <div class="toolbar-row">
-        <iplus class="white" (click)="_app.login()" *ngIf="!_app.loaderVisible"></iplus>
-
-        <a routerLink="/welcome">Welcome</a>
-
-        <a (click)="_app.login()" [innerHTML]="_app.user ? 'To the App <i class=\'fa fa-chevron-right\'></i>' : 'Log In'"></a>
-    </div>
-</div>
+<marketing-toolbar [on]="(_app.scrollpos) > 20" [onWhenOpen]="true"></marketing-toolbar>
 
 <landing-hero [showContent]="false" [video]="false"></landing-hero>
 
@@ -14,7 +6,7 @@
 
     <div class="blackbox center">
         <h2><span class="light">find your path to</span> <strong>plus</strong></h2>
-        <p>You are three simple questions away from joining <span class="light">improv</span><strong>plus</strong></p>
+        <p>Answer three simple questions and you'll have <span class="light">improv</span><strong>plus</strong></p>
     </div>
 
 
@@ -32,7 +24,7 @@
 
                 <i class="fa fa-book"></i>
 
-                <div *ngIf="userType != 'facilitator'" [@fadeAbsolute]>
+                <div class="body-default">
                     <h4>Facilitator</h4>
 
                     <ul>
@@ -42,7 +34,7 @@
                     </ul>
                 </div>
 
-                <div class="body" *ngIf="userType == 'facilitator'" [@fadeAbsolute]>
+                <div class="body-open">
                     <p>Great! Let's start with the email and password you want to use for your new Facilitator account.</p>
                     
                     <input name="email"
@@ -72,7 +64,7 @@
 
                 <i class="fa fa-smile-o"></i>
 
-                <div *ngIf="userType != 'improviser'" [@fadeAbsolute]>
+                <div class="body-default">
                     <h4>Improviser</h4>
 
                     <ul>
@@ -82,7 +74,7 @@
                     </ul>
                 </div>
 
-                <div class="body" *ngIf="userType == 'improviser'" [@fadeAbsolute]>
+                <div class="body-open">
                     <p>Awesome! Let's start with the email and password you want to use for your new Improviser account.</p>
 
                     <input name="email"
@@ -133,7 +125,7 @@
 
                 <i class="fa fa-user"></i>
 
-                <div *ngIf="teamOption != 'individual'" [@fadeAbsolute]>
+                <div class="body-default">
                     <h4>Yourself</h4>
 
                     <ul *ngIf="userType == 'facilitator'">
@@ -149,7 +141,7 @@
                     </ul>
                 </div>
 
-                <div class="body" *ngIf="teamOption == 'individual'" [@fadeAbsolute]>
+                <div class="body-open">
                     <p>Hello! What do we call you?</p>
                     <input
                         autocomplete="off" formInput name="userName" placeholder="Your Name" [(ngModel)]="userName" required type="text" />
@@ -165,7 +157,7 @@
 
                 <i class="fa fa-users"></i>
 
-                <div *ngIf="teamOption != 'team'" [@fadeAbsolute]>
+                <div class="body-default">
                     <h4>Your Team</h4>
 
                     <ul *ngIf="userType == 'facilitator'">
@@ -181,7 +173,7 @@
                     </ul>
                 </div>
 
-                <div class="body" *ngIf="teamOption == 'team'" [@fadeAbsolute]>
+                <div class="body-open">
                     <p>What should we call your team?</p>
 
                     <input formInput
@@ -225,7 +217,7 @@
                 (click)="selectPackage($event, package, packageCard)"
                 #packageCard>
 
-                <div *ngIf="selectedPackage != package" [@fadeAbsolute]>
+                <div class="body-default">
                     <h4>{{package.name}}</h4>
 
                     <ul>
@@ -240,11 +232,11 @@
                     <h4>${{package.price}}</h4>
                 </div>
 
-                <div class="body left payment-info" *ngIf="selectedPackage == package" [@fadeAbsolute]>
-                    <p><strong>{{selectedPackage.name}}</strong> ${{selectedPackage.price}}</p>
+                <div class="body-open left payment-info">
+                    <p><strong>{{package.name}}</strong> ${{package.price}}</p>
 
                     <p>Now we just need your billing info. Don't worry - your information is secure through the whole process.</p>
-                    <form id="payment-form" (ngSubmit)="submitPayment()" #paymentForm="ngForm">
+                    <form id="payment-form" *ngIf="selectedPackage == package" (ngSubmit)="submitPayment()" #paymentForm="ngForm">
                         <div class="form-row">
                             <label for="card-element">
                                 Credit or debit card number

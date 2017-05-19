@@ -24,6 +24,12 @@ var UserFormView = (function () {
     }
     UserFormView.prototype.ngOnInit = function () {
         this.newUser = this.user._id == undefined;
+        if (this.user.birthday) {
+            var birthday = new Date(this.user.birthday);
+            this.birthdayDay = birthday.getDate();
+            this.birthdayMonth = birthday.getMonth();
+            this.birthdayYear = birthday.getFullYear();
+        }
     };
     UserFormView.prototype.ngOnDestroy = function () {
     };
@@ -37,6 +43,13 @@ var UserFormView = (function () {
         this.emailConflict = false;
         if (this.password === this.passwordConfirm) {
             this.user.password = this.password;
+            if (this.birthdayDay && this.birthdayMonth && this.birthdayYear) {
+                var birthday = new Date();
+                birthday.setDate(this.birthdayDay);
+                birthday.setMonth(this.birthdayMonth);
+                birthday.setFullYear(this.birthdayYear);
+                this.user.birthday = birthday.getTime().toString();
+            }
             this.isValidating = true;
             this.appService.validateUser(this.user)
                 .then(function (conflict) {

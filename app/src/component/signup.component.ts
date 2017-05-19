@@ -199,33 +199,29 @@ export class SignupComponent implements OnInit {
     }
 
     selectCard(option: string, value: string, cardToOpen: BracketCardDirective, cardToClose: BracketCardDirective): void {
-        if (this[option] == value) {
+        if (this[option] == value || cardToOpen.isOpen) {
             return;
         }
 
         this.setPageHeight();
 
-        this[option] = '';
+        // this[option] = '';
+
         if (option == 'userType') {
             this.teamOption = '';
         }
         if (option == 'teamOption') {
             this.userName = '';
             this.teamName = '';
-            this.showPackages(value == 'team');
+            this.setupPackages(value == 'team');
         }
 
-        let delay = 400;
-        if (cardToOpen.isOpen) {
-            delay = 200;
-        }
-
-        cardToOpen.open(delay);
-        cardToClose.close(delay);
+        cardToOpen.open();
+        cardToClose.close();
 
         setTimeout(() => {
             this[option] = value;
-        }, delay * 2);
+        }, 600);
     }
 
     reset(): void {
@@ -242,9 +238,9 @@ export class SignupComponent implements OnInit {
             this.teamName = '';
             this.selectedPackage = null;
 
-            this.facilitatorCard.open(500);
-            this.improviserCard.open(500)
-        }, 600);
+            this.facilitatorCard.reset(500);
+            this.improviserCard.reset(500)
+        }, 400);
     }
 
     selectFacilitator(): void {
@@ -267,7 +263,7 @@ export class SignupComponent implements OnInit {
             this.yourTeamCard, this.yourselfCard);
     }
 
-    showPackages(team: boolean): void {
+    setupPackages(team: boolean): void {
         this.selectedPackage = null;
         
         this.options = [];
@@ -303,17 +299,19 @@ export class SignupComponent implements OnInit {
 
         this.setPageHeight();
 
-        this.selectedPackage = null;
-
         this.packageCards.forEach(card => {
+            console.log(card, card.card == cardClicked);
             if (card.card != cardClicked) {
-                card.close(200);
+                card.close();
             } else {
-                card.open(200);
+                card.open();
             }
         });
+        
+        this.creditCard.unmount();
 
         setTimeout(() => {
+
             this.selectedPackage = pack;
 
             if (this.selectedPackage._id == 'sub') {
@@ -337,11 +335,11 @@ export class SignupComponent implements OnInit {
             }
 
             // setup the stripe credit card input
-            this.creditCard.unmount();
             setTimeout(() => {
                 this.creditCard.mount('#card-element');
-            }, 400)
-        }, 400);
+            }, 100)
+
+        }, 100);
     }
 
     isFormValid(): boolean {

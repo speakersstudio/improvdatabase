@@ -2,12 +2,12 @@
 
     <div class="card full brackets center" bracketCard #dashboardMessage *ngIf="visibleMessage.body">
 
-        <h4>{{visibleMessage.title}}</h4>
+        <h4 [innerHTML]="visibleMessage.title"></h4>
 
         <div [innerHTML]="visibleMessage.body"></div>
 
         <div class="action right">
-            <span class="button" (click)="dismissVisibleMessage()" *ngIf="visibleMessage.notDismissable">Dismiss</span>
+            <span class="button" (click)="dismissVisibleMessage()" *ngIf="!visibleMessage.notDismissable">Dismiss</span>
             <button class="button brackets" (click)="visibleMessage.action()" *ngIf="visibleMessage.button">{{visibleMessage.button}}</button>
         </div>
         
@@ -84,6 +84,45 @@
                 <span class="button" (click)="dismissVisibleMessage()">Dismiss</span>
 
                 <button class="button brackets" (click)="saveUserName()" [disabled]='!firstName || !lastName' *ngIf="!isPosting">Save</button>
+                <span class="button" *ngIf="isPosting"><i class="loading"></i></span>
+            </div>
+        </div>
+        
+    </div>
+ 
+    <div class="card full brackets center" bracketCard #dashboardMessage *ngIf="visibleMessage.key == 'birthday-enter'">
+
+        <div class="content">
+            <p>Just out of curiosity, what's your Birthday?</p>
+
+            <div class="spanhalf">
+                <div class="columns">
+                    <div class="form-input">
+                        <select name="birthday-month" [(ngModel)]="birthdayMonth">
+                            <option value='0'>Janaury</option>
+                            <option value='1'>February</option>
+                            <option value='2'>March</option>
+                            <option value='3'>April</option>
+                            <option value='4'>May</option>
+                            <option value='5'>June</option>
+                            <option value='6'>July</option>
+                            <option value='7'>August</option>
+                            <option value='8'>September</option>
+                            <option value='9'>October</option>
+                            <option value='10'>November</option>
+                            <option value='11'>December</option>
+                        </select>
+                    </div>
+                    <input formInput placeholder="Day" type="text" name="birthday-day" [(ngModel)]="birthdayDay" />
+                    <input formInput placeholder="Year" type="text" name="birthday-year" [(ngModel)]="birthdayYear" />
+                </div>
+            </div>
+
+            <div class="action right">
+                <span class="button pull-left" (click)="router.navigate(['/app/user'])">Edit your profile</span>
+                <span class="button" (click)="dismissVisibleMessage()">Dismiss</span>
+
+                <button class="button brackets" (click)="saveBirthday()" [disabled]='!birthdayMonth || !birthdayDay || !birthdayYear' *ngIf="!isPosting">Save</button>
                 <span class="button" *ngIf="isPosting"><i class="loading"></i></span>
             </div>
         </div>

@@ -12,22 +12,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var BracketCardDirective = (function () {
     function BracketCardDirective(el) {
+        this.fixed = true;
+        this.ANIM_DELAY = 400;
         this.card = el.nativeElement;
     }
     BracketCardDirective.prototype.ngOnInit = function () {
-        this._saveDimens();
+        var _this = this;
         this.contentOpen = this.card.querySelector('.body-open');
         this.contentDefault = this.card.querySelector('.body-default');
         if (!this.contentOpen) {
             this.isOpen = true;
         }
+        this.isDefault = true;
+        setTimeout(function () {
+            // this is delayed so any enter transition doesn't cause problems
+            _this._saveDimens();
+            if (_this.contentDefault) {
+                _this.contentDefault.style.height = _this.contentDefault.offsetHeight + 'px';
+            }
+        }, 500);
     };
     BracketCardDirective.prototype._saveDimens = function () {
         this.card.dataset.width = this.card.offsetWidth.toString();
         this.card.dataset.height = this.card.offsetHeight.toString();
+        if (this.contentDefault && !this.card.dataset.contentheight) {
+            this.card.dataset.contentheight = this.contentDefault.offsetHeight.toString();
+        }
     };
     BracketCardDirective.prototype.close = function (delay) {
         var _this = this;
+        if (this.isClosed) {
+            return;
+        }
         delay = delay || 10;
         this._saveDimens();
         setTimeout(function () {
@@ -38,6 +54,7 @@ var BracketCardDirective = (function () {
                 _this._closeHorizontal();
             }
             _this.isOpen = false;
+            _this.isDefault = false;
             _this.isClosed = true;
             _this.card.classList.remove('card-open');
             _this.card.classList.add('card-closed');
@@ -84,6 +101,12 @@ var BracketCardDirective = (function () {
             _this.card.style.flexGrow = '0';
             _this.card.style.width = '0px';
             _this.card.style.opacity = '0.5';
+            if (_this.contentDefault) {
+                // setTimeout(() => {
+                // this.contentDefault.style.height = '50px';
+                // }, this.ANIM_DELAY * 2)
+                _this.contentDefault.style.height = _this.card.dataset.contentheight + 'px';
+            }
         }, 10);
     };
     BracketCardDirective.prototype._closeContent = function () {
@@ -95,7 +118,7 @@ var BracketCardDirective = (function () {
             _this.contentOpen.style.opacity = '0';
             setTimeout(function () {
                 _this.contentDefault.style.opacity = '1';
-            }, 300);
+            }, _this.ANIM_DELAY);
         }, 10);
     };
     BracketCardDirective.prototype.open = function (delay) {
@@ -114,6 +137,7 @@ var BracketCardDirective = (function () {
             }
             _this.isClosed = false;
             _this.isOpen = true;
+            _this.isDefault = !_this.contentOpen;
             _this.card.classList.remove('card-closed');
             _this.card.classList.add('card-open');
         }, delay);
@@ -128,9 +152,10 @@ var BracketCardDirective = (function () {
             if (!child.classList.contains('body-open')) {
                 setTimeout(function () {
                     child.style.opacity = '1';
-                }, 200);
+                }, this_1.ANIM_DELAY);
             }
         };
+        var this_1 = this;
         for (var i = 0; i < children.length; i++) {
             _loop_3(i);
         }
@@ -144,21 +169,43 @@ var BracketCardDirective = (function () {
                 _this.card.style.width = '';
                 _this.card.style.height = '';
                 _this.card.style.overflow = '';
-            }, 500);
+            }, _this.ANIM_DELAY);
         }, 10);
     };
     BracketCardDirective.prototype._openContent = function () {
         var _this = this;
+        var children = this.card.children;
+        var _loop_4 = function (i) {
+            var child = children[i];
+            if (!child.classList.contains('body-open') && !child.classList.contains('body-default')) {
+                child.style.opacity = '0';
+                setTimeout(function () {
+                    child.style.opacity = '1';
+                }, this_2.ANIM_DELAY);
+            }
+        };
+        var this_2 = this;
+        for (var i = 0; i < children.length; i++) {
+            _loop_4(i);
+        }
         setTimeout(function () {
-            _this.card.style.maxWidth = '100%';
-            _this.card.dataset.contentheight = _this.contentDefault.offsetHeight.toString();
-            _this.contentDefault.style.height = _this.contentDefault.offsetHeight + 'px';
+            if (!_this.fixed) {
+                _this.card.style.maxWidth = '100%';
+                _this.card.style.width = '';
+                _this.card.style.flexGrow = '';
+            }
+            else {
+                var width = _this.card.dataset.width;
+                _this.card.style.width = width + 'px';
+            }
+            _this.contentDefault.style.height = _this.card.dataset.contentheight + 'px';
             _this.contentDefault.style.opacity = '0';
+            _this.card.style.opacity = "1";
             _this.contentOpen.removeAttribute('style');
             setTimeout(function () {
                 _this.contentDefault.style.height = _this.contentOpen.offsetHeight + 'px';
                 _this.contentOpen.style.opacity = '1';
-            }, 200);
+            }, _this.ANIM_DELAY);
         }, 10);
     };
     BracketCardDirective.prototype.reset = function (delay) {
@@ -173,6 +220,7 @@ var BracketCardDirective = (function () {
             }
             _this.isClosed = false;
             _this.isOpen = false;
+            _this.isDefault = true;
             _this.card.classList.remove('card-open');
             _this.card.classList.remove('card-closed');
         }, delay);
@@ -187,6 +235,10 @@ __decorate([
     core_1.Input(),
     __metadata("design:type", String)
 ], BracketCardDirective.prototype, "key", void 0);
+__decorate([
+    core_1.Input(),
+    __metadata("design:type", Boolean)
+], BracketCardDirective.prototype, "fixed", void 0);
 BracketCardDirective = __decorate([
     core_1.Directive({
         selector: '[bracketCard]'

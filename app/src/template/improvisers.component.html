@@ -1,13 +1,4 @@
-<div class="toolbar" [class.on]="(pageStart - _app.scrollpos) <= 20">
-    <div class="toolbar-row">
-        <iplus class="white" (click)="login()" *ngIf="!_app.loaderVisible"></iplus>
-
-        <a routerLink="/signup" *ngIf="!_app.user">Join</a>
-        <span *ngIf="_app.user"></span>
-
-        <a (click)="login()" [innerHTML]="_app.user ? 'To the App <i class=\'fa fa-chevron-right\'></i>' : 'Log In'"></a>
-    </div>
-</div>
+<marketing-toolbar [on]="(pageStart - _app.scrollpos) <= 20"></marketing-toolbar>
 
 <landing-hero [improv]="true"></landing-hero>
 

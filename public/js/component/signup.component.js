@@ -131,28 +131,24 @@ var SignupComponent = (function () {
     };
     SignupComponent.prototype.selectCard = function (option, value, cardToOpen, cardToClose) {
         var _this = this;
-        if (this[option] == value) {
+        if (this[option] == value || cardToOpen.isOpen) {
             return;
         }
         this.setPageHeight();
-        this[option] = '';
+        // this[option] = '';
         if (option == 'userType') {
             this.teamOption = '';
         }
         if (option == 'teamOption') {
             this.userName = '';
             this.teamName = '';
-            this.showPackages(value == 'team');
+            this.setupPackages(value == 'team');
         }
-        var delay = 400;
-        if (cardToOpen.isOpen) {
-            delay = 200;
-        }
-        cardToOpen.open(delay);
-        cardToClose.close(delay);
+        cardToOpen.open();
+        cardToClose.close();
         setTimeout(function () {
             _this[option] = value;
-        }, delay * 2);
+        }, 600);
     };
     SignupComponent.prototype.reset = function () {
         var _this = this;
@@ -166,9 +162,9 @@ var SignupComponent = (function () {
             _this.userName = '';
             _this.teamName = '';
             _this.selectedPackage = null;
-            _this.facilitatorCard.open(500);
-            _this.improviserCard.open(500);
-        }, 600);
+            _this.facilitatorCard.reset(500);
+            _this.improviserCard.reset(500);
+        }, 400);
     };
     SignupComponent.prototype.selectFacilitator = function () {
         this.selectCard('userType', 'facilitator', this.facilitatorCard, this.improviserCard);
@@ -182,7 +178,7 @@ var SignupComponent = (function () {
     SignupComponent.prototype.selectYourTeam = function () {
         this.selectCard('teamOption', 'team', this.yourTeamCard, this.yourselfCard);
     };
-    SignupComponent.prototype.showPackages = function (team) {
+    SignupComponent.prototype.setupPackages = function (team) {
         var _this = this;
         this.selectedPackage = null;
         this.options = [];
@@ -214,15 +210,16 @@ var SignupComponent = (function () {
         }
         this.cartService.reset();
         this.setPageHeight();
-        this.selectedPackage = null;
         this.packageCards.forEach(function (card) {
+            console.log(card, card.card == cardClicked);
             if (card.card != cardClicked) {
-                card.close(200);
+                card.close();
             }
             else {
-                card.open(200);
+                card.open();
             }
         });
+        this.creditCard.unmount();
         setTimeout(function () {
             _this.selectedPackage = pack;
             if (_this.selectedPackage._id == 'sub') {
@@ -249,11 +246,10 @@ var SignupComponent = (function () {
                 _this.cartService.addPackage(_this.selectedPackage);
             }
             // setup the stripe credit card input
-            _this.creditCard.unmount();
             setTimeout(function () {
                 _this.creditCard.mount('#card-element');
-            }, 400);
-        }, 400);
+            }, 100);
+        }, 100);
     };
     SignupComponent.prototype.isFormValid = function () {
         if (!this.email) {

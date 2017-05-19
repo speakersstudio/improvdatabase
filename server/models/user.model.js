@@ -19,6 +19,7 @@ const UserSchema = new mongoose.Schema({
     facilitationExp: Number,
     trainingInterest: Boolean,
     url: String,
+    birthday: Date,
     dateAdded: { type: Date, default: Date.now },
     dateModified: { type: Date, default: Date.now },
     locked: { type: Boolean, default: false },

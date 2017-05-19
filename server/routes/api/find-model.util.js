@@ -23,7 +23,8 @@ module.exports = {
         'facilitationExp',
         'trainingInterest',
         'url',
-        'description'
+        'description',
+        'birthday'
     ],
 
     TEAM_WHITELIST: [

@@ -86,6 +86,13 @@ export const API = {
     gameCreateTag: function(gameId: string, tag: string): string {
         return `${this.getGame(gameId)}/createTag/${tag}`;
     },
+    gameNotes: function(gameId: string): string {
+        return `${this.getGame(gameId)}/notes`;
+    },
+
+    getNote: function(noteId: string): string {
+        return `${this.notes}/${noteId}`;
+    },
 
     history: '/api/history',
 

@@ -1,0 +1,52 @@
+<div class="badge" *ngIf="note"><i class="fa fa-sticky-note"></i></div>
+
+<div class="metadata" *ngIf="showText" [class.clickable]="editable" (click)="setupNoteEdit()">
+    <label>
+        <span *ngIf="showUserName">{{note.addedUser.firstName}} {{note.addedUser.lastName}}</span>
+        <span *ngIf="!showUserName">You</span>
+
+        <span *ngIf="note.teams && note.teams.length == 1"><em>{{note.teams[0].name}}</em></span>
+
+        <i class="fa"
+            [class.fa-rocket]="note.game"
+            [class.fa-hashtag]="note.tag"
+            [class.fa-group]="note.metadata && note.metadata.type == 'playerCount'"
+            [class.fa-clock-o]="note.metadata && note.metadata.type == 'duration'"
+            ></i>
+        <em *ngIf="note.game" title="In regards to this game specifically.">{{game.names[0].name}}</em>
+        <em *ngIf="note.tag" title="In regards to any game with this tag.">{{note.tag.name}}</em>
+        <em *ngIf="note.metadata && note.metadata.type == 'playerCount'"
+            title="In regards to any game with this number of players.">{{note.metadata.name}}</em>
+        <em *ngIf="note.metadata && note.metadata.type == 'duration'"
+            title="In regards to any game with this duration.">{{note.metadata.name}}</em>
+    </label>
+    <div class="description" #description [innerHTML]="note.description"></div>
+</div>
+
+<div class="metadata" [class.no-margin]="!note" *ngIf="showEdit">
+    <textarea formInput
+        name="noteInput"
+        [placeholder]="note ? 'Edit Note' : 'Add a Note'"
+        rows="5"
+        #noteinput
+        [(ngModel)]="noteInput"></textarea>
+
+    <div class="button-group" [@shrinkHeight]="'in'">
+
+        <span class="improvplus-editable-metadata"
+            [canEdit]="true"
+            [allowBlank]="false"
+            [options]="noteContextOptions"
+            (save)="setNoteContext($event)"></span>
+
+        <label title="Share this note with your team?">
+            <i class="fa std fa-users"></i>
+            <input formSwitch name="noteTeam" type="checkbox" [(ngModel)]="noteTeam" />
+        </label>
+
+        <button class="button" *ngIf="note" (click)="cancelEdit()">Cancel</button>
+
+        <button class="button raised" [class.disabled]="!noteInput" (click)="saveNote()">Save</button>
+
+    </div>
+</div>

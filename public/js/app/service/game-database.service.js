@@ -25,7 +25,6 @@ var GameDatabaseService = (function () {
         this.playercounts = [];
         this.durations = [];
         this.tags = [];
-        this.notes = [];
     }
     GameDatabaseService.prototype.getGames = function () {
         var _this = this;
@@ -282,46 +281,6 @@ var GameDatabaseService = (function () {
             }
         });
         return foundTagGame;
-    };
-    GameDatabaseService.prototype.getNotes = function () {
-        var _this = this;
-        if (!this._notePromise) {
-            if (this.userService.can('note_public_view')) {
-                this._notePromise = this.http.get(constants_1.API.notes)
-                    .toPromise()
-                    .then(function (response) {
-                    _this.notes = response.json();
-                    return _this.notes;
-                })
-                    .catch(this.handleError);
-            }
-            else {
-                this._notePromise = new Promise(function (resolve, reject) {
-                    resolve([]);
-                });
-            }
-        }
-        return this._notePromise;
-    };
-    GameDatabaseService.prototype.getNotesForGame = function (game) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.getNotes().then(function (notes) {
-                // TODO: make this logic server-side
-                var notesForGame = [];
-                notes.forEach(function (note) {
-                    if (note.game == game._id
-                        || (game.playerCount && note.metadata &&
-                            note.metadata._id == game.playerCount._id)
-                        || (game.duration && note.metadata &&
-                            note.metadata._id == game.duration._id)
-                        || (note.tag && _this.gameHasTag(game, [note.tag._id]))) {
-                        notesForGame.push(note);
-                    }
-                });
-                resolve(notesForGame);
-            });
-        });
     };
     GameDatabaseService.prototype.deleteGame = function (game) {
         var _this = this;

@@ -1,6 +1,7 @@
 import { GameMetadata } from './game-metadata';
 import { Tag } from './tag';
 import { User } from './user';
+import { Team } from './team';
 
 export class Note {
     _id?: string;
@@ -9,6 +10,7 @@ export class Note {
     metadata?: GameMetadata|string;
     description: string;
     public?: boolean;
+    teams?: Team[];
     addedUser?: User;
     modifiedUser?: User;
     dateAdded?: Date;

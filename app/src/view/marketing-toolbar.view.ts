@@ -38,4 +38,8 @@ export class MarketingToolbarView implements OnInit {
             this._app.login();
         }
     }
+
+    login(): void {
+        this._app.login();
+    }
 }

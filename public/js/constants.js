@@ -80,6 +80,12 @@ exports.API = {
     gameCreateTag: function (gameId, tag) {
         return this.getGame(gameId) + "/createTag/" + tag;
     },
+    gameNotes: function (gameId) {
+        return this.getGame(gameId) + "/notes";
+    },
+    getNote: function (noteId) {
+        return this.notes + "/" + noteId;
+    },
     history: '/api/history',
     userMaterials: function (userId) {
         return this.updateUser(userId) + "/materials";

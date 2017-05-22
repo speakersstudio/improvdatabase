@@ -12,7 +12,7 @@
 
 <div class="page" *ngIf="game">
 
-    <div class="tabs">
+    <!--<div class="tabs">
         <span class="tab" 
             *ngFor="let tab of tabs"
             [class.active]="tab.id == selectedTab"
@@ -20,9 +20,9 @@
             <i class="fa fa-{{tab.icon}}"></i>
             <span>{{tab.name}}</span>
         </span>
-    </div>
+    </div>-->
 
-    <div *ngIf="selectedTab == 'details'" class="paper has-brackets">
+    <div class="paper has-brackets">
 
         <div class="content">
 
@@ -123,37 +123,10 @@
         <div class="right-bracket"><h1>game details</h1></div>
     </div>
 
-    <div *ngIf="selectedTab == 'notes'" class="paper has-brackets">
+    <div *ngIf="getPublicNotes().length" class="paper has-brackets">
+        <div class="content list">
 
-        <!--<h4>Discussion</h4>-->
-
-        <!--<div class="metadata right">
-            <span>The following has been said about <em>{{game.names[0].name}}</em>, or the tags associated with it.</span>
-        </div>
-
-        <hr />-->
-
-        <div class="content">
-
-            <div *ngFor="let note of notes" class="block">
-                <div class="description" [innerHTML]="note.description"></div>
-                <div class="metadata right">
-                    <h5>{{note.addedUser.firstName}} {{note.addedUser.lastName}}</h5>
-                    
-                    <span>Regarding
-                        <i class="fa"
-                            [class.fa-soccer-ball-o]="note.game"
-                            [class.fa-hashtag]="note.tag"
-                            [class.fa-group]="note.metadata && note.metadata.type == 'playerCount'"
-                            [class.fa-clock-o]="note.metadata && note.metadata.type == 'duration'"
-                            ></i>
-                        <em *ngIf="note.game">{{game.names[0].name}}</em>
-                        <em *ngIf="note.tag">{{note.tag.name}}</em>
-                        <em *ngIf="note.metadata">{{note.metadata.name}}</em>
-                    </span>
-                    
-                </div>
-            </div>
+            <div *ngFor="let note of getPublicNotes()" class="item large improvplus-game-note" [note]="note" [game]="game"></div>
 
         </div>
 
@@ -161,30 +134,24 @@
         <div class="right-bracket"><h1>director's commentary</h1></div>
     </div>
 
-    <div *ngIf="selectedTab == 'notes'" class="paper has-brackets">
+    <div *ngIf="getTeamNotes().length" class="paper has-brackets">
+        <div class="content list">
 
-        <div class="content">
+            <div *ngFor="let note of getTeamNotes()" class="item large improvplus-game-note" [note]="note" [game]="game"></div>
 
-            <textarea formInput
-                name="noteInput"
-                placeholder="Add a note"
-                rows="5"
-                [(ngModel)]="noteInput"></textarea>
+        </div>
 
-            <div class="button-group">
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>your teams</h1></div>
+    </div>
 
-                <span class="improvplus-editable-metadata"
-                    [canEdit]="true"
-                    [allowBlank]="false"
-                    [options]="noteContextOptions"
-                    (save)="setNoteContext($event)"></span>
+    <div class="paper has-brackets">
 
-                <label title="Share this note with your team?">
-                    <i class="fa std fa-users"></i>
-                    <input formSwitch name="noteTeam" type="checkbox" [(ngModel)]="noteTeam" />
-                </label>
-                <button class="button raised" [class.disabled]="!noteInput" (click)="saveNote()">Save</button>
-            </div>
+        <div class="content list">
+
+            <div *ngFor="let note of getPrivateNotes()" class="item large improvplus-game-note" [note]="note" [game]="game"></div>
+
+            <div class="item large improvplus-game-note" (create)="noteCreated($event)" [game]="game"></div>
 
         </div>
 

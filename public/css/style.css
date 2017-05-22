@@ -776,6 +776,8 @@ button,
     display: flex;
     flex-direction: row;
     align-items: center; }
+    .list .item.large {
+      align-items: flex-start; }
     .list .item:last-child {
       border-bottom: 0px; }
     .list .item.clickable:hover {
@@ -790,6 +792,10 @@ button,
     .list .item .metadata {
       min-width: 100px;
       flex-grow: 1; }
+      .list .item .metadata label {
+        margin: 0; }
+      .list .item .metadata.no-margin {
+        margin: -8px -16px; }
       .list .item .metadata .row {
         display: flex;
         flex-direction: row;

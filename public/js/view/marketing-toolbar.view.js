@@ -26,6 +26,9 @@ var MarketingToolbarView = (function () {
             this._app.login();
         }
     };
+    MarketingToolbarView.prototype.login = function () {
+        this._app.login();
+    };
     return MarketingToolbarView;
 }());
 __decorate([

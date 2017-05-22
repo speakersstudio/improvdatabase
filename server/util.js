@@ -75,11 +75,12 @@ module.exports = {
     },
 
     indexOfObjectId: (array, id) => {
-        let indexInArray = -1;
+        let indexInArray = -1,
+            idToUse = module.exports.getObjectIdAsString(id);
 
         array.forEach((item, i) => {
             let itemId = module.exports.getObjectIdAsString(item);
-            if (itemId == id) {
+            if (itemId == idToUse) {
                 indexInArray = i;
                 return false;
             }
@@ -134,6 +135,16 @@ module.exports = {
         })
 
         return union;
+    },
+
+    intersectArrays: function(array1, array2) {
+        let intersection = [];
+        array1.forEach(item => {
+            if (this.indexOfObjectId(array2, item) > -1) {
+                intersection.push(item);
+            }
+        });
+        return intersection;
     },
 
     populations: {

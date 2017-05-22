@@ -27,7 +27,6 @@ export class GameDatabaseService {
     private playercounts: GameMetadata[] = [];
     private durations: GameMetadata[] = [];
     private tags: Tag[] = [];
-    private notes: Note[] = [];
 
     private sortProperty: string;
 
@@ -303,48 +302,6 @@ export class GameDatabaseService {
             }
         });
         return foundTagGame;
-    }
-
-    private _notePromise: Promise<Note[]>;
-    getNotes(): Promise<Note[]> {
-        if (!this._notePromise) {
-            if (this.userService.can('note_public_view')) {
-                this._notePromise = this.http.get(API.notes)
-                    .toPromise()
-                    .then(response => {
-                        this.notes = response.json() as Note[];
-                        return this.notes;
-                    })
-                    .catch(this.handleError);
-            } else {
-                this._notePromise = new Promise<Note[]>((resolve, reject) => {
-                    resolve([]);
-                })
-            }
-        }
-        return this._notePromise;
-    }
-
-    getNotesForGame(game: Game): Promise<Note[]> {
-        return new Promise<Note[]>((resolve, reject) => {
-            this.getNotes().then((notes) => {
-                // TODO: make this logic server-side
-                let notesForGame: Note[] = [];
-                notes.forEach((note) => {
-                    if (
-                        note.game == game._id
-                        || (game.playerCount && note.metadata && 
-                            note.metadata._id == game.playerCount._id)
-                        || (game.duration && note.metadata &&
-                            note.metadata._id == game.duration._id)
-                        || (note.tag && this.gameHasTag(game, [note.tag._id]))
-                    ) {
-                        notesForGame.push(note);
-                    }
-                });
-                resolve(notesForGame);
-            });
-        });
     }
 
     deleteGame(game: Game): Promise<boolean> {

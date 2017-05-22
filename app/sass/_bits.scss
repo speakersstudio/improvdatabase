@@ -640,6 +640,10 @@ button,
         flex-direction: row;
         align-items: center;
 
+        &.large {
+            align-items: flex-start;
+        }
+
         &:last-child {
             border-bottom: 0px;
         }
@@ -662,6 +666,14 @@ button,
         .metadata {
             min-width: 100px; // makes sure any ellipsized content inside will be ellipsized
             flex-grow: 1;
+
+            label {
+                margin: 0;
+            }
+
+            &.no-margin {
+                margin: (-$small) (-$std);
+            }
 
             .row {
                 display: flex;

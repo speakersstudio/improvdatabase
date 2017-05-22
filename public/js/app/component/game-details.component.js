@@ -14,12 +14,14 @@ var router_1 = require("@angular/router");
 var common_1 = require("@angular/common");
 var app_component_1 = require("../../component/app.component");
 var game_database_service_1 = require("../service/game-database.service");
+var game_note_service_1 = require("../service/game-note.service");
 var game_1 = require("../../model/game");
 var user_service_1 = require("../../service/user.service");
 var GameDetailsComponent = (function () {
-    function GameDetailsComponent(_app, gameDatabaseService, router, route, location, userService) {
+    function GameDetailsComponent(_app, gameDatabaseService, gameNoteService, router, route, location, userService) {
         this._app = _app;
         this.gameDatabaseService = gameDatabaseService;
+        this.gameNoteService = gameNoteService;
         this.router = router;
         this.route = route;
         this.location = location;
@@ -332,40 +334,30 @@ var GameDetailsComponent = (function () {
         else {
             this.game = game;
             if (this.game.names && this.game.names.length) {
-                this.gameDatabaseService.getNotesForGame(this.game)
-                    .then(function (notes) { return _this.notes = notes; });
-                this.noteContextOptions = [
-                    {
-                        name: 'This game: ' + this.game.names[0].name,
-                        _id: 'game',
-                        icon: 'rocket',
-                        description: 'This note will only apply to this game.'
-                    },
-                    {
-                        name: this.game.playerCount.name,
-                        _id: 'metadata_' + this.game.playerCount._id,
-                        icon: 'users',
-                        description: 'This note will apply to any game involving \'' + this.game.playerCount.name + '\' player count.'
-                    },
-                    {
-                        name: this.game.duration.name,
-                        _id: 'metadata_' + this.game.duration._id,
-                        icon: 'users',
-                        description: 'This note will apply to any game involving \'' + this.game.duration.name + '\' duration.'
-                    }
-                ];
-                this.game.tags.forEach(function (taggame) {
-                    var tag = taggame.tag;
-                    _this.noteContextOptions.push({
-                        name: tag.name,
-                        _id: 'tag_' + tag._id,
-                        icon: 'hashtag',
-                        description: 'This note will apply to any game tagged \'' + tag.name + '\'.'
-                    });
+                this.gameNoteService.getNotesForGame(this.game)
+                    .then(function (notes) {
+                    _this.notes = notes;
                 });
-                this.noteContext = '';
             }
         }
+    };
+    GameDetailsComponent.prototype.getPublicNotes = function () {
+        var notes = this.notes.filter(function (note) {
+            return note.public;
+        });
+        return notes;
+    };
+    GameDetailsComponent.prototype.getPrivateNotes = function () {
+        var notes = this.notes.filter(function (note) {
+            return !note.public && (!note.teams || !note.teams.length);
+        });
+        return notes;
+    };
+    GameDetailsComponent.prototype.getTeamNotes = function () {
+        var notes = this.notes.filter(function (note) {
+            return !note.public && note.teams && note.teams.length;
+        });
+        return notes;
     };
     GameDetailsComponent.prototype.closePage = function () {
         if (this.dialog) {
@@ -399,14 +391,8 @@ var GameDetailsComponent = (function () {
                 break;
         }
     };
-    GameDetailsComponent.prototype.setNoteContext = function (context) {
-        this.noteContext = context._id;
-    };
-    GameDetailsComponent.prototype.saveNote = function () {
-        if (!this.noteContext) {
-            this.noteContext = this.noteContextOptions[0]._id;
-        }
-        console.log(this.noteContext);
+    GameDetailsComponent.prototype.noteCreated = function (note) {
+        this.notes.push(note);
     };
     return GameDetailsComponent;
 }());
@@ -439,6 +425,7 @@ GameDetailsComponent = __decorate([
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,
         game_database_service_1.GameDatabaseService,
+        game_note_service_1.GameNoteService,
         router_1.Router,
         router_1.ActivatedRoute,
         common_1.Location,

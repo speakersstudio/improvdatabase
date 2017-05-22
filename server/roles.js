@@ -76,6 +76,7 @@ module.exports = {
                 'note_public_view', // public notes
                 'note_create', // provided they're your own
                 'note_edit', // provided they're your own
+                'note_delete',
 
                 'name_view',
                 'name_vote',
@@ -104,6 +105,7 @@ module.exports = {
             actions: [
                 'note_team_create',
                 'note_team_view',
+                'note_team_edit', // you have to be admin to do this
 
                 'calendar_page_view',
                 'calendar_view',
@@ -330,7 +332,11 @@ const actionmap = {
         default: function(url, method, user) {
             switch(method) {
                 case 'get':
-                    return 'game_view';
+                    if (url.indexOf('/notes') > -1) {
+                        return 'note_view';
+                    } else {
+                        return 'game_view';
+                    }
                 case 'put':
                     return 'game_edit';
                 case 'delete':
@@ -357,19 +363,6 @@ const actionmap = {
     },
     playerCount: {
         base: 'metadata'
-    },
-    note: {
-        get: 'note_public_view',
-        default: function(url, method, user) {
-            switch(method) {
-                case 'post':
-                    // TODO: allow POST for private notes, when those are a thing
-                    return 'note_public_create';
-                case 'put':
-                    // TODO: allow PUT on a user's own notes
-                    return 'note_public_edit';
-            }
-        }
     },
     user: {
         default: function(url, method, user) {

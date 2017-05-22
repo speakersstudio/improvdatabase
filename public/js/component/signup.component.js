@@ -46,11 +46,11 @@ var SignupComponent = (function () {
     SignupComponent.prototype.setup = function () {
         var _this = this;
         this._app.showBackground(true);
-        this.isLoadingPackages = true;
-        this._service.getPackages().then(function (p) {
-            _this.isLoadingPackages = false;
-            _this.packages = p;
-        });
+        // this.isLoadingPackages = true;
+        // this._service.getPackages().then(p => {
+        //     this.isLoadingPackages = false;
+        //     this.packages = p;
+        // });
         this.stripe = Stripe(this._app.config.stripe);
         var elements = this.stripe.elements();
         this.creditCard = elements.create('card', {
@@ -182,25 +182,8 @@ var SignupComponent = (function () {
         var _this = this;
         this.selectedPackage = null;
         this.options = [];
-        if (this.userType == 'facilitator') {
-            if (!team) {
-                this.packages.forEach(function (p) {
-                    var copy = Object.assign({}, p);
-                    _this.options.push(copy);
-                });
-            }
-            else {
-                this.packages.forEach(function (p) {
-                    var copy = Object.assign({}, p);
-                    // the facilitator team packages are more expensive
-                    copy.price += _this.config.fac_team_package_markup;
-                    _this.options.push(copy);
-                });
-            }
-        }
-        // add a subscription option to the list
-        this._service.getSubscriptionPackage(this.userType, this.team).then(function (pkg) {
-            _this.options.push(pkg);
+        this._service.getPackages(this.userType, team).then(function (pkgs) {
+            _this.options = pkgs;
         });
     };
     SignupComponent.prototype.selectPackage = function ($event, pack, cardClicked) {
@@ -211,7 +194,6 @@ var SignupComponent = (function () {
         this.cartService.reset();
         this.setPageHeight();
         this.packageCards.forEach(function (card) {
-            console.log(card, card.card == cardClicked);
             if (card.card != cardClicked) {
                 card.close();
             }

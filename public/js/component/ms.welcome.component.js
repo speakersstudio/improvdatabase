@@ -40,11 +40,8 @@ var WelcomeComponent = (function () {
         var _this = this;
         this.setupSize();
         this._service.getPackageConfig().then(function (config) { return _this.config = config; });
-        this._service.getPackages().then(function (pkgs) {
+        this._service.getPackages('facilitator', false).then(function (pkgs) {
             _this.packages = pkgs;
-            _this._service.getSubscriptionPackage('facilitator', false).then(function (pkg) {
-                _this.packages.push(pkg);
-            });
         });
     };
     WelcomeComponent.prototype.setupSize = function () {

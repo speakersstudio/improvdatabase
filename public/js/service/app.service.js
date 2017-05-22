@@ -54,7 +54,7 @@ var AppService = (function () {
             }
         });
     };
-    AppService.prototype.getPackages = function () {
+    AppService.prototype._getPackages = function () {
         if (!this._packagePromise) {
             this._packagePromise = this.http.get(constants_1.API.package)
                 .toPromise()
@@ -65,6 +65,36 @@ var AppService = (function () {
                 .catch(this.handleError);
         }
         return this._packagePromise;
+    };
+    AppService.prototype.getPackages = function (userType, team) {
+        var _this = this;
+        var options = [];
+        return this.getSubscriptionPackage(userType, team)
+            .then(function (pkg) {
+            options.push(pkg);
+            return _this._getPackages();
+        })
+            .then(function (packages) {
+            if (userType == 'facilitator') {
+                if (!team) {
+                    packages.forEach(function (p) {
+                        var copy = Object.assign({}, p);
+                        options.push(copy);
+                    });
+                }
+                else {
+                    packages.forEach(function (p) {
+                        var copy = Object.assign({}, p);
+                        // the facilitator team packages are more expensive
+                        copy.price += _this.config.fac_team_package_markup;
+                        options.push(copy);
+                    });
+                }
+            }
+            return options.sort(function (a, b) {
+                return a.price > b.price ? -1 : 1;
+            });
+        });
     };
     AppService.prototype.getSubscriptionPackage = function (userType, team) {
         return this.getPackageConfig()

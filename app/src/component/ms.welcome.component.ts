@@ -71,11 +71,8 @@ export class WelcomeComponent implements OnInit {
         this.setupSize();
 
         this._service.getPackageConfig().then(config => this.config = config)
-        this._service.getPackages().then(pkgs => {
+        this._service.getPackages('facilitator', false).then(pkgs => {
             this.packages = pkgs;
-            this._service.getSubscriptionPackage('facilitator', false).then(pkg => {
-                this.packages.push(pkg);
-            });
         });
     }
 

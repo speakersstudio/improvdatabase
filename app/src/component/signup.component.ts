@@ -92,7 +92,7 @@ export class SignupComponent implements OnInit {
         this._service.getPackageConfig().then(config => {
             this.config = config;
             this.setup();
-        })
+        });
 
     }
 
@@ -100,11 +100,11 @@ export class SignupComponent implements OnInit {
 
         this._app.showBackground(true);
 
-        this.isLoadingPackages = true;
-        this._service.getPackages().then(p => {
-            this.isLoadingPackages = false;
-            this.packages = p;
-        });
+        // this.isLoadingPackages = true;
+        // this._service.getPackages().then(p => {
+        //     this.isLoadingPackages = false;
+        //     this.packages = p;
+        // });
 
         this.stripe = Stripe(this._app.config.stripe);
         let elements = this.stripe.elements();
@@ -268,26 +268,9 @@ export class SignupComponent implements OnInit {
         
         this.options = [];
 
-        if (this.userType == 'facilitator') {
-            if (!team) {
-                this.packages.forEach(p => {
-                    let copy = Object.assign({}, p);
-                    this.options.push(copy);
-                });
-            } else {
-                this.packages.forEach(p => {
-                    let copy = Object.assign({}, p);
-                    // the facilitator team packages are more expensive
-                    copy.price += this.config.fac_team_package_markup;
-                    this.options.push(copy);
-                });
-            }
-        }
-
-        // add a subscription option to the list
-        this._service.getSubscriptionPackage(this.userType, this.team).then(pkg => {
-            this.options.push(pkg);
-        });
+        this._service.getPackages(this.userType, team).then(pkgs => {
+            this.options = pkgs;
+        })
     }
 
     selectPackage($event: any, pack: Package, cardClicked: HTMLElement): void {
@@ -300,7 +283,6 @@ export class SignupComponent implements OnInit {
         this.setPageHeight();
 
         this.packageCards.forEach(card => {
-            console.log(card, card.card == cardClicked);
             if (card.card != cardClicked) {
                 card.close();
             } else {

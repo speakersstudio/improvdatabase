@@ -89,10 +89,10 @@ export class SignupComponent implements OnInit {
 
         this._app.showLoader();
 
-        this.cartService.getConfig().then(config => {
+        this._service.getPackageConfig().then(config => {
             this.config = config;
             this.setup();
-        })
+        });
 
     }
 
@@ -100,11 +100,11 @@ export class SignupComponent implements OnInit {
 
         this._app.showBackground(true);
 
-        this.isLoadingPackages = true;
-        this._service.getPackages().then(p => {
-            this.isLoadingPackages = false;
-            this.packages = p;
-        });
+        // this.isLoadingPackages = true;
+        // this._service.getPackages().then(p => {
+        //     this.isLoadingPackages = false;
+        //     this.packages = p;
+        // });
 
         this.stripe = Stripe(this._app.config.stripe);
         let elements = this.stripe.elements();
@@ -199,33 +199,29 @@ export class SignupComponent implements OnInit {
     }
 
     selectCard(option: string, value: string, cardToOpen: BracketCardDirective, cardToClose: BracketCardDirective): void {
-        if (this[option] == value) {
+        if (this[option] == value || cardToOpen.isOpen) {
             return;
         }
 
         this.setPageHeight();
 
-        this[option] = '';
+        // this[option] = '';
+
         if (option == 'userType') {
             this.teamOption = '';
         }
         if (option == 'teamOption') {
             this.userName = '';
             this.teamName = '';
-            this.showPackages(value == 'team');
+            this.setupPackages(value == 'team');
         }
 
-        let delay = 400;
-        if (cardToOpen.isOpen) {
-            delay = 200;
-        }
-
-        cardToOpen.open(delay);
-        cardToClose.close(delay);
+        cardToOpen.open();
+        cardToClose.close();
 
         setTimeout(() => {
             this[option] = value;
-        }, delay * 2);
+        }, 600);
     }
 
     reset(): void {
@@ -242,9 +238,9 @@ export class SignupComponent implements OnInit {
             this.teamName = '';
             this.selectedPackage = null;
 
-            this.facilitatorCard.open(500);
-            this.improviserCard.open(500)
-        }, 600);
+            this.facilitatorCard.reset(500);
+            this.improviserCard.reset(500)
+        }, 400);
     }
 
     selectFacilitator(): void {
@@ -267,70 +263,14 @@ export class SignupComponent implements OnInit {
             this.yourTeamCard, this.yourselfCard);
     }
 
-    showPackages(team: boolean): void {
+    setupPackages(team: boolean): void {
         this.selectedPackage = null;
-
-        // add a subscription option to the list
-        let subOption = new Package();
-        subOption._id = 'sub';
+        
         this.options = [];
 
-        if (this.userType == 'facilitator') {
-            if (!team) {
-                subOption.name = 'Individual Facilitator Subscription';
-                subOption.price = this.config.fac_sub_price;
-
-                subOption.description = [
-                    "Gain access to the the app for one year.",
-                    "Browse and purchase from our catalogue of facilitation materials.",
-                    "Utilize the database of over 200 Improv Exercises."
-                ]
-
-                this.packages.forEach(p => {
-                    let copy = Object.assign({}, p);
-                    this.options.push(copy);
-                });
-
-            } else {
-                subOption.name = 'Facilitator Team Subscription';
-                subOption.price = this.config.fac_team_sub_price;
-
-                subOption.description = [
-                    "Your team can share and collaborate with the ImprovPlus app.",
-                    "Browse and purchase from our catalogue of facilitation materials.",
-                    "Utilize the database of over 200 Improv Exercises."
-                ];
-
-                this.packages.forEach(p => {
-                    let copy = Object.assign({}, p);
-                    // the facilitator team packages are more expensive
-                    copy.price += this.config.fac_team_package_markup;
-                    this.options.push(copy);
-                });
-            }
-        } else {
-            if (!team) {
-                subOption.name = 'Individual Improviser Subscription';
-                subOption.price = this.config.improv_sub_price;
-
-                subOption.description = [
-                    "Gain access to the app for one year.",
-                    "Browse the database of over 200 Improv Games.",
-                    "Join the ever-growing ImprovPlus community."
-                ]
-            } else {
-                subOption.name = 'Improviser Team Subscription';
-                subOption.price = this.config.improv_team_sub_price;
-
-                subOption.description = [
-                    'Access powerful marketing and collaboration tools.',
-                    'Browse the database of over 200 Improv Games.',
-                    "Join the ever-growing ImprovPlus community."
-                ]
-            }
-        }
-
-        this.options.push(subOption);
+        this._service.getPackages(this.userType, team).then(pkgs => {
+            this.options = pkgs;
+        })
     }
 
     selectPackage($event: any, pack: Package, cardClicked: HTMLElement): void {
@@ -342,17 +282,18 @@ export class SignupComponent implements OnInit {
 
         this.setPageHeight();
 
-        this.selectedPackage = null;
-
         this.packageCards.forEach(card => {
             if (card.card != cardClicked) {
-                card.close(200);
+                card.close();
             } else {
-                card.open(200);
+                card.open();
             }
         });
+        
+        this.creditCard.unmount();
 
         setTimeout(() => {
+
             this.selectedPackage = pack;
 
             if (this.selectedPackage._id == 'sub') {
@@ -376,11 +317,11 @@ export class SignupComponent implements OnInit {
             }
 
             // setup the stripe credit card input
-            this.creditCard.unmount();
             setTimeout(() => {
                 this.creditCard.mount('#card-element');
-            }, 400)
-        }, 400);
+            }, 100)
+
+        }, 100);
     }
 
     isFormValid(): boolean {

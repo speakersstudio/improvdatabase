@@ -140,10 +140,15 @@ landing-hero {
     }
 }
 
-welcome, signup, for-improvisers {
+marketing-toolbar {
     .toolbar {
         .toolbar-row {
-            justify-content: space-around;
+            justify-content: space-between;
+
+            & > * {
+                width: 20%;
+                text-align: center;
+            }
 
             a {
                 text-decoration: none;
@@ -154,26 +159,77 @@ welcome, signup, for-improvisers {
                 i {
                     margin-left: $small;
                 }
+                
+                @media #{$media-mobile} {
+                    padding: 0 $std;
+                    line-height: $toolbar-height;
+                    box-sizing: border-box;
+                    width: 100%;
+                }
+
+                &.active {
+                    opacity: 0.25;
+                    color: $color-white;
+                }
             }
 
             @media #{$media-mobile} {
-                justify-content: space-between;
-                padding: 0 $std;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: flex-start;
+                height: auto;
             }
+
         }
 
         iplus {
             @include abs(0, null, null, 50%, 7);
             margin-left: -23px;
             padding: $std - 5;
+
+            @media #{$media-mobile} {
+                top: 100%;
+            }
+
+            &::before {
+                content: '';
+                @include abs(0, 0, 0, 0);
+                display: block;
+                background-color: transparent;
+                @include md-elevation-transition('background-color 200ms');
+            }
         }
 
         &.on {
             a {
                 color: $color-white;
             }
+
+            .iplus:hover .plus {
+                color: $color-white;
+            }
+
+            @media #{$media-mobile} {
+                iplus:before {
+                    background-color: $color-primary;
+                    border-radius: 0 0 50% 50%;
+                    @include md-elevation($toolbar-elevation);
+                }
+            } 
+        }
+
+        @media #{$media-mobile} {
+            top: -($toolbar-height * 4);
+            transition: top 300ms;
+        }
+
+        &.open {
+            top: 0;
         }
     }
+}
+
+welcome, signup, for-improvisers {
 
     .landing-holder {
         display: block;
@@ -215,7 +271,7 @@ welcome, signup, for-improvisers {
 
         .card-list {
             h4 {
-                margin-bottom: 0;
+                margin-bottom: $large;
             }
             p {
                 line-height: 1.5;

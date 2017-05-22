@@ -32,9 +32,9 @@ const Game = require('./models/game.model'),
 const backuptime = 1494449014692;
 const   databases = {
             'Invite': backuptime,
-            'MaterialItem': backuptime,
+            'MaterialItem': 1495120689280,
             'PackageConfig': backuptime,
-            'Package': backuptime,
+            'Package': 1495120689280,
             'Preference': backuptime,
             'Purchase': backuptime,
             'Subscription': backuptime,

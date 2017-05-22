@@ -28,6 +28,10 @@ module.exports = {
             .where('visible').equals('true')
             // .populate('materials.materialItem')
             // .select('name description price dateModified dateAdded')
+            .populate({
+                path: 'materials packages',
+                match: {visible: true}
+            })
             .exec((err, packages) => {
                 if (err) {
                     console.log(err);
@@ -235,11 +239,22 @@ module.exports = {
         }
     },
 
+    // update a package's packages
     packages: (req, res) => {
+        if (!req.user.superAdmin) {
+            return util.unauthorized(req, res);
+        }
+
         let packageId = req.params.id,
             packages = req.body.packages;
 
-        Package.findOne({}).where('_id').equals(packageId).exec()
+        Package.findOne({})
+            .where('_id').equals(packageId)
+            .populate({
+                path: 'materials packages',
+                match: {visible: true}
+            })
+            .exec()
             .then(p => {
                 p.packages = packages;
                 return p.save();
@@ -249,7 +264,12 @@ module.exports = {
             })
     },
 
+    // update a package's materials
     materials: (req, res) => {
+        if (!req.user.superAdmin) {
+            return util.unauthorized(req, res);
+        }
+
         let packageId = req.params.id,
             materials = req.body.materials;
 

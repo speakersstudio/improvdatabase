@@ -30,22 +30,6 @@ var CartService = (function () {
         this.purchase.materials = [];
         this.purchase.other = [];
     };
-    CartService.prototype.getConfig = function () {
-        var _this = this;
-        if (this.config) {
-            return new Promise(function (resolve, reject) {
-                resolve(_this.config);
-            });
-        }
-        else {
-            return this.http.get(constants_1.API.packageConfig)
-                .toPromise()
-                .then(function (result) {
-                _this.config = result.json();
-                return _this.config;
-            });
-        }
-    };
     CartService.prototype.addPackage = function (pack) {
         this.purchase.packages.push({
             package: pack,

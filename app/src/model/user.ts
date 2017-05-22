@@ -37,6 +37,7 @@ export class User {
     permissions?: Object;
     actions?: string[];
     superAdmin?: boolean;
+    birthday?: string;
 
     memberOfTeams?: Team[]|string[];
     adminOfTeams?: Team[]|string[];

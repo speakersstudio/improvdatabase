@@ -24,6 +24,8 @@ import { ChangePasswordComponent } from '../component/change-password.component'
 import { InviteComponent } from '../component/invite.component';
 import { ImprovisersComponent } from '../component/improvisers.component';
 
+import { MarketingToolbarView } from '../view/marketing-toolbar.view';
+
 // import { FormInputDirective } from '../view/form-input.directive';
 
 @NgModule({
@@ -43,7 +45,8 @@ import { ImprovisersComponent } from '../component/improvisers.component';
         SignupComponent,
         ChangePasswordComponent,
         InviteComponent,
-        ImprovisersComponent
+        ImprovisersComponent,
+        MarketingToolbarView
     ],
     bootstrap: [ AppComponent ],
     providers: [

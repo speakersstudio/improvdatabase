@@ -1,13 +1,4 @@
-<div class="toolbar" [class.on]="(pageStart - _app.scrollpos) <= 20">
-    <div class="toolbar-row">
-        <iplus class="white" (click)="login()" *ngIf="!_app.loaderVisible"></iplus>
-
-        <a routerLink="/signup" *ngIf="!_app.user">Join</a>
-        <span *ngIf="_app.user"></span>
-
-        <a (click)="login()" [innerHTML]="_app.user ? 'To the App <i class=\'fa fa-chevron-right\'></i>' : 'Log In'"></a>
-    </div>
-</div>
+<marketing-toolbar [on]="(pageStart - _app.scrollpos) <= 20"></marketing-toolbar>
 
 <landing-hero [improv]="true"></landing-hero>
 
@@ -72,7 +63,7 @@
 
                 <div class="card blue brackets">
                     <h4>Game Database</h4>
-                    <p>View our collection of over 200 Improv games, warmups, icebreakers, and exercises.</p>
+                    <p>View our collection of over 200 Improv warmups, exercises, and games. Keep track of your favorites, and save notes on each one for future reference.</p>
                 </div>
 
                 <div class="card blue brackets">
@@ -88,7 +79,7 @@
 
                 <div class="card brackets blue disabled">
                     <h4>Hire a Coach</h4>
-                    <p>Hire an expert (and fully verified) Improv coach to run Improv exercises with your team.</p>
+                    <p>Hire an expert (and fully verified) Improv coach to help your team, whether it's for a one-time workshop or ongoing training.</p>
                     <em class="message">Coming soon!</em>
                 </div>
 

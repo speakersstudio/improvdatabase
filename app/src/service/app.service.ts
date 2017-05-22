@@ -12,6 +12,7 @@ import { AppHttp } from '../data/app-http';
 import { User } from '../model/user';
 import { Team } from '../model/team';
 import { Package } from '../model/package';
+import { PackageConfig } from '../model/config';
 
 @Injectable()
 export class AppService {
@@ -22,6 +23,8 @@ export class AppService {
     // private teamValidateUrl = '/api/team/validate';
 
     private redirect: UrlSegment[];
+
+    private config: PackageConfig;
     
     constructor(
         private http: AppHttp
@@ -70,7 +73,7 @@ export class AppService {
      * Get all of the available packages!
      */
     private _packagePromise: Promise<Package[]>;
-    getPackages(): Promise<Package[]> {
+    private _getPackages(): Promise<Package[]> {
         if (!this._packagePromise) {
             this._packagePromise = this.http.get(API.package)
                 .toPromise()
@@ -81,6 +84,108 @@ export class AppService {
                 .catch(this.handleError);
         }
         return this._packagePromise;
+    }
+
+    getPackages(userType: string, team: boolean): Promise<Package[]> {
+        let options: Package[] = [];
+
+        return this.getSubscriptionPackage(userType, team)
+            .then(pkg => {
+                options.push(pkg);
+
+                return this._getPackages()
+            })
+            .then(packages => {
+
+                if (userType == 'facilitator') {
+                    if (!team) {
+                        packages.forEach(p => {
+                            let copy = Object.assign({}, p);
+                            options.push(copy);
+                        });
+                    } else {
+                        packages.forEach(p => {
+                            let copy = Object.assign({}, p);
+                            // the facilitator team packages are more expensive
+                            copy.price += this.config.fac_team_package_markup;
+                            options.push(copy);
+                        });
+                    }
+                }
+
+                return options.sort((a, b) => {
+                    return a.price > b.price ? -1 : 1;
+                });
+            })
+    }
+
+    getSubscriptionPackage(userType: string, team: boolean): Promise<Package> {
+        return this.getPackageConfig()
+            .then(config => {
+                let subOption = new Package();
+                subOption._id = 'sub';
+
+                if (userType == 'facilitator') {
+                    if (!team) {
+                        subOption.name = 'Individual Facilitator Subscription';
+                        subOption.price = config.fac_sub_price;
+
+                        subOption.description = [
+                            "Gain access to the the app for one year.",
+                            "Browse and purchase from our entire catalogue of facilitation materials.",
+                            "Utilize the database of over 200 Improv Exercises."
+                        ];
+
+                    } else {
+                        subOption.name = 'Facilitator Team Subscription';
+                        subOption.price = config.fac_team_sub_price;
+
+                        subOption.description = [
+                            "Your team can share and collaborate with the ImprovPlus app.",
+                            "Browse and purchase from our entire catalogue of facilitation materials.",
+                            "Utilize the database of over 200 Improv Exercises."
+                        ];
+                    }
+                } else {
+                    if (!team) {
+                        subOption.name = 'Individual Improviser Subscription';
+                        subOption.price = config.improv_sub_price;
+
+                        subOption.description = [
+                            "Gain access to the app for one year.",
+                            "Browse the database of over 200 Improv Games.",
+                            "Join the ever-growing ImprovPlus community."
+                        ];
+                    } else {
+                        subOption.name = 'Improviser Team Subscription';
+                        subOption.price = config.improv_team_sub_price;
+
+                        subOption.description = [
+                            'Access powerful marketing and collaboration tools.',
+                            'Browse the database of over 200 Improv Games.',
+                            "Join the ever-growing ImprovPlus community."
+                        ];
+                    }
+                }
+
+                return subOption;
+            });
+    }
+
+    
+    getPackageConfig(): Promise<PackageConfig> {
+        if (this.config) {
+            return new Promise((resolve, reject) => {
+                resolve(this.config);
+            });
+        } else {
+            return this.http.get(API.packageConfig)
+                .toPromise()
+                .then(result => {
+                    this.config = result.json() as PackageConfig;
+                    return this.config;
+                });
+        }
     }
 
 }

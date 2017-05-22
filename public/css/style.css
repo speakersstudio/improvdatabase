@@ -223,7 +223,7 @@ label {
   font-size: 12px;
   display: block;
   margin-top: 8px; }
-  label input, label textarea, label select {
+  label > input, label > textarea, label > select {
     margin-top: 0px;
     padding-top: 8px; }
   label.checkbox {
@@ -528,7 +528,7 @@ iplus {
       width: auto; }
     .columns > *:last-child {
       margin-right: 0; }
-  .columns > input {
+  .columns > input, .columns > select {
     margin-top: 0px;
     margin-bottom: 0px; }
   .columns > .form-input-state {
@@ -536,9 +536,17 @@ iplus {
     text-align: center; }
   .columns > .form-input-zip {
     width: 5em; }
+  .columns.double {
+    flex-wrap: wrap; }
+    .columns.double > * {
+      width: calc(50% - (8px)); }
+    .columns.double > *:nth-child(2) {
+      margin-right: 0; }
   @media only screen and (max-width: 500px) {
     .columns.responsive {
-      flex-direction: column; } }
+      flex-direction: column; }
+      .columns.responsive > * {
+        width: 100%; } }
 
 @media only screen and (max-width: 500px) {
   .tabs {
@@ -621,8 +629,10 @@ iplus {
     .form-input label.active {
       transform: translateY(-165%);
       font-size: 12px; }
-  .form-input input, .form-input textarea {
-    margin: 0; }
+  .form-input input, .form-input textarea, .form-input select {
+    margin: 0;
+    height: 100%;
+    box-sizing: border-box; }
   .form-input .help {
     position: absolute;
     top: 25px;
@@ -1056,6 +1066,13 @@ button,
 label .form-switch {
   margin-right: 8px; }
 
+.spanhalf {
+  width: 50%;
+  display: inline-block; }
+  @media only screen and (max-width: 500px) {
+    .spanhalf {
+      width: 100%; } }
+
 .toolbar {
   display: flex;
   box-sizing: border-box;
@@ -1474,7 +1491,7 @@ nav {
   position: relative;
   box-sizing: border-box;
   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-  transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1), width 500ms, height 500ms, opacity 500ms;
+  transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1), width 500ms, height 500ms, opacity 500ms, max-width 500ms;
   will-change: box-shadow;
   color: #606060;
   text-decoration: none; }
@@ -1575,7 +1592,9 @@ nav {
     background-color: #26AA30; }
   .card.brackets {
     text-align: center;
-    padding: 24px 32px; }
+    padding: 24px 32px;
+    position: relative;
+    overflow: hidden; }
     .card.brackets:before {
       content: "";
       position: absolute;
@@ -1620,6 +1639,34 @@ nav {
       font-weight: 300; }
       .card.brackets p:first-child, .card.brackets ul:first-child {
         margin-top: 0; }
+    .card.brackets .body-default, .card.brackets .body-open {
+      opacity: 1;
+      position: relative;
+      z-index: 2;
+      transition: height 600ms, opacity 200ms;
+      padding: 24px;
+      margin: 0 -16px;
+      box-sizing: border-box; }
+      .card.brackets .body-default > *:first-child, .card.brackets .body-open > *:first-child {
+        margin-top: 0; }
+      .card.brackets .body-default > *:last-child, .card.brackets .body-open > *:last-child {
+        margin-bottom: 0; }
+      @media only screen and (max-width: 500px) {
+        .card.brackets .body-default, .card.brackets .body-open {
+          transition: height 2000ms, opacity 200ms; } }
+    .card.brackets.card-closed .body-default, .card.brackets.card-closed .body-open {
+      opacity: 0; }
+    .card.brackets .body-open {
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      left: 32px;
+      z-index: 1;
+      opacity: 0; }
+    .card.brackets.card-open .body-default {
+      z-index: 1; }
+    .card.brackets.card-open .body-open {
+      z-index: 2; }
     .card.brackets .action {
       border: 0px;
       padding-bottom: 16px; }
@@ -2217,30 +2264,75 @@ landing-hero {
   .page .blackbox h2 {
     font-size: 50px; }
 
-welcome .toolbar .toolbar-row, signup .toolbar .toolbar-row, for-improvisers .toolbar .toolbar-row {
-  justify-content: space-around; }
-  welcome .toolbar .toolbar-row a, signup .toolbar .toolbar-row a, for-improvisers .toolbar .toolbar-row a {
+marketing-toolbar .toolbar .toolbar-row {
+  justify-content: space-between; }
+  marketing-toolbar .toolbar .toolbar-row > * {
+    width: 20%;
+    text-align: center; }
+  marketing-toolbar .toolbar .toolbar-row a {
     text-decoration: none;
     text-transform: uppercase;
     cursor: pointer;
     padding: 8px 16px; }
-    welcome .toolbar .toolbar-row a i, signup .toolbar .toolbar-row a i, for-improvisers .toolbar .toolbar-row a i {
+    marketing-toolbar .toolbar .toolbar-row a i {
       margin-left: 8px; }
+    @media only screen and (max-width: 500px) {
+      marketing-toolbar .toolbar .toolbar-row a {
+        padding: 0 16px;
+        line-height: 48px;
+        box-sizing: border-box;
+        width: 100%; } }
+    marketing-toolbar .toolbar .toolbar-row a.active {
+      opacity: 0.25;
+      color: #FFFFFF; }
   @media only screen and (max-width: 500px) {
-    welcome .toolbar .toolbar-row, signup .toolbar .toolbar-row, for-improvisers .toolbar .toolbar-row {
-      justify-content: space-between;
-      padding: 0 16px; } }
+    marketing-toolbar .toolbar .toolbar-row {
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      height: auto; } }
 
-welcome .toolbar iplus, signup .toolbar iplus, for-improvisers .toolbar iplus {
+marketing-toolbar .toolbar iplus {
   position: absolute;
   top: 0;
   left: 50%;
   z-index: 7;
   margin-left: -23px;
   padding: 11px; }
+  @media only screen and (max-width: 500px) {
+    marketing-toolbar .toolbar iplus {
+      top: 100%; } }
+  marketing-toolbar .toolbar iplus::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: block;
+    background-color: transparent;
+    transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1), background-color 200ms;
+    will-change: box-shadow; }
 
-welcome .toolbar.on a, signup .toolbar.on a, for-improvisers .toolbar.on a {
+marketing-toolbar .toolbar.on a {
   color: #FFFFFF; }
+
+marketing-toolbar .toolbar.on .iplus:hover .plus {
+  color: #FFFFFF; }
+
+@media only screen and (max-width: 500px) {
+  marketing-toolbar .toolbar.on iplus:before {
+    background-color: #d32f2f;
+    border-radius: 0 0 50% 50%;
+    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12); } }
+
+@media only screen and (max-width: 500px) {
+  marketing-toolbar .toolbar {
+    top: -192px;
+    transition: top 300ms; } }
+
+marketing-toolbar .toolbar.open {
+  top: 0; }
 
 welcome .landing-holder, signup .landing-holder, for-improvisers .landing-holder {
   display: block;
@@ -2267,7 +2359,7 @@ welcome .page, signup .page, for-improvisers .page {
     welcome .page .block:last-child, signup .page .block:last-child, for-improvisers .page .block:last-child {
       margin-bottom: 0; }
   welcome .page .card-list h4, signup .page .card-list h4, for-improvisers .page .card-list h4 {
-    margin-bottom: 0; }
+    margin-bottom: 24px; }
   welcome .page .card-list p, signup .page .card-list p, for-improvisers .page .card-list p {
     line-height: 1.5; }
   welcome .page .paper, signup .page .paper, for-improvisers .page .paper {

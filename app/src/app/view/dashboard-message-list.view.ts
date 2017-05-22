@@ -66,6 +66,7 @@ export class DashboardMessageListView implements OnInit, OnDestroy {
                 <p>Your subscription is expired or otherwise invalid. If you own any materials or other content, you can still access them, but other areas of the app will be off-limits until you renew your subscription.</p>
             `,
             button: 'Purchase Subscription',
+            notDismissable: true,
             action: () => {
                 this._app.toast('This feature is coming soon. Please hang on.');
             },
@@ -77,9 +78,32 @@ export class DashboardMessageListView implements OnInit, OnDestroy {
             key: 'welcome'
         },
         {
+            key: 'birthday-' + (new Date()).getFullYear(),
+            title: '<div class="columns"><i class="fa fa-birthday-cake"></i> <span>Happy Birthday!</span> <i class="fa fa-birthday-cake"></i></div>',
+            body: `
+                <p>It's your Special Day (or at least the day you told us was your Special Day). We here at ImprovPlus hope it's a great one!</p>
+            `,
+            trigger: () => {
+                let birthday = this.userService.getLoggedInUser().birthday;
+                if (birthday) {
+                    let date = new Date(birthday),
+                        today = new Date();
+                    if (date.getDate() == today.getDate() && date.getMonth() == today.getMonth()) {
+                        return true;
+                    }
+                }
+            }
+        },
+        {
             key: 'username',
             trigger: () => {
                 return !this.userService.getLoggedInUser().firstName || !this.userService.getLoggedInUser().lastName
+            }
+        },
+        {
+            key: 'birthday-enter',
+            trigger: () => {
+                return !this.userService.getLoggedInUser().birthday;
             }
         }
     ];
@@ -196,5 +220,31 @@ export class DashboardMessageListView implements OnInit, OnDestroy {
             
             this.showNextMessage();
         }, 300);
+    }
+
+    birthdayMonth: number;
+    birthdayDay: number;
+    birthdayYear: number;
+
+    saveBirthday(): void {
+        if (this.birthdayYear < 100) {
+            this.birthdayYear = this.birthdayYear + 1900; // Y2K compliant!
+        }
+
+        let birthday = new Date();
+        birthday.setDate(this.birthdayDay);
+        birthday.setMonth(this.birthdayMonth);
+        birthday.setFullYear(this.birthdayYear);
+
+        this.isPosting = true;
+
+        let user = this.userService.getLoggedInUser();
+        user.birthday = birthday.getTime() + '';
+        this.userService.updateUser(user).then(user => {
+            this.isPosting = false;
+            setTimeout(() => {
+                this.showNextMessage();
+            }, 100);
+        })
     }
 }

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 exports.CONFIG_TOKEN = new core_1.OpaqueToken('config');
+exports.MOBILE_WIDTH = 500;
 exports.API = {
     login: '/login',
     passwordRecovery: '/recoverPassword',

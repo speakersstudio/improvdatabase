@@ -44,6 +44,7 @@ var DashboardMessageListView = (function () {
                 title: 'No Subscription',
                 body: "\n                <p>Your subscription is expired or otherwise invalid. If you own any materials or other content, you can still access them, but other areas of the app will be off-limits until you renew your subscription.</p>\n            ",
                 button: 'Purchase Subscription',
+                notDismissable: true,
                 action: function () {
                     _this._app.toast('This feature is coming soon. Please hang on.');
                 },
@@ -55,9 +56,29 @@ var DashboardMessageListView = (function () {
                 key: 'welcome'
             },
             {
+                key: 'birthday-' + (new Date()).getFullYear(),
+                title: '<div class="columns"><i class="fa fa-birthday-cake"></i> <span>Happy Birthday!</span> <i class="fa fa-birthday-cake"></i></div>',
+                body: "\n                <p>It's your Special Day (or at least the day you told us was your Special Day). We here at ImprovPlus hope it's a great one!</p>\n            ",
+                trigger: function () {
+                    var birthday = _this.userService.getLoggedInUser().birthday;
+                    if (birthday) {
+                        var date = new Date(birthday), today = new Date();
+                        if (date.getDate() == today.getDate() && date.getMonth() == today.getMonth()) {
+                            return true;
+                        }
+                    }
+                }
+            },
+            {
                 key: 'username',
                 trigger: function () {
                     return !_this.userService.getLoggedInUser().firstName || !_this.userService.getLoggedInUser().lastName;
+                }
+            },
+            {
+                key: 'birthday-enter',
+                trigger: function () {
+                    return !_this.userService.getLoggedInUser().birthday;
                 }
             }
         ];
@@ -148,6 +169,25 @@ var DashboardMessageListView = (function () {
             _this.inviteRejected = false;
             _this.showNextMessage();
         }, 300);
+    };
+    DashboardMessageListView.prototype.saveBirthday = function () {
+        var _this = this;
+        if (this.birthdayYear < 100) {
+            this.birthdayYear = this.birthdayYear + 1900; // Y2K compliant!
+        }
+        var birthday = new Date();
+        birthday.setDate(this.birthdayDay);
+        birthday.setMonth(this.birthdayMonth);
+        birthday.setFullYear(this.birthdayYear);
+        this.isPosting = true;
+        var user = this.userService.getLoggedInUser();
+        user.birthday = birthday.getTime() + '';
+        this.userService.updateUser(user).then(function (user) {
+            _this.isPosting = false;
+            setTimeout(function () {
+                _this.showNextMessage();
+            }, 100);
+        });
     };
     return DashboardMessageListView;
 }());

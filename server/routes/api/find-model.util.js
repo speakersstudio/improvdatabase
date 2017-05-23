@@ -133,7 +133,7 @@ module.exports = {
 
         let userOr = []
         
-        if (!user.superAdmin) {
+        // if (!user.superAdmin) {
             userOr.push({addedUser: user._id});
 
             if (user.actions.indexOf('note_public_view') > -1) {
@@ -144,7 +144,7 @@ module.exports = {
                 let teams = [].concat(user.memberOfTeams, user.adminOfTeams);
                 userOr.push({teams: { $in: teams }});
             }
-        }
+        // }
 
         let query;
 
@@ -155,7 +155,8 @@ module.exports = {
             query = Note.find({});
         }
 
-        let whereOr = []
+        let whereOr = [],
+            and = [];
 
         if (gameId) {
             whereOr.push({game: gameId});
@@ -167,16 +168,20 @@ module.exports = {
             whereOr.push({tag: { $in: tagIds }});
         }
 
-        let and = [
-            { $or: userOr }
-        ];
+        if (userOr.length) {
+            and.push({ $or: userOr });
+        }
 
         if (whereOr.length) {
             and.push({ $or: whereOr })
         }
 
+        if (and && and.length) {
+            query = query.and(and);
+        }
+
         return query
-            .and(and)
+            .where('dateDeleted').equals(null)
             .populate({
                 path: 'teams',
                 select: 'name'

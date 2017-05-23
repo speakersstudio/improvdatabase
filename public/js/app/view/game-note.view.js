@@ -10,6 +10,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
+var time_util_1 = require("../../util/time.util");
+var constants_1 = require("../../constants");
 var user_service_1 = require("../../service/user.service");
 var game_1 = require("../../model/game");
 var note_1 = require("../../model/note");
@@ -23,24 +25,37 @@ var GameNoteView = (function () {
         this.create = new core_1.EventEmitter();
         this.remove = new core_1.EventEmitter();
         this.showUserName = true;
+        this.showControls = true;
     }
     GameNoteView.prototype.ngOnInit = function () {
         var _this = this;
+        this.superAdmin = this.userService.isSuperAdmin();
+        if (this.userService.getTeams().length || this.userService.getAdminTeams().length) {
+            this.showTeamShare = true;
+        }
         if (!this.note) {
-            this.setupNoteEdit();
+            setTimeout(function () {
+                _this.setupNoteEdit();
+            }, 100);
         }
         else {
             var user_1 = this.userService.getLoggedInUser();
+            if (this.note.addedUser._id == user_1._id) {
+                this.showUserName = false;
+            }
+            if (this.note.modifiedUser && this.note.addedUser._id != this.note.modifiedUser._id) {
+                this.modifiedName = '<em>(edited by ' + this.note.modifiedUser.firstName + ' ' + this.note.modifiedUser.lastName + ')</em>';
+            }
+            this.showText = true;
+            if (this.superAdmin || this.note.addedUser._id == user_1._id) {
+                this.editable = true;
+            }
             this.note.teams.forEach(function (team) {
                 if (util_1.Util.indexOfId(user_1.adminOfTeams, team) > -1) {
                     _this.editable = true;
                 }
             });
-            if (this.note.addedUser._id == user_1._id) {
-                this.editable = true;
-                this.showUserName = false;
-            }
-            this.showText = true;
+            this.simpleDate = time_util_1.TimeUtil.postTime(this.note.dateModified);
         }
     };
     GameNoteView.prototype.setupNoteEdit = function () {
@@ -48,71 +63,71 @@ var GameNoteView = (function () {
         if (this.note && !this.editable) {
             return;
         }
-        this.showEdit = false;
         this.showText = false;
-        this.noteContextOptions = [
-            {
-                name: 'This game: ' + this.game.names[0].name,
-                _id: 'game',
-                icon: 'rocket',
-                description: 'This note will only apply to this game.'
-            },
-            {
-                name: this.game.playerCount.name + ' Players',
-                _id: 'metadata_' + this.game.playerCount._id,
-                icon: 'users',
-                description: 'This note will apply to any game involving \'' + this.game.playerCount.name + '\' player count.'
-            },
-            {
-                name: this.game.duration.name,
-                _id: 'metadata_' + this.game.duration._id,
-                icon: 'users',
-                description: 'This note will apply to any game involving \'' + this.game.duration.name + '\' duration.'
-            }
-        ];
-        this.game.tags.forEach(function (taggame) {
-            var tag = taggame.tag;
-            _this.noteContextOptions.push({
-                name: tag.name,
-                _id: 'tag_' + tag._id,
-                icon: 'hashtag',
-                description: 'This note will apply to any game tagged \'' + tag.name + '\'.'
+        var delay = this.note ? 100 : 1;
+        setTimeout(function () {
+            _this.showEdit = true;
+            _this.noteContextOptions = [
+                {
+                    name: 'This game: ' + _this.game.names[0].name,
+                    _id: 'game',
+                    icon: 'rocket',
+                    description: 'This note will only apply to this game.'
+                },
+                {
+                    name: _this.game.playerCount.name + ' Players',
+                    _id: 'metadata_' + _this.game.playerCount._id,
+                    icon: 'users',
+                    description: 'This note will apply to any game involving \'' + _this.game.playerCount.name + '\' player count.'
+                },
+                {
+                    name: _this.game.duration.name,
+                    _id: 'metadata_' + _this.game.duration._id,
+                    icon: 'users',
+                    description: 'This note will apply to any game involving \'' + _this.game.duration.name + '\' duration.'
+                }
+            ];
+            _this.game.tags.forEach(function (taggame) {
+                var tag = taggame.tag;
+                _this.noteContextOptions.push({
+                    name: tag.name,
+                    _id: 'tag_' + tag._id,
+                    icon: 'hashtag',
+                    description: 'This note will apply to any game tagged \'' + tag.name + '\'.'
+                });
             });
-        });
-        this.noteContext = '';
-        if (this.note) {
-            this.noteInput = this.note.description;
-            if (this.note.teams && this.note.teams.length) {
-                this.noteTeam = true;
+            _this.noteContext = '';
+            if (_this.note) {
+                _this.noteInput = _this.note.description;
+                if (_this.note.teams && _this.note.teams.length) {
+                    _this.noteTeam = true;
+                }
+                else {
+                    _this.noteTeam = false;
+                }
+                if (_this.note.game) {
+                    _this.noteContext = 'game';
+                }
+                else if (_this.note.metadata) {
+                    _this.noteContext = 'metadata_' + _this.note.metadata._id;
+                }
+                else if (_this.note.tag) {
+                    _this.noteContext = 'tag_' + _this.note.tag._id;
+                }
+                _this.notePublic = _this.note.public;
             }
             else {
-                this.noteTeam = false;
+                _this.noteTeam = _this.userService.getPreference(constants_1.PREFERENCE_KEYS.shareNotesWithTeam, 'false') == 'true';
             }
-            if (this.note.game) {
-                this.noteContext = 'game';
-            }
-            else if (this.note.metadata) {
-                this.noteContext = 'metadata_' + this.note.metadata._id;
-            }
-            else if (this.note.tag) {
-                this.noteContext = 'tag_' + this.note.tag._id;
-            }
-            var height_1 = this.descriptionElement.nativeElement.offsetHeight;
-            setTimeout(function () {
-                _this.inputElement.nativeElement.style.height = (height_1 + 32) + 'px';
-            }, 10);
-        }
-        else {
-            setTimeout(function () {
-                _this.inputElement.nativeElement.style.height = '';
-            }, 10);
-        }
-        this.showEdit = true;
+        }, delay);
     };
     GameNoteView.prototype.cancelEdit = function () {
+        var _this = this;
         this.showEdit = false;
         this.showText = false;
-        this.showText = true;
+        setTimeout(function () {
+            _this.showText = true;
+        }, 200);
     };
     GameNoteView.prototype.setNoteContext = function (context) {
         this.noteContext = context._id;
@@ -140,6 +155,7 @@ var GameNoteView = (function () {
         else {
             note.teams = [];
         }
+        this.userService.setPreference(constants_1.PREFERENCE_KEYS.shareNotesWithTeam, this.noteTeam);
         this.isPosting = true;
         if (this.note) {
             this.noteService.updateNote(note).then(function (note) {
@@ -154,6 +170,26 @@ var GameNoteView = (function () {
                 _this.create.emit(note);
             });
         }
+    };
+    GameNoteView.prototype.deleteNote = function () {
+        var _this = this;
+        this.showControls = false;
+        setTimeout(function () {
+            _this.showDeleteConfirm = true;
+        }, 250);
+    };
+    GameNoteView.prototype.cancelDelete = function () {
+        var _this = this;
+        this.showDeleteConfirm = false;
+        setTimeout(function () {
+            _this.showControls = true;
+        }, 250);
+    };
+    GameNoteView.prototype.doDeleteNote = function () {
+        var _this = this;
+        this.noteService.deleteNote(this.note).then(function () {
+            _this.remove.emit(_this.note);
+        });
     };
     return GameNoteView;
 }());

@@ -13,6 +13,8 @@ export class Note {
     teams?: Team[];
     addedUser?: User;
     modifiedUser?: User;
-    dateAdded?: Date;
-    dateModified?: Date;
+    dateAdded?: string;
+    dateModified?: string;
+    dateDeleted?: string;
+    deletedUser?: User;
 }

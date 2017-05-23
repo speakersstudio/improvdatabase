@@ -14,6 +14,8 @@ import {
 import { Router, ActivatedRoute, Params }   from '@angular/router';
 import { Location }   from '@angular/common';
 
+import { PREFERENCE_KEYS } from '../../constants';
+
 import { AppComponent } from "../../component/app.component";
 
 import { GameDatabaseService } from '../service/game-database.service';
@@ -30,11 +32,15 @@ import { TabData } from '../../model/tab-data';
 
 import { UserService } from "../../service/user.service";
 
+import { Util } from '../../util/util';
+import { ShrinkAnim } from '../../util/anim.util';
+
 @Component({
     moduleId: module.id,
     selector: 'game-details',
     templateUrl: '../template/game-details.component.html',
     animations: [
+        ShrinkAnim.height,
         trigger('expand', [
             state('in', style({height: '*'})),
             transition('void => *', [
@@ -84,6 +90,10 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
 
     // playerCountID: string;
     durationID: string;
+
+    showPublicNotes: boolean;
+    showTeamNotes: boolean;
+    showPrivateNotes: boolean;
 
     tools: Tool[] = [
         {
@@ -151,6 +161,9 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
             });
         }
 
+        this.showPublicNotes = this.userService.getPreference(PREFERENCE_KEYS.showPublicNotes, 'true') == 'true';
+        this.showTeamNotes = this.userService.getPreference(PREFERENCE_KEYS.showTeamNotes, 'true') == 'true';
+        this.showPrivateNotes = this.userService.getPreference(PREFERENCE_KEYS.showPrivateNotes, 'true') == 'true';
     }
 
     selectTab(tab: TabData): void {
@@ -494,6 +507,31 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
 
     noteCreated(note: Note): void {
         this.notes.push(note);
+    }
+
+    removeNote(note: Note): void {
+        let index = Util.indexOfId(this.notes, note);
+        if (index > -1) {
+            this.notes.splice(index, 1);
+        }
+    }
+
+    togglePublicNotes(): void {
+        setTimeout(() => {
+            this.userService.setPreference(PREFERENCE_KEYS.showPublicNotes, ''+this.showPublicNotes);
+        }, 10);
+    }
+
+    toggleTeamNotes(): void {
+        setTimeout(() => {
+            this.userService.setPreference(PREFERENCE_KEYS.showTeamNotes, ''+this.showTeamNotes);
+        }, 10);
+    }
+
+    togglePrivateNotes(): void {
+        setTimeout(() => {
+            this.userService.setPreference(PREFERENCE_KEYS.showPrivateNotes, ''+this.showPrivateNotes);
+        }, 10);
     }
 
 }

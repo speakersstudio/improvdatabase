@@ -86,6 +86,16 @@ var GameNoteService = (function () {
             return response.json();
         });
     };
+    GameNoteService.prototype.deleteNote = function (note) {
+        if (!this.userService.can('note_delete')) {
+            return;
+        }
+        return this.http.delete(constants_1.API.getNote(note._id))
+            .toPromise()
+            .then(function (response) {
+            return true;
+        });
+    };
     GameNoteService.prototype.handleError = function (error) {
         // console.error('An error has occurred', error);
         return Promise.reject(error.message || error);

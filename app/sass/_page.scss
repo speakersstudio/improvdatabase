@@ -14,9 +14,17 @@ $paper-bg: $color-white;
 
     h1 {
         font-size: 18px;
+        line-height: $large;
         padding: 0 $std;
         background: $paper-bg;
         transform: translateY(-55%);
+
+        label {
+            font-size: 18px;
+            line-height: $large;
+            color: $color-text;
+            margin: 0;
+        }
     }
 
     &.white {
@@ -158,6 +166,7 @@ $paper-bg: $color-white;
         position: relative;
         z-index:  2;
         margin: 0 ($toolbar-height / 2)+2 $std;
+        @include md-elevation-transition('padding 200ms');
 
         @media #{$media-mobile} {
             margin: 0 0 $std;
@@ -198,6 +207,34 @@ $paper-bg: $color-white;
         .description, .description p {
             line-height: 1.25;
         }
+
+        .paper-toggle {
+            margin-left: $std;
+        }
+
+        .left-bracket, .right-bracket {
+            transition: opacity 200ms, border-color 200ms;
+
+            h1 {
+                transition: right 200ms, left 200ms;
+            }
+        }
+
+        &.closed {
+            @include md-elevation(1);
+            padding-bottom: 0;
+
+            .left-bracket {
+                opacity: 0;
+            }
+            .right-bracket {
+                border-color: $color-white;
+
+                h1 {
+                    right: (-$std);
+                }
+            }
+        }
     }
 
     &.fullbg {
@@ -230,6 +267,6 @@ game-details {
         }
     }
     textarea {
-        height: 15em;
+        height: 10em;
     }
 }

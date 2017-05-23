@@ -13,6 +13,7 @@ module.exports = {
 
         return HistoryModel.find({})
             .populate('user')
+            .sort('-date')
             .exec()
             .then(h => {
                 res.json(h);

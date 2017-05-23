@@ -170,7 +170,7 @@ export class ShrinkAnim {
         }
 
     static heightOutStyle = {
-            height: 0,
+            height: '0px',
             opacity: 0,
             overflow: 'hidden'
         }
@@ -179,9 +179,10 @@ export class ShrinkAnim {
         state('in', style(ShrinkAnim.heightInStyle)),
         transition('void => *', [
             style(ShrinkAnim.heightOutStyle),
-            animate(DEFAULT_DURATION + 'ms ' + DEFAULT_EASE)
+            animate(DEFAULT_DURATION + 'ms ' + DEFAULT_EASE, style(ShrinkAnim.heightInStyle))
         ]),
         transition('* => void', [
+            style(ShrinkAnim.heightInStyle),
             animate(DEFAULT_DURATION + 'ms ' + DEFAULT_EASE, style(ShrinkAnim.heightOutStyle))
         ])
     ]);

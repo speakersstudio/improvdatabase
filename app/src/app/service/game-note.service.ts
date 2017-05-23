@@ -99,6 +99,18 @@ export class GameNoteService {
             });
     }
 
+    deleteNote(note: Note): Promise<boolean> {
+        if (!this.userService.can('note_delete')) {
+            return;
+        }
+
+        return this.http.delete(API.getNote(note._id))
+            .toPromise()
+            .then(response => {
+                return true;
+            });
+    }
+
     private handleError(error: any): Promise<any> {
         // console.error('An error has occurred', error);
         return Promise.reject(error.message || error);

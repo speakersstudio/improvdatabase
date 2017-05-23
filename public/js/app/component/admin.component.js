@@ -125,7 +125,6 @@ var AdminComponent = (function () {
             }
             return true;
         });
-        console.log(this.histories);
     };
     AdminComponent.prototype.selectMaterial = function (material) {
         this.newVersion = new material_item_1.MaterialItemVersion();

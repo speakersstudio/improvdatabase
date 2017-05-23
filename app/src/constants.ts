@@ -131,3 +131,10 @@ export const API = {
     }
 
 }
+
+export const PREFERENCE_KEYS = {
+    showPublicNotes: 'show-public-notes',
+    showPrivateNotes: 'show-private-notes',
+    showTeamNotes: 'show-team-notes',
+    shareNotesWithTeam: 'share-notes'
+}

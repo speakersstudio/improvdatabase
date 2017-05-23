@@ -116,5 +116,11 @@ exports.API = {
         return this.getPackage(packageId) + "/materials";
     }
 };
+exports.PREFERENCE_KEYS = {
+    showPublicNotes: 'show-public-notes',
+    showPrivateNotes: 'show-private-notes',
+    showTeamNotes: 'show-team-notes',
+    shareNotesWithTeam: 'share-notes'
+};
 
 //# sourceMappingURL=constants.js.map

@@ -22,7 +22,7 @@
         </span>
     </div>-->
 
-    <div class="paper has-brackets">
+    <div class="paper has-brackets" [@shrinkHeight]>
 
         <div class="content">
 
@@ -123,40 +123,62 @@
         <div class="right-bracket"><h1>game details</h1></div>
     </div>
 
-    <div *ngIf="getPublicNotes().length" class="paper has-brackets">
-        <div class="content list">
+    <div *ngIf="getPublicNotes().length" class="paper has-brackets" [class.closed]="!showPublicNotes">
 
-            <div *ngFor="let note of getPublicNotes()" class="item large improvplus-game-note" [note]="note" [game]="game"></div>
+        <div class="content list" *ngIf="showPublicNotes" [@shrinkHeight]>
 
-        </div>
-
-        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
-        <div class="right-bracket"><h1>director's commentary</h1></div>
-    </div>
-
-    <div *ngIf="getTeamNotes().length" class="paper has-brackets">
-        <div class="content list">
-
-            <div *ngFor="let note of getTeamNotes()" class="item large improvplus-game-note" [note]="note" [game]="game"></div>
+            <div *ngFor="let note of getPublicNotes()" class="item large improvplus-game-note" [note]="note" [game]="game" (remove)="removeNote($event)"></div>
 
         </div>
 
         <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
-        <div class="right-bracket"><h1>your teams</h1></div>
+        <div class="right-bracket">
+            <h1>
+                <label (click)="togglePublicNotes()">
+                    <span>director's commentary</span>
+                    <input class="paper-toggle" formSwitch name="showPublicNotes" type="checkbox" [(ngModel)]="showPublicNotes" />
+                </label>
+            </h1>
+        </div>
     </div>
 
-    <div class="paper has-brackets">
+    <div *ngIf="getTeamNotes().length" class="paper has-brackets" [class.closed]="!showTeamNotes">
+        <div class="content list" *ngIf="showTeamNotes" [@shrinkHeight]>
 
-        <div class="content list">
+            <div *ngFor="let note of getTeamNotes()" class="item large improvplus-game-note" [note]="note" [game]="game" (remove)="removeNote($event)"></div>
 
-            <div *ngFor="let note of getPrivateNotes()" class="item large improvplus-game-note" [note]="note" [game]="game"></div>
+        </div>
+
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div><div class="right-bracket">
+            <h1>
+                <label (click)="toggleTeamNotes()">
+                    <span>team commentary</span>
+                    <input class="paper-toggle" formSwitch name="showTeamNotes" type="checkbox" [(ngModel)]="showTeamNotes" />
+                </label>
+            </h1>
+        </div>
+    </div>
+
+    <div class="paper has-brackets" [class.closed]="!showPrivateNotes">
+
+        <div class="content list" *ngIf="showPrivateNotes" [@shrinkHeight]>
+
+            <div *ngFor="let note of getPrivateNotes()" class="item large improvplus-game-note" [note]="note" [game]="game" (remove)="removeNote($event)"></div>
+
+            <p *ngIf="!getPrivateNotes().length">You haven't saved any notes about this game (your notes are for your eyes only, so put anything you want).</p>
 
             <div class="item large improvplus-game-note" (create)="noteCreated($event)" [game]="game"></div>
 
         </div>
 
-        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
-        <div class="right-bracket"><h1>your notes</h1></div>
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div><div class="right-bracket">
+            <h1>
+                <label (click)="togglePrivateNotes()">
+                    <span>your commentary</span>
+                    <input class="paper-toggle" formSwitch name="showPrivateNotes" type="checkbox" [(ngModel)]="showPrivateNotes" />
+                </label>
+            </h1>
+        </div>
     </div>
 
 </div>

@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 
 import { TimeUtil } from '../../util/time.util';
+import { PREFERENCE_KEYS } from '../../constants';
 
 import { UserService } from '../../service/user.service';
 
@@ -47,6 +48,10 @@ export class GameNoteView implements OnInit {
     showText: boolean;
 
     showUserName: boolean = true;
+    showTeamShare: boolean;
+    modifiedName: string;
+
+    superAdmin: boolean;
 
     isPosting: boolean;
 
@@ -56,16 +61,44 @@ export class GameNoteView implements OnInit {
     notePublic: boolean;
     noteTeam: boolean;
 
+    showControls: boolean = true;
+    showDeleteConfirm: boolean;
+
+    simpleDate: string;
+
     constructor(
         private userService: UserService,
         private noteService: GameNoteService
     ) { }
     
     ngOnInit() {
+
+        this.superAdmin = this.userService.isSuperAdmin();
+
+        if (this.userService.getTeams().length || this.userService.getAdminTeams().length) {
+            this.showTeamShare = true;
+        }
+
         if (!this.note) {
-            this.setupNoteEdit();
+            setTimeout(() => {
+                this.setupNoteEdit();
+            }, 100);
         } else {
             let user = this.userService.getLoggedInUser();
+
+            if (this.note.addedUser._id == user._id) {
+                this.showUserName = false;
+            }
+
+            if (this.note.modifiedUser && this.note.addedUser._id != this.note.modifiedUser._id) {
+                this.modifiedName = '<em>(edited by ' + this.note.modifiedUser.firstName + ' ' + this.note.modifiedUser.lastName + ')</em>';
+            }
+
+            this.showText = true;
+
+            if (this.superAdmin || this.note.addedUser._id == user._id) {
+                this.editable = true;
+            }
 
             this.note.teams.forEach(team => {
                 if (Util.indexOfId(user.adminOfTeams, team) > -1) {
@@ -73,11 +106,7 @@ export class GameNoteView implements OnInit {
                 }
             });
 
-            if (this.note.addedUser._id == user._id) {
-                this.editable = true;
-                this.showUserName = false;
-            }
-            this.showText = true;
+            this.simpleDate = TimeUtil.postTime(this.note.dateModified);
         }
     }
 
@@ -85,78 +114,75 @@ export class GameNoteView implements OnInit {
         if (this.note && !this.editable) {
             return;
         }
-
-        this.showEdit = false;
         this.showText = false;
 
-        this.noteContextOptions = [
-            {
-                name: 'This game: ' + this.game.names[0].name,
-                _id: 'game',
-                icon: 'rocket',
-                description: 'This note will only apply to this game.'
-            },
-            {
-                name: this.game.playerCount.name + ' Players',
-                _id: 'metadata_' + this.game.playerCount._id,
-                icon: 'users',
-                description: 'This note will apply to any game involving \'' + this.game.playerCount.name + '\' player count.'
-            },
-            {
-                name: this.game.duration.name,
-                _id: 'metadata_' + this.game.duration._id,
-                icon: 'users',
-                description: 'This note will apply to any game involving \'' + this.game.duration.name + '\' duration.'
-            }
-        ];
+        let delay = this.note ? 100 : 1;
 
-        this.game.tags.forEach(taggame => {
-            let tag = <Tag> taggame.tag;
-            this.noteContextOptions.push({
-                name: tag.name,
-                _id: 'tag_' + tag._id,
-                icon: 'hashtag',
-                description: 'This note will apply to any game tagged \'' + tag.name + '\'.'
-            })
-        });
+        setTimeout(() => {
+            this.showEdit = true;
 
-        this.noteContext = '';
+            this.noteContextOptions = [
+                {
+                    name: 'This game: ' + this.game.names[0].name,
+                    _id: 'game',
+                    icon: 'rocket',
+                    description: 'This note will only apply to this game.'
+                },
+                {
+                    name: this.game.playerCount.name + ' Players',
+                    _id: 'metadata_' + this.game.playerCount._id,
+                    icon: 'users',
+                    description: 'This note will apply to any game involving \'' + this.game.playerCount.name + '\' player count.'
+                },
+                {
+                    name: this.game.duration.name,
+                    _id: 'metadata_' + this.game.duration._id,
+                    icon: 'users',
+                    description: 'This note will apply to any game involving \'' + this.game.duration.name + '\' duration.'
+                }
+            ];
 
-        if (this.note) {
-            this.noteInput = this.note.description;
-            if (this.note.teams && this.note.teams.length) {
-                this.noteTeam = true;
+            this.game.tags.forEach(taggame => {
+                let tag = <Tag> taggame.tag;
+                this.noteContextOptions.push({
+                    name: tag.name,
+                    _id: 'tag_' + tag._id,
+                    icon: 'hashtag',
+                    description: 'This note will apply to any game tagged \'' + tag.name + '\'.'
+                })
+            });
+
+            this.noteContext = '';
+
+            if (this.note) {
+                this.noteInput = this.note.description;
+                if (this.note.teams && this.note.teams.length) {
+                    this.noteTeam = true;
+                } else {
+                    this.noteTeam = false;
+                }
+                if (this.note.game) {
+                    this.noteContext = 'game';
+                } else if (this.note.metadata) {
+                    this.noteContext = 'metadata_' + (<GameMetadata> this.note.metadata)._id;
+                } else if (this.note.tag) {
+                    this.noteContext = 'tag_' + (<Tag> this.note.tag)._id;
+                }
+
+                this.notePublic = this.note.public;
             } else {
-                this.noteTeam = false;
+                this.noteTeam = this.userService.getPreference(PREFERENCE_KEYS.shareNotesWithTeam, 'false') == 'true';
             }
-            if (this.note.game) {
-                this.noteContext = 'game';
-            } else if (this.note.metadata) {
-                this.noteContext = 'metadata_' + (<GameMetadata> this.note.metadata)._id;
-            } else if (this.note.tag) {
-                this.noteContext = 'tag_' + (<Tag> this.note.tag)._id;
-            }
-
-            let height = (<HTMLElement> this.descriptionElement.nativeElement).offsetHeight;
-
-            setTimeout(() => {
-                (<HTMLElement> this.inputElement.nativeElement).style.height = (height + 32) + 'px';
-            }, 10);
-        } else {
-            setTimeout(() => {
-                (<HTMLElement> this.inputElement.nativeElement).style.height = '';
-            }, 10);
-        }
-
-        this.showEdit = true;
+        }, delay);
 
     }
 
     cancelEdit(): void {
         this.showEdit = false;
         this.showText = false;
-
-        this.showText = true;
+        setTimeout(() => {
+            this.showText = true;
+        }, 200);
     }
 
     setNoteContext(context: DropdownOption): void {
@@ -187,6 +213,7 @@ export class GameNoteView implements OnInit {
         } else {
             note.teams = [];
         }
+        this.userService.setPreference(PREFERENCE_KEYS.shareNotesWithTeam, this.noteTeam);
 
         this.isPosting = true;
 
@@ -207,6 +234,26 @@ export class GameNoteView implements OnInit {
 
         }
 
+    }
+
+    deleteNote(): void {
+        this.showControls = false;
+        setTimeout(() => {
+            this.showDeleteConfirm = true;
+        }, 250);
+    }
+
+    cancelDelete(): void {
+        this.showDeleteConfirm = false;
+        setTimeout(() => {
+            this.showControls = true;
+        }, 250);
+    }
+
+    doDeleteNote(): void {
+        this.noteService.deleteNote(this.note).then(() => {
+            this.remove.emit(this.note);
+        });
     }
 
 }

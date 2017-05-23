@@ -4,6 +4,7 @@ const   util = require('../../util'),
         findModelUtil = require('./find-model.util');
 
 const Note = require('../../models/note.model'),
+        HistoryModel = require('../../models/history.model'),
         whitelist = [
             'game',
             'tag',
@@ -79,6 +80,8 @@ module.exports = {
                 return util.unauthorized(req, res);
             }
 
+            let originalNote = note.toObject();
+
             if ((noteData.teams && noteData.teams.length) || note.teams.length) {
                 if (req.user.actions.indexOf('note_team_create') == -1) {
                     return util.unauthorized(req, res);
@@ -105,11 +108,49 @@ module.exports = {
             note.modifiedUser = user._id;
             note.dateModified = Date.now();
 
+            if (user.superAdmin) {
+                note.public = noteData.public;
+            }
+
+            let changes = util.findChanges(originalNote, note);
+            HistoryModel.create({
+                user: user._id,
+                action: 'note_edit',
+                target: note._id,
+                changes: changes
+            });
+
             return note.save().then(n => {
                 return findModelUtil.findNotes(n._id, user);
             }).then(n => {
                 res.json(n);
             })
+        });
+    },
+
+    delete: (req, res) => {
+        let noteId = req.params.id,
+            user = req.user;
+
+        findModelUtil.findNotes(req.params.id, user).then(note => {
+
+            if (!note) {
+                return util.notfound(req, res);
+            }
+
+            // only a note's creator (or a superadmin) can delete it
+            if (util.getObjectIdAsString(note.addedUser) != util.getObjectIdAsString(user._id) &
+                !user.superAdmin) {
+                
+                return util.unauthorized(req, res);
+            }
+
+            note.dateDeleted = Date.now();
+            note.deletedUser = req.user._id;
+
+            return note.save().then(() => {
+                res.send('success');
+            });
         });
     },
 

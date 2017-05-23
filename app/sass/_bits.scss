@@ -430,11 +430,26 @@ iplus {
     margin-top: $std;
     text-align: right;
 
+    .left {
+        float: left;
+
+        &:first-child {
+            margin-left: (-$std);
+        }
+    }
+
+    label.left {
+        margin-top: $small;
+    }
+
     .button:last-child {
         margin-right: 0;
     }
     label {
         display: inline-block;
+        vertical-align: middle;
+        height: 33px;
+        line-height: 30px;
 
         .fa {
             vertical-align: middle;
@@ -484,6 +499,10 @@ iplus {
         box-sizing: border-box;
     }
 
+    textarea {
+        height: 10em;
+    }
+
     .help {
         @include abs(25px, $small, null, null, 2);
         cursor: pointer;
@@ -494,6 +513,10 @@ iplus {
             opacity: 0;
             z-index: 0;
         }
+    }
+
+    & + .button-group {
+        margin-top: $small;
     }
 }
 
@@ -1040,6 +1063,7 @@ button,
     transition: background-color 250ms;
     position: relative;
     vertical-align: middle;
+    margin-top: -2px;
 
     .control {
         width: $icon-size;

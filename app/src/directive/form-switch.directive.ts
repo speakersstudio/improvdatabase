@@ -30,8 +30,10 @@ export class FormSwitchDirective implements OnInit {
     }
 
     ngOnInit(): void {
+        let classes = this.inputElement.className;
+
         this.wrapper = document.createElement('span');
-        this.wrapper.className = 'form-switch';
+        this.wrapper.className = classes + ' form-switch';
 
         if (this.inputElement.name) {
             this.wrapper.className += ' form-switch-' + this.inputElement.name;
@@ -40,7 +42,7 @@ export class FormSwitchDirective implements OnInit {
         this.inputElement.parentElement.insertBefore(this.wrapper, this.inputElement);
         this.wrapper.appendChild(this.inputElement);
 
-        this.control = document.createElement('span');
+        this.control = document.createElement('i');
         this.control.className = 'control';
         this.wrapper.appendChild(this.control);
 

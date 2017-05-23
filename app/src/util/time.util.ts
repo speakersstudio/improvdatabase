@@ -54,4 +54,39 @@ export class TimeUtil {
         return hours + ':' + mins + ' ' + ampm;
     }
 
+    static SECOND_MILLIS = 1000;
+    static MINUTE_MILLIS = TimeUtil.SECOND_MILLIS * 60;
+    static HOUR_MILLIS = TimeUtil.MINUTE_MILLIS * 60;
+    static DAY_MILLIS = TimeUtil.HOUR_MILLIS * 24;
+
+    static isMorning(date: Date): boolean {
+        return date.getHours() > 4 && date.getHours() < 12;
+    }
+
+    static isAfternoon(date: Date): boolean {
+        return date.getHours() >= 12 && date.getHours() < 6;
+    }
+
+    static postTime(dateString: string): string {
+        let date = new Date(dateString),
+            today = new Date(),
+            timeDiff = today.getTime() - date.getTime();
+
+        if (timeDiff < this.DAY_MILLIS) {
+            if (timeDiff < this.HOUR_MILLIS) {
+                if (timeDiff < this.MINUTE_MILLIS * 5) {
+                    return 'Just now';
+                } else {
+                    return Math.round(timeDiff / this.MINUTE_MILLIS) + ' Minutes ago';
+                }
+            } else {
+                return Math.round(timeDiff / this.HOUR_MILLIS) + ' Hours ago';
+            }
+        } else if (timeDiff < this.DAY_MILLIS * 2) {
+            return 'Yesterday';
+        } else {
+            return this.simpleDate(dateString);
+        }
+    }
+
 }

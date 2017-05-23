@@ -160,7 +160,7 @@ ShrinkAnim.heightInStyle = {
     overflow: 'hidden'
 };
 ShrinkAnim.heightOutStyle = {
-    height: 0,
+    height: '0px',
     opacity: 0,
     overflow: 'hidden'
 };
@@ -168,9 +168,10 @@ ShrinkAnim.height = animations_1.trigger('shrinkHeight', [
     animations_1.state('in', animations_1.style(ShrinkAnim.heightInStyle)),
     animations_1.transition('void => *', [
         animations_1.style(ShrinkAnim.heightOutStyle),
-        animations_1.animate(DEFAULT_DURATION + 'ms ' + DEFAULT_EASE)
+        animations_1.animate(DEFAULT_DURATION + 'ms ' + DEFAULT_EASE, animations_1.style(ShrinkAnim.heightInStyle))
     ]),
     animations_1.transition('* => void', [
+        animations_1.style(ShrinkAnim.heightInStyle),
         animations_1.animate(DEFAULT_DURATION + 'ms ' + DEFAULT_EASE, animations_1.style(ShrinkAnim.heightOutStyle))
     ])
 ]);

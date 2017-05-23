@@ -213,10 +213,10 @@ export class UserService {
             });
     }
 
-    setPreference(key: string, val: string): Promise<User> {
+    setPreference(key: string, val: string|boolean): Promise<User> {
         return this.http.post(API.userPreference(this.loggedInUser._id), {
             key: key,
-            val: val
+            val: ''+val
         }).toPromise()
             .then((response) => {
                 let user = response.json() as User;
@@ -225,8 +225,8 @@ export class UserService {
             });
     }
 
-    getPreference(key: string): string {
-        let value: string = '';
+    getPreference(key: string, def?: string): string {
+        let value: string = def || '';
 
         if (this.loggedInUser.preferences) {
             this.loggedInUser.preferences.forEach(pref => {

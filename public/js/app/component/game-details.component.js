@@ -12,14 +12,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var common_1 = require("@angular/common");
+var constants_1 = require("../../constants");
 var app_component_1 = require("../../component/app.component");
 var game_database_service_1 = require("../service/game-database.service");
+var game_note_service_1 = require("../service/game-note.service");
 var game_1 = require("../../model/game");
 var user_service_1 = require("../../service/user.service");
+var util_1 = require("../../util/util");
+var anim_util_1 = require("../../util/anim.util");
 var GameDetailsComponent = (function () {
-    function GameDetailsComponent(_app, gameDatabaseService, router, route, location, userService) {
+    function GameDetailsComponent(_app, gameDatabaseService, gameNoteService, router, route, location, userService) {
         this._app = _app;
         this.gameDatabaseService = gameDatabaseService;
+        this.gameNoteService = gameNoteService;
         this.router = router;
         this.route = route;
         this.location = location;
@@ -45,6 +50,19 @@ var GameDetailsComponent = (function () {
                 active: false
             }
         ];
+        this.tabs = [
+            {
+                name: 'Details',
+                id: 'details',
+                icon: 'rocket'
+            },
+            {
+                name: 'Notes',
+                id: 'notes',
+                icon: 'sticky-note-o'
+            }
+        ];
+        this.selectedTab = 'notes';
         this._selectedTagIndex = -1;
     }
     GameDetailsComponent.prototype.ngOnInit = function () {
@@ -72,6 +90,12 @@ var GameDetailsComponent = (function () {
                 _this.allDurations = durations;
             });
         }
+        this.showPublicNotes = this.userService.getPreference(constants_1.PREFERENCE_KEYS.showPublicNotes, 'true') == 'true';
+        this.showTeamNotes = this.userService.getPreference(constants_1.PREFERENCE_KEYS.showTeamNotes, 'true') == 'true';
+        this.showPrivateNotes = this.userService.getPreference(constants_1.PREFERENCE_KEYS.showPrivateNotes, 'true') == 'true';
+    };
+    GameDetailsComponent.prototype.selectTab = function (tab) {
+        this.selectedTab = tab.id;
     };
     GameDetailsComponent.prototype.ngOnDestroy = function () {
     };
@@ -315,9 +339,31 @@ var GameDetailsComponent = (function () {
         }
         else {
             this.game = game;
-            this.gameDatabaseService.getNotesForGame(this.game)
-                .then(function (notes) { return _this.notes = notes; });
+            if (this.game.names && this.game.names.length) {
+                this.gameNoteService.getNotesForGame(this.game)
+                    .then(function (notes) {
+                    _this.notes = notes;
+                });
+            }
         }
+    };
+    GameDetailsComponent.prototype.getPublicNotes = function () {
+        var notes = this.notes.filter(function (note) {
+            return note.public;
+        });
+        return notes;
+    };
+    GameDetailsComponent.prototype.getPrivateNotes = function () {
+        var notes = this.notes.filter(function (note) {
+            return !note.public && (!note.teams || !note.teams.length);
+        });
+        return notes;
+    };
+    GameDetailsComponent.prototype.getTeamNotes = function () {
+        var notes = this.notes.filter(function (note) {
+            return !note.public && note.teams && note.teams.length;
+        });
+        return notes;
     };
     GameDetailsComponent.prototype.closePage = function () {
         if (this.dialog) {
@@ -351,6 +397,33 @@ var GameDetailsComponent = (function () {
                 break;
         }
     };
+    GameDetailsComponent.prototype.noteCreated = function (note) {
+        this.notes.push(note);
+    };
+    GameDetailsComponent.prototype.removeNote = function (note) {
+        var index = util_1.Util.indexOfId(this.notes, note);
+        if (index > -1) {
+            this.notes.splice(index, 1);
+        }
+    };
+    GameDetailsComponent.prototype.togglePublicNotes = function () {
+        var _this = this;
+        setTimeout(function () {
+            _this.userService.setPreference(constants_1.PREFERENCE_KEYS.showPublicNotes, '' + _this.showPublicNotes);
+        }, 10);
+    };
+    GameDetailsComponent.prototype.toggleTeamNotes = function () {
+        var _this = this;
+        setTimeout(function () {
+            _this.userService.setPreference(constants_1.PREFERENCE_KEYS.showTeamNotes, '' + _this.showTeamNotes);
+        }, 10);
+    };
+    GameDetailsComponent.prototype.togglePrivateNotes = function () {
+        var _this = this;
+        setTimeout(function () {
+            _this.userService.setPreference(constants_1.PREFERENCE_KEYS.showPrivateNotes, '' + _this.showPrivateNotes);
+        }, 10);
+    };
     return GameDetailsComponent;
 }());
 __decorate([
@@ -367,6 +440,7 @@ GameDetailsComponent = __decorate([
         selector: 'game-details',
         templateUrl: '../template/game-details.component.html',
         animations: [
+            anim_util_1.ShrinkAnim.height,
             core_1.trigger('expand', [
                 core_1.state('in', core_1.style({ height: '*' })),
                 core_1.transition('void => *', [
@@ -382,6 +456,7 @@ GameDetailsComponent = __decorate([
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,
         game_database_service_1.GameDatabaseService,
+        game_note_service_1.GameNoteService,
         router_1.Router,
         router_1.ActivatedRoute,
         common_1.Location,

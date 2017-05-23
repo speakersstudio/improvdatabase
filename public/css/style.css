@@ -498,6 +498,10 @@ iplus {
 .nowrap {
   white-space: nowrap; }
 
+.fa.std {
+  font-size: 16px;
+  margin-right: 8px; }
+
 .fa.huge {
   font-size: 50px;
   margin-top: 24px; }
@@ -590,8 +594,34 @@ iplus {
 .button-group {
   margin-top: 16px;
   text-align: right; }
+  .button-group .left {
+    float: left; }
+    .button-group .left:first-child {
+      margin-left: -16px; }
+  .button-group label.left {
+    margin-top: 8px; }
   .button-group .button:last-child {
     margin-right: 0; }
+  .button-group label {
+    display: inline-block;
+    vertical-align: middle;
+    height: 33px;
+    line-height: 30px; }
+    .button-group label .fa {
+      vertical-align: middle; }
+  .button-group .improvplus-editable-metadata {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 24px;
+    color: rgba(96, 96, 96, 0.5); }
+    .button-group .improvplus-editable-metadata .fa {
+      font-size: 16px;
+      margin-right: 8px; }
+    .button-group .improvplus-editable-metadata select {
+      display: inline-block;
+      margin: 0;
+      padding: 8px 0;
+      width: auto; }
 
 .form-input {
   position: relative;
@@ -612,6 +642,8 @@ iplus {
     margin: 0;
     height: 100%;
     box-sizing: border-box; }
+  .form-input textarea {
+    height: 10em; }
   .form-input .help {
     position: absolute;
     top: 25px;
@@ -623,6 +655,8 @@ iplus {
     .form-input .help.gone {
       opacity: 0;
       z-index: 0; }
+  .form-input + .button-group {
+    margin-top: 8px; }
 
 button,
 .button {
@@ -654,6 +688,10 @@ button,
     button iplus:hover .plus,
     .button iplus:hover .plus {
       color: #FFFFFF; }
+  button .fa,
+  .button .fa {
+    font-size: 16px;
+    margin-right: 8px; }
   button.large,
   .button.large {
     font-size: 24px;
@@ -751,6 +789,8 @@ button,
     display: flex;
     flex-direction: row;
     align-items: center; }
+    .list .item.large {
+      align-items: flex-start; }
     .list .item:last-child {
       border-bottom: 0px; }
     .list .item.clickable:hover {
@@ -765,6 +805,10 @@ button,
     .list .item .metadata {
       min-width: 100px;
       flex-grow: 1; }
+      .list .item .metadata label {
+        margin: 0; }
+      .list .item .metadata.no-margin {
+        margin: -8px -16px; }
       .list .item .metadata .row {
         display: flex;
         flex-direction: row;
@@ -1016,7 +1060,8 @@ button,
   cursor: pointer;
   transition: background-color 250ms;
   position: relative;
-  vertical-align: middle; }
+  vertical-align: middle;
+  margin-top: -2px; }
   .form-switch .control {
     width: 24px;
     height: 24px;
@@ -1969,9 +2014,16 @@ user .user-form {
   .left-bracket h1,
   .right-bracket h1 {
     font-size: 18px;
+    line-height: 24px;
     padding: 0 16px;
     background: #FFFFFF;
     transform: translateY(-55%); }
+    .left-bracket h1 label,
+    .right-bracket h1 label {
+      font-size: 18px;
+      line-height: 24px;
+      color: #606060;
+      margin: 0; }
   .left-bracket.white,
   .right-bracket.white {
     border-color: #FFFFFF; }
@@ -2092,7 +2144,9 @@ user .user-form {
     padding: 16px;
     position: relative;
     z-index: 2;
-    margin: 0 26px 16px; }
+    margin: 0 26px 16px;
+    transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1), padding 200ms;
+    will-change: box-shadow; }
     @media only screen and (max-width: 500px) {
       .page .paper {
         margin: 0 0 16px; } }
@@ -2117,6 +2171,21 @@ user .user-form {
         justify-content: flex-end; }
     .page .paper .description, .page .paper .description p {
       line-height: 1.25; }
+    .page .paper .paper-toggle {
+      margin-left: 16px; }
+    .page .paper .left-bracket, .page .paper .right-bracket {
+      transition: opacity 200ms, border-color 200ms; }
+      .page .paper .left-bracket h1, .page .paper .right-bracket h1 {
+        transition: right 200ms, left 200ms; }
+    .page .paper.closed {
+      box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+      padding-bottom: 0; }
+      .page .paper.closed .left-bracket {
+        opacity: 0; }
+      .page .paper.closed .right-bracket {
+        border-color: #FFFFFF; }
+        .page .paper.closed .right-bracket h1 {
+          right: -16px; }
   .page.fullbg .paper:first-child {
     margin-top: 0; }
 
@@ -2135,7 +2204,7 @@ game-details h4:hover .fa-plus-circle {
   display: inline-block; }
 
 game-details textarea {
-  height: 15em; }
+  height: 10em; }
 
 landing-hero {
   position: fixed;

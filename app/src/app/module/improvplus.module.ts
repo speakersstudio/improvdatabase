@@ -15,6 +15,7 @@ import { LibraryService } from "../service/library.service";
 import { AuthGuard } from "../service/auth-guard.service";
 import { TeamService } from '../service/team.service';
 import { HistoryService } from '../service/history.service';
+import { GameNoteService } from '../service/game-note.service';
 
 // main components
 // import { AppComponent } from '../component/app.component';
@@ -42,6 +43,7 @@ import { MaterialsPageView } from '../view/materials-page.view';
 import { UserCardView } from '../view/user-card.view';
 import { EditableMetadataView } from '../view/editable-metadata.view';
 import { DashboardMessageListView } from '../view/dashboard-message-list.view';
+import { GameNoteView } from '../view/game-note.view';
 
 // utils
 
@@ -77,7 +79,8 @@ import { DashboardMessageListView } from '../view/dashboard-message-list.view';
         MaterialsPageView,
         UserCardView,
         EditableMetadataView,
-        DashboardMessageListView
+        DashboardMessageListView,
+        GameNoteView
     ],
     // bootstrap: [ AppComponent ],
     providers: [
@@ -85,7 +88,8 @@ import { DashboardMessageListView } from '../view/dashboard-message-list.view';
         LibraryService,
         AuthGuard,
         TeamService,
-        HistoryService
+        HistoryService,
+        GameNoteService
     ]
 })
 

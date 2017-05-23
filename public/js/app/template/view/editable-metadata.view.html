@@ -56,7 +56,9 @@
             [selected]="(optionId && option[optionId] == editModel) || (option == editModel)"
             [ngValue]="optionId ? option[optionId] : option"
             [title]="optionDescription ? option[optionDescription] : ''">
-                {{optionText ? option[optionText] : option}}</option>
+                <i *ngIf="option.icon" class="fa fa-{{option.icon}}"></i>
+                {{optionText ? option[optionText] : option}}
+            </option>
 
     <option *ngIf="optionCreate" [ngValue]="-1">Other...</option>
 </select>

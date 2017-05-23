@@ -14,9 +14,12 @@ import {
 import { Router, ActivatedRoute, Params }   from '@angular/router';
 import { Location }   from '@angular/common';
 
+import { PREFERENCE_KEYS } from '../../constants';
+
 import { AppComponent } from "../../component/app.component";
 
 import { GameDatabaseService } from '../service/game-database.service';
+import { GameNoteService } from '../service/game-note.service';
 
 import { Game, TagGame } from '../../model/game';
 import { Name } from '../../model/name';
@@ -25,14 +28,19 @@ import { Tag } from '../../model/tag';
 import { Note } from '../../model/note';
 
 import { Tool } from '../view/toolbar.view';
+import { TabData } from '../../model/tab-data';
 
 import { UserService } from "../../service/user.service";
+
+import { Util } from '../../util/util';
+import { ShrinkAnim } from '../../util/anim.util';
 
 @Component({
     moduleId: module.id,
     selector: 'game-details',
     templateUrl: '../template/game-details.component.html',
     animations: [
+        ShrinkAnim.height,
         trigger('expand', [
             state('in', style({height: '*'})),
             transition('void => *', [
@@ -55,8 +63,10 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
 
     dialog: boolean = false;
 
+    isPosting: boolean;
+
     // tagMap: Object = {};
-    notes: Note[] = [];
+    notes: Note[] = []
 
     namesOpen: boolean = false;
 
@@ -81,6 +91,10 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     // playerCountID: string;
     durationID: string;
 
+    showPublicNotes: boolean;
+    showTeamNotes: boolean;
+    showPrivateNotes: boolean;
+
     tools: Tool[] = [
         {
             icon: "fa-trash",
@@ -96,9 +110,24 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         }
     ];
 
+    tabs = [
+        {
+            name: 'Details',
+            id: 'details',
+            icon: 'rocket'
+        },
+        {
+            name: 'Notes',
+            id: 'notes',
+            icon: 'sticky-note-o'
+        }
+    ];
+    selectedTab: string = 'notes';
+
     constructor(
         public _app: AppComponent,
         private gameDatabaseService: GameDatabaseService,
+        private gameNoteService: GameNoteService,
         private router: Router,
         private route: ActivatedRoute,
         private location: Location,
@@ -132,6 +161,13 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
             });
         }
 
+        this.showPublicNotes = this.userService.getPreference(PREFERENCE_KEYS.showPublicNotes, 'true') == 'true';
+        this.showTeamNotes = this.userService.getPreference(PREFERENCE_KEYS.showTeamNotes, 'true') == 'true';
+        this.showPrivateNotes = this.userService.getPreference(PREFERENCE_KEYS.showPrivateNotes, 'true') == 'true';
+    }
+
+    selectTab(tab: TabData): void {
+        this.selectedTab = tab.id;
     }
 
     ngOnDestroy(): void {
@@ -403,9 +439,35 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
 
             this.game = game;
 
-            this.gameDatabaseService.getNotesForGame(this.game)
-                .then((notes) => this.notes = notes);
+            if (this.game.names && this.game.names.length) {
+                this.gameNoteService.getNotesForGame(this.game)
+                    .then((notes) => {
+                        this.notes = notes
+                    });
+            }
+
         }
+    }
+
+    getPublicNotes(): Note[] {
+        let notes = this.notes.filter(note => {
+            return note.public;
+        });
+        return notes;
+    }
+
+    getPrivateNotes(): Note[] {
+        let notes = this.notes.filter(note => {
+            return !note.public && (!note.teams || !note.teams.length);
+        });
+        return notes;
+    }
+
+    getTeamNotes(): Note[] {
+        let notes = this.notes.filter(note => {
+            return !note.public && note.teams && note.teams.length;
+        })
+        return notes;
     }
 
     closePage(): void {
@@ -443,6 +505,33 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         }
     }
 
+    noteCreated(note: Note): void {
+        this.notes.push(note);
+    }
 
+    removeNote(note: Note): void {
+        let index = Util.indexOfId(this.notes, note);
+        if (index > -1) {
+            this.notes.splice(index, 1);
+        }
+    }
+
+    togglePublicNotes(): void {
+        setTimeout(() => {
+            this.userService.setPreference(PREFERENCE_KEYS.showPublicNotes, ''+this.showPublicNotes);
+        }, 10);
+    }
+
+    toggleTeamNotes(): void {
+        setTimeout(() => {
+            this.userService.setPreference(PREFERENCE_KEYS.showTeamNotes, ''+this.showTeamNotes);
+        }, 10);
+    }
+
+    togglePrivateNotes(): void {
+        setTimeout(() => {
+            this.userService.setPreference(PREFERENCE_KEYS.showPrivateNotes, ''+this.showPrivateNotes);
+        }, 10);
+    }
 
 }

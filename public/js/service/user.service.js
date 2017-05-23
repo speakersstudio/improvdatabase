@@ -187,7 +187,7 @@ var UserService = (function () {
         var _this = this;
         return this.http.post(constants_1.API.userPreference(this.loggedInUser._id), {
             key: key,
-            val: val
+            val: '' + val
         }).toPromise()
             .then(function (response) {
             var user = response.json();
@@ -195,8 +195,8 @@ var UserService = (function () {
             return _this.loggedInUser;
         });
     };
-    UserService.prototype.getPreference = function (key) {
-        var value = '';
+    UserService.prototype.getPreference = function (key, def) {
+        var value = def || '';
         if (this.loggedInUser.preferences) {
             this.loggedInUser.preferences.forEach(function (pref) {
                 if (pref.key == key) {

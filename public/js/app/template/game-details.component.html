@@ -10,9 +10,19 @@
     <h2 *ngIf="game && (!game.names || !game.names[0])">New Game</h2>
 </div>-->
 
-<div class="page">
+<div class="page" *ngIf="game">
 
-    <div *ngIf="game" class="paper has-brackets">
+    <!--<div class="tabs">
+        <span class="tab" 
+            *ngFor="let tab of tabs"
+            [class.active]="tab.id == selectedTab"
+            (click)="selectTab(tab)">
+            <i class="fa fa-{{tab.icon}}"></i>
+            <span>{{tab.name}}</span>
+        </span>
+    </div>-->
+
+    <div class="paper has-brackets" [@shrinkHeight]>
 
         <div class="content">
 
@@ -113,46 +123,68 @@
         <div class="right-bracket"><h1>game details</h1></div>
     </div>
 
-    <div *ngIf="game && notes.length > 0" class="paper has-brackets">
+    <div *ngIf="getPublicNotes().length" class="paper has-brackets" [class.closed]="!showPublicNotes">
 
-        <!--<h4>Discussion</h4>-->
+        <div class="content list" *ngIf="showPublicNotes" [@shrinkHeight]>
 
-        <!--<div class="metadata right">
-            <span>The following has been said about <em>{{game.names[0].name}}</em>, or the tags associated with it.</span>
-        </div>
-
-        <hr />-->
-
-        <div class="content">
-
-            <div *ngFor="let note of notes" class="block">
-                <div class="description" [innerHTML]="note.description"></div>
-                <div class="metadata right">
-                    <h5>{{note.addedUser.firstName}} {{note.addedUser.lastName}}</h5>
-                    
-                    <span>Regarding
-                        <i class="fa"
-                            [class.fa-soccer-ball-o]="note.game"
-                            [class.fa-hashtag]="note.tag"
-                            [class.fa-group]="note.metadata && note.metadata.type == 'playerCount'"
-                            [class.fa-clock-o]="note.metadata && note.metadata.type == 'duration'"
-                            ></i>
-                        <em *ngIf="note.game">{{game.names[0].name}}</em>
-                        <em *ngIf="note.tag">{{note.tag.name}}</em>
-                        <em *ngIf="note.metadata">{{note.metadata.name}}</em>
-                    </span>
-                    
-                </div>
-            </div>
+            <div *ngFor="let note of getPublicNotes()" class="item large improvplus-game-note" [note]="note" [game]="game" (remove)="removeNote($event)"></div>
 
         </div>
 
         <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
-        <div class="right-bracket"><h1>discussion</h1></div>
+        <div class="right-bracket">
+            <h1>
+                <label (click)="togglePublicNotes()">
+                    <span>director's commentary</span>
+                    <input class="paper-toggle" formSwitch name="showPublicNotes" type="checkbox" [(ngModel)]="showPublicNotes" />
+                </label>
+            </h1>
+        </div>
     </div>
 
-    <not-found *ngIf="gameNotFound" [injected]="true"></not-found>
+    <div *ngIf="getTeamNotes().length" class="paper has-brackets" [class.closed]="!showTeamNotes">
+        <div class="content list" *ngIf="showTeamNotes" [@shrinkHeight]>
 
+            <div *ngFor="let note of getTeamNotes()" class="item large improvplus-game-note" [note]="note" [game]="game" (remove)="removeNote($event)"></div>
+
+        </div>
+
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div><div class="right-bracket">
+            <h1>
+                <label (click)="toggleTeamNotes()">
+                    <span>team commentary</span>
+                    <input class="paper-toggle" formSwitch name="showTeamNotes" type="checkbox" [(ngModel)]="showTeamNotes" />
+                </label>
+            </h1>
+        </div>
+    </div>
+
+    <div class="paper has-brackets" [class.closed]="!showPrivateNotes">
+
+        <div class="content list" *ngIf="showPrivateNotes" [@shrinkHeight]>
+
+            <div *ngFor="let note of getPrivateNotes()" class="item large improvplus-game-note" [note]="note" [game]="game" (remove)="removeNote($event)"></div>
+
+            <p *ngIf="!getPrivateNotes().length">You haven't saved any notes about this game (your notes are for your eyes only, so put anything you want).</p>
+
+            <div class="item large improvplus-game-note" (create)="noteCreated($event)" [game]="game"></div>
+
+        </div>
+
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div><div class="right-bracket">
+            <h1>
+                <label (click)="togglePrivateNotes()">
+                    <span>your commentary</span>
+                    <input class="paper-toggle" formSwitch name="showPrivateNotes" type="checkbox" [(ngModel)]="showPrivateNotes" />
+                </label>
+            </h1>
+        </div>
+    </div>
+
+</div>
+
+<div class="page" *ngIf="gameNotFound">
+    <not-found [injected]="true"></not-found>
 </div>
 
 <create-metadata *ngIf="can('metadata_create')" class="dialog-container" [class.show]="createMetadataType"

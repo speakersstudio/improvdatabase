@@ -284,6 +284,10 @@ iplus {
     white-space: nowrap;
 }
 
+.fa.std {
+    font-size: $std;
+    margin-right: $small;
+}
 .fa.huge {
     font-size: 50px;
     margin-top: $large;
@@ -426,8 +430,48 @@ iplus {
     margin-top: $std;
     text-align: right;
 
+    .left {
+        float: left;
+
+        &:first-child {
+            margin-left: (-$std);
+        }
+    }
+
+    label.left {
+        margin-top: $small;
+    }
+
     .button:last-child {
         margin-right: 0;
+    }
+    label {
+        display: inline-block;
+        vertical-align: middle;
+        height: 33px;
+        line-height: 30px;
+
+        .fa {
+            vertical-align: middle;
+        }
+    }
+    .improvplus-editable-metadata {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 24px;
+        color: $color-hr;
+
+        .fa {
+            font-size: $std;
+            margin-right: $small;
+        }
+
+        select {
+            display: inline-block;
+            margin: 0;
+            padding: $small 0;
+            width: auto;
+        }
     }
 }
 
@@ -455,6 +499,10 @@ iplus {
         box-sizing: border-box;
     }
 
+    textarea {
+        height: 10em;
+    }
+
     .help {
         @include abs(25px, $small, null, null, 2);
         cursor: pointer;
@@ -465,6 +513,10 @@ iplus {
             opacity: 0;
             z-index: 0;
         }
+    }
+
+    & + .button-group {
+        margin-top: $small;
     }
 }
 
@@ -500,6 +552,11 @@ button,
                 color: $color-white;
             }
         }
+    }
+
+    .fa {
+        font-size: $std;
+        margin-right: $small;
     }
 
     $large-button-scale: 1.5;
@@ -606,6 +663,10 @@ button,
         flex-direction: row;
         align-items: center;
 
+        &.large {
+            align-items: flex-start;
+        }
+
         &:last-child {
             border-bottom: 0px;
         }
@@ -628,6 +689,14 @@ button,
         .metadata {
             min-width: 100px; // makes sure any ellipsized content inside will be ellipsized
             flex-grow: 1;
+
+            label {
+                margin: 0;
+            }
+
+            &.no-margin {
+                margin: (-$small) (-$std);
+            }
 
             .row {
                 display: flex;
@@ -994,6 +1063,7 @@ button,
     transition: background-color 250ms;
     position: relative;
     vertical-align: middle;
+    margin-top: -2px;
 
     .control {
         width: $icon-size;

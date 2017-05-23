@@ -80,6 +80,12 @@ exports.API = {
     gameCreateTag: function (gameId, tag) {
         return this.getGame(gameId) + "/createTag/" + tag;
     },
+    gameNotes: function (gameId) {
+        return this.getGame(gameId) + "/notes";
+    },
+    getNote: function (noteId) {
+        return this.notes + "/" + noteId;
+    },
     history: '/api/history',
     userMaterials: function (userId) {
         return this.updateUser(userId) + "/materials";
@@ -109,6 +115,12 @@ exports.API = {
     savePackageMaterials: function (packageId) {
         return this.getPackage(packageId) + "/materials";
     }
+};
+exports.PREFERENCE_KEYS = {
+    showPublicNotes: 'show-public-notes',
+    showPrivateNotes: 'show-private-notes',
+    showTeamNotes: 'show-team-notes',
+    shareNotesWithTeam: 'share-notes'
 };
 
 //# sourceMappingURL=constants.js.map

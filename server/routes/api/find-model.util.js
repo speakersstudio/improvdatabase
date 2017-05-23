@@ -3,7 +3,8 @@ const   mongoose = require('mongoose'),
         Promise = require('bluebird'),
 
         Team = require('../../models/team.model'),
-        User = require('../../models/user.model');
+        User = require('../../models/user.model'),
+        Note = require('../../models/note.model');
 
 module.exports = {
 
@@ -126,5 +127,81 @@ module.exports = {
         }
 
         return promise.exec();
+    },
+
+    findNotes: (noteId, user, gameId, metadataIds, tagIds) => {
+
+        let userOr = []
+        
+        // if (!user.superAdmin) {
+            userOr.push({addedUser: user._id});
+
+            if (user.actions.indexOf('note_public_view') > -1) {
+                userOr.push({public: true});
+            }
+
+            if (user.actions.indexOf('note_team_view') > -1) {
+                let teams = [].concat(user.memberOfTeams, user.adminOfTeams);
+                userOr.push({teams: { $in: teams }});
+            }
+        // }
+
+        let query;
+
+        if (noteId) {
+            query = Note.findOne({});
+            query.where('_id').equals(noteId);
+        } else {
+            query = Note.find({});
+        }
+
+        let whereOr = [],
+            and = [];
+
+        if (gameId) {
+            whereOr.push({game: gameId});
+        }
+        if (metadataIds) {
+            whereOr.push({metadata: {$in: metadataIds}});
+        }
+        if (tagIds) {
+            whereOr.push({tag: { $in: tagIds }});
+        }
+
+        if (userOr.length) {
+            and.push({ $or: userOr });
+        }
+
+        if (whereOr.length) {
+            and.push({ $or: whereOr })
+        }
+
+        if (and && and.length) {
+            query = query.and(and);
+        }
+
+        return query
+            .where('dateDeleted').equals(null)
+            .populate({
+                path: 'teams',
+                select: 'name'
+            })
+            .populate({
+                path: 'tag',
+                select: 'name description games'
+            })
+            .populate({
+                path: 'metadata',
+                select: 'name description type games'
+            })
+            .populate({
+                path: 'addedUser',
+                select: 'firstName lastName'
+            })
+            .populate({
+                path: 'modifiedUser',
+                select: 'firstName lastName'
+            })
+            .exec();
     }
 }

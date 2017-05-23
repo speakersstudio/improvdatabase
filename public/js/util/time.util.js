@@ -46,8 +46,40 @@ var TimeUtil = (function () {
         var date = new Date(dateString), rawHours = date.getHours(), mins = date.getMinutes(), ampm = rawHours > 11 ? 'pm' : 'am', hours = rawHours > 12 ? rawHours - 12 : rawHours;
         return hours + ':' + mins + ' ' + ampm;
     };
+    TimeUtil.isMorning = function (date) {
+        return date.getHours() > 4 && date.getHours() < 12;
+    };
+    TimeUtil.isAfternoon = function (date) {
+        return date.getHours() >= 12 && date.getHours() < 6;
+    };
+    TimeUtil.postTime = function (dateString) {
+        var date = new Date(dateString), today = new Date(), timeDiff = today.getTime() - date.getTime();
+        if (timeDiff < this.DAY_MILLIS) {
+            if (timeDiff < this.HOUR_MILLIS) {
+                if (timeDiff < this.MINUTE_MILLIS * 5) {
+                    return 'Just now';
+                }
+                else {
+                    return Math.round(timeDiff / this.MINUTE_MILLIS) + ' Minutes ago';
+                }
+            }
+            else {
+                return Math.round(timeDiff / this.HOUR_MILLIS) + ' Hours ago';
+            }
+        }
+        else if (timeDiff < this.DAY_MILLIS * 2) {
+            return 'Yesterday';
+        }
+        else {
+            return this.simpleDate(dateString);
+        }
+    };
     return TimeUtil;
 }());
+TimeUtil.SECOND_MILLIS = 1000;
+TimeUtil.MINUTE_MILLIS = TimeUtil.SECOND_MILLIS * 60;
+TimeUtil.HOUR_MILLIS = TimeUtil.MINUTE_MILLIS * 60;
+TimeUtil.DAY_MILLIS = TimeUtil.HOUR_MILLIS * 24;
 exports.TimeUtil = TimeUtil;
 
 //# sourceMappingURL=time.util.js.map

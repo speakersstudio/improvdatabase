@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
         
-const   util = require('../../util');
+const   util = require('../../util'),
+        findModelUtil = require('./find-model.util');
 
-const Game = require('../../models/game.model');
-const Tag = require('../../models/tag.model'),
+const   Game = require('../../models/game.model'),
+        Note = require('../../models/note.model'),
+        Tag = require('../../models/tag.model'),
         HistoryModel = require('../../models/history.model');
 
 module.exports = {
@@ -173,6 +175,42 @@ module.exports = {
             .then(games => {
                 res.json(games);
             })
+    },
+
+    /**
+     * /api/game/{id}/notes
+     * 
+     * Fetch all the notes that apply to a given game, whether it's the game itself or the metadata applied to it
+     */
+    notes: (req, res) => {
+        let gameId = req.params.id,
+            userId = req.user._id,
+            metadataIds = [],
+            tagIds = [],
+            orClause = [{addedUser: userId}];
+
+        if (req.user.actions.indexOf('note_public_view') > -1) {
+            orClause.push({public: true});
+        }
+
+        if (req.user.actions.indexOf('note_team_view') > -1) {
+            let teams = [].concat(req.user.memberOfTeams, req.user.adminOfTeams);
+            orClause.push({team: { $in: teams }});
+        }
+
+        return Game.findOne({}).where('_id').equals(gameId).exec()
+            .then(game => {
+                metadataIds.push(game.playerCount);
+                metadataIds.push(game.duration);
+                game.tags.forEach(taggame => {
+                    tagIds.push(taggame.tag.toString());
+                });
+
+                return findModelUtil.findNotes(null, req.user, gameId, metadataIds, tagIds);
+            })
+            .then(notes => {
+                res.json(notes);
+            });
     }
 
 }

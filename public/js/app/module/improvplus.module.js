@@ -20,6 +20,7 @@ var library_service_1 = require("../service/library.service");
 var auth_guard_service_1 = require("../service/auth-guard.service");
 var team_service_1 = require("../service/team.service");
 var history_service_1 = require("../service/history.service");
+var game_note_service_1 = require("../service/game-note.service");
 // main components
 // import { AppComponent } from '../component/app.component';
 var unauthorized_component_1 = require("../component/unauthorized.component");
@@ -44,6 +45,7 @@ var materials_page_view_1 = require("../view/materials-page.view");
 var user_card_view_1 = require("../view/user-card.view");
 var editable_metadata_view_1 = require("../view/editable-metadata.view");
 var dashboard_message_list_view_1 = require("../view/dashboard-message-list.view");
+var game_note_view_1 = require("../view/game-note.view");
 // utils
 var ImprovPlusModule = (function () {
     function ImprovPlusModule() {
@@ -82,7 +84,8 @@ ImprovPlusModule = __decorate([
             materials_page_view_1.MaterialsPageView,
             user_card_view_1.UserCardView,
             editable_metadata_view_1.EditableMetadataView,
-            dashboard_message_list_view_1.DashboardMessageListView
+            dashboard_message_list_view_1.DashboardMessageListView,
+            game_note_view_1.GameNoteView
         ],
         // bootstrap: [ AppComponent ],
         providers: [
@@ -90,7 +93,8 @@ ImprovPlusModule = __decorate([
             library_service_1.LibraryService,
             auth_guard_service_1.AuthGuard,
             team_service_1.TeamService,
-            history_service_1.HistoryService
+            history_service_1.HistoryService,
+            game_note_service_1.GameNoteService
         ]
     })
 ], ImprovPlusModule);

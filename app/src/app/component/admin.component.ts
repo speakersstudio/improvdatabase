@@ -164,7 +164,6 @@ export class AdminComponent implements OnInit {
             }
             return true;
         });
-        console.log(this.histories);
     }
 
     selectMaterial(material: MaterialItem): void {

@@ -866,7 +866,7 @@ button,
         background: none;
         @include md-elevation(0);
         color: $color-primary;
-        opacity: 0;
+        // opacity: 0;
         transition: opacity 200ms;
     }
 
@@ -905,6 +905,25 @@ button,
                 margin-left: $small;
                 padding-left: $tag-padding-vertical + $small;
                 padding-right: $tag-padding-horizontal + $tag-spacing;
+            }
+        }
+    }
+
+    .remove {
+        @include abs(0, 0, 0, 0, 2);
+        background: $color-primary;
+        display: flex;
+        align-items: center;
+        border-radius: $tag-border-radius;
+        line-height: $std;
+
+        & > * {
+            width: 50%;
+            height: 100%;
+            text-align: center;
+            
+            &:hover {
+                background-color: rgba(255,255,255,0.25);
             }
         }
     }

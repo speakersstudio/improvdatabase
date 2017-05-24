@@ -366,18 +366,30 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         }
     }
 
+    tagToRemove: TagGame;
     removeTag(taggame: TagGame): void {
         if (!this.can('game_tag_remove')) {
             return;
         }
-        let index = this.game.tags.indexOf(taggame);
+        this.tagToRemove = taggame;
+    }
+
+    doRemoveTag(): void {
+        if (!this.can('game_tag_remove')) {
+            return;
+        }
+        let index = this.game.tags.indexOf(this.tagToRemove);
         if (index > -1) {
             this.game.tags.splice(index, 1);
         }
-        this.gameDatabaseService.deleteTagGame(this.game, taggame)
-            // .then(game => {
-            //     this.setGame(game);  
-            // });
+        this.gameDatabaseService.deleteTagGame(this.game, this.tagToRemove)
+    }
+
+    cancelRemoveTag(event: MouseEvent): void {
+        this.tagToRemove = null;
+
+        event.preventDefault();
+        event.cancelBubble = true;
     }
 
     addTagByName(): void {

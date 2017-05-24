@@ -94,8 +94,18 @@
 
                     <li *ngFor="let taggame of game.tags" 
                         [title]="taggame.tag.description || ''"
-                        [class.clickable]="can('game_tag_remove')" (click)="removeTag(taggame)">
-                        <i class="fa fa-hashtag"></i> {{taggame.tag.name}}</li>
+                        [class.clickable]="can('game_tag_remove')"
+                        (click)="removeTag(taggame)">
+                        
+                        <i class="fa fa-hashtag"></i> 
+                        {{taggame.tag.name}}
+
+                        <div *ngIf="tagToRemove == taggame" class="remove" [class.hidden]="!tagToRemove">
+                            <span (click)="cancelRemoveTag($event)"><i class="fa fa-arrow-left"></i></span>
+                            <span (click)="doRemoveTag()"><i class="fa fa-trash"></i></span>
+                        </div>
+
+                    </li>
                 </ul>
             </div>
 
@@ -111,7 +121,7 @@
                 *ngIf="editDescriptionShown"></textarea>
 
             <div class="button-group" *ngIf="can('game_edit')">
-                <div class="button" *ngIf="!editDescriptionShown" (click)="showEditDescription()">EDIT</div>
+                <div class="button" *ngIf="!editDescriptionShown" (click)="showEditDescription()">EDIT Description</div>
                 
                 <div class="button" *ngIf="editDescriptionShown" (click)="cancelEditDescription()">cancel</div>
                 <div class="button raised" *ngIf="editDescriptionShown" (click)="saveDescription()">SAVE</div>

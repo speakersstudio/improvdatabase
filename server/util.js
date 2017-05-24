@@ -240,10 +240,10 @@ module.exports = {
         let oldKeys = Object.keys(oldObject),
             newKeys = Object.keys(newObject),
             allKeys = module.exports.unionArrays(oldKeys, newKeys)
-            ignore = ['isNew', '$__', 'date', 'dateModified', 'password', 'user', 'team',
-                        'subscription', 'purchases', '_id', 'adminOfTeams', 
-                        'memberOfTeams', 'dateAdded', 'preferences', 'members',
-                        'admins', 'tags'],
+            ignore = ['isNew', '$__', '$init', 'date', 'dateModified', 'password', 'user', 
+                        'team', 'modifiedUser', 'subscription', 'purchases', '_id', 
+                        'adminOfTeams', 'memberOfTeams', 'dateAdded', 'preferences', 
+                        'members', 'admins', 'tags'],
             changes = [];
 
         allKeys = allKeys.filter(item => {

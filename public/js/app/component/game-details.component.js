@@ -276,14 +276,22 @@ var GameDetailsComponent = (function () {
         if (!this.can('game_tag_remove')) {
             return;
         }
-        var index = this.game.tags.indexOf(taggame);
+        this.tagToRemove = taggame;
+    };
+    GameDetailsComponent.prototype.doRemoveTag = function () {
+        if (!this.can('game_tag_remove')) {
+            return;
+        }
+        var index = this.game.tags.indexOf(this.tagToRemove);
         if (index > -1) {
             this.game.tags.splice(index, 1);
         }
-        this.gameDatabaseService.deleteTagGame(this.game, taggame);
-        // .then(game => {
-        //     this.setGame(game);  
-        // });
+        this.gameDatabaseService.deleteTagGame(this.game, this.tagToRemove);
+    };
+    GameDetailsComponent.prototype.cancelRemoveTag = function (event) {
+        this.tagToRemove = null;
+        event.preventDefault();
+        event.cancelBubble = true;
     };
     GameDetailsComponent.prototype.addTagByName = function () {
         var _this = this;

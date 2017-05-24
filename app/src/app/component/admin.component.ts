@@ -4,11 +4,16 @@ import { Router } from '@angular/router';
 import {AppComponent} from '../../component/app.component';
 import { Tool } from '../view/toolbar.view';
 
+import { API } from '../../constants';
+
 import { TabData } from '../../model/tab-data';
 
+import { AppService } from '../../service/app.service';
 import { LibraryService } from '../service/library.service';
 import { HistoryService } from '../service/history.service';
+import { GameDatabaseService } from '../service/game-database.service';
 
+import { PackageConfig } from '../../model/config';
 import { Subscription } from '../../model/subscription';
 import { Package } from '../../model/package';
 import { MaterialItem, MaterialItemVersion } from '../../model/material-item';
@@ -47,6 +52,11 @@ export class AdminComponent implements OnInit {
             icon: 'book'
         },
         {
+            name: 'Package Config',
+            id: 'packageconfig',
+            icon: 'wrench'
+        },
+        {
             name: 'History',
             id: 'history',
             icon: 'history'
@@ -71,13 +81,18 @@ export class AdminComponent implements OnInit {
     rawHistories: HistoryModel[];
     historyShowRefresh: boolean;
     historyShowLogin: boolean;
+    historyShowStuff: boolean = true;
+
+    packageConfig: PackageConfig;
 
     constructor(
         public _app: AppComponent,
         private router: Router,
+        private _service: AppService,
         private libraryService: LibraryService,
         private userService: UserService,
         private historyService: HistoryService,
+        private gameService: GameDatabaseService,
         private http: AppHttp
     ) { }
 
@@ -101,6 +116,10 @@ export class AdminComponent implements OnInit {
         this.showMaterials();
         this.showPackages();
         this.getHistory();
+
+        this._service.getPackageConfig().then(c => {
+            this.packageConfig = c;
+        });
     }
 
     selectTab(tab: TabData): void {
@@ -150,20 +169,71 @@ export class AdminComponent implements OnInit {
                 return 'fa-file-pdf-o';
             case 'change_password':
                 return 'fa-key';
+            case 'note_edit':
+                return 'fa-sticky-note';
+            case 'account_edit':
+                return 'fa-user';
+            case 'team_join':
+                return 'fa-user-plus';
+            case 'team_leave':
+                return 'fa-user-times';
+            case 'team_user_promote':
+                return 'fa-black-tie';
+            case 'login':
+                return 'fa-sign-in';
+            case 'logout':
+                return 'fa-sign-out';
+            case 'refresh':
+                return 'fa-refresh';
             default:
                 return 'fa-history';
         }
     }
 
+    expandedHistory: HistoryModel;
+    expandedHistoryTargetName: string;
+    expandHistory(history: HistoryModel): void {
+        if (this.expandedHistory == history ||
+                history.action == 'login' || history.action == 'logout' || history.action == 'refresh') {
+
+            this.expandedHistory = null;
+            return;
+        }
+
+        this.expandedHistory = history;
+
+        let target = history.target;
+
+        this.expandedHistoryTargetName = 'loading';
+
+        switch(history.action) {
+            case 'game_edit':
+                this.gameService.getGame(target).then(game => {
+                    if (game.names.length) {
+                        this.expandedHistoryTargetName = game.names[0].name;
+                    } else {
+                        this.expandedHistoryTargetName = '';
+                    }
+                });
+                break;
+            default:
+                this.expandedHistoryTargetName = '';
+                break;
+        }
+    }
+
     filterHistory(): void {
-        this.histories = this.rawHistories.filter(h => {
-            if (!this.historyShowRefresh && h.action == 'refresh') {
-                return false;
-            } else if (!this.historyShowLogin && (h.action == 'login' || h.action == 'logout' )) {
-                return false;
-            }
-            return true;
-        });
+        setTimeout(() => {
+            this.histories = this.rawHistories.filter(h => {
+                if (h.action == 'refresh') {
+                    return this.historyShowRefresh;
+                } else if (h.action == 'login' || h.action == 'logout' ) {
+                    return this.historyShowLogin;
+                } else {
+                    return this.historyShowStuff;
+                }
+            });
+        }, 10);
     }
 
     selectMaterial(material: MaterialItem): void {
@@ -346,6 +416,14 @@ export class AdminComponent implements OnInit {
             .then(() => {
                 this._app.toast('Package Materials saved');
             });
+    }
+
+    savePackageConfig(): void {
+        this.http.put(API.packageConfig, this.packageConfig)
+            .toPromise()
+            .then(response => {
+                this._app.toast('Config saved');
+            })
     }
 
 }

@@ -4,6 +4,7 @@ const express = require('express'),
 
       PackageConfig = require('../models/packageconfig.model'),
       roles = require('../roles'),
+      util = require('../util'),
       
       config = require('../config')();
 
@@ -46,6 +47,30 @@ router.get('/packageconfig', (req, res) => {
       res.json(data);
     });
 });
+
+router.put('/packageconfig', auth.checkToken, (req, res) => {
+  if (!req.user.superAdmin) {
+    return util.unauthorized(req, res);
+  }
+
+  PackageConfig.find({}).exec()
+    .then(c => {
+      let config = c[0];
+
+      config.improv_sub_price = req.body.improv_sub_price;
+      config.fac_sub_price = req.body.fac_sub_price;
+      config.improv_team_sub_price = req.body.improv_team_sub_price;
+      config.fac_team_sub_price = req.body.fac_team_sub_price;
+      config.fac_team_sub_count = req.body.fac_team_sub_count;
+      config.improv_team_sub_count = req.body.improv_team_sub_count;
+      config.fac_team_package_markup = req.body.fac_team_package_markup;
+
+      return config.save();
+    })
+    .then(c => {
+      res.json(c);
+    });
+})
 
 // CHECKOUT PROCESS
 var charge = require('./charge');

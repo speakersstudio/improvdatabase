@@ -254,16 +254,10 @@ game-details {
         .fa-plus-circle {
             font-size: 0.5em;
             vertical-align: middle;
-            display: none;
+            display: inline-block;
         }
         input {
             text-align: right;
-        }
-
-        &:hover {
-            .fa-plus-circle {
-                display: inline-block;
-            }
         }
     }
     textarea {

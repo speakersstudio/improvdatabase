@@ -12,8 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var app_component_1 = require("../../component/app.component");
+var constants_1 = require("../../constants");
+var app_service_1 = require("../../service/app.service");
 var library_service_1 = require("../service/library.service");
 var history_service_1 = require("../service/history.service");
+var game_database_service_1 = require("../service/game-database.service");
 var material_item_1 = require("../../model/material-item");
 var user_service_1 = require("../../service/user.service");
 var time_util_1 = require("../../util/time.util");
@@ -21,12 +24,14 @@ var app_http_1 = require("../../data/app-http");
 var util_1 = require("../../util/util");
 var anim_util_1 = require("../../util/anim.util");
 var AdminComponent = (function () {
-    function AdminComponent(_app, router, libraryService, userService, historyService, http) {
+    function AdminComponent(_app, router, _service, libraryService, userService, historyService, gameService, http) {
         this._app = _app;
         this.router = router;
+        this._service = _service;
         this.libraryService = libraryService;
         this.userService = userService;
         this.historyService = historyService;
+        this.gameService = gameService;
         this.http = http;
         this.title = '<span class="light">super</span><strong>admin</strong>';
         this.tabs = [
@@ -41,12 +46,18 @@ var AdminComponent = (function () {
                 icon: 'book'
             },
             {
+                name: 'Package Config',
+                id: 'packageconfig',
+                icon: 'wrench'
+            },
+            {
                 name: 'History',
                 id: 'history',
                 icon: 'history'
             }
         ];
         this.selectedTab = 'materials';
+        this.historyShowStuff = true;
         this._tools = [
             {
                 icon: "fa-database",
@@ -63,9 +74,13 @@ var AdminComponent = (function () {
         }
     };
     AdminComponent.prototype.ngOnInit = function () {
+        var _this = this;
         this.showMaterials();
         this.showPackages();
         this.getHistory();
+        this._service.getPackageConfig().then(function (c) {
+            _this.packageConfig = c;
+        });
     };
     AdminComponent.prototype.selectTab = function (tab) {
         this.selectedTab = tab.id;
@@ -110,21 +125,67 @@ var AdminComponent = (function () {
                 return 'fa-file-pdf-o';
             case 'change_password':
                 return 'fa-key';
+            case 'note_edit':
+                return 'fa-sticky-note';
+            case 'account_edit':
+                return 'fa-user';
+            case 'team_join':
+                return 'fa-user-plus';
+            case 'team_leave':
+                return 'fa-user-times';
+            case 'team_user_promote':
+                return 'fa-black-tie';
+            case 'login':
+                return 'fa-sign-in';
+            case 'logout':
+                return 'fa-sign-out';
+            case 'refresh':
+                return 'fa-refresh';
             default:
                 return 'fa-history';
         }
     };
+    AdminComponent.prototype.expandHistory = function (history) {
+        var _this = this;
+        if (this.expandedHistory == history ||
+            history.action == 'login' || history.action == 'logout' || history.action == 'refresh') {
+            this.expandedHistory = null;
+            return;
+        }
+        this.expandedHistory = history;
+        var target = history.target;
+        this.expandedHistoryTargetName = 'loading';
+        switch (history.action) {
+            case 'game_edit':
+                this.gameService.getGame(target).then(function (game) {
+                    if (game.names.length) {
+                        _this.expandedHistoryTargetName = game.names[0].name;
+                    }
+                    else {
+                        _this.expandedHistoryTargetName = '';
+                    }
+                });
+                break;
+            default:
+                this.expandedHistoryTargetName = '';
+                break;
+        }
+    };
     AdminComponent.prototype.filterHistory = function () {
         var _this = this;
-        this.histories = this.rawHistories.filter(function (h) {
-            if (!_this.historyShowRefresh && h.action == 'refresh') {
-                return false;
-            }
-            else if (!_this.historyShowLogin && (h.action == 'login' || h.action == 'logout')) {
-                return false;
-            }
-            return true;
-        });
+        setTimeout(function () {
+            _this.histories = _this.rawHistories.filter(function (h) {
+                if (h.action == 'refresh') {
+                    return _this.historyShowRefresh;
+                }
+                else if (h.action == 'login' || h.action == 'logout') {
+                    return _this.historyShowLogin;
+                }
+                else {
+                    return _this.historyShowStuff;
+                }
+            });
+        }, 10);
     };
     AdminComponent.prototype.selectMaterial = function (material) {
         this.newVersion = new material_item_1.MaterialItemVersion();
@@ -293,6 +354,14 @@ var AdminComponent = (function () {
             _this._app.toast('Package Materials saved');
         });
     };
+    AdminComponent.prototype.savePackageConfig = function () {
+        var _this = this;
+        this.http.put(constants_1.API.packageConfig, this.packageConfig)
+            .toPromise()
+            .then(function (response) {
+            _this._app.toast('Config saved');
+        });
+    };
     return AdminComponent;
 }());
 __decorate([
@@ -308,9 +377,11 @@ AdminComponent = __decorate([
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,
         router_1.Router,
+        app_service_1.AppService,
         library_service_1.LibraryService,
         user_service_1.UserService,
         history_service_1.HistoryService,
+        game_database_service_1.GameDatabaseService,
         app_http_1.AppHttp])
 ], AdminComponent);
 exports.AdminComponent = AdminComponent;

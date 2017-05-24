@@ -277,6 +277,71 @@
         <div class="right-bracket"><h1>package</h1></div>
     </div>
 
+    <div class="paper has-brackets" *ngIf="selectedTab == 'packageconfig'">
+
+        <div class="content">
+            <div class="columns responsive">
+
+                <input name="improv_sub_price"
+                    formInput
+                    [(ngModel)]="packageConfig.improv_sub_price"
+                    type="text"
+                    placeholder="Improviser Subscription Price" />
+
+                <input name="improv_team_sub_price"
+                    formInput
+                    [(ngModel)]="packageConfig.improv_team_sub_price"
+                    type="text"
+                    placeholder="Improviser Team Subscription Price" />
+
+
+                <input name="fac_sub_price"
+                    formInput
+                    [(ngModel)]="packageConfig.fac_sub_price"
+                    type="text"
+                    placeholder="Facilitator Subscription Price" />
+
+                <input name="fac_team_sub_price"
+                    formInput
+                    [(ngModel)]="packageConfig.fac_team_sub_price"
+                    type="text"
+                    placeholder="Facilitator Team Subscription Price" />
+
+            </div>
+
+            <div class="columns responsive">
+                
+                <input name="improv_team_sub_count"
+                    formInput
+                    [(ngModel)]="packageConfig.improv_team_sub_count"
+                    type="text"
+                    placeholder="Improviser Team Subscription Count" />
+                
+                <input name="fac_team_sub_count"
+                    formInput
+                    [(ngModel)]="packageConfig.fac_team_sub_count"
+                    type="text"
+                    placeholder="Facilitator Team Subscription Count" />
+                
+                <input name="fac_team_package_markup"
+                    formInput
+                    [(ngModel)]="packageConfig.fac_team_package_markup"
+                    type="text"
+                    placeholder="Facilitator Team Package Markup" />
+
+                <span></span>
+
+            </div>
+
+            <div class="button-group">
+                <button class="button raised" (click)="savePackageConfig()">Save</button>
+            </div>
+        </div>
+
+        <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
+        <div class="right-bracket"><h1>history</h1></div>
+    </div>
+
     <!-- History List -->
     <div class="paper has-brackets" *ngIf="selectedTab == 'history'">
 
@@ -284,9 +349,26 @@
 
             <h4 class="right">History of Everything</h4>
 
+            <div class="right columns">
+                <label title="Include logins" (click)="filterHistory()">
+                    <i class="fa std fa-sign-in"></i>
+                    <input formSwitch name="showLogins" type="checkbox" [(ngModel)]="historyShowLogin" />
+                </label>
+
+                <label title ="Include refreshes" (click)="filterHistory()">
+                    <i class="fa std fa-refresh"></i>
+                    <input formSwitch name="showRefresh" type="checkbox" [(ngModel)]="historyShowRefresh" />
+                </label>
+
+                <label title ="Include other stuff" (click)="filterHistory()">
+                    <i class="fa std fa-history"></i>
+                    <input formSwitch name="showStuff" type="checkbox" [(ngModel)]="historyShowStuff" />
+                </label>
+            </div>
+
             <div class="list">
 
-                <div class="item" *ngFor="let history of histories">
+                <div class="item clickable" [class.large]="history == expandedHistory" *ngFor="let history of histories" (click)="expandHistory(history)">
                     
                     <div class="badge">
                         <i class="fa {{getHistoryIcon(history)}}"></i>
@@ -298,12 +380,32 @@
                             
                             <span>{{simpleDateTime(history.date)}}</span>
                         </div>
-                        <div class="row columns">
+                        <div class="row columns fill">
                             <span>{{history.action}}</span>
+
                             <span>{{history.target}}</span>
+
                             <span>
                                 <span *ngFor="let change of history.changes">{{change.property}}</span>
                             </span>
+                        </div>
+
+                        <div class="description" *ngIf="history == expandedHistory">
+                            <hr />
+
+                            <h5 *ngIf="expandedHistoryTargetName == 'loading'"><span class="loading"></span></h5>
+                            <h5 *ngIf="expandedHistoryTargetName != 'loading'">{{expandedHistoryTargetName}}</h5>
+
+                            <div class="columns" *ngFor="let change of history.changes">
+                                <div>
+                                    <h5>Old {{change.property}}</h5>
+                                    <div>{{change.old}}</div>
+                                </div>
+                                <div>
+                                    <h5>New {{change.property}}</h5>
+                                    <div>{{change.new}}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -314,7 +416,7 @@
         </div>
 
         <div class="left-bracket"><h1><span class="light">improv</span><strong>plus</strong></h1></div>
-        <div class="right-bracket"><h1>materials database</h1></div>
+        <div class="right-bracket"><h1>history</h1></div>
     </div>
 
 </div>

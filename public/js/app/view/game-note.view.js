@@ -87,8 +87,7 @@ var GameNoteView = (function () {
                     description: 'This note will apply to any game involving \'' + _this.game.duration.name + '\' duration.'
                 }
             ];
-            _this.game.tags.forEach(function (taggame) {
-                var tag = taggame.tag;
+            _this.game.tags.forEach(function (tag) {
                 _this.noteContextOptions.push({
                     name: tag.name,
                     _id: 'tag_' + tag._id,

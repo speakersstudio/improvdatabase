@@ -80,8 +80,8 @@ export const API = {
     gameAddTag: function(gameId: string, tagId: string): string {
         return `${this.getGame(gameId)}/addTag/${tagId}`
     },
-    gameRemoveTag: function(gameId: string, taggameId: string): string {
-        return `${this.getGame(gameId)}/removeTag/${taggameId}`
+    gameRemoveTag: function(gameId: string, tagId: string): string {
+        return `${this.getGame(gameId)}/removeTag/${tagId}`
     },
     gameCreateTag: function(gameId: string, tag: string): string {
         return `${this.getGame(gameId)}/createTag/${tag}`;

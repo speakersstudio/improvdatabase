@@ -94,7 +94,7 @@ var GameDatabaseComponent = (function () {
                 }
                 if (_this.filter.property == 'TagID') {
                     for (var tagIDIndex = 0; tagIDIndex < game.tags.length; tagIDIndex++) {
-                        if (game.tags[tagIDIndex].tag._id == _this.filter.value) {
+                        if (game.tags[tagIDIndex]._id == _this.filter.value) {
                             return true;
                         }
                     }

@@ -27,21 +27,21 @@ var GameCardView = (function () {
             this.descriptionText = div.textContent || div.innerText || this.game.description;
         }
         if (this.game.tags) {
-            this.game.tags.forEach(function (taggame) {
+            this.game.tags.forEach(function (tag) {
                 // let's just make sure the tag actually exists
-                if (taggame.tag && taggame.tag.name) {
-                    switch (taggame.tag.name.toLowerCase()) {
+                if (tag && tag.name) {
+                    switch (tag.name.toLowerCase()) {
                         case 'show':
                             _this.iconClass = 'ticket';
-                            _this.iconDescription = taggame.tag.description;
+                            _this.iconDescription = tag.description;
                             break;
                         case 'exercise':
                             _this.iconClass = 'lightbulb-o';
-                            _this.iconDescription = taggame.tag.description;
+                            _this.iconDescription = tag.description;
                             break;
                         case 'warmup':
                             _this.iconClass = 'fire';
-                            _this.iconDescription = taggame.tag.description;
+                            _this.iconDescription = tag.description;
                             break;
                     }
                 }

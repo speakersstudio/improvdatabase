@@ -6,7 +6,7 @@ import 'rxjs/add/operator/toPromise';
 import { AppHttp } from '../../data/app-http';
 import { API } from '../../constants';
 
-import { Game, TagGame } from '../../model/game';
+import { Game } from '../../model/game';
 import { GameMetadata } from '../../model/game-metadata';
 import { Tag } from '../../model/tag';
 import { Note } from '../../model/note';
@@ -62,23 +62,6 @@ export class GameNoteService {
         if (!this.userService.can('note_create')) {
             return;
         }
-
-        // let newNote = new Note();
-        // newNote.description = note;
-        // newNote.teams = teams;
-        // newNote.public = makePublic;
-
-        // switch(context) {
-        //     case 'game':
-        //         newNote.game = contextId;
-        //         break;
-        //     case 'tag':
-        //         newNote.tag = contextId;
-        //         break;
-        //     case 'metadata':
-        //         newNote.metadata = contextId;
-        //         break;
-        // };
 
         return this.http.post(API.notes, newNote)
             .toPromise()

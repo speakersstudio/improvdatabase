@@ -7,7 +7,7 @@ import { AppHttp } from '../../data/app-http';
 import { API } from '../../constants';
 
 import { Name } from '../../model/name';
-import { Game, TagGame } from '../../model/game';
+import { Game } from '../../model/game';
 import { GameMetadata } from '../../model/game-metadata';
 import { Tag } from '../../model/tag';
 import { Note } from '../../model/note';
@@ -295,8 +295,8 @@ export class GameDatabaseService {
 
     gameHasTag(game: Game, tagIDs: String[]): boolean {
         let foundTagGame: boolean = false;
-        game.tags.forEach((taggame) => {
-            if (tagIDs.indexOf((<Tag> taggame.tag)._id) > -1) {
+        (<Tag[]> game.tags).forEach((tag) => {
+            if (Util.indexOfId(tagIDs, tag) > -1) {
                 foundTagGame = true;
                 return false;
             }
@@ -355,42 +355,27 @@ export class GameDatabaseService {
             .catch(this.handleError);
     }
 
-    private _handleNewTagGame(game: Game, response: Response, tag: Tag|string): TagGame {
-        let newGame = this._handleNewGame(game, response),
-            taggame: TagGame;
-
-        newGame.tags.forEach(tg => {
-            if (((<Tag>tag)._id && (<Tag> tg.tag)._id == (<Tag> tag)._id) ||
-                (!(<Tag>tag)._id && (<Tag> tg.tag).name == tag)) {
-                taggame = tg;
-                return false;
-            }
-        });
-
-        return taggame;
-    }
-
-    saveTagToGame(game: Game, tag: Tag): Promise<TagGame> {
+    saveTagToGame(game: Game, tag: Tag): Promise<Game> {
         return this.http.post(API.gameAddTag(game._id, tag._id), {})
             .toPromise()
             .then(response => {
-                return this._handleNewTagGame(game, response, tag);
-            })
+                return this._handleNewGame(game, response);
+            });
     }
 
-    deleteTagGame(game: Game, taggame: TagGame): Promise<Game> {
-        return this.http.delete(API.gameRemoveTag(game._id, (<Tag> taggame.tag)._id))
+    deleteTagFromGame(game: Game, tag: Tag): Promise<Game> {
+        return this.http.delete(API.gameRemoveTag(game._id, tag._id))
             .toPromise()
             .then(response => {
                 return this._handleNewGame(game, response);
             })
     }
 
-    createTag(name: string, game: Game): Promise<TagGame> {
+    createTag(name: string, game: Game): Promise<Game> {
         return this.http.post(API.gameCreateTag(game._id, name), { name: name })
             .toPromise()
             .then(response => {
-                return this._handleNewTagGame(game, response, name);
+                return this._handleNewGame(game, response);
             });
     }
 

@@ -44,21 +44,21 @@ export class GameCardView implements OnInit, OnDestroy {
         }
 
         if (this.game.tags) {
-            this.game.tags.forEach(taggame => {
+            (<Tag[]> this.game.tags).forEach(tag => {
                 // let's just make sure the tag actually exists
-                if (taggame.tag && (<Tag> taggame.tag).name) {
-                    switch((<Tag> taggame.tag).name.toLowerCase()) {
+                if (tag && tag.name) {
+                    switch(tag.name.toLowerCase()) {
                         case 'show':
                             this.iconClass = 'ticket';
-                            this.iconDescription = (<Tag> taggame.tag).description;
+                            this.iconDescription = tag.description;
                             break;
                         case 'exercise':
                             this.iconClass = 'lightbulb-o';
-                            this.iconDescription = (<Tag> taggame.tag).description;
+                            this.iconDescription = tag.description;
                             break;
                         case 'warmup':
                             this.iconClass = 'fire';
-                            this.iconDescription = (<Tag> taggame.tag).description;
+                            this.iconDescription = tag.description;
                             break;
                     }
                 }

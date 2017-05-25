@@ -3,13 +3,6 @@ import { GameMetadata } from './game-metadata';
 import { Note } from './note';
 import { Tag } from './tag';
 
-export class TagGame {
-    _id: string;
-    tag: Tag|string;
-    addedUser: string;
-    dateAdded: Date;
-}
-
 export class Game {
     [key:string]: any;
 
@@ -20,7 +13,7 @@ export class Game {
     duration: GameMetadata;
     playerCount: GameMetadata;
     notes: Note[];
-    tags: TagGame[];
+    tags: string[]|Tag[];
     parent: string;
     addedUser: string;
     modifiedUser: string;

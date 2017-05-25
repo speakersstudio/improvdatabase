@@ -4,6 +4,7 @@ const Note = require('./note.model');
 const Name = require('./name.model');
 const GameMetadata = require('./game-metadata.model');
 const Tag = require('./tag.model');
+const HistoryModel = require('./history.model');
 
 const util = require('../util');
 
@@ -14,11 +15,7 @@ const GameSchema = new mongoose.Schema({
     duration: { type: mongoose.Schema.Types.ObjectId, ref: 'GameMetadata' },
     playerCount: { type: mongoose.Schema.Types.ObjectId, ref: 'GameMetadata' },
     notes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Note' }],
-    tags: [{
-        tag: { type: mongoose.Schema.Types.ObjectId, ref: 'Tag' },
-        addedUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-        dateAdded: { type: Date, default: Date.now }
-    }],
+    tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }],
     parent: { type: mongoose.Schema.Types.ObjectId, ref: 'Game' },
     addedUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     modifiedUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
@@ -94,13 +91,9 @@ GameSchema.methods.addMetadata = function(metadata) {
 }
 
 GameSchema.methods.removeTag = function(tagId, userId) {
-    let index,
+    let index = util.indexOfObjectId(this.tags, tagId),
         game = this;
-    game.tags.forEach((t, i) => {
-        if (t.tag == tagId) {
-            index = i;
-        }
-    });
+
     game.tags.splice(index, 1);
 
     let query = Tag.findOne({}).where('_id').equals(tagId);
@@ -109,7 +102,7 @@ GameSchema.methods.removeTag = function(tagId, userId) {
         .then(tag => {
             let index = util.indexOfObjectId(tag.games, game._id);
             if (index > -1) {
-                tag.games = tag.games.splice(index, 1);
+                tag.games.splice(index, 1);
             }
             if (tag.games.length == 0) {
                 return tag.remove();
@@ -144,11 +137,16 @@ GameSchema.methods.addTag = function(tagName, tagId, userId) {
 function addTag(tag, name, userId, game) {
     if (tag) {
         // the tag exists, so we can just add it
-        game.tags.push({
-            tag: tag,
-            addedUser: userId
-        });
+        game.tags.push(tag);
         tag.games.push(game._id);
+
+        HistoryModel.create({
+            user: userId,
+            action: 'game_tag_add',
+            target: game._id.toString(),
+            reference: tag._id.toString()
+        });
+        
         return tag.save();
     } else if (name) {
         // the tag doesn't exist, so we have to create it
@@ -156,11 +154,16 @@ function addTag(tag, name, userId, game) {
             name: name,
             addedUser: userId
         }).then(t => {
-            game.tags.push({
-                tag: t,
-                addedUser: userId
-            });
+            game.tags.push(t);
             t.games.push(game._id);
+
+            HistoryModel.create({
+                user: userId,
+                action: 'game_tag_add',
+                target: game._id.toString(),
+                reference: t._id.toString()
+            });
+
             return t.save();
         });
     }

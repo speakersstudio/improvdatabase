@@ -92,15 +92,15 @@
                         </ul>
                     </li>
 
-                    <li *ngFor="let taggame of game.tags" 
-                        [title]="taggame.tag.description || ''"
+                    <li *ngFor="let tag of game.tags" 
+                        [title]="tag.description || ''"
                         [class.clickable]="can('game_tag_remove')"
-                        (click)="removeTag(taggame)">
+                        (click)="removeTag(tag)">
                         
                         <i class="fa fa-hashtag"></i> 
-                        {{taggame.tag.name}}
+                        {{tag.name}}
 
-                        <div *ngIf="tagToRemove == taggame" class="remove" [class.hidden]="!tagToRemove">
+                        <div *ngIf="tagToRemove == tag" class="remove" [class.hidden]="!tagToRemove">
                             <span (click)="cancelRemoveTag($event)"><i class="fa fa-arrow-left"></i></span>
                             <span (click)="doRemoveTag()"><i class="fa fa-trash"></i></span>
                         </div>

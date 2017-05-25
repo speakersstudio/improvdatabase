@@ -142,8 +142,7 @@ export class GameNoteView implements OnInit {
                 }
             ];
 
-            this.game.tags.forEach(taggame => {
-                let tag = <Tag> taggame.tag;
+            (<Tag[]> this.game.tags).forEach(tag => {
                 this.noteContextOptions.push({
                     name: tag.name,
                     _id: 'tag_' + tag._id,

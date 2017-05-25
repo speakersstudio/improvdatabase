@@ -32,22 +32,22 @@ const Game = require('./models/game.model'),
 const backuptime = 1494449014692;
 const   databases = {
             'Invite': backuptime,
-            'MaterialItem': 1495120689280,
-            'PackageConfig': backuptime,
-            'Package': 1495120689280,
+            'MaterialItem': 1495723399712,
+            'PackageConfig': 1495723399712,
+            'Package': 1495723399712,
             'Preference': backuptime,
             'Purchase': backuptime,
             'Subscription': backuptime,
-            'Team': backuptime,
-            'User': backuptime,
-            'History': backuptime,
+            'Team': 1494449014692,
+            'User': 1495723399712,
+            'History': 1495723399712,
 
-            'GameMetadata': backuptime,
-            'Game': backuptime,
-            'Name': backuptime,
-            'NameVote': backuptime,
-            'Note': backuptime,
-            'Tag': backuptime
+            'GameMetadata': 1495723399712,
+            'Game': 1495723399712,
+            'Name': 1495723399712,
+            'NameVote': 1495723399712,
+            'Note': 1495723399712,
+            'Tag': 1495723399712
         }
 
 mongoose.Promise = Promise;
@@ -166,7 +166,7 @@ function doSeed(key, Model, dataProcess, afterCreate, cancelCreate) {
                 console.log(' -- ');
             });
     } else if (!cancelCreate) {
-        console.log(key + ' has no seed file');
+        console.log(key + ' has no seed file (or the seed file is empty)');
         console.log(' -- ');
     }
 }
@@ -241,7 +241,25 @@ seedMethods = {
     },
 
     Game: () => {
-        return doSeed('Game', Game);
+        return doSeed('Game', Game, (data) => {
+            data.forEach(item => {
+                if (item.tags[0].tag) {
+                    let newTags = [];
+                    item.tags.forEach(taggame => {
+                        newTags.push(taggame.tag);
+                        HistoryModel.create({
+                            user: taggame.addedUser,
+                            date: taggame.dateAdded,
+                            action: 'game_tag_add',
+                            target: item._id,
+                            reference: taggame.tag
+                        });
+                    });
+                    item.tags = newTags;
+                }
+            })
+            return data;
+        });
     },
 
     Name: () => {

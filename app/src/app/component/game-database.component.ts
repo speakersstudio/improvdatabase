@@ -134,7 +134,7 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
                 }
                 if (this.filter.property == 'TagID') {
                     for (var tagIDIndex = 0; tagIDIndex < game.tags.length; tagIDIndex++) {
-                        if ((<Tag> game.tags[tagIDIndex].tag)._id == this.filter.value) {
+                        if ((<Tag> game.tags[tagIDIndex])._id == this.filter.value) {
                             return true;
                         }
                     }

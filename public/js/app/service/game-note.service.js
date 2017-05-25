@@ -55,21 +55,6 @@ var GameNoteService = (function () {
         if (!this.userService.can('note_create')) {
             return;
         }
-        // let newNote = new Note();
-        // newNote.description = note;
-        // newNote.teams = teams;
-        // newNote.public = makePublic;
-        // switch(context) {
-        //     case 'game':
-        //         newNote.game = contextId;
-        //         break;
-        //     case 'tag':
-        //         newNote.tag = contextId;
-        //         break;
-        //     case 'metadata':
-        //         newNote.metadata = contextId;
-        //         break;
-        // };
         return this.http.post(constants_1.API.notes, newNote)
             .toPromise()
             .then(function (response) {

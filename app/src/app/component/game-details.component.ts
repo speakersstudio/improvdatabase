@@ -21,7 +21,7 @@ import { AppComponent } from "../../component/app.component";
 import { GameDatabaseService } from '../service/game-database.service';
 import { GameNoteService } from '../service/game-note.service';
 
-import { Game, TagGame } from '../../model/game';
+import { Game } from '../../model/game';
 import { Name } from '../../model/name';
 import { GameMetadata } from '../../model/game-metadata';
 import { Tag } from '../../model/tag';
@@ -366,23 +366,23 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         }
     }
 
-    tagToRemove: TagGame;
-    removeTag(taggame: TagGame): void {
+    tagToRemove: Tag;
+    removeTag(tag: Tag): void {
         if (!this.can('game_tag_remove')) {
             return;
         }
-        this.tagToRemove = taggame;
+        this.tagToRemove = tag;
     }
 
     doRemoveTag(): void {
         if (!this.can('game_tag_remove')) {
             return;
         }
-        let index = this.game.tags.indexOf(this.tagToRemove);
+        let index = Util.indexOfId(this.game.tags, this.tagToRemove);
         if (index > -1) {
             this.game.tags.splice(index, 1);
         }
-        this.gameDatabaseService.deleteTagGame(this.game, this.tagToRemove)
+        this.gameDatabaseService.deleteTagFromGame(this.game, this.tagToRemove)
     }
 
     cancelRemoveTag(event: MouseEvent): void {
@@ -406,9 +406,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         } else {
             // if there were no matches, we'll create a new tag
             this.gameDatabaseService.createTag(this.newTagText, this.game)
-                .then(taggame => {
-                    this.game.tags.unshift(taggame);
-                });
+                .then(game => this.game = game);
         }
 
         this.newTagText = "";
@@ -419,9 +417,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
     addTag(tag: Tag): void {
         if (this.can('game_tag_add')) {
             this.gameDatabaseService.saveTagToGame(this.game, tag)
-                .then(taggame => {
-                    this.game.tags.unshift(taggame);
-                });
+                .then(game => this.game = game);
             
             this.newTagText = "";
             this.tagHints = [];

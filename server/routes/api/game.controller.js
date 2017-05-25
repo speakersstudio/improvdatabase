@@ -202,8 +202,8 @@ module.exports = {
             .then(game => {
                 metadataIds.push(game.playerCount);
                 metadataIds.push(game.duration);
-                game.tags.forEach(taggame => {
-                    tagIds.push(taggame.tag.toString());
+                game.tags.forEach(tag => {
+                    tagIds.push(util.getObjectIdAsString(tag));
                 });
 
                 return findModelUtil.findNotes(null, req.user, gameId, metadataIds, tagIds);
@@ -276,7 +276,7 @@ function getGames(user, id) {
     if (user.actions.indexOf('tag_view') > -1) {
         query.select('tags')
         .populate({
-            path: 'tags.tag',
+            path: 'tags',
             select: 'name description'
         })
     }

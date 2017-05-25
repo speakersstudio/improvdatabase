@@ -74,8 +74,8 @@ exports.API = {
     gameAddTag: function (gameId, tagId) {
         return this.getGame(gameId) + "/addTag/" + tagId;
     },
-    gameRemoveTag: function (gameId, taggameId) {
-        return this.getGame(gameId) + "/removeTag/" + taggameId;
+    gameRemoveTag: function (gameId, tagId) {
+        return this.getGame(gameId) + "/removeTag/" + tagId;
     },
     gameCreateTag: function (gameId, tag) {
         return this.getGame(gameId) + "/createTag/" + tag;

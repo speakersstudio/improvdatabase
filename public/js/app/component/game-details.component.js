@@ -272,21 +272,21 @@ var GameDetailsComponent = (function () {
                 break;
         }
     };
-    GameDetailsComponent.prototype.removeTag = function (taggame) {
+    GameDetailsComponent.prototype.removeTag = function (tag) {
         if (!this.can('game_tag_remove')) {
             return;
         }
-        this.tagToRemove = taggame;
+        this.tagToRemove = tag;
     };
     GameDetailsComponent.prototype.doRemoveTag = function () {
         if (!this.can('game_tag_remove')) {
             return;
         }
-        var index = this.game.tags.indexOf(this.tagToRemove);
+        var index = util_1.Util.indexOfId(this.game.tags, this.tagToRemove);
         if (index > -1) {
             this.game.tags.splice(index, 1);
         }
-        this.gameDatabaseService.deleteTagGame(this.game, this.tagToRemove);
+        this.gameDatabaseService.deleteTagFromGame(this.game, this.tagToRemove);
     };
     GameDetailsComponent.prototype.cancelRemoveTag = function (event) {
         this.tagToRemove = null;
@@ -308,9 +308,7 @@ var GameDetailsComponent = (function () {
         else {
             // if there were no matches, we'll create a new tag
             this.gameDatabaseService.createTag(this.newTagText, this.game)
-                .then(function (taggame) {
-                _this.game.tags.unshift(taggame);
-            });
+                .then(function (game) { return _this.game = game; });
         }
         this.newTagText = "";
         this.tagHints = [];
@@ -320,9 +318,7 @@ var GameDetailsComponent = (function () {
         var _this = this;
         if (this.can('game_tag_add')) {
             this.gameDatabaseService.saveTagToGame(this.game, tag)
-                .then(function (taggame) {
-                _this.game.tags.unshift(taggame);
-            });
+                .then(function (game) { return _this.game = game; });
             this.newTagText = "";
             this.tagHints = [];
         }

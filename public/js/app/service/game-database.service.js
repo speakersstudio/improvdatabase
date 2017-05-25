@@ -274,8 +274,8 @@ var GameDatabaseService = (function () {
     };
     GameDatabaseService.prototype.gameHasTag = function (game, tagIDs) {
         var foundTagGame = false;
-        game.tags.forEach(function (taggame) {
-            if (tagIDs.indexOf(taggame.tag._id) > -1) {
+        game.tags.forEach(function (tag) {
+            if (util_1.Util.indexOfId(tagIDs, tag) > -1) {
                 foundTagGame = true;
                 return false;
             }
@@ -331,28 +331,17 @@ var GameDatabaseService = (function () {
         })
             .catch(this.handleError);
     };
-    GameDatabaseService.prototype._handleNewTagGame = function (game, response, tag) {
-        var newGame = this._handleNewGame(game, response), taggame;
-        newGame.tags.forEach(function (tg) {
-            if ((tag._id && tg.tag._id == tag._id) ||
-                (!tag._id && tg.tag.name == tag)) {
-                taggame = tg;
-                return false;
-            }
-        });
-        return taggame;
-    };
     GameDatabaseService.prototype.saveTagToGame = function (game, tag) {
         var _this = this;
         return this.http.post(constants_1.API.gameAddTag(game._id, tag._id), {})
             .toPromise()
             .then(function (response) {
-            return _this._handleNewTagGame(game, response, tag);
+            return _this._handleNewGame(game, response);
         });
     };
-    GameDatabaseService.prototype.deleteTagGame = function (game, taggame) {
+    GameDatabaseService.prototype.deleteTagFromGame = function (game, tag) {
         var _this = this;
-        return this.http.delete(constants_1.API.gameRemoveTag(game._id, taggame.tag._id))
+        return this.http.delete(constants_1.API.gameRemoveTag(game._id, tag._id))
             .toPromise()
             .then(function (response) {
             return _this._handleNewGame(game, response);
@@ -363,7 +352,7 @@ var GameDatabaseService = (function () {
         return this.http.post(constants_1.API.gameCreateTag(game._id, name), { name: name })
             .toPromise()
             .then(function (response) {
-            return _this._handleNewTagGame(game, response, name);
+            return _this._handleNewGame(game, response);
         });
     };
     GameDatabaseService.prototype.handleError = function (error) {

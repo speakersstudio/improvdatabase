@@ -49,8 +49,13 @@
             </a>
 
             <a routerLink="/app/games" routerLinkActive="active" class="nav-item"
-                *ngIf="userService.can('game_view')">
+                *ngIf="userService.can('game_page_view')">
                 <i class="fa fa-rocket"></i> <span>Game Database</span>
+            </a>
+
+            <a routerLink="/app/videos" routerLinkActive="active" class="nav-item"
+                *ngIf="userService.can('video_page_view')">
+                <i class="fa fa-video-camera"></i> <span>Video Gallery</span>
             </a>
 
             <hr *ngIf="userService.can('team_page_view')" />

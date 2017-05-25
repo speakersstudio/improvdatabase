@@ -21,6 +21,7 @@ var user_component_1 = require("../component/user.component");
 var legal_component_1 = require("../component/legal.component");
 var team_list_component_1 = require("../component/team-list.component");
 var team_details_component_1 = require("../component/team-details.component");
+var videos_component_1 = require("../component/videos.component");
 var admin_component_1 = require("../component/admin.component");
 var not_found_component_1 = require("../component/not-found.component");
 var routes = [
@@ -115,6 +116,13 @@ var routes = [
                         component: contact_component_1.ContactComponent,
                         data: {
                             action: 'contact_page_view'
+                        }
+                    },
+                    {
+                        path: 'videos',
+                        component: videos_component_1.VideosComponent,
+                        data: {
+                            action: 'video_page_view'
                         }
                     }
                 ]

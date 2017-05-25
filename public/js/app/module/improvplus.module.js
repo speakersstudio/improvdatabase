@@ -36,6 +36,7 @@ var legal_component_1 = require("../component/legal.component");
 var admin_component_1 = require("../component/admin.component");
 var team_list_component_1 = require("../component/team-list.component");
 var team_details_component_1 = require("../component/team-details.component");
+var videos_component_1 = require("../component/videos.component");
 var not_found_component_1 = require("../component/not-found.component");
 // sub-views
 var toolbar_view_1 = require("../view/toolbar.view");
@@ -77,6 +78,7 @@ ImprovPlusModule = __decorate([
             game_details_component_1.GameDetailsComponent,
             legal_component_1.LegalComponent,
             admin_component_1.AdminComponent,
+            videos_component_1.VideosComponent,
             not_found_component_1.NotFoundComponent,
             toolbar_view_1.ToolbarView,
             game_card_view_1.GameCardView,

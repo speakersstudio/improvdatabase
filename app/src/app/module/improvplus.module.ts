@@ -32,6 +32,7 @@ import { LegalComponent } from "../component/legal.component";
 import { AdminComponent } from '../component/admin.component';
 import { TeamListComponent } from '../component/team-list.component';
 import { TeamDetailsComponent } from '../component/team-details.component';
+import { VideosComponent } from '../component/videos.component';
 
 import { NotFoundComponent } from '../component/not-found.component';
 
@@ -71,6 +72,7 @@ import { GameNoteView } from '../view/game-note.view';
         GameDetailsComponent,
         LegalComponent,
         AdminComponent,
+        VideosComponent,
         NotFoundComponent,
         
         ToolbarView,

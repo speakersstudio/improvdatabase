@@ -14,6 +14,7 @@ import { UserComponent } from '../component/user.component';
 import { LegalComponent } from "../component/legal.component";
 import { TeamListComponent } from '../component/team-list.component';
 import { TeamDetailsComponent } from '../component/team-details.component';
+import { VideosComponent } from '../component/videos.component';
 
 import { AdminComponent } from '../component/admin.component';
 import { NotFoundComponent } from '../component/not-found.component';
@@ -110,6 +111,13 @@ const routes: Routes = [
                         component: ContactComponent,
                         data: {
                             action: 'contact_page_view'
+                        }
+                    },
+                    {
+                        path: 'videos',
+                        component: VideosComponent,
+                        data: {
+                            action: 'video_page_view'
                         }
                     }
                 ]

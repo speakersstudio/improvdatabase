@@ -28,6 +28,11 @@
             <p>View our collection of over 200 Improv exercises.</p>
         </div>
 
+        <div routerLink="/app/videos" class="card brackets clickable" *ngIf="userService.can('video_page_view')">
+            <h4>Videos</h4>
+            <p>Browse examples, lessons, tips and tricks, and other exciting video content.</p>
+        </div>
+
         <div class="card brackets blue clickable disabled" *ngIf="userService.can('community_page_view')">
             <h4>Community</h4>
             <p>Connect with other Facilitators and Improvisers.</p>
@@ -43,12 +48,6 @@
         <div class="card brackets clickable disabled" *ngIf="userService.can('blog_page_view')">
             <h4>Editorials</h4>
             <p>Don't call it a Blog! Stay current with the latest thoughts and updates on the world of Improv and Facilitation.</p>
-            <em class="message">Coming soon!</em>
-        </div>
-
-        <div class="card brackets clickable disabled" *ngIf="userService.can('video_page_view')">
-            <h4>Videos</h4>
-            <p>Browse examples, lessons, tips and tricks, and other exciting video content.</p>
             <em class="message">Coming soon!</em>
         </div>
 

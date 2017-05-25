@@ -221,32 +221,34 @@
 
         <div class="block">
 
-            <a (click)="showContactDialog()" class="button">Contact Us</a>
+            <a (click)="showContactDialog()" class="button brackets">Contact Us</a>
 
         </div>
 
     </div>
 
-    <!--<div class="paper center">
+    <div class="paper center">
 
         <div class="block">
-            <h4>calling improvisers</h4>
+            <h4>train the trainer</h4>
 
-            <p>If you do Improv, we want to hear from you. Sign up for our improv mailing list, and you will get a chance to be the first to join the ever growing improvplus community.</p>
+            <p>Do you want to develop your facilitation skills? Do you want to develop the skills of your training team? Register for our Train the Trainer retreat, coming soon from ImprovPlus.</p>
         </div>
 
         <div class="block">
-            <a routerLink="/signup" class="button">Sign up as an improviser</a>
+
+            <a (click)="showContactDialog()" class="button brackets">Contact Us</a>
+
         </div>
 
-    </div>-->
+    </div>
 
 </div>
 
 <div class="dialog-container" [class.show]="contactDialogVisible">
     <div class="dialog-dismiss" (click)="hideContactDialog()"></div>
 
-    <div class="dialog" [@dialog] *ngIf="contactDialogVisible && !sent && !sending">
+    <div class="dialog" [@dialog]="'default'" *ngIf="contactDialogVisible && !sent && !sending">
 
         <form name="contact" (ngSubmit)="submitContact()" #contactForm="ngForm">
             <div class="dialog-content">
@@ -254,21 +256,17 @@
 
                 <div class="section">
                     <div class="columns">
-                        <input name="firstName" [(ngModel)]="contact.firstName" required type="text" placeholder="First Name *" />
-                        <input name="lastName" [(ngModel)]="contact.lastName" required type="text" placeholder="Last Name *" />
+                        <input formInput name="firstName" [(ngModel)]="contact.firstName" required type="text" placeholder="First Name" />
+                        <input formInput name="lastName" [(ngModel)]="contact.lastName" required type="text" placeholder="Last Name" />
                     </div>
 
-                    <input name="email" [(ngModel)]="contact.email" required type="text" placeholder="Email Address *" />
+                    <input formInput name="email" [(ngModel)]="contact.email" required type="text" placeholder="Email Address" />
 
-                    <input name="company" [(ngModel)]="contact.company" type="text" placeholder="Company" />
+                    <input formInput name="company" [(ngModel)]="contact.company" type="text" placeholder="Company" />
 
-                    <label>Describe your Team
-                        <textarea name="team" [(ngModel)]="contact.team" rows="4"></textarea>
-                    </label>
+                    <textarea formInput placeholder="Describe your Team" name="team" [(ngModel)]="contact.team" rows="4"></textarea>
 
-                    <label>What do you hope to accomplish?
-                        <textarea name="objective" [(ngModel)]="contact.objective" rows="4"></textarea>
-                    </label>
+                    <textarea formInput placeholder="What do you hope to accomplish?" name="objective" [(ngModel)]="contact.objective" rows="4"></textarea>
 
                     <div class="error" *ngIf="contactError" [innerHTML]="contactError"></div>
                 </div>
@@ -286,7 +284,7 @@
 
     </div>
 
-    <div class="dialog" [@dialog] *ngIf="sent">
+    <div class="dialog" [@dialog]="'default'" *ngIf="sent">
 
         <div class="dialog-content center">
             <h2>thank you</h2>

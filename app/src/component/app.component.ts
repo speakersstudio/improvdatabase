@@ -98,11 +98,6 @@ export class AppComponent implements OnInit {
     ngOnInit() {
         this.hideLoader();
 
-        // this.http.get('/config').toPromise().then(response => {
-        //     console.log('config ready!');
-        //     this.config = response.json() as Config;
-        // });
-
         this.router.events.filter(event => event instanceof NavigationStart).subscribe(event => {
             this.backgroundVisible = true;
             this.backgroundRequested = false;

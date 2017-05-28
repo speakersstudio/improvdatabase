@@ -28,12 +28,16 @@
         All Games
     </div>
 
-    <div class="list paper">
+    <div class="list paper" infiniteScroll [disable]="isLoadingGames || allGamesAreDisplayed" (load)="loadMoreGames($event)">
         <div class="item ng-game-card clickable" *ngFor="let game of games; trackBy:trackByGames"
             [game]="game"
             [class.selected] = "game === selectedGame"
             (click)="onSelect(game)">
             <!--[routerLink]="['/game', game.GameID]">-->
+        </div>
+
+        <div class="item center" *ngIf="isLoadingGames">
+            <span class="loading"></span>
         </div>
     </div>
 

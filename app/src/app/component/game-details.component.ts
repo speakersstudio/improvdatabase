@@ -2,6 +2,7 @@ import {
     Component,
     OnInit,
     OnDestroy,
+    OnChanges,
     Input,
     Output,
     EventEmitter,
@@ -54,10 +55,12 @@ import { ShrinkAnim } from '../../util/anim.util';
         ])
     ]
 })
-export class GameDetailsComponent implements OnInit, OnDestroy {
+export class GameDetailsComponent implements OnInit, OnChanges {
 
     @Input() game: Game;
     @Output() onClose: EventEmitter<Tool> = new EventEmitter();
+
+    private _gameId: string;
 
     gameNotFound: boolean;
 
@@ -164,14 +167,18 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         this.showPublicNotes = this.userService.getPreference(PREFERENCE_KEYS.showPublicNotes, 'true') == 'true';
         this.showTeamNotes = this.userService.getPreference(PREFERENCE_KEYS.showTeamNotes, 'true') == 'true';
         this.showPrivateNotes = this.userService.getPreference(PREFERENCE_KEYS.showPrivateNotes, 'true') == 'true';
+
+    }
+
+    ngOnChanges(changes:any): void {
+        // make sure that things get set up if the game changes
+        if (changes.game && (!this._gameId || this._gameId != changes.game.currentValue._id)) {
+            this.setGame(changes.game.currentValue);
+        }
     }
 
     selectTab(tab: TabData): void {
         this.selectedTab = tab.id;
-    }
-
-    ngOnDestroy(): void {
-
     }
 
     can(permission: string): boolean {
@@ -444,6 +451,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
         if (!game) {
             this.gameNotFound = true;
         } else {
+            this._gameId = game._id;
 
             this.game = game;
 
@@ -496,7 +504,7 @@ export class GameDetailsComponent implements OnInit, OnDestroy {
                 if (this.dialog) {
                     this.onClose.emit(tool);
                 } else {
-                    this.router.navigate(['/games', {random: 'random'}]);
+                    this.router.navigate(['/app/games', {random: 'random'}]);
                 }
                 break;
             case "deleteGame":

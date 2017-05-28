@@ -323,9 +323,9 @@ iplus {
   .large .iplus {
     transform: scale(1.5); }
     .large .iplus .i {
-      top: 11px; }
+      top: 12px; }
     .large .iplus .plus {
-      top: 8px; }
+      top: 9px; }
   .huge .iplus {
     transform: scale(3);
     font-weight: bold; }
@@ -380,6 +380,15 @@ iplus {
     margin: 0 7px 0 19px; }
     .iplus:hover .text.noplus {
       margin-left: 11px; }
+  @media only screen and (min-device-pixel-ratio: 2), (-webkit-min-device-pixel-ratio: 2) {
+    .iplus .i {
+      top: 11px; }
+    .iplus .plus {
+      top: 8px; }
+    .huge .iplus .i {
+      top: 11px; }
+    .huge .iplus .plus {
+      top: 8px; } }
 
 .loading-icon, .loading-icon-shadow {
   position: absolute;
@@ -795,6 +804,8 @@ button,
       border-bottom: 0px; }
     .list .item.clickable:hover {
       background: #f5f5f5; }
+    .list .item.center {
+      justify-content: center; }
     .list .item .badge {
       font-size: 24px;
       padding-right: 16px; }

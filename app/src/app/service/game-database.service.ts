@@ -375,6 +375,8 @@ export class GameDatabaseService {
         return this.http.post(API.gameCreateTag(game._id, name), { name: name })
             .toPromise()
             .then(response => {
+                // reset the tags so we have to re-fetch the whole list
+                this._tagPromise = null;
                 return this._handleNewGame(game, response);
             });
     }

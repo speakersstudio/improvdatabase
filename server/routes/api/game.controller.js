@@ -137,13 +137,6 @@ module.exports = {
             let game = games[0];
             return game.removeTag(tagId, req.user._id);
         }).then(game => {
-            HistoryModel.create({
-                action: 'game_tag_remove',
-                target: game._id,
-                user: req.user._id,
-                reference: tagId
-            });
-
             res.json(game);
         }, error => {
             util.handleError(req, res, error);

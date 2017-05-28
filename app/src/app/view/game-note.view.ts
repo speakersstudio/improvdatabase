@@ -1,6 +1,7 @@
 import { 
     Component,
     OnInit,
+    OnChanges,
     Input,
     Output,
     EventEmitter,
@@ -32,7 +33,7 @@ import { Util } from '../../util/util';
     templateUrl: '../template/view/game-note.view.html',
     animations: [ShrinkAnim.height]
 })
-export class GameNoteView implements OnInit {
+export class GameNoteView implements OnInit, OnChanges {
 
     @Input() note: Note;
     @Input() game: Game;
@@ -110,6 +111,44 @@ export class GameNoteView implements OnInit {
         }
     }
 
+    ngOnChanges(changes: any): void {
+        if (changes.game) {
+            this.setupContextOptions();
+        }
+    }
+
+    setupContextOptions(): void {
+        this.noteContextOptions = [
+            {
+                name: 'This game: ' + this.game.names[0].name,
+                _id: 'game',
+                icon: 'rocket',
+                description: 'This note will only apply to this game.'
+            },
+            {
+                name: this.game.playerCount.name + ' Players',
+                _id: 'metadata_' + this.game.playerCount._id,
+                icon: 'users',
+                description: 'This note will apply to any game involving \'' + this.game.playerCount.name + '\' player count.'
+            },
+            {
+                name: this.game.duration.name,
+                _id: 'metadata_' + this.game.duration._id,
+                icon: 'users',
+                description: 'This note will apply to any game involving \'' + this.game.duration.name + '\' duration.'
+            }
+        ];
+
+        (<Tag[]> this.game.tags).forEach(tag => {
+            this.noteContextOptions.push({
+                name: tag.name,
+                _id: 'tag_' + tag._id,
+                icon: 'hashtag',
+                description: 'This note will apply to any game tagged \'' + tag.name + '\'.'
+            })
+        });
+    }
+
     setupNoteEdit(): void {
         if (this.note && !this.editable) {
             return;
@@ -120,36 +159,6 @@ export class GameNoteView implements OnInit {
 
         setTimeout(() => {
             this.showEdit = true;
-
-            this.noteContextOptions = [
-                {
-                    name: 'This game: ' + this.game.names[0].name,
-                    _id: 'game',
-                    icon: 'rocket',
-                    description: 'This note will only apply to this game.'
-                },
-                {
-                    name: this.game.playerCount.name + ' Players',
-                    _id: 'metadata_' + this.game.playerCount._id,
-                    icon: 'users',
-                    description: 'This note will apply to any game involving \'' + this.game.playerCount.name + '\' player count.'
-                },
-                {
-                    name: this.game.duration.name,
-                    _id: 'metadata_' + this.game.duration._id,
-                    icon: 'users',
-                    description: 'This note will apply to any game involving \'' + this.game.duration.name + '\' duration.'
-                }
-            ];
-
-            (<Tag[]> this.game.tags).forEach(tag => {
-                this.noteContextOptions.push({
-                    name: tag.name,
-                    _id: 'tag_' + tag._id,
-                    icon: 'hashtag',
-                    description: 'This note will apply to any game tagged \'' + tag.name + '\'.'
-                })
-            });
 
             this.noteContext = '';
 

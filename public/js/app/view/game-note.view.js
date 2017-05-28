@@ -58,6 +58,42 @@ var GameNoteView = (function () {
             this.simpleDate = time_util_1.TimeUtil.postTime(this.note.dateModified);
         }
     };
+    GameNoteView.prototype.ngOnChanges = function (changes) {
+        if (changes.game) {
+            this.setupContextOptions();
+        }
+    };
+    GameNoteView.prototype.setupContextOptions = function () {
+        var _this = this;
+        this.noteContextOptions = [
+            {
+                name: 'This game: ' + this.game.names[0].name,
+                _id: 'game',
+                icon: 'rocket',
+                description: 'This note will only apply to this game.'
+            },
+            {
+                name: this.game.playerCount.name + ' Players',
+                _id: 'metadata_' + this.game.playerCount._id,
+                icon: 'users',
+                description: 'This note will apply to any game involving \'' + this.game.playerCount.name + '\' player count.'
+            },
+            {
+                name: this.game.duration.name,
+                _id: 'metadata_' + this.game.duration._id,
+                icon: 'users',
+                description: 'This note will apply to any game involving \'' + this.game.duration.name + '\' duration.'
+            }
+        ];
+        this.game.tags.forEach(function (tag) {
+            _this.noteContextOptions.push({
+                name: tag.name,
+                _id: 'tag_' + tag._id,
+                icon: 'hashtag',
+                description: 'This note will apply to any game tagged \'' + tag.name + '\'.'
+            });
+        });
+    };
     GameNoteView.prototype.setupNoteEdit = function () {
         var _this = this;
         if (this.note && !this.editable) {
@@ -67,34 +103,6 @@ var GameNoteView = (function () {
         var delay = this.note ? 100 : 1;
         setTimeout(function () {
             _this.showEdit = true;
-            _this.noteContextOptions = [
-                {
-                    name: 'This game: ' + _this.game.names[0].name,
-                    _id: 'game',
-                    icon: 'rocket',
-                    description: 'This note will only apply to this game.'
-                },
-                {
-                    name: _this.game.playerCount.name + ' Players',
-                    _id: 'metadata_' + _this.game.playerCount._id,
-                    icon: 'users',
-                    description: 'This note will apply to any game involving \'' + _this.game.playerCount.name + '\' player count.'
-                },
-                {
-                    name: _this.game.duration.name,
-                    _id: 'metadata_' + _this.game.duration._id,
-                    icon: 'users',
-                    description: 'This note will apply to any game involving \'' + _this.game.duration.name + '\' duration.'
-                }
-            ];
-            _this.game.tags.forEach(function (tag) {
-                _this.noteContextOptions.push({
-                    name: tag.name,
-                    _id: 'tag_' + tag._id,
-                    icon: 'hashtag',
-                    description: 'This note will apply to any game tagged \'' + tag.name + '\'.'
-                });
-            });
             _this.noteContext = '';
             if (_this.note) {
                 _this.noteInput = _this.note.description;

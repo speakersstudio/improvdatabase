@@ -43,17 +43,28 @@ var EditableMetadataView = (function () {
             this.setupAddress();
         }
         if (this.type == 'dropdown' && !this.model && !this.allowBlank) {
-            this.model = this.options[0];
+            this.setupDropdown();
+        }
+    };
+    EditableMetadataView.prototype.setupDropdown = function () {
+        if (this.model && this.model.name) {
             this.text = this.model.name;
             this.icon = this.model.icon;
         }
+        else {
+            this.text = this.options[0].name;
+            this.icon = this.options[0].icon;
+        }
     };
     EditableMetadataView.prototype.ngOnChanges = function (changes) {
-        if (changes.model && !this.text && this.model && this.model.hasOwnProperty('name')) {
+        if (changes.model && this.text != this.model.name && this.model && this.model.hasOwnProperty('name')) {
             this.text = this.model.name;
             if (!this.icon && this.model.icon) {
                 this.icon = this.model.icon;
             }
+        }
+        else if (changes.options && changes.options.previousValue) {
+            this.setupDropdown();
         }
     };
     EditableMetadataView.prototype._focusInput = function () {

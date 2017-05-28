@@ -32,6 +32,7 @@ var GameDatabaseComponent = (function () {
         this.userService = userService;
         this.games = [];
         this.names = [];
+        this._gameDisplayCount = 0;
         this._titleBase = '<span class="light">game</span><strong>database</strong>';
         this.searchResults = [];
         this.tools = [
@@ -46,7 +47,6 @@ var GameDatabaseComponent = (function () {
     GameDatabaseComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.setTitle();
-        //this.toolSubscription = this.toolService.tool$.subscribe(this.onToolClicked);
         this._app.showLoader();
         this._app.showBackground(true);
         this.getGames();
@@ -75,11 +75,25 @@ var GameDatabaseComponent = (function () {
         //this._setPath("/games;search=" + term);
         this.gameDatabaseService.searchForGames(term).then(function (games) { return _this._loadGames(games); });
     };
+    GameDatabaseComponent.prototype.loadMoreGames = function (page) {
+        if (!this.allGamesAreDisplayed) {
+            this.isLoadingGames = true;
+            this._gameDisplayCount = 30 * page;
+            this.getGames();
+        }
+    };
     GameDatabaseComponent.prototype._loadGames = function (games) {
         var _this = this;
         setTimeout(function () {
             _this._app.hideLoader();
-            _this.games = games;
+            _this.isLoadingGames = false;
+            if (games.length > _this._gameDisplayCount) {
+                _this.games = games.slice(0, _this._gameDisplayCount);
+            }
+            else {
+                _this.games = games;
+                _this.allGamesAreDisplayed = true;
+            }
             _this.onGamesLoaded();
         }, 150);
     };
@@ -146,8 +160,13 @@ var GameDatabaseComponent = (function () {
     //     }
     // }
     GameDatabaseComponent.prototype.selectRandomGame = function () {
-        var i = Math.floor((Math.random() * this.games.length));
-        this.onSelect(this.games[i]);
+        var _this = this;
+        // reload the games, because we don't want to limit ourselves by just what has been loaded by the infinite scroll
+        this.gameDatabaseService.getGames().then(function (games) {
+            games = _this._filterGames(games);
+            var i = Math.floor((Math.random() * games.length));
+            _this.onSelect(games[i]);
+        });
     };
     GameDatabaseComponent.prototype.closeDetails = function (tool) {
         var _this = this;

@@ -366,7 +366,7 @@
                 </label>
             </div>
 
-            <div class="list">
+            <div class="list" infiniteScroll [disable]="isPosting" (load)="loadMoreHistory($event)">
 
                 <div class="item clickable" [class.large]="history == expandedHistory" *ngFor="let history of histories" (click)="expandHistory(history)">
                     
@@ -383,7 +383,7 @@
                         <div class="row columns fill">
                             <span>{{history.action}}</span>
 
-                            <span>{{history.target}}</span>
+                            <a href="#" (click)="historyLink($event, history)">{{history.target}}</a>
 
                             <span>
                                 <span *ngFor="let change of history.changes">{{change.property}}</span>
@@ -394,7 +394,7 @@
                             <hr />
 
                             <h5 *ngIf="expandedHistoryTargetName == 'loading'"><span class="loading"></span></h5>
-                            <h5 *ngIf="expandedHistoryTargetName != 'loading'">{{expandedHistoryTargetName}}</h5>
+                            <h5 *ngIf="expandedHistoryTargetName != 'loading'" [innerHTML]="expandedHistoryTargetName"></h5>
 
                             <div class="columns" *ngFor="let change of history.changes">
                                 <div>
@@ -409,6 +409,10 @@
                         </div>
                     </div>
 
+                </div>
+
+                <div class="item center" *ngIf="isPosting">
+                    <span class="loading"></span>
                 </div>
 
             </div>

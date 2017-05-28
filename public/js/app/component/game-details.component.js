@@ -94,10 +94,14 @@ var GameDetailsComponent = (function () {
         this.showTeamNotes = this.userService.getPreference(constants_1.PREFERENCE_KEYS.showTeamNotes, 'true') == 'true';
         this.showPrivateNotes = this.userService.getPreference(constants_1.PREFERENCE_KEYS.showPrivateNotes, 'true') == 'true';
     };
+    GameDetailsComponent.prototype.ngOnChanges = function (changes) {
+        // make sure that things get set up if the game changes
+        if (changes.game && (!this._gameId || this._gameId != changes.game.currentValue._id)) {
+            this.setGame(changes.game.currentValue);
+        }
+    };
     GameDetailsComponent.prototype.selectTab = function (tab) {
         this.selectedTab = tab.id;
-    };
-    GameDetailsComponent.prototype.ngOnDestroy = function () {
     };
     GameDetailsComponent.prototype.can = function (permission) {
         return this.userService.can(permission);
@@ -342,6 +346,7 @@ var GameDetailsComponent = (function () {
             this.gameNotFound = true;
         }
         else {
+            this._gameId = game._id;
             this.game = game;
             if (this.game.names && this.game.names.length) {
                 this.gameNoteService.getNotesForGame(this.game)
@@ -388,7 +393,7 @@ var GameDetailsComponent = (function () {
                     this.onClose.emit(tool);
                 }
                 else {
-                    this.router.navigate(['/games', { random: 'random' }]);
+                    this.router.navigate(['/app/games', { random: 'random' }]);
                 }
                 break;
             case "deleteGame":

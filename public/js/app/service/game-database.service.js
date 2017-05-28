@@ -352,6 +352,8 @@ var GameDatabaseService = (function () {
         return this.http.post(constants_1.API.gameCreateTag(game._id, name), { name: name })
             .toPromise()
             .then(function (response) {
+            // reset the tags so we have to re-fetch the whole list
+            _this._tagPromise = null;
             return _this._handleNewGame(game, response);
         });
     };

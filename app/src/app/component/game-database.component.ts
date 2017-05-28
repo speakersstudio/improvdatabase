@@ -53,6 +53,9 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
     names: Name[] = [];
     selectedGame: Game;
 
+    private _gameDisplayCount: number = 0;
+    allGamesAreDisplayed: boolean;
+
     previousScrollPosition: number;
 
     _titleBase: string = '<span class="light">game</span><strong>database</strong>';
@@ -61,6 +64,8 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
     searchResults: SearchResult[] = [];
     filter: GameFilter;
     searchTerm: string;
+
+    isLoadingGames: boolean;
 
     constructor(
         private _app: AppComponent,
@@ -84,8 +89,6 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
 
         this.setTitle();
 
-        //this.toolSubscription = this.toolService.tool$.subscribe(this.onToolClicked);
-
         this._app.showLoader();
         this._app.showBackground(true);
         this.getGames();
@@ -94,6 +97,7 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
             this.selectedGame = null;
             this._app.showBackground(true);
         });
+
     }
 
     setTitle(): void {
@@ -116,10 +120,25 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
         this.gameDatabaseService.searchForGames(term).then(games => this._loadGames(games))
     }
 
+    loadMoreGames(page: number): void {
+        if (!this.allGamesAreDisplayed) {
+            this.isLoadingGames = true;
+            this._gameDisplayCount = 30 * page;
+            this.getGames();
+        }
+    }
+
     private _loadGames(games: Game[]): void {
         setTimeout(() => {
             this._app.hideLoader();
-            this.games = games;
+            this.isLoadingGames = false;
+
+            if (games.length > this._gameDisplayCount) {
+                this.games = games.slice(0, this._gameDisplayCount);
+            } else {
+                this.games = games;
+                this.allGamesAreDisplayed = true;
+            }
             this.onGamesLoaded();
         }, 150);
     }
@@ -191,8 +210,13 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
     // }
 
     selectRandomGame(): void {
-        let i = Math.floor((Math.random() * this.games.length));
-        this.onSelect(this.games[i]);
+        // reload the games, because we don't want to limit ourselves by just what has been loaded by the infinite scroll
+        this.gameDatabaseService.getGames().then(games => {
+            games = this._filterGames(games);
+
+            let i = Math.floor((Math.random() * games.length));
+            this.onSelect(games[i]);
+        });
     }
 
     closeDetails(tool: Tool): void {

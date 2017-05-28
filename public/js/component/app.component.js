@@ -55,10 +55,6 @@ var AppComponent = (function () {
     AppComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.hideLoader();
-        // this.http.get('/config').toPromise().then(response => {
-        //     console.log('config ready!');
-        //     this.config = response.json() as Config;
-        // });
         this.router.events.filter(function (event) { return event instanceof router_1.NavigationStart; }).subscribe(function (event) {
             _this.backgroundVisible = true;
             _this.backgroundRequested = false;

@@ -18,6 +18,7 @@ import { Subscription } from '../../model/subscription';
 import { Package } from '../../model/package';
 import { MaterialItem, MaterialItemVersion } from '../../model/material-item';
 import { HistoryModel } from '../../model/history';
+import { Tag } from '../../model/tag';
 
 import { UserService } from '../../service/user.service';
 
@@ -78,12 +79,15 @@ export class AdminComponent implements OnInit {
     selectMaterialDialogVisible: boolean;
 
     histories: HistoryModel[];
+    historyDisplayCount: number = 0;
     rawHistories: HistoryModel[];
     historyShowRefresh: boolean;
     historyShowLogin: boolean;
     historyShowStuff: boolean = true;
 
     packageConfig: PackageConfig;
+
+    isPosting: boolean;
 
     constructor(
         public _app: AppComponent,
@@ -158,7 +162,7 @@ export class AdminComponent implements OnInit {
         this.historyService.getAllHistory().then(histories => {
             this.rawHistories = histories;
             this.filterHistory();
-        })
+        });
     }
 
     getHistoryIcon(history: HistoryModel): string {
@@ -190,6 +194,19 @@ export class AdminComponent implements OnInit {
         }
     }
 
+    historyLink(event: MouseEvent, history: HistoryModel): void {
+        switch(history.action) {
+            case 'game_edit':
+            case 'game_tag_add':
+            case 'game_tag_remove':
+                this.router.navigate(['/app/game', history.target]);
+                break;
+        }
+
+        event.preventDefault();
+
+    }
+
     expandedHistory: HistoryModel;
     expandedHistoryTargetName: string;
     expandHistory(history: HistoryModel): void {
@@ -202,7 +219,8 @@ export class AdminComponent implements OnInit {
 
         this.expandedHistory = history;
 
-        let target = history.target;
+        let target = history.target,
+            reference = history.reference;
 
         this.expandedHistoryTargetName = 'loading';
 
@@ -216,6 +234,31 @@ export class AdminComponent implements OnInit {
                     }
                 });
                 break;
+            case 'game_tag_add':
+                this.gameService.getGame(target).then(game => {
+                    this.expandedHistoryTargetName = '';
+                    if (game.tags.length) {
+                        let index = Util.indexOfId(game.tags, reference);
+                        if (index > -1) {
+                            this.expandedHistoryTargetName = '<span class="tag"><i class="fa fa-hashtag"></i> ' + (<Tag> game.tags[index]).name + '</span> &gt; ';
+                        }
+                    }
+
+                    if (game.names.length) {
+                        this.expandedHistoryTargetName += game.names[0].name;
+                    }
+                })
+                break;
+            case 'game_tag_remove':
+                this.gameService.getGame(target).then(game => {
+                    this.expandedHistoryTargetName = '';
+                    this.expandedHistoryTargetName = '<span class="tag">' + reference + '</span> &lt; ';
+
+                    if (game.names.length) {
+                        this.expandedHistoryTargetName += game.names[0].name;
+                    }
+                })
+                break;
             default:
                 this.expandedHistoryTargetName = '';
                 break;
@@ -224,16 +267,37 @@ export class AdminComponent implements OnInit {
 
     filterHistory(): void {
         setTimeout(() => {
-            this.histories = this.rawHistories.filter(h => {
+            let count = 0;
+            this.histories = [];
+            this.rawHistories.some(h => {
+                let include;
                 if (h.action == 'refresh') {
-                    return this.historyShowRefresh;
+                    include = this.historyShowRefresh;
                 } else if (h.action == 'login' || h.action == 'logout' ) {
-                    return this.historyShowLogin;
+                    include = this.historyShowLogin;
                 } else {
-                    return this.historyShowStuff;
+                    include = this.historyShowStuff;
                 }
+                if (include) {
+                    this.histories.push(h)
+                    count++;
+                    if (count >= this.historyDisplayCount) {
+                        return true;
+                    }
+                }
+                return false;
             });
+            setTimeout(() => {
+                this.isPosting = false;
+            }, 10);
         }, 10);
+    }
+
+    loadMoreHistory(count: number): void {
+        this.isPosting = true;
+
+        this.historyDisplayCount = (30 * count);
+        this.filterHistory();
     }
 
     selectMaterial(material: MaterialItem): void {

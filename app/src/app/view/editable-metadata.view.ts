@@ -81,19 +81,29 @@ export class EditableMetadataView implements OnInit, OnChanges {
         }
 
         if (this.type == 'dropdown' && !this.model && !this.allowBlank) {
-            this.model = this.options[0];
-            this.text = this.model.name;
-            this.icon = this.model.icon;
+            this.setupDropdown();
+        }
+    }
+
+    setupDropdown(): void {
+        if (this.model && (<DropdownOption> this.model).name) {
+            this.text = (<DropdownOption> this.model).name;
+            this.icon = (<DropdownOption> this.model).icon;
+        } else {
+            this.text = this.options[0].name;
+            this.icon = this.options[0].icon;
         }
     }
 
     ngOnChanges(changes: any): void {
-        if (changes.model && !this.text && this.model && this.model.hasOwnProperty('name')) {
+        if (changes.model && this.text != (<DropdownOption> this.model).name && this.model && this.model.hasOwnProperty('name')) {
             this.text = (<DropdownOption> this.model).name;
 
             if (!this.icon && (<DropdownOption> this.model).icon) {
                 this.icon = (<DropdownOption> this.model).icon;
             }
+        } else if (changes.options && changes.options.previousValue) {
+            this.setupDropdown();
         }
     }
 

@@ -64,7 +64,6 @@
                     [optionCreate]="can('metadata_create')"
                     (save)="savePlayerCount($event)"
                     (createOption)="showCreateMetadataDialog($event, 'playerCount')"></span>
-                
 
                 <span class="improvplus-editable-metadata"
                     [model]="game.duration"
@@ -175,7 +174,7 @@
 
             <div *ngFor="let note of getPrivateNotes()" class="item large improvplus-game-note" [note]="note" [game]="game" (remove)="removeNote($event)"></div>
 
-            <p *ngIf="!getPrivateNotes().length">You haven't saved any notes about this game (your notes are for your eyes only, so put anything you want).</p>
+            <p *ngIf="!getPrivateNotes().length">You haven't saved any notes about this game. Use this area to save anything you want to remember about this game. Only you will see your notes (unless you share them with your team), so feel free to put anything you want.</p>
 
             <div class="item large improvplus-game-note" (create)="noteCreated($event)" [game]="game"></div>
 

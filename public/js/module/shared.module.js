@@ -24,6 +24,7 @@ var bracket_card_directive_1 = require("../directive/bracket-card.directive");
 var draggable_directive_1 = require("../directive/draggable.directive");
 var droppable_directive_1 = require("../directive/droppable.directive");
 var form_switch_directive_1 = require("../directive/form-switch.directive");
+var infinite_scroll_directive_1 = require("../directive/infinite-scroll.directive");
 var SharedModule = (function () {
     function SharedModule() {
     }
@@ -46,7 +47,8 @@ SharedModule = __decorate([
             bracket_card_directive_1.BracketCardDirective,
             draggable_directive_1.DraggableDirective,
             droppable_directive_1.DroppableDirective,
-            form_switch_directive_1.FormSwitchDirective
+            form_switch_directive_1.FormSwitchDirective,
+            infinite_scroll_directive_1.InfiniteScrollDirective
         ],
         exports: [
             iplus_view_1.IPlusView,
@@ -57,7 +59,8 @@ SharedModule = __decorate([
             bracket_card_directive_1.BracketCardDirective,
             draggable_directive_1.DraggableDirective,
             droppable_directive_1.DroppableDirective,
-            form_switch_directive_1.FormSwitchDirective
+            form_switch_directive_1.FormSwitchDirective,
+            infinite_scroll_directive_1.InfiniteScrollDirective
         ],
         providers: [
             app_service_1.AppService,

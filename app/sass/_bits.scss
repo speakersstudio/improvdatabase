@@ -61,10 +61,10 @@ iplus {
         transform: scale(1.5);
 
         .i {
-            top: 11px;
+            top: 12px;
         }
         .plus {
-            top: 8px;
+            top: 9px;
         }
     }
 
@@ -146,6 +146,26 @@ iplus {
 
             &.noplus {
                 margin-left: 11px;
+            }
+        }
+    }
+
+    @media only screen and 
+    (min-device-pixel-ratio: 2),
+    (-webkit-min-device-pixel-ratio: 2) {
+        .i {
+            top: 11px;
+        }
+        .plus {
+            top: 8px;
+        }
+
+        .huge & {
+            .i {
+                top: 11px;
+            }
+            .plus {
+                top: 8px;
             }
         }
     }
@@ -673,6 +693,10 @@ button,
 
         &.clickable:hover {
             background: $color-bg;
+        }
+
+        &.center {
+            justify-content: center;
         }
 
         .badge {

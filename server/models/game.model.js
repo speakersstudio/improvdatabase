@@ -104,6 +104,14 @@ GameSchema.methods.removeTag = function(tagId, userId) {
             if (index > -1) {
                 tag.games.splice(index, 1);
             }
+
+            HistoryModel.create({
+                action: 'game_tag_remove',
+                target: game._id,
+                user: userId,
+                reference: tag.name
+            });
+
             if (tag.games.length == 0) {
                 return tag.remove();
             } else {

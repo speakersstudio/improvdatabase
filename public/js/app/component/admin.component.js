@@ -57,6 +57,7 @@ var AdminComponent = (function () {
             }
         ];
         this.selectedTab = 'materials';
+        this.historyDisplayCount = 0;
         this.historyShowStuff = true;
         this._tools = [
             {
@@ -145,6 +146,16 @@ var AdminComponent = (function () {
                 return 'fa-history';
         }
     };
+    AdminComponent.prototype.historyLink = function (event, history) {
+        switch (history.action) {
+            case 'game_edit':
+            case 'game_tag_add':
+            case 'game_tag_remove':
+                this.router.navigate(['/app/game', history.target]);
+                break;
+        }
+        event.preventDefault();
+    };
     AdminComponent.prototype.expandHistory = function (history) {
         var _this = this;
         if (this.expandedHistory == history ||
@@ -153,7 +164,7 @@ var AdminComponent = (function () {
             return;
         }
         this.expandedHistory = history;
-        var target = history.target;
+        var target = history.target, reference = history.reference;
         this.expandedHistoryTargetName = 'loading';
         switch (history.action) {
             case 'game_edit':
@@ -166,6 +177,29 @@ var AdminComponent = (function () {
                     }
                 });
                 break;
+            case 'game_tag_add':
+                this.gameService.getGame(target).then(function (game) {
+                    _this.expandedHistoryTargetName = '';
+                    if (game.tags.length) {
+                        var index = util_1.Util.indexOfId(game.tags, reference);
+                        if (index > -1) {
+                            _this.expandedHistoryTargetName = '<span class="tag"><i class="fa fa-hashtag"></i> ' + game.tags[index].name + '</span> &gt; ';
+                        }
+                    }
+                    if (game.names.length) {
+                        _this.expandedHistoryTargetName += game.names[0].name;
+                    }
+                });
+                break;
+            case 'game_tag_remove':
+                this.gameService.getGame(target).then(function (game) {
+                    _this.expandedHistoryTargetName = '';
+                    _this.expandedHistoryTargetName = '<span class="tag">' + reference + '</span> &lt; ';
+                    if (game.names.length) {
+                        _this.expandedHistoryTargetName += game.names[0].name;
+                    }
+                });
+                break;
             default:
                 this.expandedHistoryTargetName = '';
                 break;
@@ -174,18 +208,37 @@ var AdminComponent = (function () {
     AdminComponent.prototype.filterHistory = function () {
         var _this = this;
         setTimeout(function () {
-            _this.histories = _this.rawHistories.filter(function (h) {
+            var count = 0;
+            _this.histories = [];
+            _this.rawHistories.some(function (h) {
+                var include;
                 if (h.action == 'refresh') {
-                    return _this.historyShowRefresh;
+                    include = _this.historyShowRefresh;
                 }
                 else if (h.action == 'login' || h.action == 'logout') {
-                    return _this.historyShowLogin;
+                    include = _this.historyShowLogin;
                 }
                 else {
-                    return _this.historyShowStuff;
+                    include = _this.historyShowStuff;
                 }
+                if (include) {
+                    _this.histories.push(h);
+                    count++;
+                    if (count >= _this.historyDisplayCount) {
+                        return true;
+                    }
+                }
+                return false;
             });
+            setTimeout(function () {
+                _this.isPosting = false;
+            }, 10);
         }, 10);
+    };
+    AdminComponent.prototype.loadMoreHistory = function (count) {
+        this.isPosting = true;
+        this.historyDisplayCount = (30 * count);
+        this.filterHistory();
     };
     AdminComponent.prototype.selectMaterial = function (material) {
         this.newVersion = new material_item_1.MaterialItemVersion();

@@ -252,6 +252,9 @@ var SignupComponent = (function () {
         if (this.cardError || !this.cardComplete || this.teamError) {
             return false;
         }
+        if (!this.termsAccepted) {
+            return false;
+        }
         return true;
     };
     SignupComponent.prototype.submitPayment = function () {
@@ -305,6 +308,14 @@ var SignupComponent = (function () {
             }
         });
     };
+    SignupComponent.prototype.showTerms = function () {
+        this._app.backdrop(true);
+        this.termsDialogVisible = true;
+    };
+    SignupComponent.prototype.hideTerms = function () {
+        this._app.backdrop(false);
+        this.termsDialogVisible = false;
+    };
     return SignupComponent;
 }());
 __decorate([
@@ -339,7 +350,8 @@ SignupComponent = __decorate([
         animations: [
             anim_util_1.ToggleAnim.fadeAbsolute,
             anim_util_1.ToggleAnim.bubble,
-            anim_util_1.ToggleAnim.bubbleSlow
+            anim_util_1.ToggleAnim.bubbleSlow,
+            anim_util_1.DialogAnim.dialog
         ]
     }),
     __metadata("design:paramtypes", [app_component_1.AppComponent,

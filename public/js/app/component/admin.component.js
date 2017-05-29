@@ -194,7 +194,7 @@ var AdminComponent = (function () {
             case 'game_tag_remove':
                 this.gameService.getGame(target).then(function (game) {
                     _this.expandedHistoryTargetName = '';
-                    _this.expandedHistoryTargetName = '<span class="tag">' + reference + '</span> &lt; ';
+                    _this.expandedHistoryTargetName = '<span class="tag"><i class="fa fa-remove"></i> ' + reference + '</span> &lt; ';
                     if (game.names.length) {
                         _this.expandedHistoryTargetName += game.names[0].name;
                     }

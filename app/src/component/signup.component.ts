@@ -18,7 +18,7 @@ import { User } from '../model/user';
 import { Team } from '../model/team';
 import { Package } from '../model/package';
 
-import { ToggleAnim } from '../util/anim.util';
+import { ToggleAnim, DialogAnim } from '../util/anim.util';
 
 import { BracketCardDirective } from '../directive/bracket-card.directive';
 
@@ -33,7 +33,8 @@ declare var Stripe: any;
     animations: [
         ToggleAnim.fadeAbsolute,
         ToggleAnim.bubble,
-        ToggleAnim.bubbleSlow
+        ToggleAnim.bubbleSlow,
+        DialogAnim.dialog
     ]
 })
 export class SignupComponent implements OnInit {
@@ -72,6 +73,9 @@ export class SignupComponent implements OnInit {
     teamError: string;
 
     cardComplete: boolean = false;
+
+    termsDialogVisible: boolean;
+    termsAccepted: boolean;
 
     constructor(
         public _app: AppComponent,
@@ -343,6 +347,9 @@ export class SignupComponent implements OnInit {
         if (this.cardError || !this.cardComplete || this.teamError) {
             return false;
         }
+        if (!this.termsAccepted) {
+            return false;
+        }
         return true;
     }
 
@@ -396,6 +403,16 @@ export class SignupComponent implements OnInit {
                     });
             }
         });
+    }
+
+    showTerms(): void {
+        this._app.backdrop(true);
+        this.termsDialogVisible = true;
+    }
+
+    hideTerms(): void {
+        this._app.backdrop(false);
+        this.termsDialogVisible = false;
     }
 
 }

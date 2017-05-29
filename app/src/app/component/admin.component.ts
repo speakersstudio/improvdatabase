@@ -252,7 +252,7 @@ export class AdminComponent implements OnInit {
             case 'game_tag_remove':
                 this.gameService.getGame(target).then(game => {
                     this.expandedHistoryTargetName = '';
-                    this.expandedHistoryTargetName = '<span class="tag">' + reference + '</span> &lt; ';
+                    this.expandedHistoryTargetName = '<span class="tag"><i class="fa fa-remove"></i> ' + reference + '</span> &lt; ';
 
                     if (game.names.length) {
                         this.expandedHistoryTargetName += game.names[0].name;

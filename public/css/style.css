@@ -135,9 +135,21 @@ body, html {
   100% {
     transform: rotateZ(359deg); } }
 
-@keyframes loadingSpin {
-  to {
-    transform: translateY(-15em); } }
+@keyframes loadingSpinLeft {
+  0% {
+    transform: translateX(0); }
+  43% {
+    transform: translateX(0); }
+  100% {
+    transform: translateX(-16px); } }
+
+@keyframes loadingSpinRight {
+  0% {
+    transform: translateX(0); }
+  43% {
+    transform: translateX(0); }
+  100% {
+    transform: translateX(16px); } }
 
 html {
   background: #f5f5f5; }
@@ -1027,6 +1039,8 @@ button,
 .dialog {
   width: 90%;
   max-width: 500px;
+  max-height: 90%;
+  overflow: auto;
   background: #FFFFFF;
   padding: 16px 0;
   border-radius: 2px;
@@ -1065,16 +1079,20 @@ button,
 .loading {
   display: inline-block;
   overflow: hidden;
-  height: 1.3em;
-  margin-top: -0.3em;
-  line-height: 1.5em;
-  vertical-align: text-bottom; }
+  height: 16px;
+  margin-top: -1px;
+  line-height: 13px;
+  vertical-align: middle;
+  padding: 0 16px 0 16px; }
+  .loading:after, .loading:before {
+    content: "●";
+    display: inline-block; }
+  .loading:before {
+    margin-right: -4px;
+    animation: loadingSpinLeft 1000ms alternate infinite; }
   .loading:after {
-    display: inline-table;
-    white-space: pre;
-    text-align: left;
-    content: " ●    \A   ●   \A    ●  \A     ● \A      ●\A     ● \A    ●  \A   ●   \A  ●    \A ●     ";
-    animation: loadingSpin 1s steps(10) infinite; }
+    margin-left: -4px;
+    animation: loadingSpinRight 1000ms alternate-reverse infinite; }
 
 .form-switch {
   height: 22px;
@@ -1113,6 +1131,12 @@ button,
 
 label .form-switch {
   margin-right: 8px; }
+
+label.icon-choice .fa {
+  font-size: 16px; }
+
+label.icon-choice .form-switch {
+  margin: 0 8px; }
 
 .spanhalf {
   width: 50%;

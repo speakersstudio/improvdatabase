@@ -62,6 +62,8 @@ export class EditableMetadataView implements OnInit, OnChanges {
 
     @Output() createOption: EventEmitter<boolean> = new EventEmitter(); // should trigger a dialog or something to create a new option
 
+    private _defaultOptionSelected: boolean;
+
     constructor(
     ) { }
 
@@ -81,6 +83,9 @@ export class EditableMetadataView implements OnInit, OnChanges {
         }
 
         if (this.type == 'dropdown' && !this.model && !this.allowBlank) {
+            // by default select the first option
+            this.model = this.options[0];
+            this._defaultOptionSelected = true;
             this.setupDropdown();
         }
     }
@@ -103,6 +108,9 @@ export class EditableMetadataView implements OnInit, OnChanges {
                 this.icon = (<DropdownOption> this.model).icon;
             }
         } else if (changes.options && changes.options.previousValue) {
+            if (this._defaultOptionSelected) {
+                this.model = this.options[0];
+            }
             this.setupDropdown();
         }
     }

@@ -270,14 +270,14 @@
 
     </div>
 
-    <div class="block center" *ngIf="selectedPackage && !isFormValid()" [@bubble]>
+    <!--<div class="block center" *ngIf="selectedPackage && !isFormValid()" [@bubble]>
         <div class="card">
             Make sure you have entered all of the information above, and we'll be ready to roll.
         </div>
-    </div>
+    </div>-->
 
     <!-- step 4: GO! -->
-    <div class="block center" *ngIf="isFormValid()" [@bubbleSlow]>
+    <div class="block center" *ngIf="selectedPackage" [@bubbleSlow]>
 
         <div class="card">
             4. Let's do this.
@@ -291,18 +291,54 @@
 
             <div class="card brackets clickable" bracketCard
                 [class.red]="userType == 'facilitator'" 
-                [class.blue]="userType == 'improviser'"
-                (click)="submitPayment()">
+                [class.blue]="userType == 'improviser'">
 
                 <i class="fa fa-rocket"></i>
 
-                <h4>Activate your Account</h4>
+                <h4>Final Details</h4>
 
-                <p>Click here to enter <span class="light">improv</span><strong>plus</strong>...</p>
+                <p>Just to make sure we're all on the same page, you'll have to <a (click)="showTerms()">check out our terms</a> and give them the thumbs up. (We know, this sort of thing is boring, but we have to)</p>
+
+                <p>
+                    <label class="icon-choice">
+                        <i class="fa fa-thumbs-o-down"></i>
+                        <input type="checkbox" formSwitch class="inline-block" name="terms-accepted" [(ngModel)]="termsAccepted" />
+                        <i class="fa fa-thumbs-o-up"></i>
+                    </label>
+                </p>
+
+                <button class="button brackets" (click)="submitPayment()" [class.disabled]="!isFormValid()">Join</button>
             </div>
 
         </div>
 
     </div>
 
+</div>
+
+
+<div class="dialog-container" [class.show]="termsDialogVisible">
+    <div class="dialog-dismiss" (click)="hideTerms()"></div>
+
+    <div class="dialog scroll" [@dialog]="'default'" *ngIf="termsDialogVisible">
+
+        <div class="dialog-content">
+            <h2>terms and conditions</h2>
+
+            <p>Terms will go here, thanks.</p>
+
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin commodo, eros malesuada dapibus ultricies, nibh quam sollicitudin risus, malesuada bibendum nisl elit at libero. Donec non leo nunc. Maecenas dapibus sapien eget massa mollis pellentesque. Morbi mattis leo ut auctor elementum. Morbi quam nisi, convallis ut viverra quis, dapibus eget est. Sed varius facilisis nulla vel dapibus. Nam ac dui vel massa finibus congue. Donec finibus tellus ac convallis maximus. Praesent finibus finibus rutrum. Nam bibendum, diam sit amet euismod vulputate, ipsum sapien varius ante, lobortis pulvinar urna est eu lacus. Nullam quis urna justo. </p>
+            <p>Aliquam sit amet commodo mi, ac accumsan mi. Aliquam erat volutpat. Vivamus ultrices consequat urna id commodo. Pellentesque venenatis metus nec eros aliquam, in egestas nisl molestie. In hac habitasse platea dictumst. Cras ac lorem rhoncus, scelerisque felis in, ornare justo. Ut aliquet, urna in faucibus placerat, velit nisi auctor erat, sed tempor ligula est sit amet metus. Maecenas lobortis hendrerit odio, imperdiet malesuada eros pharetra sed. Nunc ultricies maximus lacinia. </p>
+            <p>Donec commodo egestas dui sit amet elementum. Donec scelerisque ligula at volutpat fermentum. Pellentesque scelerisque et purus quis scelerisque. Praesent convallis accumsan erat ut posuere. Nulla maximus metus tortor, a vestibulum libero pellentesque in. Curabitur facilisis libero arcu, quis porttitor arcu volutpat vitae. Nam dui nisl, bibendum sed massa et, euismod pulvinar odio. Aenean laoreet fringilla nulla, ut commodo justo sollicitudin vitae. </p>
+            <p>Curabitur blandit posuere bibendum. Curabitur fermentum faucibus velit, ac faucibus libero venenatis dignissim. Aliquam aliquet ipsum a felis egestas, nec varius lacus fermentum. Proin fringilla non ligula vehicula tristique. Sed congue mi ac mi ornare, nec ultricies velit molestie. Cras et ipsum vel diam lobortis congue. Suspendisse fringilla elementum arcu, in cursus libero suscipit vitae. Proin ut ligula non neque laoreet lobortis. Morbi molestie congue diam quis interdum. </p>
+            <p>Sed tincidunt elementum odio, at mollis tortor ornare id. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce et enim et tortor aliquam accumsan. Phasellus tortor lorem, laoreet non lectus eu, congue congue metus. Nulla dui ipsum, semper vel sapien id, sollicitudin dignissim felis. Nulla euismod congue purus, id bibendum felis posuere ullamcorper. Nulla ornare sagittis eros at rutrum. Proin scelerisque nunc quam. In dui ante, dictum ut auctor sit amet, venenatis elementum dolor. Mauris consectetur est vel sollicitudin molestie. Aenean ut ultrices nisl, id viverra augue. Duis sollicitudin egestas bibendum. Donec ac lectus facilisis, posuere sem nec, convallis ipsum. Phasellus tellus orci, viverra quis porta pharetra, interdum sit amet sem. Suspendisse potenti. Donec id nulla lacus. </p>
+            <p>Pellentesque ut ipsum mi. Suspendisse efficitur, nisi quis imperdiet vehicula, quam metus imperdiet tellus, nec sagittis purus sapien eu lorem. Cras imperdiet ullamcorper felis in venenatis. Aenean vel tristique mauris. Curabitur ultricies sapien ac consectetur tempus. Curabitur iaculis, lectus dapibus molestie congue, nulla massa consectetur ligula, quis hendrerit leo turpis sit amet ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum vestibulum metus eget pulvinar euismod. </p>
+            <p>Fusce vitae dapibus lectus, eu finibus lacus. Sed venenatis libero massa, eu luctus velit scelerisque quis. Phasellus et fermentum nulla, a interdum urna. Vivamus maximus finibus molestie. Sed tristique vehicula nisi, et rhoncus enim consectetur sed. In ut turpis eros. Etiam molestie eros nec pellentesque accumsan. </p>
+        </div>
+
+        <div class="button-group">
+            <div class="button" (click)="hideTerms()">Okay Bye</div>
+        </div>
+
+    </div>
 </div>

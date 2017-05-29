@@ -123,7 +123,9 @@ module.exports = {
             let game = games[0];
             return game.addTag(null, tagId, req.user._id);
         }).then(game => {
-            res.json(game);
+            setTimeout(() => {
+                res.json(game);
+            }, 2000);
         }, error => {
                 util.handleError(req, res, error);
             });

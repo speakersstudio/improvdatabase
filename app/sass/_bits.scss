@@ -1030,6 +1030,8 @@ button,
 .dialog {
     width: 90%;
     max-width: 500px;
+    max-height: 90%;
+    overflow: auto;
     background: $color-white;
     padding: $std 0;
     border-radius: $border-radius;
@@ -1079,17 +1081,30 @@ button,
 .loading {
     display: inline-block;
     overflow: hidden;
-    height: 1.3em;
-    margin-top: -0.3em;
-    line-height: 1.5em;
-    vertical-align: text-bottom;
+    height: $std;
+    margin-top: -1px;
+    line-height: $std - 3;
+    vertical-align: middle;
+    padding: 0 $std 0 $std;
 
+    &:after, &:before {
+        // display: inline-table;
+        // white-space: pre;
+        // text-align: left;
+        // content: " ●    \A   ●   \A    ●  \A     ● \A      ●\A     ● \A    ●  \A   ●   \A  ●    \A ●     ";
+        // animation: loadingSpin 1s steps(10) infinite;
+        content: "●";
+        display: inline-block;
+    }
+    &:before {
+        margin-right: -$small / 2;
+        // transform: translateX(-$std);
+        animation: loadingSpinLeft 1000ms alternate infinite;
+    }
     &:after {
-        display: inline-table;
-        white-space: pre;
-        text-align: left;
-        content: " ●    \A   ●   \A    ●  \A     ● \A      ●\A     ● \A    ●  \A   ●   \A  ●    \A ●     ";
-        animation: loadingSpin 1s steps(10) infinite;
+        margin-left: -$small / 2;
+        // transform: translateX($std);
+        animation: loadingSpinRight 1000ms alternate-reverse infinite;
     }
 }
 
@@ -1135,6 +1150,14 @@ button,
 }
 label .form-switch {
     margin-right: $small;
+}
+label.icon-choice {
+    .fa {
+        font-size: $std;
+    }
+    .form-switch {
+        margin: 0 $small;
+    }
 }
 
 .spanhalf {

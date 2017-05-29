@@ -310,9 +310,15 @@ var GameDetailsComponent = (function () {
             this.addTag(tag);
         }
         else {
-            // if there were no matches, we'll create a new tag
-            this.gameDatabaseService.createTag(this.newTagText, this.game)
-                .then(function (game) { return _this.game = game; });
+            if (this.can('tag_create')) {
+                this.tagSaving = true;
+                // if there were no matches, we'll create a new tag
+                this.gameDatabaseService.createTag(this.newTagText, this.game)
+                    .then(function (game) {
+                    _this.tagSaving = false;
+                    _this.game.tags = game.tags;
+                });
+            }
         }
         this.newTagText = "";
         this.tagHints = [];
@@ -321,8 +327,12 @@ var GameDetailsComponent = (function () {
     GameDetailsComponent.prototype.addTag = function (tag) {
         var _this = this;
         if (this.can('game_tag_add')) {
+            this.tagSaving = true;
             this.gameDatabaseService.saveTagToGame(this.game, tag)
-                .then(function (game) { return _this.game = game; });
+                .then(function (game) {
+                _this.tagSaving = false;
+                _this.game = game;
+            });
             this.newTagText = "";
             this.tagHints = [];
         }

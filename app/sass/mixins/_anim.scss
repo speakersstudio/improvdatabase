@@ -1,3 +1,5 @@
+@import '../vars';
+
 @include keyframes (shake) {
     0%, 100% {
         transform: translateX(0px);
@@ -29,4 +31,15 @@
     }
 }
 
-@keyframes loadingSpin { to { transform: translateY(-15.0em); } }
+// @keyframes loadingSpin { to { transform: translateY(-15.0em); } }
+
+@keyframes loadingSpinLeft {
+    0% { transform: translateX(0) }
+    43% { transform: translateX(0) }
+    100% { transform: translateX(-$std) }
+}
+@keyframes loadingSpinRight {
+    0% { transform: translateX(0) }
+    43% { transform: translateX(0) }
+    100% { transform: translateX($std) }
+}

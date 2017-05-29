@@ -399,6 +399,8 @@ export class GameDetailsComponent implements OnInit, OnChanges {
         event.cancelBubble = true;
     }
 
+    tagSaving: boolean;
+
     addTagByName(): void {
         let tag: Tag;
         // see if any of the hints match the input exactly
@@ -411,9 +413,15 @@ export class GameDetailsComponent implements OnInit, OnChanges {
         if (tag) {
             this.addTag(tag);
         } else {
-            // if there were no matches, we'll create a new tag
-            this.gameDatabaseService.createTag(this.newTagText, this.game)
-                .then(game => this.game = game);
+            if (this.can('tag_create')) {
+                this.tagSaving = true;
+                // if there were no matches, we'll create a new tag
+                this.gameDatabaseService.createTag(this.newTagText, this.game)
+                    .then(game => {
+                        this.tagSaving = false;
+                        this.game.tags = game.tags
+                    });
+            }
         }
 
         this.newTagText = "";
@@ -423,8 +431,12 @@ export class GameDetailsComponent implements OnInit, OnChanges {
 
     addTag(tag: Tag): void {
         if (this.can('game_tag_add')) {
+            this.tagSaving = true;
             this.gameDatabaseService.saveTagToGame(this.game, tag)
-                .then(game => this.game = game);
+                .then(game => {
+                    this.tagSaving = false;
+                    this.game = game
+                });
             
             this.newTagText = "";
             this.tagHints = [];

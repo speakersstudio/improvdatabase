@@ -429,7 +429,7 @@
 <div class="dialog-container" [class.show]="selectMaterialDialogVisible || selectPackageDialogVisible">
     <div class="dialog-dismiss" (click)="cancelSelectMaterialDialog()"></div>
 
-    <div class="dialog invite-form" *ngIf="selectMaterialDialogVisible || selectPackageDialogVisible" [@dialog]>
+    <div class="dialog invite-form" *ngIf="selectMaterialDialogVisible || selectPackageDialogVisible" [@dialog]="'default'">
 
         <form class="block" name="invite" (ngSubmit)="submitInvite()" #inviteForm="ngForm">
             <div class="dialog-content">
@@ -469,5 +469,4 @@
         </form>
 
     </div>
-
 </div>

@@ -132,10 +132,11 @@
         <div class="dialog-content">
             <h2>{{dialogTitle}}</h2>
             <p [innerHTML]="dialogMessage"></p>
+            <input type="text" [placeholder]="dialogPrompt" formInput [(ngModel)]="dialogInput" *ngIf="dialogPrompt" />
         </div>
         <div class="button-group">
             <button (click)="onDialogDismiss()" *ngIf="!dialogHideCancel">{{dialogCancel}}</button>
-            <button class="button brackets" *ngIf="dialogConfirm" (click)="onDialogConfirm()">{{dialogConfirm}}</button>
+            <button class="button brackets" *ngIf="dialogConfirm" (click)="onDialogConfirm()" [class.disabled]="dialogPrompt && !dialogInput">{{dialogConfirm}}</button>
         </div>
     </div>
 </div>

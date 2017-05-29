@@ -105,6 +105,11 @@ export class AdminComponent implements OnInit {
             icon: "fa-database",
             name: "backup",
             text: "Back Up Database"
+        },
+        {
+            icon: "fa-cloud-upload",
+            name: "restoredb",
+            text: "Restore Database from Backup"
         }
     ]
 
@@ -112,6 +117,9 @@ export class AdminComponent implements OnInit {
         switch (tool.name) {
             case "backup":
                 this.doBackup();
+                break;
+            case "restoredb":
+                this.restore();
                 break;
         }
     }
@@ -372,6 +380,19 @@ export class AdminComponent implements OnInit {
             let data = response.json();
             this._app.toast(data.timestamp);
         })
+    }
+
+    restore(): void {
+        this._app.dialog('Are you sure?', 'Restoring the database backup cannot be undone or stopped.', 'Do it', (timestamp: string) => {
+            setTimeout(() => {
+                this._app.toast('Restoring data . . .');
+                this._app.showLoader();
+                this.http.put('/api/restore', {timestamp: timestamp}).toPromise().then(response => {
+                    this._app.hideLoader();
+                    this._app.toast('Data restored');
+                });
+            }, 10);
+        }, false, 'Timestamp');
     }
 
     deleteMaterial(): void {

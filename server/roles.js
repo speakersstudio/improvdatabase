@@ -201,7 +201,10 @@ module.exports = {
 
                 'package_edit',
                 'package_create',
-                'package_delete'
+                'package_delete',
+
+                'backup_view',
+                'restore_edit'
             ]
         }
     ],
@@ -481,13 +484,6 @@ findActionForUrl = function(url, method) {
         action,
         fallback = actionmap.default[method] || actionmap.default.default;
 
-    // /backup requests are restricted to super admins
-    if (url.indexOf('/backup') > -1) {
-        return function(url, method, user) {
-            console.log('backups require super admin');
-            return user.superAdmin;
-        }
-    } else 
     // see if an action is specified for the given group and method
     if (group && (group[method] || group.default)) {
         return group[method] || group.default;

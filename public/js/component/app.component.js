@@ -197,11 +197,13 @@ var AppComponent = (function () {
             this.showFullscreen = true;
         }
     };
-    AppComponent.prototype.dialog = function (title, body, button, onConfirm, hideCancel) {
+    AppComponent.prototype.dialog = function (title, body, button, onConfirm, hideCancel, prompt) {
         this.dialogTitle = title;
         this.dialogMessage = body;
         this.dialogConfirm = button;
         this.dialogOnConfirm = onConfirm;
+        this.dialogPrompt = prompt || '';
+        this.dialogInput = '';
         this.dialogCancel = button ? button.toLocaleLowerCase() == 'yes' ? 'No' : 'Cancel' : 'Okay then';
         this.dialogHideCancel = hideCancel;
         this.showDialog = true;
@@ -211,8 +213,11 @@ var AppComponent = (function () {
         this.closeOverlays();
     };
     AppComponent.prototype.onDialogConfirm = function () {
+        if (this.dialogPrompt && !this.dialogInput) {
+            return;
+        }
         if (this.dialogOnConfirm) {
-            if (this.dialogOnConfirm() !== false) {
+            if (this.dialogOnConfirm(this.dialogInput) !== false) {
                 this.closeOverlays();
             }
         }

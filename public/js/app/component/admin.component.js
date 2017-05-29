@@ -64,6 +64,11 @@ var AdminComponent = (function () {
                 icon: "fa-database",
                 name: "backup",
                 text: "Back Up Database"
+            },
+            {
+                icon: "fa-cloud-upload",
+                name: "restoredb",
+                text: "Restore Database from Backup"
             }
         ];
     }
@@ -71,6 +76,9 @@ var AdminComponent = (function () {
         switch (tool.name) {
             case "backup":
                 this.doBackup();
+                break;
+            case "restoredb":
+                this.restore();
                 break;
         }
     };
@@ -307,6 +315,19 @@ var AdminComponent = (function () {
             var data = response.json();
             _this._app.toast(data.timestamp);
         });
+    };
+    AdminComponent.prototype.restore = function () {
+        var _this = this;
+        this._app.dialog('Are you sure?', 'Restoring the database backup cannot be undone or stopped.', 'Do it', function (timestamp) {
+            setTimeout(function () {
+                _this._app.toast('Restoring data . . .');
+                _this._app.showLoader();
+                _this.http.put('/api/restore', { timestamp: timestamp }).toPromise().then(function (response) {
+                    _this._app.hideLoader();
+                    _this._app.toast('Data restored');
+                });
+            }, 10);
+        }, false, 'Timestamp');
     };
     AdminComponent.prototype.deleteMaterial = function () {
         var _this = this;

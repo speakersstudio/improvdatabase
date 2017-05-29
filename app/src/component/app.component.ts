@@ -77,6 +77,8 @@ export class AppComponent implements OnInit {
     dialogConfirm: string = "";
     dialogOnConfirm: Function;
     dialogHideCancel: boolean = true;
+    dialogPrompt: string;
+    dialogInput: string;
 
     toastMessage: string;
     private toastMessageQueue: string[] = [];
@@ -257,11 +259,14 @@ export class AppComponent implements OnInit {
         }
     }
 
-    dialog(title: string, body: string, button?: string, onConfirm?: Function, hideCancel?: boolean): void {
+    dialog(title: string, body: string, button?: string, onConfirm?: Function, hideCancel?: boolean, prompt?: string): void {
         this.dialogTitle = title;
         this.dialogMessage = body;
         this.dialogConfirm = button;
         this.dialogOnConfirm = onConfirm;
+        this.dialogPrompt = prompt || '';
+
+        this.dialogInput = '';
 
         this.dialogCancel = button ? button.toLocaleLowerCase() == 'yes' ? 'No' : 'Cancel' : 'Okay then';
 
@@ -276,8 +281,11 @@ export class AppComponent implements OnInit {
     }
 
     onDialogConfirm(): void {
+        if (this.dialogPrompt && !this.dialogInput) {
+            return;
+        }
         if (this.dialogOnConfirm) {
-            if (this.dialogOnConfirm() !== false) {
+            if (this.dialogOnConfirm(this.dialogInput) !== false) {
                 this.closeOverlays();
             }
         } else {

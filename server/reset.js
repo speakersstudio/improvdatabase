@@ -30,6 +30,12 @@ const Game = require('./models/game.model'),
     Note = require('./models/note.model'),
     Tag = require('./models/tag.model');
 
+    
+mongoose.Promise = Promise;
+if (!mongoose.connection.readyState) {
+    mongoose.connect(config.mongodb.uri);
+}
+
 const backuptime = 1496073645479;
 const   databases = {
         'Invite': {
@@ -242,9 +248,6 @@ module.exports = {
     },
 
     reset: function() {
-        mongoose.Promise = Promise;
-        mongoose.connect(config.mongodb.uri);
-
         console.log('resetting all of the things');
         module.exports.checkForSeed(true);
     },

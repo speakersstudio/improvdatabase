@@ -90,6 +90,10 @@ export const API = {
         return `${this.getGame(gameId)}/notes`;
     },
 
+    getTag: function(tagId: string): string {
+        return `${this.tags}/${tagId}`;
+    },
+
     getNote: function(noteId: string): string {
         return `${this.notes}/${noteId}`;
     },

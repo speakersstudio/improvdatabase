@@ -144,6 +144,12 @@ var GameDatabaseService = (function () {
             return newName;
         });
     };
+    GameDatabaseService.prototype.saveTag = function (tag) {
+        return this.http.put(constants_1.API.getTag(tag._id), tag).toPromise()
+            .then(function (response) {
+            return response.json();
+        });
+    };
     GameDatabaseService.prototype.getPlayerCounts = function () {
         var _this = this;
         if (!this._playerCountPromise) {

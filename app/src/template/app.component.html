@@ -45,7 +45,7 @@
 
             <a routerLink="/app/materials" routerLinkActive="active" class="nav-item"
                 *ngIf="userService.can('material_page_view')">
-                <i class="fa fa-book"></i> <span>Materials Library</span>
+                <i class="fa fa-clipboard"></i> <span>Materials Library</span>
             </a>
 
             <a routerLink="/app/games" routerLinkActive="active" class="nav-item"
@@ -56,6 +56,11 @@
             <a routerLink="/app/videos" routerLinkActive="active" class="nav-item"
                 *ngIf="userService.can('video_page_view')">
                 <i class="fa fa-video-camera"></i> <span>Video Gallery</span>
+            </a>
+
+            <a routerLink="/app/glossary" routerLinkActive="active" class="nav-item"
+                *ngIf="userService.can('glossary_page_view')">
+                <i class="fa fa-book"></i> <span>Glossary</span>
             </a>
 
             <hr *ngIf="userService.can('team_page_view')" />

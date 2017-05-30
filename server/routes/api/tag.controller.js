@@ -38,10 +38,12 @@ module.exports = {
             tagId = req.params.id || req.body._id,
             userId = req.user._id;
 
-        Tag.find({}).where('_id').equals(tagId).exec()
+        Tag.findOne({}).where('_id').equals(tagId).exec()
             .then(tag => {
-                tag.name = data.name;
-                tag.description = data.description;
+                util.smartUpdate(tag, data, [
+                    'name', 'description'
+                ]);
+
                 tag.modifiedUser = userId;
                 tag.dateModified = Date.now();
 
@@ -56,7 +58,16 @@ module.exports = {
 
     delete: (req, res) => {
         let tagId = req.params.id;
-        Tag.find({}).where('_id').equals(tagId).remove().exec()
+        Tag.find({}).where('_id').equals(tagId).exec()
+            .then(tag => {
+                return util.iterate(tag.games, game => {
+                    util.removeFromObjectIdArray(game.tags, tag);
+                    return game.save();
+                });
+            })
+            .then(() => {
+                return Tag.find({}).where('_id').equals(tagId).remove();
+            })
             .then(() => {
                 res.send('Success');
             });

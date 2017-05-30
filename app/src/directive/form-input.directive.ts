@@ -41,8 +41,10 @@ export class FormInputDirective implements OnInit {
         setTimeout(() => {
             this.placeholder = this.inputElement.getAttribute('placeholder');
 
+            let classes = this.inputElement.classList;
+
             this.divElement = document.createElement('div');
-            this.divElement.className = 'form-input';
+            this.divElement.className = 'form-input ' + classes;
 
             if (this.inputElement.name) {
                 this.divElement.className += ' form-input-' + this.inputElement.name;

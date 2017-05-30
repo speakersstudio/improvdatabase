@@ -22,6 +22,7 @@ var legal_component_1 = require("../component/legal.component");
 var team_list_component_1 = require("../component/team-list.component");
 var team_details_component_1 = require("../component/team-details.component");
 var videos_component_1 = require("../component/videos.component");
+var glossary_component_1 = require("../component/glossary.component");
 var admin_component_1 = require("../component/admin.component");
 var not_found_component_1 = require("../component/not-found.component");
 var routes = [
@@ -123,6 +124,13 @@ var routes = [
                         component: videos_component_1.VideosComponent,
                         data: {
                             action: 'video_page_view'
+                        }
+                    },
+                    {
+                        path: 'glossary',
+                        component: glossary_component_1.GlossaryComponent,
+                        data: {
+                            action: 'glossary_page_view'
                         }
                     }
                 ]

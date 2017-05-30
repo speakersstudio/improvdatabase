@@ -841,6 +841,8 @@ button,
         @media only screen and (max-width: 500px) {
           .list .item .metadata .row > *:last-child {
             display: none; } }
+        .list .item .metadata .row .fill {
+          flex: 1; }
       .list .item .metadata h5 {
         margin: 0 48px 0 0;
         white-space: nowrap;

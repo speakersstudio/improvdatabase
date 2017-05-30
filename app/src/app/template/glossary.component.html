@@ -1,0 +1,45 @@
+<div class="toolbar"
+    [class.on]="_app.toolbarVisible"
+    [tools]="_tools"
+    [title]="title"
+    ></div>
+
+<div class="page">
+
+    <div class="paper-label">
+        <label class="pull-right" *ngIf="superAdmin" (click)="allTagsToggle()">
+            <input formSwitch type="checkbox" [(ngModel)]="toggleAllTags" />
+            Show all
+        </label>
+
+        Important Things to Know
+    </div>
+
+    <div class="list paper" infiniteScroll [disable]="isLoadingTags || allTagsAreDisplayed" (load)="loadMoreTags($event)">
+        <div class="item" *ngFor="let tag of tags"
+            [class.clickable] = "superAdmin"
+            [class.selected] = "tag === selectedTag"
+            (click)="onSelect(tag)">
+
+            <div class="badge"></div>
+
+            <div class="metadata">
+                <div class="row">
+                    <h5>{{tag.name}}</h5>
+                </div>
+                <div class="row">
+                    <p *ngIf="tag != selectedTag">{{tag.description}}</p>
+                    
+                    <input formInput class="fill" [(ngModel)]="tagDescription" *ngIf="tag === selectedTag" />
+                    <a (click)="saveTag()" *ngIf="tag === selectedTag">Save</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="item center" *ngIf="isLoadingTags">
+            <span class="loading"></span>
+        </div>
+    </div>
+
+</div>

@@ -21,8 +21,9 @@ var FormInputDirective = (function () {
         var _this = this;
         setTimeout(function () {
             _this.placeholder = _this.inputElement.getAttribute('placeholder');
+            var classes = _this.inputElement.classList;
             _this.divElement = document.createElement('div');
-            _this.divElement.className = 'form-input';
+            _this.divElement.className = 'form-input ' + classes;
             if (_this.inputElement.name) {
                 _this.divElement.className += ' form-input-' + _this.inputElement.name;
             }

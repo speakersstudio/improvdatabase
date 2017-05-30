@@ -32,6 +32,8 @@ export class FormSwitchDirective implements OnInit {
     ngOnInit(): void {
         let classes = this.inputElement.className;
 
+        this.inputElement.setAttribute('type', 'checkbox');
+
         this.wrapper = document.createElement('span');
         this.wrapper.className = classes + ' form-switch';
 

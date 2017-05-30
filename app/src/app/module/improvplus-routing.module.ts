@@ -15,6 +15,7 @@ import { LegalComponent } from "../component/legal.component";
 import { TeamListComponent } from '../component/team-list.component';
 import { TeamDetailsComponent } from '../component/team-details.component';
 import { VideosComponent } from '../component/videos.component';
+import { GlossaryComponent } from '../component/glossary.component';
 
 import { AdminComponent } from '../component/admin.component';
 import { NotFoundComponent } from '../component/not-found.component';
@@ -118,6 +119,13 @@ const routes: Routes = [
                         component: VideosComponent,
                         data: {
                             action: 'video_page_view'
+                        }
+                    },
+                    {
+                        path: 'glossary',
+                        component: GlossaryComponent,
+                        data: {
+                            action: 'glossary_page_view'
                         }
                     }
                 ]

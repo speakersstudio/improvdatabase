@@ -159,6 +159,13 @@ export class GameDatabaseService {
             })
     }
 
+    saveTag(tag: Tag): Promise<Tag> {
+        return this.http.put(API.getTag(tag._id), tag).toPromise()
+            .then(response => {
+                return response.json() as Tag;
+            });
+    }
+
     private _playerCountPromise: Promise<GameMetadata[]>;
     getPlayerCounts(): Promise<GameMetadata[]> {
         if (!this._playerCountPromise) {

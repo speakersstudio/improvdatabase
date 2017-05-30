@@ -18,6 +18,7 @@ var FormSwitchDirective = (function () {
     FormSwitchDirective.prototype.ngOnInit = function () {
         var _this = this;
         var classes = this.inputElement.className;
+        this.inputElement.setAttribute('type', 'checkbox');
         this.wrapper = document.createElement('span');
         this.wrapper.className = classes + ' form-switch';
         if (this.inputElement.name) {

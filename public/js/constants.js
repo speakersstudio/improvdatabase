@@ -83,6 +83,9 @@ exports.API = {
     gameNotes: function (gameId) {
         return this.getGame(gameId) + "/notes";
     },
+    getTag: function (tagId) {
+        return this.tags + "/" + tagId;
+    },
     getNote: function (noteId) {
         return this.notes + "/" + noteId;
     },

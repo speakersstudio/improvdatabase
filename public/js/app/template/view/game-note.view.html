@@ -22,7 +22,7 @@
         <em *ngIf="note.metadata && note.metadata.type == 'duration'"
             title="In regards to any game with this duration.">{{note.metadata.name}}</em>
     </label>
-    <div class="description" #description [innerHTML]="note.description"></div>
+    <div class="description" #description [innerHTML]="descriptionHtml"></div>
 </div>
 
 <div class="metadata" [class.no-margin]="!note" [@shrinkHeight] *ngIf="showEdit">

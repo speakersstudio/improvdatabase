@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var showdown_1 = require("showdown");
 var TextUtil = (function () {
     function TextUtil() {
     }
@@ -11,6 +12,13 @@ var TextUtil = (function () {
         var div = document.createElement("div");
         div.innerHTML = html;
         return div.textContent || div.innerText || html;
+    };
+    TextUtil.getMarkdownConverter = function () {
+        var c = new showdown_1.Converter();
+        c.setOption('openLinksInNewWindow', 'true');
+        c.setOption('simplifiedAutoLink', 'true');
+        c.setOption('excludeTrailingPunctuationFromURLs ', 'true');
+        return c;
     };
     return TextUtil;
 }());

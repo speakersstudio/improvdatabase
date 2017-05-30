@@ -18,6 +18,7 @@ var note_1 = require("../../model/note");
 var game_note_service_1 = require("../service/game-note.service");
 var anim_util_1 = require("../../util/anim.util");
 var util_1 = require("../../util/util");
+var text_util_1 = require("../../util/text.util");
 var GameNoteView = (function () {
     function GameNoteView(userService, noteService) {
         this.userService = userService;
@@ -46,6 +47,7 @@ var GameNoteView = (function () {
             if (this.note.modifiedUser && this.note.addedUser._id != this.note.modifiedUser._id) {
                 this.modifiedName = '<em>(edited by ' + this.note.modifiedUser.firstName + ' ' + this.note.modifiedUser.lastName + ')</em>';
             }
+            this.renderDescription();
             this.showText = true;
             if (this.superAdmin || this.note.addedUser._id == user_1._id) {
                 this.editable = true;
@@ -93,6 +95,14 @@ var GameNoteView = (function () {
                 description: 'This note will apply to any game tagged \'' + tag.name + '\'.'
             });
         });
+    };
+    GameNoteView.prototype.renderDescription = function () {
+        if (this.note && this.note.description) {
+            this.descriptionHtml = text_util_1.TextUtil.getMarkdownConverter().makeHtml(this.note.description);
+        }
+        else {
+            this.descriptionHtml = '';
+        }
     };
     GameNoteView.prototype.setupNoteEdit = function () {
         var _this = this;
@@ -146,6 +156,7 @@ var GameNoteView = (function () {
         }
         var note = this.note || new note_1.Note();
         note.description = this.noteInput;
+        this.renderDescription();
         if (this.noteContext == 'game') {
             note.game = this.game._id;
         }

@@ -26,6 +26,7 @@ import { GameNoteService } from '../service/game-note.service';
 import { ShrinkAnim } from '../../util/anim.util';
 
 import { Util } from '../../util/util';
+import { TextUtil } from '../../util/text.util';
 
 @Component({
     moduleId: module.id,
@@ -43,6 +44,8 @@ export class GameNoteView implements OnInit, OnChanges {
 
     @ViewChild('description') descriptionElement: ElementRef;
     @ViewChild('noteinput') inputElement: ElementRef;
+
+    descriptionHtml: string;
 
     showEdit: boolean;
     editable: boolean;
@@ -95,6 +98,7 @@ export class GameNoteView implements OnInit, OnChanges {
                 this.modifiedName = '<em>(edited by ' + this.note.modifiedUser.firstName + ' ' + this.note.modifiedUser.lastName + ')</em>';
             }
 
+            this.renderDescription();
             this.showText = true;
 
             if (this.superAdmin || this.note.addedUser._id == user._id) {
@@ -147,6 +151,14 @@ export class GameNoteView implements OnInit, OnChanges {
                 description: 'This note will apply to any game tagged \'' + tag.name + '\'.'
             })
         });
+    }
+
+    renderDescription(): void {
+        if (this.note && this.note.description) {
+            this.descriptionHtml = TextUtil.getMarkdownConverter().makeHtml(this.note.description);
+        } else {
+            this.descriptionHtml = '';
+        }
     }
 
     setupNoteEdit(): void {
@@ -205,6 +217,7 @@ export class GameNoteView implements OnInit, OnChanges {
         let note = this.note || new Note();
 
         note.description = this.noteInput;
+        this.renderDescription();
         
         if (this.noteContext == 'game') {
             note.game = this.game._id;

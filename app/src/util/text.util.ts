@@ -1,3 +1,5 @@
+import { Converter } from 'showdown';
+
 export class TextUtil {
 
     static stripTags(html: string): string {
@@ -9,6 +11,16 @@ export class TextUtil {
         let div = document.createElement("div");
         div.innerHTML = html;
         return div.textContent || div.innerText || html;
+    }
+
+    static getMarkdownConverter(): Converter {
+        let c = new Converter();
+
+        c.setOption('openLinksInNewWindow', 'true');
+        c.setOption('simplifiedAutoLink', 'true');
+        c.setOption('excludeTrailingPunctuationFromURLs ', 'true');
+
+        return c;
     }
 
 }

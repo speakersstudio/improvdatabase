@@ -34,6 +34,7 @@ import { TabData } from '../../model/tab-data';
 import { UserService } from "../../service/user.service";
 
 import { Util } from '../../util/util';
+import { TextUtil } from '../../util/text.util';
 import { ShrinkAnim } from '../../util/anim.util';
 
 @Component({
@@ -85,6 +86,8 @@ export class GameDetailsComponent implements OnInit, OnChanges {
     addTagShown: boolean;
     newTagText: string;
     tagHints: Tag[];
+
+    descriptionHtml: string;
 
     editDescriptionShown: boolean;
     newDescriptionText: string;
@@ -174,6 +177,15 @@ export class GameDetailsComponent implements OnInit, OnChanges {
         // make sure that things get set up if the game changes
         if (changes.game && (!this._gameId || this._gameId != changes.game.currentValue._id)) {
             this.setGame(changes.game.currentValue);
+        }
+    }
+
+    renderDescription(): void {
+        if (this.game.description) {
+            let converter = TextUtil.getMarkdownConverter();
+            this.descriptionHtml = converter.makeHtml(this.game.description);
+        } else {
+            this.descriptionHtml = 'No Description';
         }
     }
 
@@ -444,7 +456,7 @@ export class GameDetailsComponent implements OnInit, OnChanges {
     }
 
     showEditDescription(): void {
-        this.newDescriptionText = this.game.description;
+        this.newDescriptionText =this.game.description;
         this.editDescriptionShown = true;
     }
 
@@ -455,6 +467,7 @@ export class GameDetailsComponent implements OnInit, OnChanges {
 
     saveDescription(): void {
         this.game.description = this.newDescriptionText;
+        this.renderDescription();
         this.gameDatabaseService.saveGame(this.game);
         this.editDescriptionShown = false;
     }
@@ -474,6 +487,7 @@ export class GameDetailsComponent implements OnInit, OnChanges {
                     });
             }
 
+            this.renderDescription();
         }
     }
 

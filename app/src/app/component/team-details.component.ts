@@ -18,6 +18,7 @@ import { UserService } from '../../service/user.service';
 import { TeamService } from '../service/team.service';
 
 import { TimeUtil } from '../../util/time.util';
+import { TextUtil } from '../../util/text.util';
 
 import { DialogAnim, ToggleAnim } from '../../util/anim.util';
 
@@ -55,6 +56,8 @@ export class TeamDetailsComponent implements OnInit {
 
     purchases: Purchase[];
     subscription: Subscription;
+
+    descriptionHtml: string;
 
     constructor(
         public _app: AppComponent,
@@ -170,6 +173,15 @@ export class TeamDetailsComponent implements OnInit {
                 id: 'purchases',
                 icon: 'money'
             })
+        }
+    }
+
+    renderDescription(): void {
+        if (this.team.description) {
+            let converter = TextUtil.getMarkdownConverter();
+            this.descriptionHtml = converter.makeHtml(this.team.description);
+        } else {
+            this.descriptionHtml = 'No Description';
         }
     }
 

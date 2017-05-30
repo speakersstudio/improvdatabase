@@ -17,6 +17,7 @@ var team_1 = require("../../model/team");
 var user_service_1 = require("../../service/user.service");
 var team_service_1 = require("../service/team.service");
 var time_util_1 = require("../../util/time.util");
+var text_util_1 = require("../../util/text.util");
 var anim_util_1 = require("../../util/anim.util");
 var TeamDetailsComponent = (function () {
     function TeamDetailsComponent(_app, router, route, userService, teamService, pathLocationStrategy, _location) {
@@ -125,6 +126,15 @@ var TeamDetailsComponent = (function () {
                 id: 'purchases',
                 icon: 'money'
             });
+        }
+    };
+    TeamDetailsComponent.prototype.renderDescription = function () {
+        if (this.team.description) {
+            var converter = text_util_1.TextUtil.getMarkdownConverter();
+            this.descriptionHtml = converter.makeHtml(this.team.description);
+        }
+        else {
+            this.descriptionHtml = 'No Description';
         }
     };
     TeamDetailsComponent.prototype.calculateSubs = function () {

@@ -19,6 +19,7 @@ var game_note_service_1 = require("../service/game-note.service");
 var game_1 = require("../../model/game");
 var user_service_1 = require("../../service/user.service");
 var util_1 = require("../../util/util");
+var text_util_1 = require("../../util/text.util");
 var anim_util_1 = require("../../util/anim.util");
 var GameDetailsComponent = (function () {
     function GameDetailsComponent(_app, gameDatabaseService, gameNoteService, router, route, location, userService) {
@@ -98,6 +99,15 @@ var GameDetailsComponent = (function () {
         // make sure that things get set up if the game changes
         if (changes.game && (!this._gameId || this._gameId != changes.game.currentValue._id)) {
             this.setGame(changes.game.currentValue);
+        }
+    };
+    GameDetailsComponent.prototype.renderDescription = function () {
+        if (this.game.description) {
+            var converter = text_util_1.TextUtil.getMarkdownConverter();
+            this.descriptionHtml = converter.makeHtml(this.game.description);
+        }
+        else {
+            this.descriptionHtml = 'No Description';
         }
     };
     GameDetailsComponent.prototype.selectTab = function (tab) {
@@ -347,6 +357,7 @@ var GameDetailsComponent = (function () {
     };
     GameDetailsComponent.prototype.saveDescription = function () {
         this.game.description = this.newDescriptionText;
+        this.renderDescription();
         this.gameDatabaseService.saveGame(this.game);
         this.editDescriptionShown = false;
     };
@@ -364,6 +375,7 @@ var GameDetailsComponent = (function () {
                     _this.notes = notes;
                 });
             }
+            this.renderDescription();
         }
     };
     GameDetailsComponent.prototype.getPublicNotes = function () {

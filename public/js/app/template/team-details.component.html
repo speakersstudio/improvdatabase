@@ -76,7 +76,7 @@
             <hr />
 
             <div class="description" 
-                [innerHTML]="team.description ? team.description : 'No Description'"
+                [innerHTML]="descriptionHtml"
                 *ngIf="!editDescriptionShown"></div>
 
             <textarea name="description"
@@ -87,6 +87,7 @@
             <div class="button-group" *ngIf="can('team_edit')">
                 <div class="button" *ngIf="!editDescriptionShown" (click)="showEditDescription()">Edit Description</div>
                 
+                <label class="left" *ngIf="editDescriptionShown">Hey! We support <a href="http://www.markdowntutorial.com/" target="_blank">Markdown</a>!</label>
                 <div class="button" *ngIf="editDescriptionShown" (click)="cancelDescription()">cancel</div>
                 <div class="button raised" *ngIf="editDescriptionShown" (click)="saveDescription()">SAVE</div>
             </div>

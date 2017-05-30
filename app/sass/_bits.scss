@@ -470,9 +470,14 @@ iplus {
         vertical-align: middle;
         height: 33px;
         line-height: 30px;
+        margin-right: $std;
 
         .fa {
             vertical-align: middle;
+        }
+
+        &:last-child {
+            margin-right: 0;
         }
     }
     .improvplus-editable-metadata {
@@ -653,7 +658,6 @@ button,
 
     &.fab {
         @include fixed(null, ($std * 2), $std, null, 500);
-        font-size: $fab-icon-size;
         background: $color-primary;
         color: $color-primary-text;
         width: $fab-width;
@@ -662,13 +666,18 @@ button,
         padding: 0;
         min-width: 0;
         margin: 0;
-        line-height: $fab-icon-size;
+        line-height: 0;
 
         @include md-elevation(6);
         @include md-elevation-transition();
 
         &:hover {
             @include md-elevation(12);
+        }
+
+        .fa {
+            font-size: $fab-icon-size;
+            margin: 0;
         }
     }
 }

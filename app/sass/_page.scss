@@ -129,6 +129,11 @@ $paper-bg: $color-white;
             font-size: 32px;
             text-align: center;
         }
+
+        .button-group {
+            float: right;
+            margin-top: -($std - ($small / 2));
+        }
     }
 
     h4 {

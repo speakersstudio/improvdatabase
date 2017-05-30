@@ -10,7 +10,20 @@ module.exports = {
 
     create: (req, res) => {
 
-        res.status(404).send('Use /api/game/addTag instead!')
+        Tag.create({}).then(tag => {
+            util.smartUpdate(tag, req.body, [
+                'name', 'description'
+            ]);
+
+            tag.addedUser = req.user._id;
+            tag.dateModified = Date.now();
+            tag.modifiedUser = req.user._id;
+            tag.dateModified = Date.now();
+
+            return tag.save();
+        }).then(tag => {
+            res.json(tag);
+        });
 
     },
 

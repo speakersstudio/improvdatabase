@@ -12,8 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var app_component_1 = require("../../component/app.component");
+var tag_1 = require("../../model/tag");
 var game_database_service_1 = require("../service/game-database.service");
 var user_service_1 = require("../../service/user.service");
+var util_1 = require("../../util/util");
 var GlossaryComponent = (function () {
     function GlossaryComponent(_app, router, gameService, userService) {
         this._app = _app;
@@ -21,6 +23,7 @@ var GlossaryComponent = (function () {
         this.gameService = gameService;
         this.userService = userService;
         this.title = '<span class="light">glossary</span>';
+        this.toggleGamelessTags = false;
         this.toggleAllTags = false;
         this._tagDisplayCount = 0;
         this._tools = [];
@@ -36,10 +39,22 @@ var GlossaryComponent = (function () {
     };
     GlossaryComponent.prototype.getTags = function () {
         var _this = this;
+        this.selectedTag = null;
         this.isLoadingTags = true;
         this.gameService.getTags().then(function (tags) {
             var filteredtags = tags.filter(function (tag) {
-                return _this.toggleAllTags || !!tag.description;
+                if (_this.toggleGamelessTags) {
+                    return tag.games.length == 0;
+                }
+                else {
+                    var pass = _this.toggleAllTags || !!tag.description;
+                    if (_this.filter) {
+                        pass = pass &&
+                            (tag.name.toLowerCase().indexOf(_this.filter.toLowerCase()) > -1 ||
+                                tag.description.toLowerCase().indexOf(_this.filter.toLowerCase()) > -1);
+                    }
+                    return pass;
+                }
             }).sort(function (a, b) {
                 return a.name.localeCompare(b.name);
             });
@@ -65,13 +80,47 @@ var GlossaryComponent = (function () {
             return;
         }
         this.selectedTag = tag;
+        this.tagName = tag.name;
         this.tagDescription = tag.description;
     };
     GlossaryComponent.prototype.saveTag = function () {
         var _this = this;
-        this.selectedTag.description = this.tagDescription;
-        this.gameService.saveTag(this.selectedTag).then(function (tag) {
+        this.savingTag = this.selectedTag;
+        this.savingTag.name = this.tagName;
+        this.savingTag.description = this.tagDescription;
+        this.gameService.saveTag(this.savingTag).then(function (tag) {
+            _this.savingTag = null;
+        });
+        setTimeout(function () {
             _this.selectedTag = null;
+        }, 10);
+    };
+    GlossaryComponent.prototype.deleteTag = function () {
+        var _this = this;
+        var index = util_1.Util.indexOfId(this.tags, this.selectedTag);
+        this.gameService.deleteTag(this.selectedTag);
+        setTimeout(function () {
+            _this.tags.splice(index, 1);
+            _this.selectedTag = null;
+        }, 10);
+    };
+    GlossaryComponent.prototype.onSearch = function (result) {
+        if (result.type == 'search') {
+            this.filter = result.text;
+            this.getTags();
+        }
+    };
+    GlossaryComponent.prototype.clearFilter = function () {
+        this.filter = '';
+        this.getTags();
+    };
+    GlossaryComponent.prototype.createTag = function () {
+        var _this = this;
+        this.savingTag = new tag_1.Tag();
+        this.tags.unshift(this.savingTag);
+        this.gameService.newTag().then(function (tag) {
+            _this.tags.splice(0, 1, tag);
+            _this.savingTag = null;
         });
     };
     return GlossaryComponent;

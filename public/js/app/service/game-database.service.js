@@ -150,6 +150,18 @@ var GameDatabaseService = (function () {
             return response.json();
         });
     };
+    GameDatabaseService.prototype.newTag = function () {
+        return this.http.post(constants_1.API.tags, { name: 'New Tag' }).toPromise()
+            .then(function (response) {
+            return response.json();
+        });
+    };
+    GameDatabaseService.prototype.deleteTag = function (tag) {
+        return this.http.delete(constants_1.API.getTag(tag._id)).toPromise()
+            .then(function (response) {
+            return true;
+        });
+    };
     GameDatabaseService.prototype.getPlayerCounts = function () {
         var _this = this;
         if (!this._playerCountPromise) {

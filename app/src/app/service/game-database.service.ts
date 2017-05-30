@@ -166,6 +166,20 @@ export class GameDatabaseService {
             });
     }
 
+    newTag(): Promise<Tag> {
+        return this.http.post(API.tags, {name: 'New Tag'}).toPromise()
+            .then(response => {
+                return response.json() as Tag;
+            })
+    }
+
+    deleteTag(tag: Tag): Promise<boolean> {
+        return this.http.delete(API.getTag(tag._id)).toPromise()
+            .then(response => {
+                return true;
+            })
+    }
+
     private _playerCountPromise: Promise<GameMetadata[]>;
     getPlayerCounts(): Promise<GameMetadata[]> {
         if (!this._playerCountPromise) {

@@ -2,12 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import {AppComponent    } from '../../component/app.component';
-import { Tool } from '../view/toolbar.view';
+import { Tool, SearchResult } from '../view/toolbar.view';
 
 import { Tag } from '../../model/tag';
 
 import { GameDatabaseService } from '../service/game-database.service';
 import { UserService } from '../../service/user.service';
+
+import { Util } from '../../util/util';
 
 @Component({
     moduleId: module.id,
@@ -20,6 +22,7 @@ export class GlossaryComponent implements OnInit {
 
     tags: Tag[];
 
+    toggleGamelessTags: boolean = false;
     toggleAllTags: boolean = false;
 
     private _tagDisplayCount: number = 0;
@@ -28,15 +31,18 @@ export class GlossaryComponent implements OnInit {
     isLoadingTags: boolean;
 
     selectedTag: Tag;
+    tagName: string;
     tagDescription: string;
 
     superAdmin: boolean;
+
+    filter: string;
 
     constructor(
         public _app: AppComponent,
         private router: Router,
         private gameService: GameDatabaseService,
-        private userService: UserService
+        public userService: UserService
     ) { }
 
     _tools: Tool[] = [
@@ -53,11 +59,22 @@ export class GlossaryComponent implements OnInit {
     }
 
     getTags(): void {
+        this.selectedTag = null;
         this.isLoadingTags = true;
 
         this.gameService.getTags().then(tags => {
             let filteredtags = tags.filter(tag => {
-                    return this.toggleAllTags || !!tag.description;
+                    if (this.toggleGamelessTags) {
+                        return tag.games.length == 0;
+                    } else {
+                        let pass = this.toggleAllTags || !!tag.description;
+                        if (this.filter) {
+                            pass = pass &&
+                                (tag.name.toLowerCase().indexOf(this.filter.toLowerCase()) > -1 ||
+                                    tag.description.toLowerCase().indexOf(this.filter.toLowerCase()) > -1)
+                        }
+                        return pass;
+                    }
                 }).sort((a, b) => {
                     return a.name.localeCompare(b.name);
                 });
@@ -84,13 +101,55 @@ export class GlossaryComponent implements OnInit {
             return;
         }
         this.selectedTag = tag;
+        this.tagName = tag.name;
         this.tagDescription = tag.description;
     }
 
+    savingTag: Tag;
     saveTag(): void {
-        this.selectedTag.description = this.tagDescription;
-        this.gameService.saveTag(this.selectedTag).then(tag => {
+        this.savingTag = this.selectedTag;
+
+        this.savingTag.name = this.tagName;
+        this.savingTag.description = this.tagDescription;
+
+        this.gameService.saveTag(this.savingTag).then(tag => {
+            this.savingTag = null;
+        });
+
+        setTimeout(() => {
             this.selectedTag = null;
+        }, 10);
+    }
+
+    deleteTag(): void {
+        let index = Util.indexOfId(this.tags, this.selectedTag);
+        this.gameService.deleteTag(this.selectedTag);
+
+        setTimeout(() => {
+            this.tags.splice(index, 1);
+            this.selectedTag = null;
+        }, 10);
+    }
+
+    onSearch(result: SearchResult): void {
+        if (result.type == 'search') {
+            this.filter = result.text;
+            this.getTags();
+        }
+    }
+
+    clearFilter(): void {
+        this.filter = '';
+        this.getTags();
+    }
+
+    createTag(): void {
+        this.savingTag = new Tag();
+        this.tags.unshift(this.savingTag);
+
+        this.gameService.newTag().then(tag => {
+            this.tags.splice(0, 1, tag);
+            this.savingTag = null;
         });
     }
 

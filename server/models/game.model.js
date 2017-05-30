@@ -112,7 +112,7 @@ GameSchema.methods.removeTag = function(tagId, userId) {
                 reference: tag.name
             });
 
-            if (tag.games.length == 0) {
+            if (tag.games.length == 0 && !tag.description) {
                 return tag.remove();
             } else {
                 return tag.save();

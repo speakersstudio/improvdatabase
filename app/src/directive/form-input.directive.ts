@@ -2,6 +2,7 @@ import {
     Directive,
     ElementRef,
     OnInit,
+    OnDestroy,
     Input,
     Output,
     EventEmitter,
@@ -16,7 +17,7 @@ import {
         '(input)': 'input()'
     }
 })
-export class FormInputDirective implements OnInit {
+export class FormInputDirective implements OnInit, OnDestroy {
 
     @Input() error: string;
     @Input() asterisk: boolean = true;
@@ -77,6 +78,10 @@ export class FormInputDirective implements OnInit {
                 }
             }, 10);
         }, 100);
+    }
+
+    ngOnDestroy(): void {
+        this.divElement.remove();
     }
 
     focus(): void {

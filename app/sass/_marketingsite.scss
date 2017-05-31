@@ -90,18 +90,26 @@ landing-hero {
         white-space: nowrap;
         
         @media #{$media-mobile} {
-            font-size: 16px;
+            font-size: $large;
         }
     }
 
     h3 {
-        font-size: 24px;
+        font-size: $large;
         margin: $small $std;
+        
+        @media #{$media-mobile} {
+            margin: $small 0;
+        }
     }
 
     hr {
         margin: 0 $std;
         background: $color-white;
+        
+        @media #{$media-mobile} {
+            margin: 0;
+        }
     }
 
     p {
@@ -110,7 +118,7 @@ landing-hero {
     }
     
     .button {
-        margin-top: 24px;
+        margin-top: $large;
         color: $color-white;
         
         &:before,
@@ -130,6 +138,16 @@ landing-hero {
         margin: $large 0;
         max-width: 690px;
         text-align: center;
+    }
+
+    @media #{$media-mobile} {
+        iplus {
+            margin-left: $small;
+        }
+
+        .columns > * {
+            margin: 0 $small;
+        }
     }
 }
 
@@ -220,12 +238,14 @@ marketing-toolbar {
         }
 
         @media #{$media-mobile} {
-            top: -($toolbar-height * 4);
-            transition: top 300ms;
+            // top: -($toolbar-height * 4);
+            transform: translateY(-100%);
+            transition: transform 300ms;
         }
 
         &.open {
-            top: 0;
+            // top: 0;
+            transform: translateY(0);
         }
     }
 }
@@ -247,6 +267,10 @@ welcome, signup, for-improvisers {
         h4 {
             font-size: 4em;
             margin-bottom: $home-page-spacing;
+        
+            @media #{$media-mobile} {
+                font-size: 3.5em;
+            }
         }
 
         h5 {

@@ -139,6 +139,12 @@ var TeamService = (function () {
             return user;
         });
     };
+    TeamService.prototype.buySubscriptions = function (teamId, count, stripeToken) {
+        return this.http.post(constants_1.API.teamSubscription(teamId), { count: count, stripeToken: stripeToken }).toPromise()
+            .then(function (response) {
+            return response.json();
+        });
+    };
     return TeamService;
 }());
 TeamService = __decorate([

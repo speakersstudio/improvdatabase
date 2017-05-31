@@ -78,7 +78,6 @@ var UserComponent = (function () {
             this.userService.updateUser(user)
                 .then(function () {
                 _this.isPosting = false;
-                console.log('hello');
                 _this._app.toast("Your information has been saved!");
             })
                 .catch(function () {

@@ -223,6 +223,10 @@ module.exports = {
         return hours + ':' + mins + ' ' + ampm;
     },
 
+    isExpired: (subscription) => {
+        return !subscription || !subscription.expiration || (new Date(subscription.expiration)).getTime() <= Date.now()
+    },
+
     checkDirectory: (directory, callback) => {
         let fs = require('fs');
 

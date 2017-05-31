@@ -120,7 +120,6 @@ export class UserComponent implements OnInit, OnDestroy {
             this.userService.updateUser(user)
                 .then(() => {
                     this.isPosting = false;
-                    console.log('hello');
                     this._app.toast("Your information has been saved!");
                 })
                 .catch(() => {

@@ -112,6 +112,7 @@ module.exports = {
                 'calendar_create', // this is just posting to the calendar API, not specifically creating calendars
 
                 'team_subscription_invite', // user must be admin of the team
+                'team_subscription_add', // admins
                 'team_invite', // user has to be admin of team
                 'team_edit', // user has to be admin of team
                 'team_user_promote', // user has to be admin of team
@@ -437,6 +438,8 @@ const actionmap = {
                         action = 'team_validate';
                     } else if (url.indexOf('/invite') > -1) {
                         action = 'team_invite';
+                    } else if (url.indexOf('subscription') > -1) {
+                        action = 'team_subscription_add';
                     } else {
                         action = 'team_create';
                     }

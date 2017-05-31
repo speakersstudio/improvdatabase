@@ -151,8 +151,8 @@ iplus {
     }
 
     @media only screen and 
-    (min-device-pixel-ratio: 2),
-    (-webkit-min-device-pixel-ratio: 2) {
+    (min-device-pixel-ratio: 4),
+    (-webkit-min-device-pixel-ratio: 4) {
         .i {
             top: 11px;
         }
@@ -418,6 +418,24 @@ iplus {
             cursor: default;
             font-weight: bold;
             display: inline-block;
+            position: relative;
+            transition: none;
+        }
+        
+        &:after {
+            content: "";
+            display: block;
+            width: 100%;
+            height: 0;
+            @include abs(100%, 0, null, 0);
+            background: $color-white;
+            transition: height 350ms;
+        }
+
+        &.active, &:hover {
+            &:after {
+                height: $std;
+            }
         }
 
         @media #{$media-mobile} {
@@ -835,6 +853,10 @@ button,
             display: inline-block;
             width: auto;
             text-align: left;
+        }
+
+        .fa {
+            margin: 0 $small;
         }
     }
 

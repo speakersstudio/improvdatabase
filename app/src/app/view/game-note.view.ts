@@ -122,26 +122,32 @@ export class GameNoteView implements OnInit, OnChanges {
     }
 
     setupContextOptions(): void {
-        this.noteContextOptions = [
-            {
+        this.noteContextOptions = [];
+
+        if (this.game.names.length) {
+            this.noteContextOptions.push({
                 name: 'This game: ' + this.game.names[0].name,
                 _id: 'game',
                 icon: 'rocket',
                 description: 'This note will only apply to this game.'
-            },
-            {
+            });
+        }
+        if (this.game.playerCount) {
+            this.noteContextOptions.push({
                 name: this.game.playerCount.name + ' Players',
                 _id: 'metadata_' + this.game.playerCount._id,
                 icon: 'users',
                 description: 'This note will apply to any game involving \'' + this.game.playerCount.name + '\' player count.'
-            },
-            {
+            });
+        }
+        if (this.game.duration) {
+            this.noteContextOptions.push({
                 name: this.game.duration.name,
                 _id: 'metadata_' + this.game.duration._id,
                 icon: 'users',
                 description: 'This note will apply to any game involving \'' + this.game.duration.name + '\' duration.'
-            }
-        ];
+            });
+        }
 
         (<Tag[]> this.game.tags).forEach(tag => {
             this.noteContextOptions.push({

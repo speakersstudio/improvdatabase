@@ -145,20 +145,30 @@ var GameDatabaseService = (function () {
         });
     };
     GameDatabaseService.prototype.saveTag = function (tag) {
+        var _this = this;
         return this.http.put(constants_1.API.getTag(tag._id), tag).toPromise()
             .then(function (response) {
-            return response.json();
+            var index = util_1.Util.indexOfId(_this.tags, tag);
+            var t = response.json();
+            _this.tags.splice(index, 1, t);
+            return t;
         });
     };
     GameDatabaseService.prototype.newTag = function () {
+        var _this = this;
         return this.http.post(constants_1.API.tags, { name: 'New Tag' }).toPromise()
             .then(function (response) {
-            return response.json();
+            var tag = response.json();
+            _this.tags.push(tag);
+            return tag;
         });
     };
     GameDatabaseService.prototype.deleteTag = function (tag) {
+        var _this = this;
         return this.http.delete(constants_1.API.getTag(tag._id)).toPromise()
             .then(function (response) {
+            var index = util_1.Util.indexOfId(_this.tags, tag);
+            _this.tags.splice(index, 1);
             return true;
         });
     };

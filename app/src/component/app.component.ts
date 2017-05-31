@@ -155,7 +155,9 @@ export class AppComponent implements OnInit {
 
         if (this.userService.getLoggedInUser()) {
             // TODO: where is the best place for this?
-            this.userService.refreshToken();
+            this.userService.refreshToken().catch(() => {
+                this.toast('There was a problem refreshing your login.');
+            });
         }
 
         setTimeout(() => {

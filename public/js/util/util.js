@@ -13,6 +13,30 @@ var Util = (function () {
         });
         return index;
     };
+    Util.setupStripe = function (stripeConfig) {
+        var stripe = Stripe(stripeConfig);
+        var elements = stripe.elements();
+        var creditCard = elements.create('card', {
+            // value: {postalCode: this.user.zip},
+            style: {
+                base: {
+                    color: '#32325d',
+                    lineHeight: '24px',
+                    fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                    fontSmoothing: 'antialiased',
+                    fontSize: '16px',
+                    '::placeholder': {
+                        color: 'rgba(96,96,96,0.5)'
+                    }
+                },
+                invalid: {
+                    color: '#fa755a',
+                    iconColor: '#fa755a'
+                }
+            }
+        });
+        return creditCard;
+    };
     return Util;
 }());
 exports.Util = Util;

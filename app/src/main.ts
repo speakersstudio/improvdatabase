@@ -4,6 +4,13 @@ import { AppModule } from './module/app.module';
 
 import { CONFIG_TOKEN } from './constants';
 
+import Promise from 'promise-polyfill';
+import 'whatwg-fetch';
+
+if (!(<any> window).Promise) {
+    (<any> window).Promise = Promise;
+}
+
 fetch('/config').then(response => {
     response.json().then(configData => {
         const platform = platformBrowserDynamic([{

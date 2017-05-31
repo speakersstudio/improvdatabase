@@ -37,13 +37,11 @@ var LoginView = (function () {
             _this.isPosting = false;
         })
             .catch(function (reason) {
+            console.log(reason.json());
             _this.state = 'shake';
-            _this.isPosting = false;
-            _this.errorCount++;
-            if (reason.status == 500) {
-                _this.loginError = "Some sort of server error happened. Sorry.";
-            }
-            else {
+            if (reason.status == 401) {
+                _this.isPosting = false;
+                _this.errorCount++;
                 if (_this.errorCount === 1) {
                     _this.loginError = "That is not the correct username or password.";
                 }
@@ -70,10 +68,14 @@ var LoginView = (function () {
                     }, 7100);
                 }
             }
+            else {
+                _this.loginError = 'Some sort of server error happened. If this keeps happening, please email contact@improvpl.us';
+            }
         });
     };
     LoginView.prototype.cancel = function () {
         this.showRecoverPassword = false;
+        this.recoverPasswordDone = false;
         this.done.emit(null);
         return false;
     };

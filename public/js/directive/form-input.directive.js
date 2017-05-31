@@ -51,7 +51,7 @@ var FormInputDirective = (function () {
         }, 100);
     };
     FormInputDirective.prototype.ngOnDestroy = function () {
-        this.divElement.remove();
+        // this.divElement.remove();
     };
     FormInputDirective.prototype.focus = function () {
         this.labelElement.className = 'active';

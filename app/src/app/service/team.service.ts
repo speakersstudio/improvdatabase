@@ -155,4 +155,11 @@ export class TeamService {
             });
     }
 
+    buySubscriptions(teamId: string, count: number, stripeToken: string): Promise<Subscription> {
+        return this.http.post(API.teamSubscription(teamId), {count: count, stripeToken: stripeToken}).toPromise()
+            .then(response => {
+                return response.json() as Subscription;
+            })
+    }
+
 }

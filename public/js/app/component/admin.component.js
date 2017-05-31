@@ -300,7 +300,6 @@ var AdminComponent = (function () {
         var _this = this;
         this.libraryService.postNewVersion(this.selectedMaterial._id, this.newVersion, this.newVersionFile).then(function (m) {
             _this.selectedMaterial.versions = m.versions;
-            _this.userService.refreshToken();
         });
     };
     AdminComponent.prototype.deleteVersion = function (version) {

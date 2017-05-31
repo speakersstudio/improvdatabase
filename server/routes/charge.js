@@ -19,10 +19,59 @@ let User = require('../models/user.model'),
     Team = require('../models/team.model'),
     Purchase = require('../models/purchase.model'),
     Subscription = require('../models/subscription.model'),
-    Package = require('../models/package.model');
+    Package = require('../models/package.model'),
+    HistoryModel = require('../models/history.model');
 
 
 module.exports = {
+
+    buyTeamSubscriptions: (user, teamId, count, stripeToken) => {
+        let stripe = require('stripe')(config.stripe.secret),
+            token,
+            packageConfig;
+
+        if (typeof stripeToken == 'object' && stripeToken.id) {
+            token = stripeToken.id;
+        }
+
+        // get the package config data
+        return PackageConfig.find({}).exec()
+            .then(c => {
+                packageConfig = c[0];
+
+                return findModelUtil.findTeam(teamId);
+            })
+            .then(team => {
+                // figure out how much this will cost
+                let thisTeamRole = team.subscription.role,
+                    roleType = roles.getRoleType(thisTeamRole),
+                    subPrice = roleType == roles.ROLE_FACILITATOR ? packageConfig.fac_sub_price : packageConfig.improv_sub_price,
+                    totalPrice = subPrice * count;
+                
+                return stripe.charges.create({
+                    amount: totalPrice,
+                    currency: "usd",
+                    source: token,
+                    description: 'Adding ' + count + ' subscriptions to team ' + team.name,
+                    metadata: {'team': team._id.toString(), 'user': user._id}
+                });
+            })
+            .then(charge => {
+                HistoryModel.create({
+                    action: 'team_subscription_add',
+                    user: user._id,
+                    target: teamId,
+                    reference: charge.id
+                });
+
+                return Subscription.findOne({}).where('team').equals(teamId).exec();
+            })
+            .then(subscription => {
+                subscription.subscriptions += count;
+
+                return subscription.save();
+            });
+    },
 
     signup: (req, res) => {
 
@@ -441,116 +490,8 @@ module.exports = {
                 }
             });
         
-    },
-
-    /**
-     * This is probably totally broken right now!
-     */
-    doCharge: (req, res) => {
-
-        let stripe = require('stripe')(config.stripe.secret);
-
-        let token = req.body.stripeToken, // stripe charge token
-            cart = req.body.cart, // array of Purchase objects (see the Purchase model)
-            user = req.user && req.user._id ? req.user : req.body.user, // the user who made this charge (if no user is logged in, hopefully we're creating one)
-            isUserNew = !user._id;
-
-        if (!user || !user.email) {
-            console.log('No user!')
-            res.status(500).json({error: "No user"});
-            return;
-        }
-        if (!token) {
-            console.log('no stripe token!');
-            res.status(500).json({error: "No stripe token"});
-            return;
-        }
-        if (!cart || !cart.length) {
-            console.log('no cart!');
-            res.status(500).json({error: 'No cart array'});
-        }
-
-        if (typeof token == 'object') {
-            token = token.id;
-        }
-
-        let userCheck;
-        if (isUserNew) {
-            // make sure we don't already have a user with the new email address
-            userCheck = User.findOne({})
-                .where('email').equals(user.email)
-                .exec();
-        } else {
-            userCheck = Promise.resolve(false);
-        }
-
-        return userCheck.then(conflictUser => {
-            if (conflictUser) {
-                res.status(401).json({
-                    error: 'email already exists'
-                });
-                return Promise.reject(false);
-            }
-
-            if (!user.stripeCustomerId) {
-                stripePromise = stripe.customers.create({
-                    email: user.email,
-                    source: token
-                });
-            } else {
-                stripePromise = Promise.resolve(false);
-            }
-
-            return stripePromise;
-        })
-            .then(customer => {
-                if (customer) {
-                    user.stripeCustomerId = customer.id;
-                }
-
-                let total = 0,
-                    desc = isUserNew ? "New purchase - " : "Purchase - ";
-
-                cart.forEach((cartItem, i) => {
-                    total += cartItem.total;
-                    if (cartItem.package) {
-                        desc += ' - ' + cartItem.package.name;
-                    }
-                });
-
-                // stripe expects the price in cents
-                total *= 100;
-
-                return stripe.charges.create({
-                    amount: total,
-                    currency: "usd",
-                    description: desc,
-                    customer: user.stripeCustomerId
-                });
-            })
-            .then(charge => {
-                // if we have a newUser object, create that new user
-                // otherwise just pass along the logged in user
-                if (isUserNew) {
-                    return userController.createUser(user);
-                } else {
-                    return Promise.resolve(user);
-                }
-            })
-            .then(u => {
-                if (isUserNew && user.stripeCustomerId) {
-                    u.stripeCustomerId = user.stripeCustomerId;
-                    return u.save();
-                }
-            })
-            .then(u => {
-                // save the purchase item in the database
-                return module.exports.createPurchase(u, cart);
-            })
-            .then(u => {
-                res.json(u);
-            })
-
     }
+
+    
 
 }

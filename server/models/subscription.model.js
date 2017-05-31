@@ -20,7 +20,11 @@ const SubscriptionSchema = new mongoose.Schema({
     team: { type: mongoose.Schema.Types.ObjectId, ref: 'Team' },
     subscriptions: Number, // the number of users purchased
     children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Subscription' }], // users that have inherited from this
+
+    // invites to users with their own subscriptions
     invites: [{type: mongoose.Schema.Types.ObjectId, ref: 'Invite' }],
+    // invites to new users, this + children should be <= subscriptions
+    subscriptionInvites: [{type: mongoose.Schema.Types.ObjectId, ref: 'Invite'}],
 
     // for user subscriptions
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

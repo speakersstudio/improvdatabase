@@ -26,6 +26,9 @@ var UserFormView = (function () {
         this.newUser = this.user._id == undefined;
         if (this.user.birthday) {
             var birthday = new Date(this.user.birthday);
+            if (isNaN(birthday.getDate())) {
+                birthday = new Date(parseInt(this.user.birthday));
+            }
             this.birthdayDay = birthday.getDate();
             this.birthdayMonth = birthday.getMonth();
             this.birthdayYear = birthday.getFullYear();
@@ -44,7 +47,7 @@ var UserFormView = (function () {
         if (this.password === this.passwordConfirm) {
             this.user.password = this.password;
             if (this.birthdayDay && this.birthdayMonth && this.birthdayYear) {
-                var birthday = new Date();
+                var birthday = new Date(0);
                 birthday.setDate(this.birthdayDay);
                 birthday.setMonth(this.birthdayMonth);
                 birthday.setFullYear(this.birthdayYear);

@@ -79,13 +79,14 @@ export class LoginView implements OnInit {
                 this.isPosting = false;
             })
             .catch((reason) => {
+                console.log(reason.json());
+
                 this.state = 'shake';
 
-                this.isPosting = false;
-                this.errorCount++;
-                if (reason.status == 500) {
-                    this.loginError = "Some sort of server error happened. Sorry.";
-                } else {
+                if (reason.status == 401) {
+                    this.isPosting = false;
+                    this.errorCount++;
+
                     if (this.errorCount === 1) {
                         this.loginError = "That is not the correct username or password.";
                     } else if (this.errorCount === 2) {
@@ -109,12 +110,17 @@ export class LoginView implements OnInit {
                             this.done.emit(null);
                         }, 7100);
                     }
+
+                } else {
+                    this.loginError = 'Some sort of server error happened. If this keeps happening, please email contact@improvpl.us';
                 }
             });
     }
 
     cancel(): boolean {
         this.showRecoverPassword = false;
+        this.recoverPasswordDone = false;
+        
         this.done.emit(null);
         return false;
     }

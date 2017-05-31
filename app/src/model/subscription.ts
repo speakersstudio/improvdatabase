@@ -15,6 +15,7 @@ export class Subscription {
     subscriptions: number; // how many users can inherit this sub
     children: string[]|Subscription[]; // array of _ids (or the data) of child subscriptions
     invites: Invite[];
+    subscriptionInvites: Invite[];
 
     user: string; // the _id of the user who has this subscription
 

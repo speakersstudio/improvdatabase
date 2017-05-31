@@ -3,7 +3,7 @@
 <span *ngIf="!editShown"
     [class.clickable]="canEdit"
     (click)="showEdit()"
-    [innerHTML]="text || blankText"></span>
+    [innerHTML]="text"></span>
 
 <input name="editMetadata" #metadataInput
     *ngIf="editShown && type=='text'"

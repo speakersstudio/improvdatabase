@@ -16,9 +16,11 @@ import { Subscription } from '../../model/subscription';
 
 import { UserService } from '../../service/user.service';
 import { TeamService } from '../service/team.service';
+import { AppService } from '../../service/app.service';
 
 import { TimeUtil } from '../../util/time.util';
 import { TextUtil } from '../../util/text.util';
+import { Util } from '../../util/util';
 
 import { DialogAnim, ToggleAnim } from '../../util/anim.util';
 
@@ -59,10 +61,13 @@ export class TeamDetailsComponent implements OnInit {
 
     descriptionHtml: string;
 
+    subscriptionPrice: number;
+
     constructor(
         public _app: AppComponent,
         private router: Router,
         private route: ActivatedRoute,
+        private _service: AppService,
         private userService: UserService,
         private teamService: TeamService,
         private pathLocationStrategy: PathLocationStrategy,
@@ -145,6 +150,10 @@ export class TeamDetailsComponent implements OnInit {
             this.subscription = s;
 
             this.calculateSubs();
+
+            this._service.getPackageConfig().then(config => {
+                this.subscriptionPrice = this.subscription.type == 'facilitator' ? config.fac_sub_price : config.improv_sub_price;
+            });
         });
 
         this.title = team.name;
@@ -186,14 +195,14 @@ export class TeamDetailsComponent implements OnInit {
     }
 
     calculateSubs(): void {
-        this.pendingInvites = 0;
-        if (this.subscription.invites) {
-            this.subscription.invites.forEach(invite => {
-                if (!invite.inviteUser || this.userService.isExpired(invite.inviteUser)) {
-                    this.pendingInvites++;
-                }
-            });
-        }
+        this.pendingInvites = this.subscription.subscriptionInvites.length;
+        // if (this.subscription.invites) {
+        //     this.subscription.invites.forEach(invite => {
+        //         if (!invite.inviteUser || this.userService.isExpired(invite.inviteUser)) {
+        //             this.pendingInvites++;
+        //         }
+        //     });
+        // }
 
         this.remainingSubs = this.subscription.subscriptions - (this.subscription.children.length || 0) - this.pendingInvites;
     }
@@ -293,15 +302,15 @@ export class TeamDetailsComponent implements OnInit {
                 this.inviteStatus = 'wait';
                 this.inviteModel = invite;
                 if (invite) {
-                    this.subscription.invites.push(invite);
-                    this.calculateSubs();
-
                     setTimeout(() => {
                         if (!invite.inviteUser || this.userService.isExpired(invite.inviteUser)) {
                             this.inviteStatus = 'new';
+                            this.subscription.subscriptionInvites.push(invite);
                         } else {
                             this.inviteStatus = 'exists';
+                            this.subscription.invites.push(invite);
                         }
+                        this.calculateSubs();
                     }, 300);
                 }
             }, error => {
@@ -317,6 +326,8 @@ export class TeamDetailsComponent implements OnInit {
                     } else {
                         this.inviteError = 'At this time, you cannot invite an Improviser to a Facilitator Team.'
                     }
+                } else if (response.error && response.error == 'out of subscriptions') {
+                    this.inviteError = 'Your team is out of subscriptions, so you cannot invite that user until you purchase more (or until they purchase a subscription on their own).'
                 } else {
                     this.inviteError = 'There was some sort of problem sending that invite.';
                 }
@@ -372,8 +383,55 @@ export class TeamDetailsComponent implements OnInit {
         });
     }
 
+    showBuySubscriptionDialog: boolean;
+    showBuySubscriptionCC: boolean;
+    buySubCount: number;
+
     buySubscription(): void {
-        this._app.toast("This button doesn't work yet. Soon, though. Soon.");
+        // this._app.backdrop(true);
+
+        // this.showBuySubscriptionDialog = true;
+        // this.buySubCount = 0;
+
+        this._app.dialog('Not Ready Yet', 'We are terribly sorry, but this feature is not ready yet. If this is a problem, please contact us using the "request a feature" option in the App menu.');
+    }
+
+    cancelBuySubscriptionDialog(): void {
+        this._app.backdrop(false);
+        this.showBuySubscriptionDialog = false;
+    }
+
+    cardComplete: boolean;
+    cardError: string;
+
+    submitBuySubscriptions(): void {
+        this.showBuySubscriptionDialog = false;
+
+        setTimeout(() => {
+            this.showBuySubscriptionCC = true;
+
+            // let creditCard = Util.setupStripe(this._app.config.stripe);
+
+            // creditCard.addEventListener('change', (e: any) => {
+                
+            //     this.cardComplete = e.complete;
+
+            //     if (e.error) {
+            //         this.cardError = e.error.message;
+            //     } else {
+            //         this.cardError = '';
+            //     }
+            // });
+
+            // // setup the stripe credit card input
+            // setTimeout(() => {
+            //     creditCard.mount('#card-element');
+            // }, 100)
+        }, 300)
+    }
+
+    doBuySubscriptions(): void {
+        this.isPosting = true;
     }
 
     getUserName(user: User): string {

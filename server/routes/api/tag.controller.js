@@ -4,7 +4,8 @@ const   util = require('../../util');
 
 const Game = require('../../models/game.model');
 const Name = require('../../models/name.model');
-const Tag = require('../../models/tag.model');
+const Tag = require('../../models/tag.model'),
+        HistoryModel = require('../../models/history.model');
 
 module.exports = {
 
@@ -53,12 +54,22 @@ module.exports = {
 
         Tag.findOne({}).where('_id').equals(tagId).exec()
             .then(tag => {
+                let oldTag = tag.toObject();
+
                 util.smartUpdate(tag, data, [
                     'name', 'description'
                 ]);
 
                 tag.modifiedUser = userId;
                 tag.dateModified = Date.now();
+
+                let changes = util.findChanges(oldTag, tag);
+                HistoryModel.create({
+                    user: req.user._id,
+                    action: 'tag_update',
+                    target: tag._id,
+                    changes: changes
+                });
 
                 return tag.save();
             }, error => {
@@ -71,11 +82,22 @@ module.exports = {
 
     delete: (req, res) => {
         let tagId = req.params.id;
-        Tag.find({}).where('_id').equals(tagId).exec()
+        Tag.find({})
+            .where('_id').equals(tagId)
+            .exec()
             .then(tag => {
-                return util.iterate(tag.games, game => {
-                    util.removeFromObjectIdArray(game.tags, tag);
-                    return game.save();
+                
+                HistoryModel.create({
+                    user: req.user._id,
+                    action: 'tag_delete',
+                    target: tag.name
+                });
+
+                return util.iterate(tag.games, gameId => {
+                    return Game.findOne({}).where('_id').equals(gameId).exec().then(game => {
+                        util.removeFromObjectIdArray(game.tags, tag);
+                        return game.save();
+                    });
                 });
             })
             .then(() => {

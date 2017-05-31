@@ -16,14 +16,16 @@ var app_component_1 = require("../../component/app.component");
 var team_1 = require("../../model/team");
 var user_service_1 = require("../../service/user.service");
 var team_service_1 = require("../service/team.service");
+var app_service_1 = require("../../service/app.service");
 var time_util_1 = require("../../util/time.util");
 var text_util_1 = require("../../util/text.util");
 var anim_util_1 = require("../../util/anim.util");
 var TeamDetailsComponent = (function () {
-    function TeamDetailsComponent(_app, router, route, userService, teamService, pathLocationStrategy, _location) {
+    function TeamDetailsComponent(_app, router, route, _service, userService, teamService, pathLocationStrategy, _location) {
         this._app = _app;
         this.router = router;
         this.route = route;
+        this._service = _service;
         this.userService = userService;
         this.teamService = teamService;
         this.pathLocationStrategy = pathLocationStrategy;
@@ -101,6 +103,9 @@ var TeamDetailsComponent = (function () {
         this.teamService.fetchSubscription(this.team).then(function (s) {
             _this.subscription = s;
             _this.calculateSubs();
+            _this._service.getPackageConfig().then(function (config) {
+                _this.subscriptionPrice = _this.subscription.type == 'facilitator' ? config.fac_sub_price : config.improv_sub_price;
+            });
         });
         this.title = team.name;
         this.tabs = [
@@ -138,15 +143,14 @@ var TeamDetailsComponent = (function () {
         }
     };
     TeamDetailsComponent.prototype.calculateSubs = function () {
-        var _this = this;
-        this.pendingInvites = 0;
-        if (this.subscription.invites) {
-            this.subscription.invites.forEach(function (invite) {
-                if (!invite.inviteUser || _this.userService.isExpired(invite.inviteUser)) {
-                    _this.pendingInvites++;
-                }
-            });
-        }
+        this.pendingInvites = this.subscription.subscriptionInvites.length;
+        // if (this.subscription.invites) {
+        //     this.subscription.invites.forEach(invite => {
+        //         if (!invite.inviteUser || this.userService.isExpired(invite.inviteUser)) {
+        //             this.pendingInvites++;
+        //         }
+        //     });
+        // }
         this.remainingSubs = this.subscription.subscriptions - (this.subscription.children.length || 0) - this.pendingInvites;
     };
     TeamDetailsComponent.prototype.saveEditName = function (name) {
@@ -220,15 +224,16 @@ var TeamDetailsComponent = (function () {
             _this.inviteStatus = 'wait';
             _this.inviteModel = invite;
             if (invite) {
-                _this.subscription.invites.push(invite);
-                _this.calculateSubs();
                 setTimeout(function () {
                     if (!invite.inviteUser || _this.userService.isExpired(invite.inviteUser)) {
                         _this.inviteStatus = 'new';
+                        _this.subscription.subscriptionInvites.push(invite);
                     }
                     else {
                         _this.inviteStatus = 'exists';
+                        _this.subscription.invites.push(invite);
                     }
+                    _this.calculateSubs();
                 }, 300);
             }
         }, function (error) {
@@ -247,6 +252,9 @@ var TeamDetailsComponent = (function () {
                 else {
                     _this.inviteError = 'At this time, you cannot invite an Improviser to a Facilitator Team.';
                 }
+            }
+            else if (response.error && response.error == 'out of subscriptions') {
+                _this.inviteError = 'Your team is out of subscriptions, so you cannot invite that user until you purchase more (or until they purchase a subscription on their own).';
             }
             else {
                 _this.inviteError = 'There was some sort of problem sending that invite.';
@@ -290,7 +298,37 @@ var TeamDetailsComponent = (function () {
         });
     };
     TeamDetailsComponent.prototype.buySubscription = function () {
-        this._app.toast("This button doesn't work yet. Soon, though. Soon.");
+        // this._app.backdrop(true);
+        // this.showBuySubscriptionDialog = true;
+        // this.buySubCount = 0;
+        this._app.dialog('Not Ready Yet', 'We are terribly sorry, but this feature is not ready yet. If this is a problem, please contact us using the "request a feature" option in the App menu.');
+    };
+    TeamDetailsComponent.prototype.cancelBuySubscriptionDialog = function () {
+        this._app.backdrop(false);
+        this.showBuySubscriptionDialog = false;
+    };
+    TeamDetailsComponent.prototype.submitBuySubscriptions = function () {
+        var _this = this;
+        this.showBuySubscriptionDialog = false;
+        setTimeout(function () {
+            _this.showBuySubscriptionCC = true;
+            // let creditCard = Util.setupStripe(this._app.config.stripe);
+            // creditCard.addEventListener('change', (e: any) => {
+            //     this.cardComplete = e.complete;
+            //     if (e.error) {
+            //         this.cardError = e.error.message;
+            //     } else {
+            //         this.cardError = '';
+            //     }
+            // });
+            // // setup the stripe credit card input
+            // setTimeout(() => {
+            //     creditCard.mount('#card-element');
+            // }, 100)
+        }, 300);
+    };
+    TeamDetailsComponent.prototype.doBuySubscriptions = function () {
+        this.isPosting = true;
     };
     TeamDetailsComponent.prototype.getUserName = function (user) {
         return user.firstName ? user.firstName : 'this user';
@@ -335,6 +373,7 @@ TeamDetailsComponent = __decorate([
     __metadata("design:paramtypes", [app_component_1.AppComponent,
         router_1.Router,
         router_1.ActivatedRoute,
+        app_service_1.AppService,
         user_service_1.UserService,
         team_service_1.TeamService,
         common_1.PathLocationStrategy,

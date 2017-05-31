@@ -75,7 +75,7 @@ router.put('/packageconfig', auth.checkToken, (req, res) => {
 // CHECKOUT PROCESS
 var charge = require('./charge');
 router.post('/signup', auth.checkToken, charge.signup);
-router.post('/charge', auth.checkToken, charge.doCharge);
+// router.post('/charge', auth.checkToken, charge.doCharge);
 
 // CONTACT
 let contactRoute = require('./contact');

@@ -11,6 +11,7 @@ const   mongoose = require('mongoose'),
         findModelUtil = require('./find-model.util'),
 
         userController = require('./user.controller'),
+        chargeController = require('../charge'),
 
         Subscription = require('../../models/subscription.model'),
         Team = require('../../models/team.model'),
@@ -278,6 +279,8 @@ module.exports = {
                             // check if the email address entered is already a user
                             findModelUtil.findUser(email)
                                 .then(addUser => {
+                                    let needsSubscription = true;
+
                                     if (addUser) {
                                         // make sure they aren't already in this team
                                         if (util.indexOfObjectId(addUser.memberOfTeams, teamId) > -1 ||
@@ -296,6 +299,17 @@ module.exports = {
                                                 res.status(500).json({error: 'user type mismatch'});
                                                 return;
                                         }
+
+                                        if (!util.isExpired(addUser.subscription)) {
+                                            needsSubscription = false;
+                                        }
+                                    }
+
+                                    // see if the team has available subscriptions left
+                                    if (subscription.subscriptionInvites.length + subscription.children.length >= subscription.subscriptions &&
+                                            needsSubscription) {
+                                        res.status(409).json({error: 'out of subscriptions'})
+                                        return;
                                     }
 
                                     // create a new invite object
@@ -365,7 +379,11 @@ module.exports = {
                                                 }
                                             }, (error, response) => {
 
-                                                subscription.invites.push(invite);
+                                                if (needsSubscription) {
+                                                    subscription.subscriptionInvites.push(invite);
+                                                } else {
+                                                    subscription.invites.push(invite);
+                                                }
 
                                                 if (addUser) {
                                                     addUser.invites.push(invite);
@@ -393,8 +411,6 @@ module.exports = {
                                 })
                         })
 
-                    
-
                 })
 
         } else {
@@ -410,56 +426,79 @@ module.exports = {
                 return;
             }
 
-        return Team.findOne({}).where('_id').equals(req.params.id)
-            .select('subscription')
-            .populate({
-                path: 'subscription',
-                select: '-stripeCustomerId',
-                populate: {
-                    path: 'parent invites',
+        if (req.method == 'GET') {
+            return Team.findOne({}).where('_id').equals(req.params.id)
+                .select('subscription')
+                .populate({
+                    path: 'subscription',
                     select: '-stripeCustomerId',
-                    match: {
-                        accepted: false,
-                        dateDeleted: undefined
-                    },
                     populate: {
-                        path: 'team',
-                        select: 'name'
+                        path: 'parent invites subscriptionInvites',
+                        select: '-stripeCustomerId',
+                        match: {
+                            accepted: false,
+                            dateDeleted: undefined
+                        },
+                        populate: {
+                            path: 'team',
+                            select: 'name'
+                        }
                     }
-                }
-            })
-            .then(t => {
-                team = t.toObject();
+                })
+                .then(t => {
+                    team = t.toObject();
 
-                if (team.subscription) {
-                    team.subscription.type = roles.findRoleById(roles.getRoleType(team.subscription.role)).name;
-                    team.subscription.roleName = roles.findRoleById(team.subscription.role).name;
-                }
+                    if (team.subscription) {
+                        team.subscription.type = roles.findRoleById(roles.getRoleType(team.subscription.role)).name;
+                        team.subscription.roleName = roles.findRoleById(team.subscription.role).name;
+                    }
 
-                if (team.subscription.invites && team.subscription.invites.length) {
-                    return util.iterate(team.subscription.invites, (invite) => {
-                        return findModelUtil.findUser(invite.email)
-                            .then(user => {
-                                if (user) {
-                                    invite.inviteUser = {
-                                        firstName: user.firstName,
-                                        lastName: user.lastName,
-                                        email: user.email,
-                                        _id: user._id,
-                                        subscription: user.subscription
-                                    };
-                                }
-                            });
-                    }).then(() => {
+                    if (team.subscription.invites || team.subscription.subscriptionInvites) {
+                        return util.iterate([].concat(team.subscription.subscriptionInvites, team.subscription.invites), (invite) => {
+                            if (invite && invite.email) {
+                                return findModelUtil.findUser(invite.email)
+                                    .then(user => {
+                                        if (user) {
+                                            invite.inviteUser = {
+                                                firstName: user.firstName,
+                                                lastName: user.lastName,
+                                                email: user.email,
+                                                _id: user._id,
+                                                subscription: user.subscription
+                                            };
+                                        }
+                                    });
+                            } else {
+                                return Promise.resolve();
+                            }
+                        }).then(() => {
+                            return Promise.resolve(team);
+                        })
+                    } else {
                         return Promise.resolve(team);
-                    })
-                } else {
-                    return Promise.resolve(team);
-                }
-            })
-            .then(team => {
-                res.json(team);
-            })
+                    }
+                })
+                .then(team => {
+                    res.json(team);
+                })
+        } else if (req.method == 'POST') {
+            // purchase new subscriptions!
+
+            // this requires a team admin
+            if (util.indexOfObjectId(req.user.adminOfTeams, req.params.id) == -1) {
+                util.unauthorized(req, res);
+                return;
+            }
+
+            let teamId = req.params.id,
+                subCount = req.body.count,
+                stripeToken = req.body.stripeToken;
+
+            return chargeController.buyTeamSubscriptions(req.user, teamId, subCount, stripeToken)
+                .then(subscription => {
+                    res.json(subscription);
+                });
+        }
     },
 
 }

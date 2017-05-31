@@ -162,20 +162,27 @@ export class GameDatabaseService {
     saveTag(tag: Tag): Promise<Tag> {
         return this.http.put(API.getTag(tag._id), tag).toPromise()
             .then(response => {
-                return response.json() as Tag;
+                let index = Util.indexOfId(this.tags, tag);
+                let t = response.json() as Tag;
+                this.tags.splice(index, 1, t);
+                return t;
             });
     }
 
     newTag(): Promise<Tag> {
         return this.http.post(API.tags, {name: 'New Tag'}).toPromise()
             .then(response => {
-                return response.json() as Tag;
+                let tag = response.json() as Tag;
+                this.tags.push(tag);
+                return tag;
             })
     }
 
     deleteTag(tag: Tag): Promise<boolean> {
         return this.http.delete(API.getTag(tag._id)).toPromise()
             .then(response => {
+                let index = Util.indexOfId(this.tags, tag);
+                this.tags.splice(index, 1);
                 return true;
             })
     }

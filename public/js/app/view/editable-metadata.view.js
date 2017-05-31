@@ -42,11 +42,16 @@ var EditableMetadataView = (function () {
         if (this.type == 'address') {
             this.setupAddress();
         }
-        if (this.type == 'dropdown' && !this.model && !this.allowBlank) {
-            // by default select the first option
-            this.model = this.options[0];
-            this._defaultOptionSelected = true;
+        if (this.type == 'dropdown' && !this.model) {
+            if (!this.allowBlank) {
+                // by default select the first option
+                this.model = this.options[0];
+                this._defaultOptionSelected = true;
+            }
             this.setupDropdown();
+        }
+        if (!this.text && this.allowBlank) {
+            this.text = this.blankText;
         }
     };
     EditableMetadataView.prototype.setupDropdown = function () {
@@ -54,13 +59,13 @@ var EditableMetadataView = (function () {
             this.text = this.model.name;
             this.icon = this.model.icon;
         }
-        else {
+        else if (!this.allowBlank) {
             this.text = this.options[0].name;
             this.icon = this.options[0].icon;
         }
     };
     EditableMetadataView.prototype.ngOnChanges = function (changes) {
-        if (changes.model && this.text != this.model.name && this.model && this.model.hasOwnProperty('name')) {
+        if (changes.model && this.model && this.text != this.model.name && this.model.hasOwnProperty('name')) {
             this.text = this.model.name;
             if (!this.icon && this.model.icon) {
                 this.icon = this.model.icon;

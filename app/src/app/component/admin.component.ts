@@ -364,8 +364,6 @@ export class AdminComponent implements OnInit {
     saveVersion(): void {
         this.libraryService.postNewVersion(this.selectedMaterial._id, this.newVersion, this.newVersionFile).then(m => {
             this.selectedMaterial.versions = m.versions;
-
-            this.userService.refreshToken();
         });
     }
 

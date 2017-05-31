@@ -1,3 +1,5 @@
+declare var Stripe: any;
+
 export class Util {
 
     static indexOfId (array: any[], object: any): number {
@@ -10,6 +12,33 @@ export class Util {
             }
         });
         return index;
+    }
+
+    static setupStripe(stripeConfig: string): any {
+        let stripe = Stripe(stripeConfig);
+        let elements = stripe.elements();
+        let creditCard = elements.create('card', {
+            // value: {postalCode: this.user.zip},
+            style: {
+                base: {
+                    color: '#32325d',
+                    lineHeight: '24px',
+                    fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                    fontSmoothing: 'antialiased',
+                    fontSize: '16px',
+
+                    '::placeholder': {
+                        color: 'rgba(96,96,96,0.5)'
+                    }
+                },
+                invalid: {
+                    color: '#fa755a',
+                    iconColor: '#fa755a'
+                }
+            }
+        });
+
+        return creditCard;
     }
 
 }

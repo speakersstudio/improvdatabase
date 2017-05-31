@@ -392,7 +392,7 @@ iplus {
     margin: 0 7px 0 19px; }
     .iplus:hover .text.noplus {
       margin-left: 11px; }
-  @media only screen and (min-device-pixel-ratio: 2), (-webkit-min-device-pixel-ratio: 2) {
+  @media only screen and (min-device-pixel-ratio: 4), (-webkit-min-device-pixel-ratio: 4) {
     .iplus .i {
       top: 11px; }
     .iplus .plus {
@@ -592,7 +592,22 @@ iplus {
     border-bottom: 1px solid transparent;
     cursor: default;
     font-weight: bold;
-    display: inline-block; }
+    display: inline-block;
+    position: relative;
+    transition: none; }
+  .tabs .tab:after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 0;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    background: #FFFFFF;
+    transition: height 350ms; }
+  .tabs .tab.active:after, .tabs .tab:hover:after {
+    height: 16px; }
   @media only screen and (max-width: 500px) {
     .tabs .tab {
       white-space: nowrap;
@@ -904,6 +919,8 @@ button,
     display: inline-block;
     width: auto;
     text-align: left; }
+  .metadata > span .fa {
+    margin: 0 8px; }
 
 .metadata i {
   width: 16px;
@@ -2195,11 +2212,12 @@ user .user-form {
     font-size: 18px; }
   .page .tabs {
     margin: 0 26px 0;
-    position: relative;
-    z-index: 2;
     padding: 0 2px; }
     .page .tabs:first-child {
       margin-top: 7.5vh; }
+    .page .tabs .tab {
+      position: relative;
+      z-index: 3; }
     @media only screen and (max-width: 500px) {
       .page .tabs {
         margin: 0; } }
@@ -2341,16 +2359,23 @@ landing-hero {
         font-size: 65px; } }
   .blackbox h2 {
     font-size: 30px;
-    margin: 0 16px; }
+    margin: 0 16px;
+    white-space: nowrap; }
     @media only screen and (max-width: 500px) {
       .blackbox h2 {
-        font-size: 16px; } }
+        font-size: 24px; } }
   .blackbox h3 {
     font-size: 24px;
     margin: 8px 16px; }
+    @media only screen and (max-width: 500px) {
+      .blackbox h3 {
+        margin: 8px 0; } }
   .blackbox hr {
     margin: 0 16px;
     background: #FFFFFF; }
+    @media only screen and (max-width: 500px) {
+      .blackbox hr {
+        margin: 0; } }
   .blackbox p {
     line-height: 2;
     margin: 8px 16px; }
@@ -2365,6 +2390,11 @@ landing-hero {
     margin: 24px 0;
     max-width: 690px;
     text-align: center; }
+  @media only screen and (max-width: 500px) {
+    .blackbox iplus {
+      margin-left: 8px; }
+    .blackbox .columns > * {
+      margin: 0 8px; } }
 
 .page .blackbox {
   margin: 0 -8.7vw 24px; }
@@ -2435,11 +2465,11 @@ marketing-toolbar .toolbar.on .iplus:hover .plus {
 
 @media only screen and (max-width: 500px) {
   marketing-toolbar .toolbar {
-    top: -192px;
-    transition: top 300ms; } }
+    transform: translateY(-100%);
+    transition: transform 300ms; } }
 
 marketing-toolbar .toolbar.open {
-  top: 0; }
+  transform: translateY(0); }
 
 welcome .landing-holder, signup .landing-holder, for-improvisers .landing-holder {
   display: block;
@@ -2454,6 +2484,9 @@ welcome .page, signup .page, for-improvisers .page {
   welcome .page h4, signup .page h4, for-improvisers .page h4 {
     font-size: 4em;
     margin-bottom: 72px; }
+    @media only screen and (max-width: 500px) {
+      welcome .page h4, signup .page h4, for-improvisers .page h4 {
+        font-size: 3.5em; } }
   welcome .page h5, signup .page h5, for-improvisers .page h5 {
     font-size: 2em; }
   welcome .page h2, signup .page h2, for-improvisers .page h2 {

@@ -52,6 +52,9 @@ export class UserFormView implements OnInit, OnDestroy {
 
         if (this.user.birthday) {
             let birthday = new Date(this.user.birthday);
+            if (isNaN(birthday.getDate())) {
+                birthday = new Date(parseInt(this.user.birthday));
+            }
             this.birthdayDay = birthday.getDate();
             this.birthdayMonth = birthday.getMonth();
             this.birthdayYear = birthday.getFullYear();
@@ -75,7 +78,7 @@ export class UserFormView implements OnInit, OnDestroy {
             this.user.password = this.password;
 
             if (this.birthdayDay && this.birthdayMonth && this.birthdayYear) {
-                let birthday = new Date();
+                let birthday = new Date(0);
                 birthday.setDate(this.birthdayDay);
                 birthday.setMonth(this.birthdayMonth);
                 birthday.setFullYear(this.birthdayYear);

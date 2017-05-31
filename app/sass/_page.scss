@@ -150,12 +150,17 @@ $paper-bg: $color-white;
 
     .tabs {
         margin: 0 ($toolbar-height / 2)+2 0;
-        position: relative;
-        z-index: 2;
+        // position: relative;
+        // z-index: 3;
         padding: 0 $border-radius;
 
         &:first-child {
             margin-top: ($curtain-height * 0.3);
+        }
+
+        .tab {
+            position: relative;
+            z-index: 3;
         }
 
         @media #{$media-mobile} {

@@ -15,6 +15,7 @@ var iplus_view_1 = require("../view/iplus.view");
 var login_view_1 = require("../view/login.view");
 var user_form_view_1 = require("../view/user-form.view");
 var landing_hero_view_1 = require("../view/landing-hero.view");
+var legal_view_1 = require("../view/legal.view");
 // services
 var user_service_1 = require("../service/user.service");
 var cart_service_1 = require("../service/cart.service");
@@ -43,6 +44,7 @@ SharedModule = __decorate([
             login_view_1.LoginView,
             user_form_view_1.UserFormView,
             landing_hero_view_1.LandingHeroView,
+            legal_view_1.LegalView,
             form_input_directive_1.FormInputDirective,
             bracket_card_directive_1.BracketCardDirective,
             draggable_directive_1.DraggableDirective,
@@ -55,6 +57,7 @@ SharedModule = __decorate([
             login_view_1.LoginView,
             user_form_view_1.UserFormView,
             landing_hero_view_1.LandingHeroView,
+            legal_view_1.LegalView,
             form_input_directive_1.FormInputDirective,
             bracket_card_directive_1.BracketCardDirective,
             draggable_directive_1.DraggableDirective,

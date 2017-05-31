@@ -87,6 +87,7 @@ landing-hero {
         font-size: 30px;
         // margin-top: $large;
         margin: 0 $std;
+        white-space: nowrap;
         
         @media #{$media-mobile} {
             font-size: 16px;

@@ -8,6 +8,7 @@ import { IPlusView } from '../view/iplus.view';
 import { LoginView } from '../view/login.view';
 import { UserFormView } from '../view/user-form.view';
 import { LandingHeroView } from '../view/landing-hero.view';
+import { LegalView } from '../view/legal.view';
 
 // services
 import { UserService } from "../service/user.service";
@@ -33,6 +34,7 @@ import { InfiniteScrollDirective } from '../directive/infinite-scroll.directive'
         LoginView,
         UserFormView,
         LandingHeroView,
+        LegalView,
         FormInputDirective,
         BracketCardDirective,
         DraggableDirective,
@@ -45,6 +47,7 @@ import { InfiniteScrollDirective } from '../directive/infinite-scroll.directive'
         LoginView,
         UserFormView,
         LandingHeroView,
+        LegalView,
         FormInputDirective,
         BracketCardDirective,
         DraggableDirective,

@@ -28,3 +28,10 @@ browserstack-run.pid
 
 # VS Code
 .vscode
+
+# ImprovPlus materials
+materials
+temp
+
+aot-compile
+app/aot

@@ -9,6 +9,7 @@ Here's a general outline of how to get the Improv Database app running locally!
 3. Run the command `npm install` on the root project folder. This installs all of the dependencies for the app.
 4. Create and set up a PostgreSQL database (see below)
 5. Make sure your NODE_ENV environment variable is set to "development"
+6. Create a SENDGRID_API_KEY environment variable, set to the SendGrid API key
 6. `npm start` should start the app in a terminal
 7. Visit https://localhost:1919 to access the webapp, and localhost:1919/api to get the API.
 8. If the SSL doesn't work, check the SSL Setup information, below.

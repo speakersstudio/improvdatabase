@@ -19,7 +19,7 @@ export class LandingHeroView implements OnInit, OnDestroy {
     @Input() improv: boolean = false;
     @Input() video: boolean = true;
 
-    videoId = "p00Q8pomuc0";
+    videoId = "JyI4c_RJBxM";
 
     bgheight: number;
     bgwidth: number;

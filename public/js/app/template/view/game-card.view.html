@@ -11,7 +11,7 @@
         <span *ngIf="game.playerCount && game.playerCount.name" title="{{game.playerCount.description}}"><i class="fa fa-group"></i> {{game.playerCount.name}}</span>
         <span *ngIf="game.duration && game.duration.name" title="{{game.duration.description}}"><i class="fa fa-clock-o"></i> {{game.duration.name}}</span>
 
-        <ul class="taglist">
+        <ul class="taglist hide-mobile">
             <li *ngFor="let tag of game.tags"
                     [title]="tag.description || ''"><i class="fa fa-hashtag"></i> {{tag.name}}</li>
         </ul>

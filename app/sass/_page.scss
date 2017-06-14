@@ -133,6 +133,12 @@ $paper-bg: $color-white;
         .button-group {
             float: right;
             margin-top: -($std - ($small / 2));
+
+            @media #{$media-mobile} {
+                float: none;
+                margin: 0;
+                text-align: left;
+            }
         }
     }
 

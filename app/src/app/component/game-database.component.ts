@@ -158,6 +158,8 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
                         }
                     }
                     return false;
+                } else if (game[this.filter.property] && game[this.filter.property]._id) {
+                    return game[this.filter.property]._id == this.filter.value;
                 } else {
                     return game[this.filter.property] == this.filter.value;
                 }
@@ -247,6 +249,7 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
     }
 
     onSearchResultClick(result: SearchResult): void {
+        console.log(result);
         switch(result.type) {
             case 'search':
                 if (result.text) {
@@ -274,13 +277,13 @@ export class GameDatabaseComponent implements OnInit, OnDestroy {
                 break;
             case 'duration':
                 this.filter = {
-                    "property": 'DurationID',
+                    "property": 'duration',
                     "value": result.id
                 }
                 break;
             case 'playercount':
                 this.filter = {
-                    "property": 'PlayerCountID',
+                    "property": 'playerCount',
                     "value": result.id
                 }
                 break;

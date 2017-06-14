@@ -155,6 +155,7 @@ var GameDetailsComponent = (function () {
         }
     };
     GameDetailsComponent.prototype.saveEditName = function () {
+        var _this = this;
         if (this.editName) {
             if (this.editNameShown) {
                 // update the existing name if it is different
@@ -167,7 +168,9 @@ var GameDetailsComponent = (function () {
                 // create a new name
                 this.gameDatabaseService.createName(this.game._id, this.editName)
                     .then(function (name) {
-                    // this.game.names.unshift(name);
+                    if (!_this.dialog) {
+                        _this.game.names.unshift(name);
+                    }
                 });
             }
         }

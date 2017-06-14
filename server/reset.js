@@ -101,7 +101,7 @@ const   databases = {
             seed: (timestamp) => {
                 return doSeed('Game', timestamp, (data) => {
                     data.forEach(item => {
-                        if (item.tags[0].tag) {
+                        if (item.tags.length && item.tags[0].tag) {
                             let newTags = [];
                             item.tags.forEach(taggame => {
                                 newTags.push(taggame.tag);

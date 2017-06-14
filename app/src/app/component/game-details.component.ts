@@ -251,7 +251,9 @@ export class GameDetailsComponent implements OnInit, OnChanges {
                 // create a new name
                 this.gameDatabaseService.createName(this.game._id, this.editName)
                     .then(name => {
-                        // this.game.names.unshift(name);
+                        if (!this.dialog) {
+                            this.game.names.unshift(name);
+                        }
                     });
             }
         }

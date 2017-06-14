@@ -4,6 +4,7 @@ const   util = require('../../util'),
         findModelUtil = require('./find-model.util');
 
 const   Game = require('../../models/game.model'),
+        Name = require('../../models/name.model'),
         Note = require('../../models/note.model'),
         Tag = require('../../models/tag.model'),
         HistoryModel = require('../../models/history.model');
@@ -39,12 +40,23 @@ module.exports = {
             .where('_id').equals(gameId).exec()
             .then(game => {
                 if (game) {
+
                     game.dateDeleted = Date.now();
                     game.deletedUser = req.user._id;
 
-                    return game.save().then(() => {
+                    return game.save().then(game => {
+                        //res.send('success');
+                        return util.iterate(game.names, nameId => {
+                            return Name.findOne({}).where('_id').equals(nameId).exec()
+                                .then(name => {
+                                    name.dateDeleted = Date.now();
+                                    name.deletedUser = req.user._id;
+                                    return name.save();
+                                });
+                        });
+                    }).then(() => {
                         res.send('success');
-                    })
+                    });
                 } else {
                     return res.status(404).send('game not found');
                 }
@@ -193,8 +205,12 @@ module.exports = {
 
         return Game.findOne({}).where('_id').equals(gameId).exec()
             .then(game => {
-                metadataIds.push(game.playerCount);
-                metadataIds.push(game.duration);
+                if (game.playerCount && game.playerCount !== undefined) {
+                    metadataIds.push(game.playerCount);
+                }
+                if (game.duration && game.duration !== undefined) {
+                    metadataIds.push(game.duration);
+                }
                 game.tags.forEach(tag => {
                     tagIds.push(util.getObjectIdAsString(tag));
                 });

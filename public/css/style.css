@@ -426,10 +426,6 @@ iplus {
     fill: rgba(0, 0, 0, 0.3);
     stroke: none; }
 
-#siteLoader {
-  background: rgba(0, 0, 0, 0.2);
-  transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1); }
-
 .loader {
   position: fixed;
   top: 0;
@@ -458,7 +454,7 @@ iplus {
   #cornerLogo img {
     max-width: 100%; }
 
-.backdrop {
+.backdrop, #siteLoader {
   position: fixed;
   top: 0;
   right: 100%;
@@ -469,7 +465,7 @@ iplus {
   opacity: 0;
   transition: opacity 400ms cubic-bezier(0.25, 0.8, 0.25, 1), right 0ms 400ms;
   box-shadow: 0 2px 20vw rgba(0, 0, 0, 0.75) inset; }
-  .backdrop.show {
+  .backdrop.show, .show#siteLoader {
     transition: opacity 1500ms cubic-bezier(0.25, 0.8, 0.25, 1);
     right: 0px;
     opacity: 1; }
@@ -526,6 +522,10 @@ iplus {
 .fa.huge {
   font-size: 50px;
   margin-top: 24px; }
+
+@media only screen and (max-width: 500px) {
+  .hide-mobile {
+    display: none; } }
 
 .columns {
   display: flex;
@@ -859,9 +859,6 @@ button,
         align-items: center; }
         .list .item .metadata .row:first-child {
           margin-bottom: 8px; }
-        @media only screen and (max-width: 500px) {
-          .list .item .metadata .row > *:last-child {
-            display: none; } }
         .list .item .metadata .row .fill {
           flex: 1; }
       .list .item .metadata h5 {
@@ -2204,6 +2201,11 @@ user .user-form {
     .page .paper-label .button-group {
       float: right;
       margin-top: -12px; }
+      @media only screen and (max-width: 500px) {
+        .page .paper-label .button-group {
+          float: none;
+          margin: 0;
+          text-align: left; } }
   .page h4 {
     font-size: 28px; }
     .page h4 input {
@@ -2359,8 +2361,7 @@ landing-hero {
         font-size: 65px; } }
   .blackbox h2 {
     font-size: 30px;
-    margin: 0 16px;
-    white-space: nowrap; }
+    margin: 0 16px; }
     @media only screen and (max-width: 500px) {
       .blackbox h2 {
         font-size: 24px; } }
@@ -2573,6 +2574,9 @@ welcome .payment-info, signup .payment-info, for-improvisers .payment-info {
     border-color: darkred; }
   welcome .payment-info .StripeElement--webkit-autofill, signup .payment-info .StripeElement--webkit-autofill, for-improvisers .payment-info .StripeElement--webkit-autofill {
     background-color: #fefde5 !important; }
+
+welcome .blackbox h2 {
+  white-space: nowrap; }
 
 signup .page {
   padding-top: 8.7%; }

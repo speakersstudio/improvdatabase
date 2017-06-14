@@ -46,6 +46,7 @@ module.exports = {
 
     getAll: (req, res) => {
         Name.find({})
+            .where('dateDeleted').equals(null)
             .populate('votes')
             // .sort('-weight -dateAdded')
             .exec()

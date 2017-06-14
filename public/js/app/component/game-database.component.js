@@ -114,6 +114,9 @@ var GameDatabaseComponent = (function () {
                     }
                     return false;
                 }
+                else if (game[_this.filter.property] && game[_this.filter.property]._id) {
+                    return game[_this.filter.property]._id == _this.filter.value;
+                }
                 else {
                     return game[_this.filter.property] == _this.filter.value;
                 }
@@ -195,6 +198,7 @@ var GameDatabaseComponent = (function () {
     };
     GameDatabaseComponent.prototype.onSearchResultClick = function (result) {
         var _this = this;
+        console.log(result);
         switch (result.type) {
             case 'search':
                 if (result.text) {
@@ -223,13 +227,13 @@ var GameDatabaseComponent = (function () {
                 break;
             case 'duration':
                 this.filter = {
-                    "property": 'DurationID',
+                    "property": 'duration',
                     "value": result.id
                 };
                 break;
             case 'playercount':
                 this.filter = {
-                    "property": 'PlayerCountID',
+                    "property": 'playerCount',
                     "value": result.id
                 };
                 break;

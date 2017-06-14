@@ -173,7 +173,7 @@
         </div>
     </div>
 
-    <div class="paper has-brackets" [class.closed]="!showPrivateNotes">
+    <div *ngIf="game.names[0]" class="paper has-brackets" [class.closed]="!showPrivateNotes">
 
         <div class="content list" *ngIf="showPrivateNotes" [@shrinkHeight]>
 

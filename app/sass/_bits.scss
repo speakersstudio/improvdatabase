@@ -203,8 +203,7 @@ iplus {
 }
 
 #siteLoader {
-    background: $color-shade;
-    transition: opacity $swift-ease-out-duration $swift-ease-out-timing-function;
+    @extend .backdrop;
 }
 .loader {
     @include fixed(0, 0, 0, 0, 5000);
@@ -311,6 +310,12 @@ iplus {
 .fa.huge {
     font-size: 50px;
     margin-top: $large;
+}
+
+@media #{$media-mobile} {
+    .hide-mobile {
+        display: none;
+    }
 }
 
 .columns {
@@ -758,11 +763,11 @@ button,
                     margin-bottom: $small;
                 }
                 
-                @media #{$media-mobile} {
-                    & > *:last-child {
-                        display: none;
-                    }
-                }
+                // @media #{$media-mobile} {
+                //     & > *:last-child {
+                //         display: none;
+                //     }
+                // }
 
                 .fill {
                     flex: 1;

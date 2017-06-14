@@ -161,10 +161,10 @@ module.exports = {
         if (gameId) {
             whereOr.push({game: gameId});
         }
-        if (metadataIds) {
+        if (metadataIds && metadataIds.length) {
             whereOr.push({metadata: {$in: metadataIds}});
         }
-        if (tagIds) {
+        if (tagIds && tagIds.length) {
             whereOr.push({tag: { $in: tagIds }});
         }
 

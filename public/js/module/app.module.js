@@ -24,7 +24,6 @@ var login_screen_component_1 = require("../component/login-screen.component");
 var signup_component_1 = require("../component/signup.component");
 var change_password_component_1 = require("../component/change-password.component");
 var invite_component_1 = require("../component/invite.component");
-var improvisers_component_1 = require("../component/improvisers.component");
 var marketing_toolbar_view_1 = require("../view/marketing-toolbar.view");
 // import { FormInputDirective } from '../view/form-input.directive';
 var AppModule = (function () {
@@ -50,7 +49,6 @@ AppModule = __decorate([
             signup_component_1.SignupComponent,
             change_password_component_1.ChangePasswordComponent,
             invite_component_1.InviteComponent,
-            improvisers_component_1.ImprovisersComponent,
             marketing_toolbar_view_1.MarketingToolbarView
         ],
         bootstrap: [app_component_1.AppComponent],

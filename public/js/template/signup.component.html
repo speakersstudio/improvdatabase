@@ -14,28 +14,17 @@
     <div class="block center" [@bubbleSlow]>
         
         <div class="card">
-            1. How do you describe yourself?
+            1. Set up your account.
         </div>
 
         <div class="card-list">
 
-            <div class="card red brackets clickable" bracketCard #facilitatorCard
-                    (click)="selectFacilitator()">
+            <div class="card red brackets clickable" bracketCard #facilitatorCard>
 
                 <i class="fa fa-book"></i>
 
                 <div class="body-default">
-                    <h4>Facilitator</h4>
-
-                    <ul>
-                        <li>You are a member of your company's HR team.</li>
-                        <li>You conduct professional trainings.</li>
-                        <li>You want to make your professional team more awesome.</li>
-                    </ul>
-                </div>
-
-                <div class="body-open">
-                    <p>Great! Let's start with the email and password you want to use for your new Facilitator account.</p>
+                    <p>Let's start with the email and password you want to use for your new Facilitator account.</p>
                     
                     <input name="email"
                         [(ngModel)]="email"
@@ -57,44 +46,6 @@
 
                 </div>
 
-            </div>
-
-            <div class="card blue brackets clickable" bracketCard #improviserCard
-                    (click)="selectImproviser()">
-
-                <i class="fa fa-smile-o"></i>
-
-                <div class="body-default">
-                    <h4>Improviser</h4>
-
-                    <ul>
-                        <li>You perform (or want to perform) Improv.</li>
-                        <li>You want to promote your Improv Group.</li>
-                        <li>You want to be part of the ever-growing Improv Community.</li>
-                    </ul>
-                </div>
-
-                <div class="body-open">
-                    <p>Awesome! Let's start with the email and password you want to use for your new Improviser account.</p>
-
-                    <input name="email"
-                        [(ngModel)]="email"
-                        (input)="emailInput()"
-                        placeholder="Email"
-                        formInput
-                        required 
-                        autocomplete="off"
-                        type="text" />
-                    <span class="error" *ngIf="emailError">{{emailError}}</span>
-                    
-                    <input name="password" 
-                        [(ngModel)]="password"
-                        placeholder="Password"
-                        formInput
-                        required
-                        autocomplete="off"
-                        type="password" />
-                </div>
             </div>
 
         </div>
@@ -158,7 +109,7 @@
                 <i class="fa fa-users"></i>
 
                 <div class="body-default">
-                    <h4>Your Team</h4>
+                    <h4>Your Company</h4>
 
                     <ul *ngIf="userType == 'facilitator'">
                         <li>You want to share your ImprovPlus resources.</li>
@@ -178,7 +129,7 @@
 
                     <input formInput
                         name="teamName"
-                        placeholder="Team Name"
+                        placeholder="Company Name"
                         [(ngModel)]="teamName"
                         required
                         (input)="teamInput($event)"

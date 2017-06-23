@@ -78,7 +78,7 @@ export class TeamDetailsComponent implements OnInit {
         {
             icon: "fa-sign-out",
             name: "leave",
-            text: "Leave Team",
+            text: "Leave Company",
             active: false
         }
     ]
@@ -160,7 +160,7 @@ export class TeamDetailsComponent implements OnInit {
 
         this.tabs = [
             {
-                name: 'Team Details',
+                name: 'Company Details',
                 id: 'team',
                 icon: 'users'
             },
@@ -173,7 +173,7 @@ export class TeamDetailsComponent implements OnInit {
 
         if (this.can('team_purchases_view')) {
             this.tabs.push({
-                name: 'Team Subscription',
+                name: 'Company Subscription',
                 id: 'subscription',
                 icon: 'id-card-o'
             })
@@ -324,7 +324,7 @@ export class TeamDetailsComponent implements OnInit {
                     if (this.subscription.type == 'improviser') {
                         this.inviteError = 'At this time, you cannot invite a Facilitator to an Improv Team.'
                     } else {
-                        this.inviteError = 'At this time, you cannot invite an Improviser to a Facilitator Team.'
+                        this.inviteError = 'At this time, you cannot invite an Improviser to a Facilitator Company.'
                     }
                 } else if (response.error && response.error == 'out of subscriptions') {
                     this.inviteError = 'Your team is out of subscriptions, so you cannot invite that user until you purchase more (or until they purchase a subscription on their own).'
@@ -439,8 +439,8 @@ export class TeamDetailsComponent implements OnInit {
     }
 
     removeUserFromTeam(user: User): void {
-        this._app.dialog('Remove ' + this.getUserName(user) + ' from the Team?',
-            'Are you sure you want to remove them from the Team?', 'Yes', () => {
+        this._app.dialog('Remove ' + this.getUserName(user) + ' from the Company?',
+            'Are you sure you want to remove them from the Company?', 'Yes', () => {
                 this.teamService.removeUserFromTeam(this.team, user).then(team => {
                     this.setTeam(team);
                 });
@@ -448,8 +448,8 @@ export class TeamDetailsComponent implements OnInit {
     }
 
     promoteUser(user: User): void {
-        this._app.dialog('Promote ' + this.getUserName(user) + ' to Team Admin?',
-            'As a Team Admin, they will be able to view the Team\'s purchase history, add or remove users, and make purchases for the Team.', 'Yes',
+        this._app.dialog('Promote ' + this.getUserName(user) + ' to Company Admin?',
+            'As a Company Admin, they will be able to view the Company\'s purchase history, add or remove users, and make purchases for the Company.', 'Yes',
             () => {
                 this.teamService.promoteUser(this.team, user).then(team => {
                     this.setTeam(team);
@@ -459,7 +459,7 @@ export class TeamDetailsComponent implements OnInit {
 
     demoteUser(user: User): void {
         this._app.dialog('Demote ' + this.getUserName(user) + '?',
-            'This user will no longer have Team Admin privelages.', 'Yes',
+            'This user will no longer have Company Admin privelages.', 'Yes',
             () => {
                 this.teamService.demoteUser(this.team, user).then(team => {
                     this.setTeam(team);

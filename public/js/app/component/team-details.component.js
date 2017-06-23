@@ -42,7 +42,7 @@ var TeamDetailsComponent = (function () {
             {
                 icon: "fa-sign-out",
                 name: "leave",
-                text: "Leave Team",
+                text: "Leave Company",
                 active: false
             }
         ];
@@ -110,7 +110,7 @@ var TeamDetailsComponent = (function () {
         this.title = team.name;
         this.tabs = [
             {
-                name: 'Team Details',
+                name: 'Company Details',
                 id: 'team',
                 icon: 'users'
             },
@@ -122,7 +122,7 @@ var TeamDetailsComponent = (function () {
         ];
         if (this.can('team_purchases_view')) {
             this.tabs.push({
-                name: 'Team Subscription',
+                name: 'Company Subscription',
                 id: 'subscription',
                 icon: 'id-card-o'
             });
@@ -250,7 +250,7 @@ var TeamDetailsComponent = (function () {
                     _this.inviteError = 'At this time, you cannot invite a Facilitator to an Improv Team.';
                 }
                 else {
-                    _this.inviteError = 'At this time, you cannot invite an Improviser to a Facilitator Team.';
+                    _this.inviteError = 'At this time, you cannot invite an Improviser to a Facilitator Company.';
                 }
             }
             else if (response.error && response.error == 'out of subscriptions') {
@@ -335,7 +335,7 @@ var TeamDetailsComponent = (function () {
     };
     TeamDetailsComponent.prototype.removeUserFromTeam = function (user) {
         var _this = this;
-        this._app.dialog('Remove ' + this.getUserName(user) + ' from the Team?', 'Are you sure you want to remove them from the Team?', 'Yes', function () {
+        this._app.dialog('Remove ' + this.getUserName(user) + ' from the Company?', 'Are you sure you want to remove them from the Company?', 'Yes', function () {
             _this.teamService.removeUserFromTeam(_this.team, user).then(function (team) {
                 _this.setTeam(team);
             });
@@ -343,7 +343,7 @@ var TeamDetailsComponent = (function () {
     };
     TeamDetailsComponent.prototype.promoteUser = function (user) {
         var _this = this;
-        this._app.dialog('Promote ' + this.getUserName(user) + ' to Team Admin?', 'As a Team Admin, they will be able to view the Team\'s purchase history, add or remove users, and make purchases for the Team.', 'Yes', function () {
+        this._app.dialog('Promote ' + this.getUserName(user) + ' to Company Admin?', 'As a Company Admin, they will be able to view the Company\'s purchase history, add or remove users, and make purchases for the Company.', 'Yes', function () {
             _this.teamService.promoteUser(_this.team, user).then(function (team) {
                 _this.setTeam(team);
             });
@@ -351,7 +351,7 @@ var TeamDetailsComponent = (function () {
     };
     TeamDetailsComponent.prototype.demoteUser = function (user) {
         var _this = this;
-        this._app.dialog('Demote ' + this.getUserName(user) + '?', 'This user will no longer have Team Admin privelages.', 'Yes', function () {
+        this._app.dialog('Demote ' + this.getUserName(user) + '?', 'This user will no longer have Company Admin privelages.', 'Yes', function () {
             _this.teamService.demoteUser(_this.team, user).then(function (team) {
                 _this.setTeam(team);
             });

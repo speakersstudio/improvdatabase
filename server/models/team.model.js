@@ -35,7 +35,7 @@ const TeamSchema = new mongoose.Schema({
 TeamSchema.methods.addSubscription = function(role, stripeCustomerId, subCount, expires) {
     if (!expires) {
         expires = new Date();
-        expires.setFullYear(expires.getFullYear() + 1);
+        expires.setFullYear(expires.getFullYear() + 100);
     }
     let expiration = Date.now();
     if (typeof(expires) == 'object' && expires.getTime) {

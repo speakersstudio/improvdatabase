@@ -89,12 +89,13 @@ export class AppService {
     getPackages(userType: string, team: boolean): Promise<Package[]> {
         let options: Package[] = [];
 
-        return this.getSubscriptionPackage(userType, team)
-            .then(pkg => {
-                options.push(pkg);
+        // return this.getSubscriptionPackage(userType, team)
+        //     .then(pkg => {
+        //         options.push(pkg);
 
-                return this._getPackages()
-            })
+        //         return this._getPackages()
+        //     })
+        return this._getPackages()
             .then(packages => {
 
                 if (userType == 'facilitator') {

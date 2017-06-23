@@ -50,7 +50,7 @@ export class SignupComponent implements OnInit {
 
     private config: PackageConfig = new PackageConfig();
 
-    userType: string;
+    userType: string = 'facilitator';
     teamOption: string;
 
     email: string;

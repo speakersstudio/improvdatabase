@@ -69,11 +69,12 @@ var AppService = (function () {
     AppService.prototype.getPackages = function (userType, team) {
         var _this = this;
         var options = [];
-        return this.getSubscriptionPackage(userType, team)
-            .then(function (pkg) {
-            options.push(pkg);
-            return _this._getPackages();
-        })
+        // return this.getSubscriptionPackage(userType, team)
+        //     .then(pkg => {
+        //         options.push(pkg);
+        //         return this._getPackages()
+        //     })
+        return this._getPackages()
             .then(function (packages) {
             if (userType == 'facilitator') {
                 if (!team) {

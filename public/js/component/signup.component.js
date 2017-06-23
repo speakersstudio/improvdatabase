@@ -28,6 +28,7 @@ var SignupComponent = (function () {
         this.userService = userService;
         this.cartService = cartService;
         this.config = new config_1.PackageConfig();
+        this.userType = 'facilitator';
         this.isLoadingPackages = false;
         this.isPosting = false;
         this.cardComplete = false;

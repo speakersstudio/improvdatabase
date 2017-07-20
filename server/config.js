@@ -44,8 +44,8 @@ module.exports = function () {
                 key: process.env.SENDGRID_API_KEY
             },
             s3_buckets: {
-                materials: 'improvplus.materials',
-                backups: 'improvplus.backups'
+                materials: 'improvplus.materials2',
+                backups: 'improvplus.db-backups'
             },
             port: process.env.PORT || 5000,
             saltRounds: 10
